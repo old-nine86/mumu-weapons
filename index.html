@@ -2108,9 +2108,180 @@ body::before{
   font-weight:800;
   line-height:1.55;
 }
+.forum-panel{
+  margin:22px 0 26px;
+  padding:20px;
+  border:2px solid rgba(255,255,255,.84);
+  border-radius:34px;
+  background:
+    radial-gradient(circle at 10% 8%,rgba(142,230,198,.28),transparent 15rem),
+    radial-gradient(circle at 88% 12%,rgba(255,183,200,.32),transparent 16rem),
+    rgba(255,255,255,.76);
+  box-shadow:0 22px 70px rgba(78,64,44,.09);
+}
+.forum-head{
+  display:flex;
+  justify-content:space-between;
+  gap:14px;
+  align-items:flex-start;
+  margin-bottom:14px;
+}
+.forum-title{
+  color:#202124;
+  font-size:clamp(22px,4vw,32px);
+  font-weight:900;
+}
+.forum-sub{
+  color:#77726b;
+  font-size:13px;
+  font-weight:800;
+  line-height:1.6;
+  margin-top:5px;
+}
+.forum-count{
+  padding:8px 12px;
+  border-radius:999px;
+  background:#eef8ff;
+  color:#1e78c8;
+  font-size:12px;
+  font-weight:900;
+  white-space:nowrap;
+}
+.forum-composer{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  padding:14px;
+  border-radius:26px;
+  background:#fffdf8;
+  border:2px solid rgba(78,64,44,.08);
+}
+.forum-composer .full{grid-column:1/-1}
+.forum-composer input,.forum-composer select,.forum-composer textarea,.forum-reply-row input{
+  width:100%;
+  border:2px solid rgba(78,64,44,.1);
+  border-radius:18px;
+  background:#fff;
+  padding:12px 14px;
+  color:#202124;
+  font-family:inherit;
+  font-weight:800;
+  outline:none;
+}
+.forum-composer textarea{
+  min-height:88px;
+  resize:vertical;
+}
+.forum-composer input:focus,.forum-composer select:focus,.forum-composer textarea:focus,.forum-reply-row input:focus{
+  border-color:#8ee6c6;
+  box-shadow:0 0 0 4px rgba(142,230,198,.18);
+}
+.forum-submit{
+  justify-self:end;
+  border:0;
+  border-radius:999px;
+  padding:12px 22px;
+  background:linear-gradient(135deg,#8ee6c6,#9fd7ff);
+  color:#202124;
+  font-family:inherit;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 14px 30px rgba(47,143,232,.14);
+}
+.forum-list{
+  display:grid;
+  gap:12px;
+  margin-top:14px;
+}
+.forum-post{
+  padding:14px;
+  border-radius:26px;
+  background:rgba(255,255,255,.86);
+  border:2px solid rgba(78,64,44,.08);
+}
+.forum-post-top{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+}
+.forum-post-title{
+  color:#202124;
+  font-size:17px;
+  font-weight:900;
+  line-height:1.35;
+}
+.forum-tag{
+  display:inline-flex;
+  margin-right:7px;
+  padding:5px 9px;
+  border-radius:999px;
+  background:#fff4d8;
+  color:#8a6a00;
+  font-size:11px;
+  font-weight:900;
+}
+.forum-meta{
+  color:#77726b;
+  font-size:12px;
+  font-weight:800;
+  margin-top:4px;
+}
+.forum-body{
+  color:#536071;
+  font-size:13px;
+  font-weight:800;
+  line-height:1.65;
+  margin-top:10px;
+  white-space:pre-wrap;
+}
+.forum-replies{
+  display:grid;
+  gap:8px;
+  margin-top:12px;
+}
+.forum-reply{
+  padding:10px 12px;
+  border-radius:18px;
+  background:#f7fbff;
+  color:#536071;
+  font-size:12px;
+  font-weight:800;
+  line-height:1.5;
+}
+.forum-reply b{color:#202124}
+.forum-reply-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+  margin-top:10px;
+}
+.forum-reply-btn{
+  border:0;
+  border-radius:999px;
+  padding:0 16px;
+  background:#ffd96a;
+  color:#202124;
+  font-family:inherit;
+  font-weight:900;
+  cursor:pointer;
+}
+.forum-empty{
+  padding:18px;
+  border-radius:24px;
+  background:#fffdf8;
+  color:#77726b;
+  font-weight:900;
+  text-align:center;
+}
 @media(max-width:768px){
   .commerce-row{grid-template-columns:1fr}
   .product-list{grid-template-columns:1fr}
+  .forum-head{flex-direction:column}
+  .forum-composer{grid-template-columns:1fr}
+  .forum-submit{justify-self:stretch}
+  .forum-reply-row{grid-template-columns:1fr}
+  .forum-reply-btn{min-height:42px}
   .upload-head{flex-direction:column}
   .upload-layout{grid-template-columns:1fr}
   .upload-form{grid-template-columns:1fr}
@@ -2289,6 +2460,28 @@ body::before{
       <div class="support-note">把你的收款码图片或赞助链接发给我后，我可以把这里改成真正可点击的支援入口。</div>
     </section>
   </div>
+  <section class="forum-panel" id="forumPanel">
+    <div class="forum-head">
+      <div>
+        <div class="forum-title">💬 玩家论坛</div>
+        <div class="forum-sub">这里可以写建议、讨论战场玩法、反馈问题，也可以晒自己上传的积木武器。</div>
+      </div>
+      <div class="forum-count" id="forumCount">0 条讨论</div>
+    </div>
+    <div class="forum-composer">
+      <input id="forumName" maxlength="16" placeholder="你的名字">
+      <select id="forumCategory">
+        <option value="建议">💡 建议</option>
+        <option value="讨论">💬 讨论</option>
+        <option value="反馈">🛠️ 反馈</option>
+        <option value="晒图">🧱 晒武器</option>
+      </select>
+      <input class="full" id="forumTitle" maxlength="34" placeholder="标题：比如我想要新的角色技能">
+      <textarea class="full" id="forumBody" maxlength="240" placeholder="写下你的想法..."></textarea>
+      <button class="forum-submit full" type="button" onclick="postForumTopic()">发布到论坛</button>
+    </div>
+    <div class="forum-list" id="forumList"></div>
+  </section>
   <div class="lb-wrap">
     <div class="lb-title">🏆 战力排行榜</div>
     <table class="lb-table"><thead><tr><th>排名</th><th>武器</th><th>票数</th><th>战力</th><th>战力条</th></tr></thead><tbody id="lbBody"></tbody></table>
@@ -2571,10 +2764,11 @@ const UPLOAD_ONCE_KEY='mumu_uploaded_weapon_once';
 let pendingUpload=null;
 
 async function loadData(){
-  try{DATA=JSON.parse(localStorage.getItem(LS_KEY))||{comments:{},votes:{},uploads:[]}}catch(e){DATA={comments:{},votes:{},uploads:[]}}
+  try{DATA=JSON.parse(localStorage.getItem(LS_KEY))||{comments:{},votes:{},uploads:[],forum:[]}}catch(e){DATA={comments:{},votes:{},uploads:[],forum:[]}}
   if(!DATA.comments)DATA.comments={};
   if(!DATA.votes)DATA.votes={};
   if(!Array.isArray(DATA.uploads))DATA.uploads=[];
+  if(!Array.isArray(DATA.forum))DATA.forum=[];
 }
 async function saveData(){try{localStorage.setItem(LS_KEY,JSON.stringify(DATA))}catch(e){}}
 function getVotes(id){return DATA&&DATA.votes?DATA.votes[id]||0:0}
@@ -2584,6 +2778,10 @@ function getComments(id){return DATA&&DATA.comments?DATA.comments[id]||[]:[]}
 function escapeHTML(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function typeLabel(t){return t==='sword'?'剑刃':t==='gun'?'枪械':'长柄'}
 function typeEmoji(t){return t==='sword'?'🗡️':t==='gun'?'🔫':'🔱'}
+function formatTime(ts){
+  const d=new Date(ts);
+  return (d.getMonth()+1)+'/'+d.getDate()+' '+d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
+}
 function getUploadLimitReached(){return localStorage.getItem(UPLOAD_ONCE_KEY)==='1'||(DATA&&DATA.uploads&&DATA.uploads.length>0)}
 function applyUploadedWeapons(){
   if(!DATA||!Array.isArray(DATA.uploads))return;
@@ -2702,6 +2900,69 @@ async function submitUploadedWeapon(){
   updateLeaderboard();
   refreshUploadState();
   document.getElementById('uploadStatus').textContent='已加入武器库：'+item.n;
+}
+
+async function postForumTopic(){
+  if(!DATA)return;
+  const name=document.getElementById('forumName').value.trim()||'匿名玩家';
+  const category=document.getElementById('forumCategory').value||'讨论';
+  const title=document.getElementById('forumTitle').value.trim();
+  const body=document.getElementById('forumBody').value.trim();
+  if(!title||!body)return;
+  DATA.forum.unshift({id:Date.now(),name:name.slice(0,16),category,title:title.slice(0,34),body:body.slice(0,240),ts:Date.now(),replies:[]});
+  await saveData();
+  document.getElementById('forumTitle').value='';
+  document.getElementById('forumBody').value='';
+  renderForum();
+  updateDashboard();
+}
+
+async function postForumReply(id){
+  if(!DATA||!Array.isArray(DATA.forum))return;
+  const input=document.getElementById('forumReply'+id);
+  if(!input)return;
+  const text=input.value.trim();
+  if(!text)return;
+  const topic=DATA.forum.find(p=>p.id===id);
+  if(!topic)return;
+  if(!Array.isArray(topic.replies))topic.replies=[];
+  const author=document.getElementById('forumName').value.trim()||'匿名玩家';
+  topic.replies.push({name:author.slice(0,16),text:text.slice(0,120),ts:Date.now()});
+  await saveData();
+  input.value='';
+  renderForum();
+  updateDashboard();
+}
+
+function forumTagEmoji(cat){
+  return cat==='建议'?'💡':cat==='反馈'?'🛠️':cat==='晒图'?'🧱':'💬';
+}
+
+function renderForum(){
+  const list=document.getElementById('forumList');
+  const count=document.getElementById('forumCount');
+  if(!list||!count)return;
+  const posts=(DATA&&Array.isArray(DATA.forum))?DATA.forum:[];
+  const totalReplies=posts.reduce((sum,p)=>sum+(Array.isArray(p.replies)?p.replies.length:0),0);
+  count.textContent=posts.length+' 个帖子 · '+totalReplies+' 条回复';
+  if(!posts.length){
+    list.innerHTML='<div class="forum-empty">还没有讨论，来发第一条建议吧。</div>';
+    return;
+  }
+  list.innerHTML=posts.map(p=>{
+    const replies=(Array.isArray(p.replies)?p.replies:[]).slice(-4).map(r=>
+      '<div class="forum-reply"><b>'+escapeHTML(r.name)+'</b> · '+formatTime(r.ts)+'<br>'+escapeHTML(r.text)+'</div>'
+    ).join('');
+    return '<article class="forum-post">'+
+      '<div class="forum-post-top">'+
+        '<div><div class="forum-post-title"><span class="forum-tag">'+forumTagEmoji(p.category)+' '+escapeHTML(p.category)+'</span>'+escapeHTML(p.title)+'</div>'+
+        '<div class="forum-meta">由 '+escapeHTML(p.name)+' 发布 · '+formatTime(p.ts)+'</div></div>'+
+      '</div>'+
+      '<div class="forum-body">'+escapeHTML(p.body)+'</div>'+
+      '<div class="forum-replies">'+replies+'</div>'+
+      '<div class="forum-reply-row"><input id="forumReply'+p.id+'" maxlength="120" placeholder="回复这个话题..."><button class="forum-reply-btn" onclick="postForumReply('+p.id+')">回复</button></div>'+
+    '</article>';
+  }).join('');
 }
 
 // ===== RENDER WEAPONS =====
@@ -2868,6 +3129,9 @@ function updateDashboard(){
     if(v>maxVotes){maxVotes=v;topName=w.n;}
     totalPower+=(100+v*8);
   });
+  if(Array.isArray(DATA.forum)){
+    totalComments+=DATA.forum.length+DATA.forum.reduce((sum,p)=>sum+(Array.isArray(p.replies)?p.replies.length:0),0);
+  }
   document.getElementById('totalVotes').textContent=totalVotes;
   document.getElementById('totalComments').textContent=totalComments;
   document.getElementById('topWeapon').textContent=topName;
@@ -3089,6 +3353,7 @@ loadData().then(()=>{
   applyUploadedWeapons();
   initUploader();
   renderWeapons();
+  renderForum();
   renderCharacters();
   updateDashboard();
   updateLeaderboard();
