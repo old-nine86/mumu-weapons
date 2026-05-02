@@ -10,6 +10,10 @@
 
 成片初稿：`promotion/day1-site-overview-draft.mp4`
 
+硬字幕版：`promotion/day1-site-overview-subtitled.mp4`
+
+口播稿：`promotion/day1-voiceover.txt`
+
 AI 视频素材：`promotion/ai-video-assets/`
 
 ## 分镜
