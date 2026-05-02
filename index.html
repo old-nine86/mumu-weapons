@@ -1837,7 +1837,164 @@ body::before{
 @keyframes toyAtk{0%{transform:translateX(0) rotate(0)}45%{transform:translateX(22px) translateY(-8px) rotate(-7deg)}100%{transform:translateX(0) rotate(0)}}
 @keyframes toyWeapon{0%{transform:rotate(0)}45%{transform:rotate(-28deg) scale(1.18)}100%{transform:rotate(0) scale(1)}}
 @keyframes toyHit{0%{transform:translateX(0)}25%{transform:translateX(-9px) rotate(-4deg)}60%{transform:translateX(7px) rotate(3deg)}100%{transform:translateX(0)}}
+.upload-station{
+  margin:14px 0 22px;
+  padding:18px;
+  border:2px solid rgba(255,255,255,.84);
+  border-radius:34px;
+  background:
+    radial-gradient(circle at 12% 8%,rgba(255,217,106,.34),transparent 14rem),
+    radial-gradient(circle at 92% 12%,rgba(159,215,255,.32),transparent 16rem),
+    rgba(255,255,255,.72);
+  box-shadow:0 22px 70px rgba(78,64,44,.09);
+}
+.upload-head{
+  display:flex;
+  justify-content:space-between;
+  gap:14px;
+  align-items:flex-start;
+  margin-bottom:14px;
+}
+.upload-title{
+  font-size:clamp(20px,4vw,30px);
+  font-weight:900;
+  color:#202124;
+}
+.upload-sub{
+  color:#77726b;
+  font-size:13px;
+  font-weight:800;
+  margin-top:4px;
+}
+.upload-limit{
+  padding:8px 12px;
+  border-radius:999px;
+  background:#fff8df;
+  color:#8a6a00;
+  font-weight:900;
+  font-size:12px;
+  white-space:nowrap;
+}
+.upload-layout{
+  display:grid;
+  grid-template-columns:minmax(220px,.85fr) 1.15fr;
+  gap:16px;
+}
+.upload-drop{
+  min-height:250px;
+  border:2px dashed rgba(78,64,44,.18);
+  border-radius:28px;
+  background:#fffdf8;
+  display:grid;
+  place-items:center;
+  padding:16px;
+  text-align:center;
+  cursor:pointer;
+  overflow:hidden;
+}
+.upload-drop:hover{border-color:#ff8a72;background:#fff}
+.upload-drop input{display:none}
+.upload-empty-icon{font-size:44px;margin-bottom:8px}
+.upload-empty-title{font-size:18px;font-weight:900;color:#202124}
+.upload-empty-sub{font-size:12px;color:#77726b;font-weight:800;margin-top:4px}
+.upload-preview{
+  width:100%;
+  height:100%;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:10px;
+}
+.upload-preview img{
+  max-width:100%;
+  max-height:190px;
+  object-fit:contain;
+  filter:drop-shadow(0 18px 20px rgba(78,64,44,.18));
+}
+.upload-recognition{
+  padding:8px 12px;
+  border-radius:999px;
+  background:#eef8ff;
+  color:#1e78c8;
+  font-size:12px;
+  font-weight:900;
+}
+.upload-form{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.upload-field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.upload-field.full{grid-column:1/-1}
+.upload-field label{
+  color:#77726b;
+  font-size:12px;
+  font-weight:900;
+}
+.upload-field input,.upload-field select,.upload-field textarea{
+  width:100%;
+  border:2px solid rgba(78,64,44,.1);
+  border-radius:18px;
+  background:#fffdf8;
+  padding:12px 14px;
+  color:#202124;
+  font-family:inherit;
+  font-weight:800;
+  outline:none;
+}
+.upload-field textarea{min-height:78px;resize:vertical}
+.upload-field input:focus,.upload-field select:focus,.upload-field textarea:focus{
+  border-color:#9fd7ff;
+  box-shadow:0 0 0 4px rgba(159,215,255,.18);
+}
+.upload-actions{
+  grid-column:1/-1;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.upload-status{
+  color:#77726b;
+  font-size:12px;
+  font-weight:800;
+}
+.upload-submit{
+  border:0;
+  border-radius:999px;
+  padding:12px 22px;
+  background:linear-gradient(135deg,#ff8a72,#ffd96a);
+  color:#202124;
+  font-family:inherit;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 14px 30px rgba(255,138,114,.2);
+}
+.upload-submit:disabled{
+  opacity:.48;
+  cursor:not-allowed;
+  box-shadow:none;
+}
+.creator-line{
+  margin-top:10px;
+  padding:8px 10px;
+  border-radius:14px;
+  background:rgba(159,215,255,.16);
+  color:#536071;
+  font-size:12px;
+  font-weight:900;
+}
 @media(max-width:768px){
+  .upload-head{flex-direction:column}
+  .upload-layout{grid-template-columns:1fr}
+  .upload-form{grid-template-columns:1fr}
+  .upload-actions{align-items:stretch;flex-direction:column}
+  .upload-submit{width:100%}
   .arena-fighters{
     gap:10px;
     min-height:260px;
@@ -1906,6 +2063,59 @@ body::before{
     <div class="dash-card"><div class="dash-icon">💬</div><div class="dash-num" id="totalComments">0</div><div class="dash-label">总评论</div></div>
     <div class="dash-card"><div class="dash-icon">👑</div><div class="dash-num" id="topWeapon">-</div><div class="dash-label">人气武器</div></div>
     <div class="dash-card"><div class="dash-icon">⚡</div><div class="dash-num" id="avgPower">0</div><div class="dash-label">平均战力</div></div>
+  </div>
+  <div class="upload-station" id="uploadStation">
+    <div class="upload-head">
+      <div>
+        <div class="upload-title">🧱 上传你的积木武器</div>
+        <div class="upload-sub">上传图片后会自动识别类型，加入本机武器库并显示创建者信息。</div>
+      </div>
+      <div class="upload-limit" id="uploadLimit">每位访客限传 1 件</div>
+    </div>
+    <div class="upload-layout">
+      <label class="upload-drop" for="weaponUploadFile">
+        <input type="file" id="weaponUploadFile" accept="image/*">
+        <div class="upload-empty" id="uploadEmpty">
+          <div class="upload-empty-icon">📷</div>
+          <div class="upload-empty-title">选择积木武器图片</div>
+          <div class="upload-empty-sub">支持 PNG / JPG / WebP</div>
+        </div>
+        <div class="upload-preview" id="uploadPreview">
+          <img id="uploadPreviewImg" alt="上传预览">
+          <div class="upload-recognition" id="uploadRecognition">等待识别</div>
+        </div>
+      </label>
+      <div class="upload-form">
+        <div class="upload-field">
+          <label for="uploadWeaponName">武器名</label>
+          <input id="uploadWeaponName" maxlength="20" placeholder="例如：彩虹积木剑">
+        </div>
+        <div class="upload-field">
+          <label for="uploadCreator">创建者名字</label>
+          <input id="uploadCreator" maxlength="16" placeholder="你的名字">
+        </div>
+        <div class="upload-field">
+          <label for="uploadType">识别类型</label>
+          <select id="uploadType">
+            <option value="sword">🗡️ 剑刃</option>
+            <option value="gun">🔫 枪械</option>
+            <option value="spear">🔱 长柄</option>
+          </select>
+        </div>
+        <div class="upload-field">
+          <label for="uploadSkill">技能名</label>
+          <input id="uploadSkill" maxlength="22" placeholder="自动生成，也可以改">
+        </div>
+        <div class="upload-field full">
+          <label for="uploadDesc">介绍</label>
+          <textarea id="uploadDesc" maxlength="90" placeholder="给这把武器写一句可爱的说明"></textarea>
+        </div>
+        <div class="upload-actions">
+          <div class="upload-status" id="uploadStatus">请选择一张图片开始识别。</div>
+          <button class="upload-submit" id="uploadSubmit" type="button" onclick="submitUploadedWeapon()">加入武器库</button>
+        </div>
+      </div>
+    </div>
   </div>
   <div style="text-align:center;padding:8px"><button class="battle-start-btn ready" onclick="openSelection()" style="display:inline-block">⚔️ 进入战场 · 选择战士</button></div>
   <div class="cat-banner" id="catBanner">
@@ -2100,7 +2310,12 @@ const charBannerImg=document.querySelector('.char-banner img');
 if(charBannerImg)charBannerImg.src=BANNER_ASSETS.characters;
 
 const statEls=document.querySelectorAll('.stats-bar .stat-val');
-statEls[0].textContent='11'; statEls[1].textContent='16'; statEls[2].textContent='100%';
+function updateHeaderStats(){
+  statEls[0].textContent=WEAPONS.length;
+  statEls[1].textContent='16';
+  statEls[2].textContent='100%';
+}
+updateHeaderStats();
 
 // ===== GENERATE WEAPON SVG DATA =====
 function genWeaponSVG(w){
@@ -2122,12 +2337,142 @@ document.querySelectorAll('.nav-tab').forEach(tab=>{
 });
 
 // ===== DATA =====
-async function loadData(){try{DATA=JSON.parse(localStorage.getItem(LS_KEY))||{comments:{},votes:{}}}catch(e){DATA={comments:{},votes:{}}}}
+const UPLOAD_ONCE_KEY='mumu_uploaded_weapon_once';
+let pendingUpload=null;
+
+async function loadData(){
+  try{DATA=JSON.parse(localStorage.getItem(LS_KEY))||{comments:{},votes:{},uploads:[]}}catch(e){DATA={comments:{},votes:{},uploads:[]}}
+  if(!DATA.comments)DATA.comments={};
+  if(!DATA.votes)DATA.votes={};
+  if(!Array.isArray(DATA.uploads))DATA.uploads=[];
+}
 async function saveData(){try{localStorage.setItem(LS_KEY,JSON.stringify(DATA))}catch(e){}}
 function getVotes(id){return DATA&&DATA.votes?DATA.votes[id]||0:0}
 function hasVoted(id){return localStorage.getItem('voted_'+id)==='1'}
 function setVoted(id){localStorage.setItem('voted_'+id,'1')}
 function getComments(id){return DATA&&DATA.comments?DATA.comments[id]||[]:[]}
+function escapeHTML(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function typeLabel(t){return t==='sword'?'剑刃':t==='gun'?'枪械':'长柄'}
+function typeEmoji(t){return t==='sword'?'🗡️':t==='gun'?'🔫':'🔱'}
+function getUploadLimitReached(){return localStorage.getItem(UPLOAD_ONCE_KEY)==='1'||(DATA&&DATA.uploads&&DATA.uploads.length>0)}
+function applyUploadedWeapons(){
+  if(!DATA||!Array.isArray(DATA.uploads))return;
+  DATA.uploads.forEach(item=>{
+    if(!item||!item.i||WEAPONS.some(w=>w.i===item.i))return;
+    WEAPONS.push({i:item.i,n:item.n,t:item.t,l:item.l,d:item.d,f:item.f,s:item.s,fx:item.fx,creator:item.creator,createdAt:item.createdAt,uploaded:true});
+    IMG[item.i]=item.img;
+    DEF[item.i]=item.def||{df:82,cr:.12};
+  });
+  updateHeaderStats();
+}
+
+function initUploader(){
+  const file=document.getElementById('weaponUploadFile');
+  if(file)file.addEventListener('change',handleUploadFile);
+  refreshUploadState();
+}
+
+function refreshUploadState(){
+  const reached=getUploadLimitReached();
+  const submit=document.getElementById('uploadSubmit');
+  const status=document.getElementById('uploadStatus');
+  const limit=document.getElementById('uploadLimit');
+  if(limit)limit.textContent=reached?'本访客已上传 1 件':'每位访客限传 1 件';
+  if(submit)submit.disabled=reached||!pendingUpload;
+  if(reached&&status)status.textContent='这个浏览器已经上传过 1 件武器。';
+}
+
+function recognizeWeaponType(file,width,height){
+  const name=(file.name||'').toLowerCase();
+  if(/枪|炮|gun|blaster|rifle|pistol/.test(name))return 'gun';
+  if(/矛|枪矛|长柄|spear|pole|staff|halberd|lance/.test(name))return 'spear';
+  if(/剑|刀|刃|sword|blade|katana/.test(name))return 'sword';
+  if(height>width*1.35)return 'spear';
+  if(width>height*1.35)return 'gun';
+  return 'sword';
+}
+
+function compressImage(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onerror=()=>reject(new Error('图片读取失败'));
+    reader.onload=()=>{
+      const img=new Image();
+      img.onerror=()=>reject(new Error('图片无法识别'));
+      img.onload=()=>{
+        const max=900,scale=Math.min(1,max/Math.max(img.width,img.height));
+        const canvas=document.createElement('canvas');
+        canvas.width=Math.max(1,Math.round(img.width*scale));
+        canvas.height=Math.max(1,Math.round(img.height*scale));
+        const ctx=canvas.getContext('2d');
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        resolve({dataUrl:canvas.toDataURL('image/webp',.82),width:img.width,height:img.height});
+      };
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handleUploadFile(e){
+  const file=e.target.files&&e.target.files[0];
+  if(!file)return;
+  const status=document.getElementById('uploadStatus');
+  if(getUploadLimitReached()){refreshUploadState();return}
+  if(!file.type.startsWith('image/')){if(status)status.textContent='请选择图片文件。';return}
+  if(file.size>8*1024*1024){if(status)status.textContent='图片太大了，请选择 8MB 以内的图片。';return}
+  if(status)status.textContent='正在识别图片...';
+  try{
+    const packed=await compressImage(file);
+    const t=recognizeWeaponType(file,packed.width,packed.height);
+    pendingUpload={fileName:file.name,img:packed.dataUrl,t};
+    document.getElementById('uploadEmpty').style.display='none';
+    document.getElementById('uploadPreview').style.display='flex';
+    document.getElementById('uploadPreviewImg').src=packed.dataUrl;
+    document.getElementById('uploadRecognition').textContent='识别为 '+typeEmoji(t)+' '+typeLabel(t);
+    document.getElementById('uploadType').value=t;
+    const cleanName=file.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').trim();
+    if(!document.getElementById('uploadWeaponName').value.trim())document.getElementById('uploadWeaponName').value=(cleanName||'我的积木武器').slice(0,20);
+    if(!document.getElementById('uploadSkill').value.trim())document.getElementById('uploadSkill').value=typeEmoji(t)+' 积木闪光连击';
+    if(!document.getElementById('uploadDesc').value.trim())document.getElementById('uploadDesc').value='由玩家上传的原创积木武器，已经加入收藏武器库。';
+    if(status)status.textContent='识别完成，可以加入武器库。';
+  }catch(err){
+    pendingUpload=null;
+    if(status)status.textContent=err.message||'图片处理失败，请换一张试试。';
+  }
+  refreshUploadState();
+}
+
+async function submitUploadedWeapon(){
+  if(!pendingUpload||getUploadLimitReached())return;
+  const name=document.getElementById('uploadWeaponName').value.trim()||'未命名积木武器';
+  const creator=document.getElementById('uploadCreator').value.trim()||'匿名创造者';
+  const t=document.getElementById('uploadType').value||pendingUpload.t;
+  const skill=document.getElementById('uploadSkill').value.trim()||typeEmoji(t)+' 积木闪光连击';
+  const desc=document.getElementById('uploadDesc').value.trim()||'由玩家上传的原创积木武器，已经加入收藏武器库。';
+  const id=Date.now();
+  const item={
+    i:id,n:name.slice(0,20),t,l:typeLabel(t),d:desc.slice(0,90),
+    f:['玩家原创上传','自动识别：'+typeLabel(t),'创建者：'+creator.slice(0,16)],
+    s:skill.slice(0,22),fx:typeEmoji(t),creator:creator.slice(0,16),createdAt:Date.now(),
+    img:pendingUpload.img,
+    def:{df:t==='spear'?92:t==='sword'?88:82,cr:t==='gun'?.18:t==='sword'?.16:.12}
+  };
+  DATA.uploads=[item];
+  await saveData();
+  localStorage.setItem(UPLOAD_ONCE_KEY,'1');
+  WEAPONS.push({i:item.i,n:item.n,t:item.t,l:item.l,d:item.d,f:item.f,s:item.s,fx:item.fx,creator:item.creator,createdAt:item.createdAt,uploaded:true});
+  IMG[item.i]=item.img;
+  DEF[item.i]=item.def;
+  pendingUpload=null;
+  updateHeaderStats();
+  renderWeapons();
+  updateDashboard();
+  updateLeaderboard();
+  refreshUploadState();
+  document.getElementById('uploadStatus').textContent='已加入武器库：'+item.n;
+}
 
 // ===== RENDER WEAPONS =====
 function renderWeapons(){
@@ -2141,8 +2486,9 @@ function renderWeapons(){
         '<img src="'+IMG[w.i]+'" alt="'+w.n+'" loading="lazy">'+
       '</div>'+
       '<div class="card-info">'+
-        '<div class="card-name-row"><span class="card-name">'+w.n+'</span><span class="type-badge '+(bc[w.t]||'')+'">'+w.l+'</span></div>'+
-        '<ul class="card-features">'+w.f.map(f=>'<li>'+f+'</li>').join('')+'</ul>'+
+        '<div class="card-name-row"><span class="card-name">'+escapeHTML(w.n)+'</span><span class="type-badge '+(bc[w.t]||'')+'">'+escapeHTML(w.l)+'</span></div>'+
+        (w.creator?'<div class="creator-line">🧑‍🎨 创建者：'+escapeHTML(w.creator)+'</div>':'')+
+        '<ul class="card-features">'+w.f.map(f=>'<li>'+escapeHTML(f)+'</li>').join('')+'</ul>'+
         '<div class="vote-section">'+
           '<div class="vote-btn'+(hasVoted(w.i)?' voted':'')+'" onclick="event.stopPropagation();voteWeapon('+w.i+',this)">'+(hasVoted(w.i)?'❤️':'🤍')+'</div>'+
           '<span class="vote-count" id="vc'+w.i+'">'+votes+'</span>'+
@@ -2241,10 +2587,11 @@ function openModal(id){
   const w=WEAPONS.find(x=>x.i===id);if(!w)return;
   const v=getVotes(w.i);const d=DEF[w.i]||{df:80,cr:0.08};
   document.getElementById('modalContent').innerHTML=
-    '<div class="modal-img-wrap"><img src="'+IMG[w.i]+'" alt="'+w.n+'"></div>'+
+    '<div class="modal-img-wrap"><img src="'+IMG[w.i]+'" alt="'+escapeHTML(w.n)+'"></div>'+
     '<div class="modal-info">'+
-      '<div class="modal-name">'+w.n+' <span class="type-badge '+(bc[w.t]||'')+'">'+w.l+'</span></div>'+
-      '<div class="modal-desc">'+w.d+'</div>'+
+      '<div class="modal-name">'+escapeHTML(w.n)+' <span class="type-badge '+(bc[w.t]||'')+'">'+escapeHTML(w.l)+'</span></div>'+
+      (w.creator?'<div class="creator-line">🧑‍🎨 创建者：'+escapeHTML(w.creator)+'</div>':'')+
+      '<div class="modal-desc">'+escapeHTML(w.d)+'</div>'+
       '<div class="modal-stats">'+
         '<div class="modal-stat"><div class="modal-stat-val">🗡️ '+(100+v*8)+'</div><div class="modal-stat-label">战力</div></div>'+
         '<div class="modal-stat"><div class="modal-stat-val">🛡️ '+d.df+'</div><div class="modal-stat-label">防御值</div></div>'+
@@ -2304,7 +2651,7 @@ function updateLeaderboard(){
   const tbody=document.getElementById('lbBody');
   tbody.innerHTML=sorted.map((w,i)=>{
     const v=getVotes(w.i);const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
-    return '<tr><td class="lb-rank">'+medal+'</td><td>'+w.n+'</td><td>'+v+' 票</td><td style="color:var(--gold);font-weight:900">'+(100+v*8)+'</td><td><div class="lb-bar-wrap"><div class="lb-bar" style="width:'+(v/maxVotes*100)+'%"></div></div></td></tr>';
+    return '<tr><td class="lb-rank">'+medal+'</td><td>'+escapeHTML(w.n)+'</td><td>'+v+' 票</td><td style="color:var(--gold);font-weight:900">'+(100+v*8)+'</td><td><div class="lb-bar-wrap"><div class="lb-bar" style="width:'+(v/maxVotes*100)+'%"></div></div></td></tr>';
   }).join('');
 }
 
@@ -2509,6 +2856,8 @@ function closeArena(){
 
 // ===== INIT =====
 loadData().then(()=>{
+  applyUploadedWeapons();
+  initUploader();
   renderWeapons();
   renderCharacters();
   updateDashboard();
