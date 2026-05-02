@@ -8,6 +8,10 @@
 
 时长：约 32 秒
 
+成片初稿：`promotion/day1-site-overview-draft.mp4`
+
+AI 视频素材：`promotion/ai-video-assets/`
+
 ## 分镜
 
 | 时间 | 画面 | 字幕 |
