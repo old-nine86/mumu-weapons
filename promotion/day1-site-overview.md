@@ -12,6 +12,8 @@
 
 硬字幕版：`promotion/day1-site-overview-subtitled.mp4`
 
+配乐版：`promotion/day1-site-overview-music.mp4`
+
 口播稿：`promotion/day1-voiceover.txt`
 
 发布包：`promotion/day1-upload-package.md`
