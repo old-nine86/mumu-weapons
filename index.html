@@ -1989,7 +1989,128 @@ body::before{
   font-size:12px;
   font-weight:900;
 }
+.commerce-row{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:18px;
+  margin:22px 0 26px;
+}
+.shop-panel,.support-panel{
+  border:2px solid rgba(255,255,255,.84);
+  border-radius:34px;
+  background:rgba(255,255,255,.72);
+  box-shadow:0 22px 70px rgba(78,64,44,.09);
+  overflow:hidden;
+}
+.shop-panel{
+  padding:20px;
+  background:
+    radial-gradient(circle at 10% 10%,rgba(159,215,255,.32),transparent 16rem),
+    radial-gradient(circle at 92% 18%,rgba(255,217,106,.28),transparent 14rem),
+    rgba(255,255,255,.76);
+}
+.support-panel{
+  padding:20px;
+  background:
+    radial-gradient(circle at 18% 12%,rgba(255,183,200,.34),transparent 15rem),
+    radial-gradient(circle at 90% 20%,rgba(142,230,198,.24),transparent 14rem),
+    rgba(255,255,255,.76);
+}
+.commerce-kicker{
+  color:#2f8fe8;
+  font-size:12px;
+  font-weight:900;
+  margin-bottom:5px;
+}
+.commerce-title{
+  color:#202124;
+  font-size:clamp(20px,3vw,28px);
+  font-weight:900;
+}
+.commerce-sub{
+  margin-top:6px;
+  color:#77726b;
+  font-size:13px;
+  font-weight:800;
+  line-height:1.6;
+}
+.product-list{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin-top:16px;
+}
+.product-card{
+  padding:14px;
+  border-radius:24px;
+  background:#fffdf8;
+  border:2px solid rgba(78,64,44,.08);
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  min-height:168px;
+}
+.product-visual{
+  height:58px;
+  border-radius:18px;
+  display:grid;
+  place-items:center;
+  font-size:34px;
+  background:linear-gradient(135deg,#eef8ff,#fff4d8);
+}
+.product-name{
+  color:#202124;
+  font-weight:900;
+  line-height:1.25;
+}
+.product-note{
+  color:#77726b;
+  font-size:12px;
+  font-weight:800;
+  line-height:1.45;
+  flex:1;
+}
+.commerce-link,.support-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-height:38px;
+  padding:9px 12px;
+  border-radius:999px;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:900;
+  color:#202124;
+  background:linear-gradient(135deg,#9fd7ff,#8ee6c6);
+}
+.commerce-link.disabled,.support-link.disabled{
+  background:#f2f0ec;
+  color:#8b8680;
+  cursor:not-allowed;
+}
+.support-options{
+  display:grid;
+  gap:10px;
+  margin-top:16px;
+}
+.support-link{
+  min-height:50px;
+  background:linear-gradient(135deg,#ff8a72,#ffd96a);
+}
+.support-note{
+  margin-top:12px;
+  padding:12px;
+  border-radius:20px;
+  background:#fffdf8;
+  color:#77726b;
+  font-size:12px;
+  font-weight:800;
+  line-height:1.55;
+}
 @media(max-width:768px){
+  .commerce-row{grid-template-columns:1fr}
+  .product-list{grid-template-columns:1fr}
   .upload-head{flex-direction:column}
   .upload-layout{grid-template-columns:1fr}
   .upload-form{grid-template-columns:1fr}
@@ -2130,6 +2251,44 @@ body::before{
     <button class="filter-btn" data-filter="spear">🔱 长柄</button>
   </div>
   <div class="grid-container" id="weaponsGrid"></div>
+  <div class="commerce-row">
+    <section class="shop-panel">
+      <div class="commerce-kicker">BRICK TOY PICKS</div>
+      <div class="commerce-title">积木玩具推广橱窗</div>
+      <div class="commerce-sub">这里可以放你的淘宝、京东、拼多多、亚马逊或联盟推广链接，适合推荐同款积木武器、城堡套装和小人配件。</div>
+      <div class="product-list">
+        <article class="product-card">
+          <div class="product-visual">🗡️</div>
+          <div class="product-name">积木剑刃套装</div>
+          <div class="product-note">适合收藏武器墙、骑士角色和战场摆拍。</div>
+          <a class="commerce-link disabled" href="#" onclick="return false">链接待添加</a>
+        </article>
+        <article class="product-card">
+          <div class="product-visual">🔫</div>
+          <div class="product-name">积木枪械配件</div>
+          <div class="product-note">适合机甲、科幻小队和自定义武器库。</div>
+          <a class="commerce-link disabled" href="#" onclick="return false">链接待添加</a>
+        </article>
+        <article class="product-card">
+          <div class="product-visual">🏰</div>
+          <div class="product-name">积木战场底板</div>
+          <div class="product-note">适合搭建角色战场、展示架和拍照场景。</div>
+          <a class="commerce-link disabled" href="#" onclick="return false">链接待添加</a>
+        </article>
+      </div>
+    </section>
+    <section class="support-panel">
+      <div class="commerce-kicker">SUPPORT THE CREATOR</div>
+      <div class="commerce-title">作者支援计划</div>
+      <div class="commerce-sub">喜欢这个积木武器库的话，可以在这里支持作者继续更新角色、武器和战场玩法。</div>
+      <div class="support-options">
+        <a class="support-link disabled" href="#" onclick="return false">💛 微信赞赏码待添加</a>
+        <a class="support-link disabled" href="#" onclick="return false">💙 支付宝收款码待添加</a>
+        <a class="support-link disabled" href="#" onclick="return false">⭐ 赞助链接待添加</a>
+      </div>
+      <div class="support-note">把你的收款码图片或赞助链接发给我后，我可以把这里改成真正可点击的支援入口。</div>
+    </section>
+  </div>
   <div class="lb-wrap">
     <div class="lb-title">🏆 战力排行榜</div>
     <table class="lb-table"><thead><tr><th>排名</th><th>武器</th><th>票数</th><th>战力</th><th>战力条</th></tr></thead><tbody id="lbBody"></tbody></table>
