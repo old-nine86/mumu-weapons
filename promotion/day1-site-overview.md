@@ -14,6 +14,8 @@
 
 口播稿：`promotion/day1-voiceover.txt`
 
+发布包：`promotion/day1-upload-package.md`
+
 AI 视频素材：`promotion/ai-video-assets/`
 
 ## 分镜
