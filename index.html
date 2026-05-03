@@ -2873,8 +2873,14 @@ function getUploadLimitReached(){return cloudEnabled()?getLocalUploadCount()>=2:
 function applyUploadedWeapons(){
   if(!DATA||!Array.isArray(DATA.uploads))return;
   DATA.uploads.forEach(item=>{
-    if(!item||!item.i||WEAPONS.some(w=>w.i===item.i))return;
-    WEAPONS.push({i:item.i,n:item.n,t:item.t,l:item.l,d:item.d,f:item.f,s:item.s,fx:item.fx,creator:item.creator,createdAt:item.createdAt,uploaded:true});
+    if(!item||!item.i)return;
+    const next={i:item.i,n:item.n,t:item.t,l:item.l,d:item.d,f:item.f,s:item.s,fx:item.fx,creator:item.creator,createdAt:item.createdAt,uploaded:true,cloud:item.cloud};
+    const existing=WEAPONS.find(w=>String(w.i)===String(item.i));
+    if(existing){
+      Object.assign(existing,next);
+    }else{
+      WEAPONS.push(next);
+    }
     IMG[item.i]=item.img;
     DEF[item.i]=item.def||{df:82,cr:.12};
   });
