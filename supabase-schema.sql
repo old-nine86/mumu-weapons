@@ -42,15 +42,13 @@ using (status = 'approved');
 drop policy if exists "Public can submit weapons" on public.weapons;
 create policy "Public can submit weapons"
 on public.weapons for insert
-to anon
-with check (
-  char_length(name) between 1 and 20
-  and char_length(creator) between 1 and 16
-  and char_length(description) <= 90
-  and char_length(skill) <= 22
-  and char_length(share_proof) <= 180
-  and status = 'pending'
-);
+to public
+with check (status = 'pending');
+
+grant usage on schema public to anon, authenticated;
+grant select, insert on public.weapons to anon, authenticated;
+grant insert on public.promotion_submissions to anon, authenticated;
+grant select on public.upload_quota_rules to anon, authenticated;
 
 create table if not exists public.upload_quota_rules (
   id text primary key default 'default',
