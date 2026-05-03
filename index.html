@@ -2409,6 +2409,7 @@ body::before{
         <div class="upload-actions">
           <div class="upload-status" id="uploadStatus">请选择一张图片开始识别。未配置云端时会保存到当前设备。</div>
           <button class="upload-submit" id="uploadSubmit" type="button" onclick="submitUploadedWeapon()">加入武器库</button>
+          <button class="upload-submit" id="promoSubmit" type="button" onclick="submitPromotionProof()">提交推广证明换名额</button>
         </div>
       </div>
     </div>
@@ -2767,6 +2768,8 @@ document.querySelectorAll('.nav-tab').forEach(tab=>{
 // ===== DATA =====
 const UPLOAD_ONCE_KEY='mumu_uploaded_weapon_once';
 const UPLOAD_COUNT_KEY='mumu_uploaded_weapon_count';
+const PROMO_TOKEN_KEY='mumu_promo_client_token';
+const PROMO_BONUS_KEY='mumu_promo_bonus_slots';
 let pendingUpload=null;
 const CLOUD=window.MUMU_SUPABASE||{};
 
@@ -2783,6 +2786,23 @@ function cloudHeaders(extra){
     apikey:CLOUD.anonKey,
     Authorization:'Bearer '+CLOUD.anonKey
   },extra||{});
+}
+
+function getPromotionToken(){
+  let token=localStorage.getItem(PROMO_TOKEN_KEY);
+  if(!token){
+    token='mumu-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,12);
+    localStorage.setItem(PROMO_TOKEN_KEY,token);
+  }
+  return token;
+}
+
+function getBonusSlots(){
+  return Math.max(0,Number(localStorage.getItem(PROMO_BONUS_KEY)||0));
+}
+
+function getUploadAllowance(){
+  return cloudEnabled()?2+getBonusSlots():1;
 }
 
 function dataUrlToBlob(dataUrl){
@@ -2847,6 +2867,24 @@ async function loadData(){
     }
   }
 }
+
+async function refreshPromotionBonus(){
+  if(!cloudEnabled())return;
+  const token=getPromotionToken();
+  try{
+    const res=await fetch(cloudBase()+'/rest/v1/rpc/check_promotion_bonus',{
+      method:'POST',
+      headers:cloudHeaders({'Content-Type':'application/json'}),
+      body:JSON.stringify({input_client_token:token})
+    });
+    if(!res.ok)return;
+    const rows=await res.json();
+    const info=rows&&rows[0]?rows[0]:null;
+    if(info&&Number(info.approved_bonus)>=0){
+      localStorage.setItem(PROMO_BONUS_KEY,String(Number(info.approved_bonus)||0));
+    }
+  }catch(e){}
+}
 async function saveData(){try{localStorage.setItem(LS_KEY,JSON.stringify(DATA))}catch(e){}}
 function getVotes(id){return DATA&&DATA.votes?DATA.votes[id]||0:0}
 function hasVoted(id){return localStorage.getItem('voted_'+id)==='1'}
@@ -2869,7 +2907,7 @@ function markLocalUploadUsed(){
   localStorage.setItem(UPLOAD_COUNT_KEY,String(next));
   localStorage.setItem(UPLOAD_ONCE_KEY,'1');
 }
-function getUploadLimitReached(){return cloudEnabled()?getLocalUploadCount()>=2:localStorage.getItem(UPLOAD_ONCE_KEY)==='1'}
+function getUploadLimitReached(){return getLocalUploadCount()>=getUploadAllowance()}
 function applyUploadedWeapons(){
   if(!DATA||!Array.isArray(DATA.uploads))return;
   DATA.uploads.forEach(item=>{
@@ -2896,11 +2934,15 @@ function initUploader(){
 function refreshUploadState(){
   const reached=getUploadLimitReached();
   const submit=document.getElementById('uploadSubmit');
+  const promo=document.getElementById('promoSubmit');
   const status=document.getElementById('uploadStatus');
   const limit=document.getElementById('uploadLimit');
-  if(limit)limit.textContent=reached?(cloudEnabled()?'本访客免费 2 件已用完':'本访客已上传 1 件'):(cloudEnabled()?('云端审核模式 · 已用 '+getLocalUploadCount()+'/2 件'):'本机模式 · 每访客限传 1 件');
+  const used=getLocalUploadCount();
+  const allowance=getUploadAllowance();
+  if(limit)limit.textContent=reached?(cloudEnabled()?('本访客 '+allowance+' 个上传名额已用完'):'本访客已上传 1 件'):(cloudEnabled()?('云端审核模式 · 已用 '+used+'/'+allowance+' 件'):'本机模式 · 每访客限传 1 件');
   if(submit)submit.disabled=reached||!pendingUpload;
-  if(reached&&status)status.textContent=cloudEnabled()?'这个浏览器的 2 个免费上传名额已用完，可填写推广证明等待增加名额。':'这个浏览器已经上传过 1 件武器。';
+  if(promo)promo.disabled=!cloudEnabled();
+  if(reached&&status)status.textContent=cloudEnabled()?'这个浏览器的上传名额已用完，可填写推广证明等待审核增加 10 个名额。':'这个浏览器已经上传过 1 件武器。';
   if(!reached&&!pendingUpload&&status&&/请选择一张图片/.test(status.textContent)){
     status.textContent=cloudEnabled()?'请选择一张图片开始识别。上传后会先进入待审核。':'请选择一张图片开始识别。未配置云端时会保存到当前设备。';
   }
@@ -3059,6 +3101,41 @@ async function saveUploadedWeaponToCloud(item){
   });
   if(!insertRes.ok)throw new Error(await cloudErrorMessage(insertRes,'武器保存到云数据库失败'));
   return cloudRowToItem(Object.assign({created_at:new Date().toISOString()},row));
+}
+
+async function submitPromotionProof(){
+  const status=document.getElementById('uploadStatus');
+  if(!cloudEnabled()){
+    if(status)status.textContent='当前没有连接云端，暂时不能提交推广证明。';
+    return;
+  }
+  const creator=document.getElementById('uploadCreator').value.trim()||'匿名创造者';
+  const proof=document.getElementById('uploadShareProof').value.trim();
+  if(!proof){
+    if(status)status.textContent='先在“推广证明”里填写分享链接、平台账号或截图说明。';
+    return;
+  }
+  try{
+    if(status)status.textContent='正在提交推广证明，等待站长审核...';
+    const res=await fetch(cloudBase()+'/rest/v1/promotion_submissions',{
+      method:'POST',
+      headers:cloudHeaders({
+        'Content-Type':'application/json',
+        Prefer:'return=minimal'
+      }),
+      body:JSON.stringify({
+        client_token:getPromotionToken(),
+        creator:creator.slice(0,16),
+        proof:proof.slice(0,180),
+        status:'pending',
+        bonus_slots:10
+      })
+    });
+    if(!res.ok)throw new Error(await cloudErrorMessage(res,'推广证明提交失败'));
+    if(status)status.textContent='推广证明已提交。站长审核通过后，刷新页面会增加 10 个上传名额。';
+  }catch(err){
+    if(status)status.textContent=(err&&err.message)||'推广证明提交失败，请稍后再试。';
+  }
 }
 
 async function handleUploadFile(e){
@@ -3582,7 +3659,8 @@ function closeArena(){
 }
 
 // ===== INIT =====
-loadData().then(()=>{
+loadData().then(async()=>{
+  await refreshPromotionBonus();
   applyUploadedWeapons();
   initUploader();
   renderWeapons();

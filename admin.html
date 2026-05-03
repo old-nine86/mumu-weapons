@@ -21,6 +21,7 @@ button.good{background:#17a36b}
 button.bad{background:#e5484d}
 button:disabled{opacity:.45;cursor:not-allowed}
 .status{color:#667085;font-weight:800;margin:12px 0 0}
+.section-title{font-size:24px;font-weight:950;margin:24px 0 12px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
 .card{overflow:hidden}
 .image{background:#fff;border-radius:18px;aspect-ratio:4/3;display:grid;place-items:center;border:1px solid rgba(31,41,51,.08);overflow:hidden}
@@ -41,7 +42,7 @@ a{color:#0b69d1}
   <div class="top">
     <div>
       <h1>审核台</h1>
-      <div class="sub">只显示待审核武器。通过后才会进入公开武器库。</div>
+      <div class="sub">审核武器和推广证明。通过武器后进入公开库；通过推广后用户获得 10 个上传名额。</div>
     </div>
     <a href="./">返回武器库</a>
   </div>
@@ -49,13 +50,15 @@ a{color:#0b69d1}
   <div class="panel">
     <div class="login">
       <input id="reviewKey" type="password" placeholder="输入审核口令">
-      <button onclick="loadPending()">进入审核</button>
+      <button onclick="loadAll()">进入审核</button>
     </div>
     <div class="status" id="status">请输入审核口令。</div>
   </div>
 
-  <div style="height:18px"></div>
-  <div class="grid" id="grid"></div>
+  <div class="section-title">待审核武器</div>
+  <div class="grid" id="weaponGrid"></div>
+  <div class="section-title">待审核推广证明</div>
+  <div class="grid" id="promoGrid"></div>
 </div>
 
 <script src="supabase-config.js?v=3"></script>
@@ -76,17 +79,29 @@ async function rpc(name,body){
   return res.json();
 }
 function typeLabel(t){return t==='sword'?'剑刃':t==='gun'?'枪械':'长柄'}
+async function loadAll(){
+  await loadPending();
+  await loadPromotions();
+}
 async function loadPending(){
   if(!key()){status('先输入审核口令。');return}
   status('正在读取待审核武器...');
   try{
     const rows=await rpc('list_pending_weapons',{input_review_key:key()});
-    render(rows);
-    status(rows.length?'待审核 '+rows.length+' 件':'没有待审核武器。');
+    renderWeapons(rows);
+    status('武器待审核 '+rows.length+' 件。');
   }catch(err){status(err.message||'读取失败');}
 }
-function render(rows){
-  const grid=document.getElementById('grid');
+async function loadPromotions(){
+  if(!key())return;
+  try{
+    const rows=await rpc('list_pending_promotions',{input_review_key:key()});
+    renderPromotions(rows);
+    status((document.querySelectorAll('#weaponGrid .card').length||0)+' 件武器，'+rows.length+' 条推广证明待审核。');
+  }catch(err){status(err.message||'读取推广证明失败');}
+}
+function renderWeapons(rows){
+  const grid=document.getElementById('weaponGrid');
   if(!rows.length){grid.innerHTML='<div class="panel empty">暂时没有待审核内容。</div>';return}
   grid.innerHTML=rows.map(item=>`
     <div class="panel card" data-id="${escapeHTML(item.id)}">
@@ -118,7 +133,39 @@ async function reviewWeapon(id,decision,btn){
     await rpc('review_weapon',{input_review_key:key(),weapon_id:id,decision,note});
     card.remove();
     status(decision==='approved'?'已通过。':'已拒绝。');
-    if(!document.querySelector('.card'))loadPending();
+    if(!document.querySelector('#weaponGrid .card'))loadPending();
+  }catch(err){
+    btn.disabled=false;
+    status(err.message||'操作失败');
+  }
+}
+function renderPromotions(rows){
+  const grid=document.getElementById('promoGrid');
+  if(!rows.length){grid.innerHTML='<div class="panel empty">暂时没有待审核推广证明。</div>';return}
+  grid.innerHTML=rows.map(item=>`
+    <div class="panel card" data-id="${escapeHTML(item.id)}">
+      <div class="meta">
+        <div class="name">${escapeHTML(item.creator)}</div>
+        <div class="chips"><span class="chip">奖励 +${escapeHTML(item.bonus_slots)} 名额</span></div>
+        <div class="line">证明：${escapeHTML(item.proof)}</div>
+        <textarea placeholder="审核备注，可不填"></textarea>
+        <div class="actions">
+          <button class="good" onclick="reviewPromotion('${escapeHTML(item.id)}','approved',this)">通过</button>
+          <button class="bad" onclick="reviewPromotion('${escapeHTML(item.id)}','rejected',this)">拒绝</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+async function reviewPromotion(id,decision,btn){
+  const card=btn.closest('.card');
+  const note=card.querySelector('textarea').value.trim();
+  btn.disabled=true;
+  status(decision==='approved'?'正在通过推广证明...':'正在拒绝推广证明...');
+  try{
+    await rpc('review_promotion',{input_review_key:key(),promotion_id:id,decision,note});
+    card.remove();
+    status(decision==='approved'?'推广证明已通过，用户刷新后获得 +10 名额。':'推广证明已拒绝。');
+    if(!document.querySelector('#promoGrid .card'))loadPromotions();
   }catch(err){
     btn.disabled=false;
     status(err.message||'操作失败');

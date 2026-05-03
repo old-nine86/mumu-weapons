@@ -68,6 +68,7 @@ set free_per_ip = excluded.free_per_ip,
 
 create table if not exists public.promotion_submissions (
   id uuid primary key default gen_random_uuid(),
+  client_token text not null default gen_random_uuid()::text,
   creator text not null,
   proof text not null,
   status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
@@ -77,7 +78,10 @@ create table if not exists public.promotion_submissions (
   created_at timestamptz not null default now()
 );
 
+alter table public.promotion_submissions add column if not exists client_token text not null default gen_random_uuid()::text;
 alter table public.promotion_submissions enable row level security;
+create unique index if not exists promotion_submissions_client_token_idx
+on public.promotion_submissions (client_token);
 
 create table if not exists public.admin_settings (
   id text primary key,
@@ -180,11 +184,109 @@ create policy "Public can submit promotion proof"
 on public.promotion_submissions for insert
 to anon
 with check (
+  char_length(client_token) between 16 and 80
+  and
   char_length(creator) between 1 and 16
   and char_length(proof) between 1 and 180
   and status = 'pending'
   and bonus_slots = 10
 );
+
+create or replace function public.list_pending_promotions(input_review_key text)
+returns table (
+  id uuid,
+  creator text,
+  proof text,
+  status text,
+  bonus_slots integer,
+  review_note text,
+  created_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not exists (
+    select 1 from public.admin_settings
+    where admin_settings.id = 'default'
+      and admin_settings.review_key = input_review_key
+  ) then
+    raise exception 'invalid review key';
+  end if;
+
+  return query
+  select p.id, p.creator, p.proof, p.status, p.bonus_slots, p.review_note, p.created_at
+  from public.promotion_submissions p
+  where p.status = 'pending'
+  order by p.created_at desc;
+end;
+$$;
+
+create or replace function public.review_promotion(
+  input_review_key text,
+  promotion_id uuid,
+  decision text,
+  note text default ''
+)
+returns table (
+  id uuid,
+  creator text,
+  status text,
+  bonus_slots integer,
+  reviewed_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not exists (
+    select 1 from public.admin_settings
+    where admin_settings.id = 'default'
+      and admin_settings.review_key = input_review_key
+  ) then
+    raise exception 'invalid review key';
+  end if;
+
+  if decision not in ('approved', 'rejected') then
+    raise exception 'invalid decision';
+  end if;
+
+  return query
+  update public.promotion_submissions p
+  set status = decision,
+      review_note = coalesce(note, ''),
+      reviewed_at = now()
+  where p.id = promotion_id and p.status = 'pending'
+  returning p.id, p.creator, p.status, p.bonus_slots, p.reviewed_at;
+end;
+$$;
+
+create or replace function public.check_promotion_bonus(input_client_token text)
+returns table (
+  approved_bonus integer,
+  pending_count integer,
+  rejected_count integer
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  return query
+  select
+    coalesce(sum(case when p.status = 'approved' then p.bonus_slots else 0 end),0)::integer,
+    count(*) filter (where p.status = 'pending')::integer,
+    count(*) filter (where p.status = 'rejected')::integer
+  from public.promotion_submissions p
+  where p.client_token = input_client_token;
+end;
+$$;
+
+grant execute on function public.list_pending_promotions(text) to anon, authenticated;
+grant execute on function public.review_promotion(text, uuid, text, text) to anon, authenticated;
+grant execute on function public.check_promotion_bonus(text) to anon, authenticated;
 
 -- Storage policies. Create bucket first in Storage UI:
 -- bucket id: mumu-weapon-images
