@@ -1612,19 +1612,20 @@ body::before{
 
 /* ===== CUTE UNIFIED CHARACTERS + TOY ARENA ===== */
 .char-card .char-avatar{
-  min-height:218px;
+  min-height:238px;
   background:
-    radial-gradient(circle at 50% 70%,rgba(255,255,255,.96),transparent 6.5rem),
-    radial-gradient(circle at 28% 20%,color-mix(in srgb,var(--card-accent,#9fd7ff) 24%,transparent),transparent 10rem),
-    linear-gradient(135deg,#fff7ef,#eef8ff);
+    radial-gradient(ellipse at 50% 90%,rgba(255,255,255,.98) 0 4.8rem,transparent 4.9rem),
+    radial-gradient(circle at 30% 24%,color-mix(in srgb,var(--card-accent,#9fd7ff) 24%,transparent),transparent 10rem),
+    radial-gradient(circle at 78% 16%,rgba(255,226,144,.22),transparent 9rem),
+    linear-gradient(135deg,#fff8ed,#eef9ff 52%,#fff1f6);
 }
 .char-card .char-avatar svg{
-  width:154px;
-  height:178px;
-  filter:drop-shadow(0 24px 24px rgba(78,64,44,.18));
+  width:178px;
+  height:198px;
+  filter:drop-shadow(0 26px 26px rgba(78,64,44,.18));
 }
 .char-card{
-  min-height:462px;
+  min-height:482px;
 }
 .char-name{
   letter-spacing:0;
@@ -1681,8 +1682,8 @@ body::before{
   background:#fff;
 }
 .sel-char-card svg{
-  width:86px;
-  height:104px;
+  width:98px;
+  height:112px;
 }
 .sel-char-name{color:#202124}
 .sel-char-type{color:#2f8fe8}
@@ -2638,70 +2639,91 @@ function charPersonaParts(c){
 }
 
 function genCharSVG(c,size){
-  size=size||110;
-  const s=size/110,colors=c.colors,p=charPersonaParts(c);
-  const face=c.group==='NT'?'#ffd9bd':c.group==='NF'?'#ffe5cc':c.group==='SJ'?'#f4d2ad':'#ffdabf';
-  const hair=c.group==='NT'?'#f2c24b':c.group==='NF'?'#ffd56f':c.group==='SJ'?'#f0c25f':'#f5bb42';
-  const armL=p.pose==='open'?'M28 69 L7 57':p.pose==='wide'?'M27 70 L4 71':p.pose==='dance'?'M29 67 L13 45':'M28 72 L10 78';
-  const armR=p.pose==='point'?'M82 70 L105 54':p.pose==='wide'?'M83 70 L106 69':p.pose==='dance'?'M81 67 L98 45':'M82 72 L100 77';
+  size=size||128;
+  const s=size/128,colors=c.colors,p=charPersonaParts(c);
+  const face=c.group==='NT'?'#ffd9bd':c.group==='NF'?'#ffe4ca':c.group==='SJ'?'#f6d3ae':'#ffddbf';
+  const metal=c.group==='SJ'?'#f2f0e8':c.group==='NT'?'#f6e8d8':c.group==='NF'?'#fff0dd':'#fff2d7';
+  const capeIds=[1,2,5,6,7,8,14,16];
+  const hasCape=capeIds.includes(c.id);
+  const armL=p.pose==='open'?'M38 85 L14 73':p.pose==='wide'?'M37 85 L11 86':p.pose==='dance'?'M38 83 L20 57':'M38 86 L18 94';
+  const armR=p.pose==='point'?'M90 85 L118 64':p.pose==='wide'?'M91 85 L118 86':p.pose==='dance'?'M90 83 L108 57':'M90 86 L110 94';
+  const handL=p.pose==='open'?[14,73]:p.pose==='wide'?[11,86]:p.pose==='dance'?[20,57]:[18,94];
+  const handR=p.pose==='point'?[118,64]:p.pose==='wide'?[118,86]:p.pose==='dance'?[108,57]:[110,94];
   const eyes={
-    command:`<circle cx="45" cy="44" r="3" fill="#202124"/><circle cx="65" cy="44" r="3" fill="#202124"/><path d="M40 38 L49 36" stroke="#202124" stroke-width="2" stroke-linecap="round"/><path d="M61 36 L70 38" stroke="#202124" stroke-width="2" stroke-linecap="round"/>`,
-    calm:`<path d="M41 44 Q45 41 49 44" stroke="#202124" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M61 44 Q65 41 69 44" stroke="#202124" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
-    curious:`<circle cx="45" cy="43" r="3.5" fill="#202124"/><circle cx="65" cy="43" r="4.5" fill="#202124"/><circle cx="66" cy="42" r="1.3" fill="#fff"/>`,
-    wink:`<path d="M41 43 L49 45" stroke="#202124" stroke-width="2.4" stroke-linecap="round"/><circle cx="65" cy="44" r="3.5" fill="#202124"/>`,
-    warm:`<circle cx="45" cy="44" r="3" fill="#202124"/><circle cx="65" cy="44" r="3" fill="#202124"/><circle cx="44" cy="43" r="1" fill="#fff"/><circle cx="64" cy="43" r="1" fill="#fff"/>`,
-    dream:`<path d="M41 43 Q45 46 49 43" stroke="#202124" stroke-width="2.3" fill="none" stroke-linecap="round"/><path d="M61 43 Q65 46 69 43" stroke="#202124" stroke-width="2.3" fill="none" stroke-linecap="round"/>`,
-    soft:`<circle cx="45" cy="44" r="2.8" fill="#202124"/><circle cx="65" cy="44" r="2.8" fill="#202124"/>`,
-    happy:`<path d="M41 43 Q45 47 49 43" stroke="#202124" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M61 43 Q65 47 69 43" stroke="#202124" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
-    steady:`<rect x="41" y="41" width="7" height="4" rx="2" fill="#202124"/><rect x="62" y="41" width="7" height="4" rx="2" fill="#202124"/>`,
-    kind:`<circle cx="45" cy="44" r="3" fill="#202124"/><circle cx="65" cy="44" r="3" fill="#202124"/>`,
-    stern:`<circle cx="45" cy="44" r="3" fill="#202124"/><circle cx="65" cy="44" r="3" fill="#202124"/><path d="M39 38 L49 40" stroke="#202124" stroke-width="2" stroke-linecap="round"/><path d="M61 40 L71 38" stroke="#202124" stroke-width="2" stroke-linecap="round"/>`,
-    sharp:`<path d="M41 43 L49 42" stroke="#202124" stroke-width="3" stroke-linecap="round"/><path d="M61 42 L69 43" stroke="#202124" stroke-width="3" stroke-linecap="round"/>`,
-    art:`<circle cx="45" cy="44" r="3" fill="#202124"/><circle cx="65" cy="44" r="3" fill="#202124"/><circle cx="70" cy="39" r="2" fill="${colors.a}"/>`,
-    bold:`<circle cx="45" cy="44" r="3.6" fill="#202124"/><circle cx="65" cy="44" r="3.6" fill="#202124"/>`,
-    show:`<path d="M41 43 Q45 47 49 43" stroke="#202124" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M61 43 Q65 47 69 43" stroke="#202124" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="55" cy="48" r="1.5" fill="#ff8a72"/>`
+    command:`<circle cx="53" cy="55" r="3.8" fill="#202124"/><circle cx="75" cy="55" r="3.8" fill="#202124"/><path d="M47 49 L58 47" stroke="#202124" stroke-width="2.2" stroke-linecap="round"/><path d="M70 47 L81 49" stroke="#202124" stroke-width="2.2" stroke-linecap="round"/>`,
+    calm:`<path d="M48 55 Q53 52 58 55" stroke="#202124" stroke-width="2.8" fill="none" stroke-linecap="round"/><path d="M70 55 Q75 52 80 55" stroke="#202124" stroke-width="2.8" fill="none" stroke-linecap="round"/>`,
+    curious:`<circle cx="53" cy="54" r="3.8" fill="#202124"/><circle cx="75" cy="54" r="5" fill="#202124"/><circle cx="76.5" cy="52.5" r="1.4" fill="#fff"/>`,
+    wink:`<path d="M49 54 L58 56" stroke="#202124" stroke-width="2.8" stroke-linecap="round"/><circle cx="75" cy="55" r="4" fill="#202124"/>`,
+    warm:`<circle cx="53" cy="55" r="3.5" fill="#202124"/><circle cx="75" cy="55" r="3.5" fill="#202124"/><circle cx="52" cy="54" r="1.1" fill="#fff"/><circle cx="74" cy="54" r="1.1" fill="#fff"/>`,
+    dream:`<path d="M48 54 Q53 58 58 54" stroke="#202124" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M70 54 Q75 58 80 54" stroke="#202124" stroke-width="2.6" fill="none" stroke-linecap="round"/>`,
+    soft:`<circle cx="53" cy="55" r="3.3" fill="#202124"/><circle cx="75" cy="55" r="3.3" fill="#202124"/>`,
+    happy:`<path d="M48 54 Q53 59 58 54" stroke="#202124" stroke-width="2.8" fill="none" stroke-linecap="round"/><path d="M70 54 Q75 59 80 54" stroke="#202124" stroke-width="2.8" fill="none" stroke-linecap="round"/>`,
+    steady:`<rect x="49" y="53" width="8" height="5" rx="2.5" fill="#202124"/><rect x="71" y="53" width="8" height="5" rx="2.5" fill="#202124"/>`,
+    kind:`<circle cx="53" cy="55" r="3.4" fill="#202124"/><circle cx="75" cy="55" r="3.4" fill="#202124"/>`,
+    stern:`<circle cx="53" cy="55" r="3.6" fill="#202124"/><circle cx="75" cy="55" r="3.6" fill="#202124"/><path d="M47 49 L58 51" stroke="#202124" stroke-width="2.2" stroke-linecap="round"/><path d="M70 51 L81 49" stroke="#202124" stroke-width="2.2" stroke-linecap="round"/>`,
+    sharp:`<path d="M49 54 L58 53" stroke="#202124" stroke-width="3.2" stroke-linecap="round"/><path d="M70 53 L79 54" stroke="#202124" stroke-width="3.2" stroke-linecap="round"/>`,
+    art:`<circle cx="53" cy="55" r="3.5" fill="#202124"/><circle cx="75" cy="55" r="3.5" fill="#202124"/><circle cx="82" cy="49" r="2.2" fill="${colors.a}"/>`,
+    bold:`<circle cx="53" cy="55" r="4.1" fill="#202124"/><circle cx="75" cy="55" r="4.1" fill="#202124"/>`,
+    show:`<path d="M48 54 Q53 59 58 54" stroke="#202124" stroke-width="2.9" fill="none" stroke-linecap="round"/><path d="M70 54 Q75 59 80 54" stroke="#202124" stroke-width="2.9" fill="none" stroke-linecap="round"/><circle cx="64" cy="60" r="1.6" fill="#ff8a72"/>`
   }[p.eyes]||'';
+  const mouth={
+    command:'M53 66 Q64 70 75 66',
+    calm:'M56 67 Q64 69 72 67',
+    curious:'M54 67 Q64 72 75 67',
+    wink:'M53 66 Q64 72 76 66',
+    warm:'M53 66 Q64 72 75 66',
+    dream:'M55 67 Q64 70 73 67',
+    soft:'M55 67 Q64 71 73 67',
+    happy:'M52 65 Q64 74 76 65',
+    steady:'M57 67 Q64 68 71 67',
+    kind:'M53 66 Q64 72 75 66',
+    stern:'M56 67 Q64 69 72 67',
+    sharp:'M57 67 Q64 68 71 67',
+    art:'M53 66 Q64 73 75 66',
+    bold:'M52 65 Q64 74 76 65',
+    show:'M51 65 Q64 75 77 65'
+  }[p.eyes]||'M53 66 Q64 72 75 66';
   const headgear={
-    captain:`<rect x="31" y="18" width="48" height="16" rx="7" fill="${colors.a}"/><rect x="37" y="12" width="36" height="11" rx="5" fill="${colors.s}"/><circle cx="55" cy="23" r="3" fill="#fff7c8"/>`,
-    visor:`<rect x="28" y="22" width="54" height="10" rx="5" fill="${colors.s}"/><rect x="39" y="15" width="32" height="12" rx="5" fill="${colors.a}"/><rect x="38" y="33" width="34" height="5" rx="3" fill="#9fd7ff" opacity=".75"/>`,
-    goggles:`<rect x="27" y="20" width="56" height="10" rx="5" fill="${hair}"/><circle cx="45" cy="27" r="8" fill="none" stroke="${colors.a}" stroke-width="3"/><circle cx="65" cy="27" r="8" fill="none" stroke="${colors.a}" stroke-width="3"/><rect x="52" y="25" width="6" height="3" fill="${colors.a}"/>`,
-    spark:`<rect x="29" y="21" width="52" height="11" rx="6" fill="${hair}"/><path d="M73 10 L78 22 L91 21 L80 29 L84 41 L73 34 L62 41 L66 29 L55 21 L68 22 Z" fill="${colors.a}"/>`,
-    halo:`<ellipse cx="55" cy="16" rx="20" ry="7" fill="none" stroke="${colors.a}" stroke-width="4"/><rect x="28" y="23" width="54" height="10" rx="5" fill="${hair}"/>`,
-    moon:`<rect x="29" y="22" width="52" height="10" rx="5" fill="${hair}"/><path d="M70 8 C60 15 62 28 75 31 C63 35 53 25 57 14 C60 7 66 5 70 8 Z" fill="${colors.a}"/>`,
-    leaf:`<rect x="29" y="22" width="52" height="10" rx="5" fill="${hair}"/><path d="M55 10 C70 12 77 23 61 28 C57 21 52 17 55 10 Z" fill="#8ee6c6"/>`,
-    flag:`<rect x="30" y="22" width="50" height="10" rx="5" fill="${hair}"/><rect x="54" y="7" width="4" height="22" rx="2" fill="${colors.a}"/><path d="M58 8 H78 L72 17 H58 Z" fill="#ff8a72"/>`,
-    helmet:`<rect x="26" y="20" width="58" height="16" rx="8" fill="${colors.s}"/><rect x="34" y="10" width="42" height="14" rx="7" fill="${colors.a}"/><rect x="43" y="34" width="24" height="4" rx="2" fill="#fff" opacity=".45"/>`,
-    bonnet:`<rect x="27" y="20" width="56" height="13" rx="7" fill="${hair}"/><rect x="32" y="13" width="46" height="11" rx="6" fill="#fff1c7"/><circle cx="77" cy="23" r="5" fill="${colors.a}"/>`,
-    marshal:`<rect x="27" y="20" width="56" height="13" rx="6" fill="${colors.s}"/><rect x="34" y="11" width="42" height="13" rx="5" fill="${colors.a}"/><path d="M55 14 L59 21 L67 22 L61 27 L63 34 L55 30 L47 34 L49 27 L43 22 L51 21 Z" fill="#fff7c8"/>`,
-    bow:`<rect x="29" y="22" width="52" height="10" rx="5" fill="${hair}"/><path d="M44 14 L56 22 L44 30 Z M66 14 L54 22 L66 30 Z" fill="${colors.a}"/><circle cx="55" cy="22" r="4" fill="#fff1c7"/>`,
-    hood:`<path d="M27 33 Q55 5 83 33 L75 49 H35 Z" fill="${colors.s}"/><rect x="36" y="27" width="38" height="8" rx="4" fill="${colors.a}" opacity=".75"/>`,
-    beret:`<ellipse cx="55" cy="21" rx="29" ry="12" fill="${colors.s}"/><circle cx="70" cy="13" r="4" fill="${colors.a}"/><rect x="31" y="25" width="48" height="7" rx="4" fill="${hair}"/>`,
-    cap:`<rect x="28" y="22" width="54" height="10" rx="5" fill="${hair}"/><rect x="34" y="12" width="42" height="13" rx="7" fill="${colors.a}"/><rect x="68" y="20" width="18" height="7" rx="4" fill="${colors.a}"/>`,
-    crown:`<rect x="30" y="24" width="50" height="9" rx="5" fill="${hair}"/><path d="M31 24 L39 10 L49 23 L55 8 L62 23 L72 10 L80 24 Z" fill="${colors.a}"/><circle cx="55" cy="12" r="3" fill="#fff1c7"/>`
+    captain:`<rect x="34" y="24" width="60" height="20" rx="10" fill="${colors.a}"/><rect x="41" y="16" width="46" height="14" rx="7" fill="${colors.s}"/><path d="M64 20 L69 28 L78 29 L71 35 L73 44 L64 40 L55 44 L57 35 L50 29 L59 28 Z" fill="#fff2c7"/>`,
+    visor:`<rect x="30" y="27" width="68" height="13" rx="7" fill="${colors.s}"/><rect x="45" y="17" width="38" height="15" rx="7" fill="${colors.a}"/><rect x="44" y="41" width="40" height="6" rx="3" fill="#9fd7ff" opacity=".8"/>`,
+    goggles:`<rect x="31" y="27" width="66" height="13" rx="7" fill="${metal}"/><circle cx="53" cy="31" r="9" fill="rgba(159,215,255,.35)" stroke="${colors.a}" stroke-width="3"/><circle cx="75" cy="31" r="9" fill="rgba(159,215,255,.35)" stroke="${colors.a}" stroke-width="3"/><rect x="61" y="29" width="6" height="4" fill="${colors.a}"/>`,
+    spark:`<rect x="32" y="27" width="64" height="13" rx="7" fill="${metal}"/><path d="M83 12 L89 27 L104 26 L92 35 L97 50 L83 41 L70 50 L75 35 L63 26 L78 27 Z" fill="${colors.a}"/>`,
+    halo:`<ellipse cx="64" cy="16" rx="24" ry="8" fill="none" stroke="${colors.a}" stroke-width="5"/><rect x="31" y="28" width="66" height="13" rx="7" fill="${metal}"/>`,
+    moon:`<rect x="32" y="27" width="64" height="13" rx="7" fill="${metal}"/><path d="M84 10 C72 18 75 34 91 37 C76 42 63 30 68 17 C72 8 80 6 84 10 Z" fill="${colors.a}"/>`,
+    leaf:`<rect x="32" y="27" width="64" height="13" rx="7" fill="${metal}"/><path d="M64 10 C82 13 90 27 70 34 C66 25 60 19 64 10 Z" fill="#8ee6c6"/>`,
+    flag:`<rect x="33" y="28" width="62" height="12" rx="7" fill="${metal}"/><rect x="62" y="8" width="5" height="28" rx="3" fill="${colors.a}"/><path d="M67 9 H91 L84 20 H67 Z" fill="#ff8a72"/>`,
+    helmet:`<rect x="29" y="25" width="70" height="20" rx="10" fill="${colors.s}"/><rect x="39" y="12" width="50" height="17" rx="9" fill="${colors.a}"/><rect x="51" y="42" width="26" height="5" rx="3" fill="#fff" opacity=".48"/><circle cx="32" cy="44" r="6" fill="${colors.s}"/><circle cx="96" cy="44" r="6" fill="${colors.s}"/>`,
+    bonnet:`<rect x="30" y="25" width="68" height="16" rx="9" fill="${metal}"/><rect x="36" y="15" width="56" height="14" rx="8" fill="#fff1c7"/><circle cx="92" cy="30" r="6" fill="${colors.a}"/>`,
+    marshal:`<rect x="30" y="25" width="68" height="16" rx="8" fill="${colors.s}"/><rect x="39" y="14" width="50" height="16" rx="7" fill="${colors.a}"/><path d="M64 17 L69 26 L79 27 L72 34 L74 44 L64 39 L54 44 L56 34 L49 27 L59 26 Z" fill="#fff2c7"/>`,
+    bow:`<rect x="32" y="28" width="64" height="12" rx="7" fill="${metal}"/><path d="M50 16 L64 26 L50 36 Z M78 16 L64 26 L78 36 Z" fill="${colors.a}"/><circle cx="64" cy="26" r="5" fill="#fff1c7"/>`,
+    hood:`<path d="M29 42 Q64 5 99 42 L88 62 H40 Z" fill="${colors.s}"/><rect x="44" y="34" width="40" height="8" rx="4" fill="${colors.a}" opacity=".76"/>`,
+    beret:`<ellipse cx="64" cy="25" rx="34" ry="14" fill="${colors.s}"/><circle cx="82" cy="15" r="5" fill="${colors.a}"/><rect x="35" y="31" width="58" height="8" rx="5" fill="${metal}"/>`,
+    cap:`<rect x="31" y="28" width="66" height="12" rx="7" fill="${metal}"/><rect x="40" y="16" width="50" height="16" rx="8" fill="${colors.a}"/><rect x="80" y="26" width="20" height="8" rx="5" fill="${colors.a}"/>`,
+    crown:`<rect x="33" y="29" width="62" height="11" rx="6" fill="${metal}"/><path d="M34 29 L44 11 L56 27 L64 8 L72 27 L84 11 L94 29 Z" fill="${colors.a}"/><circle cx="64" cy="12" r="3.5" fill="#fff1c7"/>`
   }[p.hat]||'';
   const extra={
-    flag:`<g transform="translate(7 42)"><rect x="0" y="0" width="4" height="45" rx="2" fill="${colors.a}"/><path d="M4 3 H28 L22 17 H4 Z" fill="#ffd96a"/></g>`,
-    plan:`<g transform="translate(8 84)"><rect x="0" y="0" width="28" height="20" rx="5" fill="#fffdf8" stroke="${colors.a}" stroke-width="2"/><path d="M6 6 H20 M6 12 H15" stroke="#9fd7ff" stroke-width="2" stroke-linecap="round"/></g>`,
-    gear:`<g transform="translate(9 87)"><circle cx="12" cy="12" r="9" fill="none" stroke="${colors.a}" stroke-width="4"/><circle cx="12" cy="12" r="3" fill="${colors.s}"/></g>`,
-    bomb:`<g transform="translate(9 84)"><circle cx="13" cy="15" r="12" fill="${colors.s}"/><path d="M19 6 Q29 2 27 14" stroke="#ffd96a" stroke-width="3" fill="none" stroke-linecap="round"/></g>`,
-    heart:`<path d="M19 92 C9 82 23 73 28 84 C33 73 47 82 37 92 L28 101 Z" fill="#ff8a9a"/>`,
-    star:`<path d="M25 80 L29 91 L41 91 L31 98 L35 110 L25 103 L15 110 L19 98 L9 91 L21 91 Z" fill="#ffd96a"/>`,
-    flower:`<g transform="translate(14 84)"><circle cx="12" cy="12" r="5" fill="#ffd96a"/><circle cx="12" cy="4" r="5" fill="#ffb7c8"/><circle cx="20" cy="12" r="5" fill="#ffb7c8"/><circle cx="12" cy="20" r="5" fill="#ffb7c8"/><circle cx="4" cy="12" r="5" fill="#ffb7c8"/></g>`,
-    sparkles:`<path d="M22 80 L26 90 L36 94 L26 98 L22 108 L18 98 L8 94 L18 90 Z" fill="#ffd96a"/>`,
-    shield:`<path d="M15 80 H39 V94 Q27 107 15 94 Z" fill="#9fd7ff" stroke="${colors.a}" stroke-width="2"/>`,
-    cross:`<g transform="translate(15 82)"><rect x="9" y="0" width="8" height="28" rx="4" fill="#8ee6c6"/><rect x="0" y="10" width="26" height="8" rx="4" fill="#8ee6c6"/></g>`,
-    badge:`<path d="M26 79 L33 90 L45 92 L36 100 L38 112 L26 106 L14 112 L16 100 L7 92 L19 90 Z" fill="#ffd96a" stroke="${colors.a}" stroke-width="2"/>`,
-    target:`<g transform="translate(10 84)"><circle cx="14" cy="14" r="13" fill="#fff" stroke="${colors.a}" stroke-width="2"/><circle cx="14" cy="14" r="8" fill="none" stroke="#ff8a72" stroke-width="3"/><circle cx="14" cy="14" r="3" fill="#ff8a72"/></g>`,
-    ribbon:`<path d="M15 86 C29 76 39 86 27 97 C39 98 34 111 22 104 C10 112 5 98 17 97 C5 88 10 80 15 86 Z" fill="#ffb7c8"/>`,
-    bolt:`<path d="M29 78 L14 100 H27 L21 116 L40 91 H27 Z" fill="#ffd96a" stroke="${colors.a}" stroke-width="2"/>`,
-    music:`<path d="M31 78 V101 C31 107 21 108 21 102 C21 97 28 97 28 99 V82 L45 78 V96 C45 102 35 103 35 97 C35 92 42 92 42 94 V75 Z" fill="${colors.a}"/>`
+    flag:`<g transform="translate(8 54)"><rect x="0" y="0" width="5" height="50" rx="3" fill="${colors.a}"/><path d="M5 4 H33 L26 19 H5 Z" fill="#ffd96a"/></g>`,
+    plan:`<g transform="translate(12 96)"><rect x="0" y="0" width="32" height="23" rx="6" fill="#fffdf8" stroke="${colors.a}" stroke-width="2"/><path d="M7 7 H24 M7 14 H18" stroke="#9fd7ff" stroke-width="2.4" stroke-linecap="round"/></g>`,
+    gear:`<g transform="translate(12 99)"><circle cx="14" cy="14" r="11" fill="none" stroke="${colors.a}" stroke-width="5"/><circle cx="14" cy="14" r="3.5" fill="${colors.s}"/></g>`,
+    bomb:`<g transform="translate(11 97)"><circle cx="15" cy="17" r="13" fill="${colors.s}"/><path d="M22 7 Q34 3 31 17" stroke="#ffd96a" stroke-width="3.4" fill="none" stroke-linecap="round"/></g>`,
+    heart:`<path d="M22 104 C10 92 27 82 33 95 C39 82 56 92 44 104 L33 116 Z" fill="#ff8a9a"/>`,
+    star:`<path d="M29 91 L34 104 L48 104 L36 112 L41 126 L29 118 L17 126 L22 112 L10 104 L24 104 Z" fill="#ffd96a"/>`,
+    flower:`<g transform="translate(16 97)"><circle cx="14" cy="14" r="5.5" fill="#ffd96a"/><circle cx="14" cy="5" r="5.5" fill="#ffb7c8"/><circle cx="23" cy="14" r="5.5" fill="#ffb7c8"/><circle cx="14" cy="23" r="5.5" fill="#ffb7c8"/><circle cx="5" cy="14" r="5.5" fill="#ffb7c8"/></g>`,
+    sparkles:`<path d="M25 91 L30 104 L42 109 L30 114 L25 127 L20 114 L8 109 L20 104 Z" fill="#ffd96a"/>`,
+    shield:`<path d="M16 91 H48 V108 Q32 123 16 108 Z" fill="#9fd7ff" stroke="${colors.a}" stroke-width="2.4"/>`,
+    cross:`<g transform="translate(18 94)"><rect x="11" y="0" width="9" height="32" rx="5" fill="#8ee6c6"/><rect x="0" y="12" width="31" height="9" rx="5" fill="#8ee6c6"/></g>`,
+    badge:`<path d="M31 91 L39 104 L53 106 L42 115 L45 129 L31 122 L17 129 L20 115 L9 106 L23 104 Z" fill="#ffd96a" stroke="${colors.a}" stroke-width="2.4"/>`,
+    target:`<g transform="translate(13 98)"><circle cx="16" cy="16" r="15" fill="#fff" stroke="${colors.a}" stroke-width="2.4"/><circle cx="16" cy="16" r="9" fill="none" stroke="#ff8a72" stroke-width="3.4"/><circle cx="16" cy="16" r="3.5" fill="#ff8a72"/></g>`,
+    ribbon:`<path d="M18 99 C34 87 46 99 32 112 C46 113 40 128 26 120 C12 130 6 113 20 112 C6 101 12 92 18 99 Z" fill="#ffb7c8"/>`,
+    bolt:`<path d="M34 90 L17 115 H31 L24 133 L47 104 H31 Z" fill="#ffd96a" stroke="${colors.a}" stroke-width="2.4"/>`,
+    music:`<path d="M37 89 V115 C37 122 25 123 25 116 C25 110 34 110 34 113 V94 L54 89 V111 C54 118 42 119 42 112 C42 106 51 106 51 109 V85 Z" fill="${colors.a}"/>`
   }[p.extra]||'';
   const tool=c.weaponPref==='sword'
-    ? `<g transform="translate(90 45) rotate(22)"><rect x="-5" y="-8" width="10" height="68" rx="5" fill="#fffdf8" stroke="#ffd96a" stroke-width="3"/><rect x="-3" y="-2" width="6" height="54" rx="3" fill="#ffd96a" opacity=".7"/><rect x="-17" y="53" width="34" height="9" rx="5" fill="${colors.a}"/><rect x="-7" y="61" width="14" height="17" rx="6" fill="${colors.s}"/></g>`
+    ? `<g transform="translate(104 52) rotate(21)"><rect x="-6" y="-10" width="12" height="78" rx="6" fill="#fffdf8" stroke="#ffd96a" stroke-width="3.5"/><rect x="-3.5" y="-3" width="7" height="62" rx="3.5" fill="#ffd96a" opacity=".68"/><rect x="-19" y="61" width="38" height="10" rx="5" fill="${colors.a}"/><rect x="-8" y="70" width="16" height="20" rx="7" fill="${colors.s}"/></g>`
     : c.weaponPref==='gun'
-    ? `<g transform="translate(76 64)"><rect x="0" y="0" width="45" height="18" rx="8" fill="#9fd7ff" stroke="${colors.a}" stroke-width="3"/><rect x="29" y="12" width="14" height="23" rx="5" fill="${colors.s}"/><rect x="8" y="-7" width="22" height="9" rx="5" fill="#fffdf8"/><circle cx="13" cy="9" r="4" fill="#ffd96a"/></g>`
-    : `<g transform="translate(91 39) rotate(13)"><rect x="-4" y="0" width="8" height="82" rx="4" fill="#fffdf8" stroke="#ffd96a" stroke-width="2"/><path d="M0 -14 L16 10 L0 24 L-16 10 Z" fill="${colors.a}" stroke="#fff" stroke-width="2"/><rect x="-13" y="55" width="26" height="8" rx="4" fill="${colors.s}"/></g>`;
-  return`<svg class="char-figure poster-brick" width="${110*s}" height="${135*s}" viewBox="0 0 110 135" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    ? `<g transform="translate(87 76)"><rect x="0" y="0" width="51" height="20" rx="9" fill="#9fd7ff" stroke="${colors.a}" stroke-width="3.4"/><rect x="33" y="13" width="16" height="26" rx="6" fill="${colors.s}"/><rect x="9" y="-8" width="25" height="10" rx="5" fill="#fffdf8"/><circle cx="15" cy="10" r="4.5" fill="#ffd96a"/></g>`
+    : `<g transform="translate(105 47) rotate(13)"><rect x="-4.5" y="0" width="9" height="93" rx="5" fill="#fffdf8" stroke="#ffd96a" stroke-width="2.4"/><path d="M0 -16 L18 11 L0 27 L-18 11 Z" fill="${colors.a}" stroke="#fff" stroke-width="2.4"/><rect x="-15" y="62" width="30" height="9" rx="5" fill="${colors.s}"/></g>`;
+  return`<svg class="char-figure poster-brick" width="${128*s}" height="${156*s}" viewBox="0 0 128 156" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <defs>
     <linearGradient id="charBody${c.id}" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#fff7eb"/>
@@ -2712,28 +2734,42 @@ function genCharSVG(c,size){
       <stop offset="0%" stop-color="#fff" stop-opacity=".72"/>
       <stop offset="100%" stop-color="#fff" stop-opacity=".08"/>
     </linearGradient>
+    <linearGradient id="charCape${c.id}" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="${colors.a}" stop-opacity=".58"/>
+      <stop offset="100%" stop-color="${colors.p}" stop-opacity=".32"/>
+    </linearGradient>
   </defs>
-  <ellipse cx="55" cy="126" rx="42" ry="8" fill="rgba(68,55,38,.14)"/>
+  <ellipse cx="64" cy="147" rx="50" ry="9" fill="rgba(68,55,38,.13)"/>
+  <ellipse cx="64" cy="139" rx="42" ry="12" fill="#fff8ed" opacity=".72"/>
+  ${hasCape?`<path d="M37 56 Q64 44 91 56 L102 132 Q64 148 26 132 Z" fill="url(#charCape${c.id})"/>`:''}
   ${tool}
   ${extra}
-  <path d="${armL}" stroke="${colors.s}" stroke-width="13" stroke-linecap="round"/>
-  <path d="${armR}" stroke="${colors.s}" stroke-width="13" stroke-linecap="round"/>
-  <circle cx="9" cy="${p.pose==='open'?57:p.pose==='dance'?45:76}" r="7" fill="#ffe8d2" stroke="${colors.a}" stroke-width="2"/>
-  <circle cx="${p.pose==='point'?105:p.pose==='dance'?98:100}" cy="${p.pose==='point'?54:p.pose==='dance'?45:76}" r="7" fill="#ffe8d2" stroke="${colors.a}" stroke-width="2"/>
-  <rect x="27" y="65" width="56" height="48" rx="8" fill="url(#charBody${c.id})" stroke="${colors.a}" stroke-width="3"/>
-  <rect x="34" y="70" width="42" height="36" rx="6" fill="url(#charShine${c.id})"/>
-  <rect x="40" y="77" width="30" height="5" rx="3" fill="#fffdf8" opacity=".8"/>
-  <rect x="40" y="88" width="30" height="5" rx="3" fill="${colors.a}" opacity=".24"/>
-  <circle cx="43" cy="72" r="4" fill="#fffdf8"/>
-  <circle cx="67" cy="72" r="4" fill="#fffdf8"/>
-  <rect x="33" y="108" width="18" height="15" rx="5" fill="${colors.s}" stroke="${colors.a}" stroke-width="2"/>
-  <rect x="59" y="108" width="18" height="15" rx="5" fill="${colors.s}" stroke="${colors.a}" stroke-width="2"/>
-  <circle cx="55" cy="45" r="25" fill="${face}" stroke="${colors.a}" stroke-width="3"/>
+  <path d="${armL}" stroke="${colors.s}" stroke-width="16" stroke-linecap="round"/>
+  <path d="${armR}" stroke="${colors.s}" stroke-width="16" stroke-linecap="round"/>
+  <path d="${armL}" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".32"/>
+  <path d="${armR}" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".32"/>
+  <circle cx="${handL[0]}" cy="${handL[1]}" r="8" fill="#ffe8d2" stroke="${colors.a}" stroke-width="2.4"/>
+  <circle cx="${handR[0]}" cy="${handR[1]}" r="8" fill="#ffe8d2" stroke="${colors.a}" stroke-width="2.4"/>
+  <rect x="34" y="78" width="60" height="56" rx="10" fill="url(#charBody${c.id})" stroke="${colors.a}" stroke-width="3.4"/>
+  <rect x="41" y="84" width="46" height="39" rx="8" fill="url(#charShine${c.id})"/>
+  <rect x="30" y="80" width="22" height="18" rx="8" fill="${metal}" stroke="${colors.a}" stroke-width="2.2"/>
+  <rect x="76" y="80" width="22" height="18" rx="8" fill="${metal}" stroke="${colors.a}" stroke-width="2.2"/>
+  <path d="M49 86 H79 L86 105 L64 125 L42 105 Z" fill="rgba(255,255,255,.38)" stroke="#fffdf8" stroke-width="2"/>
+  <path d="M64 91 L72 100 L64 109 L56 100 Z" fill="#fff2c7" stroke="${colors.a}" stroke-width="2"/>
+  <rect x="45" y="112" width="38" height="7" rx="4" fill="${colors.a}" opacity=".38"/>
+  <circle cx="51" cy="86" r="4.5" fill="#fffdf8"/>
+  <circle cx="77" cy="86" r="4.5" fill="#fffdf8"/>
+  <rect x="40" y="130" width="20" height="16" rx="6" fill="${colors.s}" stroke="${colors.a}" stroke-width="2.4"/>
+  <rect x="68" y="130" width="20" height="16" rx="6" fill="${colors.s}" stroke="${colors.a}" stroke-width="2.4"/>
+  <rect x="35" y="144" width="29" height="7" rx="4" fill="${colors.a}" opacity=".8"/>
+  <rect x="64" y="144" width="29" height="7" rx="4" fill="${colors.a}" opacity=".8"/>
+  <rect x="38" y="38" width="52" height="40" rx="12" fill="${face}" stroke="${colors.a}" stroke-width="3.2"/>
+  <rect x="43" y="42" width="42" height="13" rx="7" fill="#fff" opacity=".16"/>
   ${headgear}
   ${eyes}
-  <circle cx="37" cy="50" r="4.2" fill="#ff9fb2" opacity=".5"/>
-  <circle cx="73" cy="50" r="4.2" fill="#ff9fb2" opacity=".5"/>
-  <path d="${p.m}" stroke="#202124" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <circle cx="45" cy="62" r="4.6" fill="#ff9fb2" opacity=".5"/>
+  <circle cx="83" cy="62" r="4.6" fill="#ff9fb2" opacity=".5"/>
+  <path d="${mouth}" stroke="#202124" stroke-width="2.7" fill="none" stroke-linecap="round"/>
 </svg>`}
 
 // ===== STATS BAR =====
