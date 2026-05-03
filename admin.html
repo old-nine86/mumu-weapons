@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>沐沐积木武器库 · 审核台</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f7f4ec;color:#1f2933}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 18px 56px}
+.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:22px}
+h1{margin:0;font-size:clamp(28px,4vw,48px);letter-spacing:0}
+.sub{margin-top:8px;color:#667085;font-weight:700}
+.panel{background:rgba(255,255,255,.82);border:1px solid rgba(31,41,51,.1);box-shadow:0 18px 50px rgba(31,41,51,.08);border-radius:20px;padding:18px}
+.login{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:18px}
+input,textarea{width:100%;border:1px solid rgba(31,41,51,.14);border-radius:14px;padding:13px 14px;font:inherit;background:white;outline:none}
+textarea{min-height:78px;resize:vertical}
+button{border:0;border-radius:14px;padding:13px 16px;font:inherit;font-weight:900;cursor:pointer;background:#1f2933;color:white}
+button.secondary{background:#edf2f7;color:#1f2933}
+button.good{background:#17a36b}
+button.bad{background:#e5484d}
+button:disabled{opacity:.45;cursor:not-allowed}
+.status{color:#667085;font-weight:800;margin:12px 0 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.card{overflow:hidden}
+.image{background:#fff;border-radius:18px;aspect-ratio:4/3;display:grid;place-items:center;border:1px solid rgba(31,41,51,.08);overflow:hidden}
+.image img{max-width:100%;max-height:100%;object-fit:contain}
+.meta{padding:14px 2px 0}
+.name{font-size:22px;font-weight:950;margin-bottom:6px}
+.line{color:#667085;font-weight:750;margin:4px 0;word-break:break-word}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{background:#edf2f7;border-radius:999px;padding:6px 10px;font-weight:900;font-size:13px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.empty{padding:34px;text-align:center;color:#667085;font-weight:900}
+a{color:#0b69d1}
+@media(max-width:640px){.top{display:block}.login{grid-template-columns:1fr}.wrap{padding:18px 12px 40px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>审核台</h1>
+      <div class="sub">只显示待审核武器。通过后才会进入公开武器库。</div>
+    </div>
+    <a href="./">返回武器库</a>
+  </div>
+
+  <div class="panel">
+    <div class="login">
+      <input id="reviewKey" type="password" placeholder="输入审核口令">
+      <button onclick="loadPending()">进入审核</button>
+    </div>
+    <div class="status" id="status">请输入审核口令。</div>
+  </div>
+
+  <div style="height:18px"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<script src="supabase-config.js?v=3"></script>
+<script>
+const CLOUD=window.MUMU_SUPABASE||{};
+function cloudBase(){return String(CLOUD.url||'').replace(/\/+$/,'')}
+function headers(){return{apikey:CLOUD.anonKey,Authorization:'Bearer '+CLOUD.anonKey,'Content-Type':'application/json'}}
+function escapeHTML(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function status(text){document.getElementById('status').textContent=text}
+function key(){return document.getElementById('reviewKey').value.trim()}
+async function rpc(name,body){
+  const res=await fetch(cloudBase()+'/rest/v1/rpc/'+name,{method:'POST',headers:headers(),body:JSON.stringify(body)});
+  if(!res.ok){
+    let msg='请求失败：'+res.status;
+    try{const data=await res.json();msg=data.message||msg}catch(e){}
+    throw new Error(msg);
+  }
+  return res.json();
+}
+function typeLabel(t){return t==='sword'?'剑刃':t==='gun'?'枪械':'长柄'}
+async function loadPending(){
+  if(!key()){status('先输入审核口令。');return}
+  status('正在读取待审核武器...');
+  try{
+    const rows=await rpc('list_pending_weapons',{input_review_key:key()});
+    render(rows);
+    status(rows.length?'待审核 '+rows.length+' 件':'没有待审核武器。');
+  }catch(err){status(err.message||'读取失败');}
+}
+function render(rows){
+  const grid=document.getElementById('grid');
+  if(!rows.length){grid.innerHTML='<div class="panel empty">暂时没有待审核内容。</div>';return}
+  grid.innerHTML=rows.map(item=>`
+    <div class="panel card" data-id="${escapeHTML(item.id)}">
+      <div class="image"><img src="${escapeHTML(item.image_url)}" alt="${escapeHTML(item.name)}"></div>
+      <div class="meta">
+        <div class="name">${escapeHTML(item.name)}</div>
+        <div class="chips">
+          <span class="chip">${escapeHTML(typeLabel(item.type))}</span>
+          <span class="chip">创建者：${escapeHTML(item.creator)}</span>
+        </div>
+        <div class="line">${escapeHTML(item.description)}</div>
+        <div class="line">技能：${escapeHTML(item.skill)}</div>
+        <div class="line">推广证明：${escapeHTML(item.share_proof||'无')}</div>
+        <div class="line"><a href="${escapeHTML(item.image_url)}" target="_blank" rel="noopener">新窗口看原图</a></div>
+        <textarea placeholder="审核备注，可不填"></textarea>
+        <div class="actions">
+          <button class="good" onclick="reviewWeapon('${escapeHTML(item.id)}','approved',this)">通过</button>
+          <button class="bad" onclick="reviewWeapon('${escapeHTML(item.id)}','rejected',this)">拒绝</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+async function reviewWeapon(id,decision,btn){
+  const card=btn.closest('.card');
+  const note=card.querySelector('textarea').value.trim();
+  btn.disabled=true;
+  status(decision==='approved'?'正在通过...':'正在拒绝...');
+  try{
+    await rpc('review_weapon',{input_review_key:key(),weapon_id:id,decision,note});
+    card.remove();
+    status(decision==='approved'?'已通过。':'已拒绝。');
+    if(!document.querySelector('.card'))loadPending();
+  }catch(err){
+    btn.disabled=false;
+    status(err.message||'操作失败');
+  }
+}
+</script>
+</body>
+</html>

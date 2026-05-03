@@ -79,6 +79,102 @@ create table if not exists public.promotion_submissions (
 
 alter table public.promotion_submissions enable row level security;
 
+create table if not exists public.admin_settings (
+  id text primary key,
+  review_key text not null,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.admin_settings enable row level security;
+
+insert into public.admin_settings (id, review_key)
+values ('default', 'CHANGE_ME_IN_SUPABASE')
+on conflict (id) do nothing;
+
+create or replace function public.list_pending_weapons(input_review_key text)
+returns table (
+  id text,
+  name text,
+  type text,
+  label text,
+  description text,
+  features jsonb,
+  skill text,
+  fx text,
+  creator text,
+  image_url text,
+  defense integer,
+  crit numeric,
+  status text,
+  share_proof text,
+  review_note text,
+  created_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not exists (
+    select 1 from public.admin_settings
+    where admin_settings.id = 'default'
+      and admin_settings.review_key = input_review_key
+  ) then
+    raise exception 'invalid review key';
+  end if;
+
+  return query
+  select w.id, w.name, w.type, w.label, w.description, w.features, w.skill, w.fx,
+         w.creator, w.image_url, w.defense, w.crit, w.status, w.share_proof,
+         w.review_note, w.created_at
+  from public.weapons w
+  where w.status = 'pending'
+  order by w.created_at desc;
+end;
+$$;
+
+create or replace function public.review_weapon(
+  input_review_key text,
+  weapon_id text,
+  decision text,
+  note text default ''
+)
+returns table (
+  id text,
+  name text,
+  status text,
+  reviewed_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not exists (
+    select 1 from public.admin_settings
+    where admin_settings.id = 'default'
+      and admin_settings.review_key = input_review_key
+  ) then
+    raise exception 'invalid review key';
+  end if;
+
+  if decision not in ('approved', 'rejected') then
+    raise exception 'invalid decision';
+  end if;
+
+  return query
+  update public.weapons w
+  set status = decision,
+      review_note = coalesce(note, ''),
+      reviewed_at = now()
+  where w.id = weapon_id and w.status = 'pending'
+  returning w.id, w.name, w.status, w.reviewed_at;
+end;
+$$;
+
+grant execute on function public.list_pending_weapons(text) to anon, authenticated;
+grant execute on function public.review_weapon(text, text, text, text) to anon, authenticated;
+
 drop policy if exists "Public can submit promotion proof" on public.promotion_submissions;
 create policy "Public can submit promotion proof"
 on public.promotion_submissions for insert

@@ -45,7 +45,13 @@ window.MUMU_SUPABASE = {
 
 ## 6. 审核方式
 
-最简单的审核方式先用 Supabase 后台：
+推荐使用网站审核台：
+
+1. 打开 `https://old-nine86.github.io/mumu-weapons/admin.html`。
+2. 输入 Supabase 里设置的审核口令。
+3. 直接看图片，点击“通过”或“拒绝”。
+
+备用方式是 Supabase 后台：
 
 1. 进入 Table Editor。
 2. 打开 `weapons` 表。
