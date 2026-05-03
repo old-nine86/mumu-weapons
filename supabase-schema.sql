@@ -59,6 +59,8 @@ create table if not exists public.upload_quota_rules (
   updated_at timestamptz not null default now()
 );
 
+alter table public.upload_quota_rules enable row level security;
+
 insert into public.upload_quota_rules (id, free_per_ip, bonus_per_approved_promotion)
 values ('default', 2, 10)
 on conflict (id) do update

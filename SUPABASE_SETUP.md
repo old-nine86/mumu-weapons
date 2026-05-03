@@ -5,8 +5,8 @@
 ## 1. 创建 Supabase 项目
 
 1. 打开 Supabase，创建一个新项目。
-2. 进入项目后，复制 `Project URL` 和 `anon public key`。
-3. 注意：只使用 `anon` / `publishable` key，不要把 `service_role` 或 secret key 放进网页。
+2. 进入项目后，复制 `Project URL` 和 `anon public key`，新版 Supabase 也可以使用 `sb_publishable_...` 开头的 publishable key。
+3. 注意：只使用 `anon` / `publishable` key，不要把 `service_role`、`sb_secret_...` 或数据库密码放进网页。
 
 ## 2. 建表
 
@@ -27,7 +27,7 @@
 window.MUMU_SUPABASE = {
   enabled: true,
   url: "你的 Supabase Project URL",
-  anonKey: "你的 anon public key",
+  anonKey: "你的 anon public key 或 sb_publishable key",
   weaponsTable: "weapons",
   imageBucket: "mumu-weapon-images"
 };
