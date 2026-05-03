@@ -1989,6 +1989,20 @@ body::before{
   font-size:12px;
   font-weight:900;
 }
+.analysis-line{
+  margin-top:8px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.analysis-pill{
+  padding:6px 9px;
+  border-radius:999px;
+  background:rgba(255,217,106,.22);
+  color:#6f5600;
+  font-size:11px;
+  font-weight:900;
+}
 .commerce-row{
   display:grid;
   grid-template-columns:1.15fr .85fr;
@@ -2823,6 +2837,9 @@ function cloudRowToItem(row){
     createdAt:row.created_at?new Date(row.created_at).getTime():Date.now(),
     img:row.image_url,
     def:{df:Number(row.defense||82),cr:Number(row.crit||.12)},
+    pieceCount:Number(row.piece_count||0),
+    aiPower:Number(row.ai_power||100),
+    analysis:row.analysis||{},
     cloud:true
   };
 }
@@ -2912,7 +2929,7 @@ function applyUploadedWeapons(){
   if(!DATA||!Array.isArray(DATA.uploads))return;
   DATA.uploads.forEach(item=>{
     if(!item||!item.i)return;
-    const next={i:item.i,n:item.n,t:item.t,l:item.l,d:item.d,f:item.f,s:item.s,fx:item.fx,creator:item.creator,createdAt:item.createdAt,uploaded:true,cloud:item.cloud};
+    const next={i:item.i,n:item.n,t:item.t,l:item.l,d:item.d,f:item.f,s:item.s,fx:item.fx,creator:item.creator,createdAt:item.createdAt,uploaded:true,cloud:item.cloud,pieceCount:item.pieceCount,aiPower:item.aiPower,analysis:item.analysis};
     const existing=WEAPONS.find(w=>String(w.i)===String(item.i));
     if(existing){
       Object.assign(existing,next);
@@ -2956,6 +2973,44 @@ function recognizeWeaponType(file,width,height){
   if(height>width*1.35)return 'spear';
   if(width>height*1.35)return 'gun';
   return 'sword';
+}
+
+function analyzeBrickWeapon(canvas,type){
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});
+  const w=canvas.width,h=canvas.height;
+  const img=ctx.getImageData(0,0,w,h).data;
+  let solid=0,minX=w,minY=h,maxX=0,maxY=0;
+  const colors=new Map();
+  const step=Math.max(1,Math.floor(Math.min(w,h)/120));
+  for(let y=0;y<h;y+=step){
+    for(let x=0;x<w;x+=step){
+      const p=(y*w+x)*4,a=img[p+3];
+      if(a<48)continue;
+      solid++;
+      if(x<minX)minX=x;if(y<minY)minY=y;if(x>maxX)maxX=x;if(y>maxY)maxY=y;
+      const r=Math.round(img[p]/42)*42,g=Math.round(img[p+1]/42)*42,b=Math.round(img[p+2]/42)*42;
+      colors.set(r+','+g+','+b,(colors.get(r+','+g+','+b)||0)+1);
+    }
+  }
+  const boxW=Math.max(1,maxX-minX+1),boxH=Math.max(1,maxY-minY+1);
+  const fill=solid/Math.max(1,(boxW/step)*(boxH/step));
+  const colorCount=Math.min(12,colors.size);
+  const aspect=boxW/boxH;
+  const longShape=Math.max(boxW,boxH)/Math.max(1,Math.min(boxW,boxH));
+  let pieceCount=Math.round(Math.max(6,solid/18+colorCount*2+longShape*3));
+  pieceCount=Math.max(6,Math.min(180,pieceCount));
+  const complexity=Math.max(1,Math.min(10,Math.round(colorCount*.7+longShape*.9+fill*4)));
+  const balance=Math.max(1,Math.min(10,Math.round(10-Math.abs(aspect-1.8)*2)));
+  const typeBonus=type==='spear'?8:type==='gun'?12:10;
+  const aiPower=Math.max(60,Math.min(260,Math.round(72+pieceCount*1.35+complexity*5+balance*3+typeBonus)));
+  const defense=Math.max(45,Math.min(150,Math.round(58+pieceCount*.42+(type==='spear'?22:type==='sword'?16:8)+fill*24)));
+  const crit=Math.max(.06,Math.min(.36,(.07+complexity*.012+(type==='gun'?.08:type==='sword'?.05:.035))));
+  const tags=[
+    'AI估算：约 '+pieceCount+' 颗积木',
+    '复杂度 '+complexity+'/10',
+    '平衡 '+balance+'/10'
+  ];
+  return {pieceCount,aiPower,defense,crit:Number(crit.toFixed(2)),complexity,balance,colorCount,tags};
 }
 
 function removeLightBackground(canvas){
@@ -3051,7 +3106,7 @@ function compressImage(file){
         ctx.clearRect(0,0,canvas.width,canvas.height);
         ctx.drawImage(img,0,0,canvas.width,canvas.height);
         const cut=trimTransparentCanvas(removeLightBackground(canvas));
-        resolve({dataUrl:cut.toDataURL('image/webp',.86),width:img.width,height:img.height,cutWidth:cut.width,cutHeight:cut.height});
+        resolve({dataUrl:cut.toDataURL('image/webp',.86),width:img.width,height:img.height,cutWidth:cut.width,cutHeight:cut.height,canvas:cut});
       };
       img.src=reader.result;
     };
@@ -3088,6 +3143,9 @@ async function saveUploadedWeaponToCloud(item){
     image_url:imageUrl,
     defense:item.def.df,
     crit:item.def.cr,
+    piece_count:item.pieceCount||0,
+    ai_power:item.aiPower||100,
+    analysis:item.analysis||{},
     status:'pending',
     share_proof:item.shareProof||''
   };
@@ -3149,17 +3207,18 @@ async function handleUploadFile(e){
   try{
     const packed=await compressImage(file);
     const t=recognizeWeaponType(file,packed.width,packed.height);
-    pendingUpload={fileName:file.name,img:packed.dataUrl,t};
+    const analysis=analyzeBrickWeapon(packed.canvas,t);
+    pendingUpload={fileName:file.name,img:packed.dataUrl,t,analysis};
     document.getElementById('uploadEmpty').style.display='none';
     document.getElementById('uploadPreview').style.display='flex';
     document.getElementById('uploadPreviewImg').src=packed.dataUrl;
-    document.getElementById('uploadRecognition').textContent='识别为 '+typeEmoji(t)+' '+typeLabel(t);
+    document.getElementById('uploadRecognition').textContent='识别为 '+typeEmoji(t)+' '+typeLabel(t)+' · 约 '+analysis.pieceCount+' 颗 · 战力 '+analysis.aiPower;
     document.getElementById('uploadType').value=t;
     const cleanName=file.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').trim();
     if(!document.getElementById('uploadWeaponName').value.trim())document.getElementById('uploadWeaponName').value=(cleanName||'我的积木武器').slice(0,20);
     if(!document.getElementById('uploadSkill').value.trim())document.getElementById('uploadSkill').value=typeEmoji(t)+' 积木闪光连击';
     if(!document.getElementById('uploadDesc').value.trim())document.getElementById('uploadDesc').value='由玩家上传的原创积木武器，已经加入收藏武器库。';
-    if(status)status.textContent=cloudEnabled()?'识别完成，已尝试扣除浅色背景。点击按钮后会提交审核。':'识别完成，已尝试扣除浅色背景。当前会保存到这台设备。';
+    if(status)status.textContent=(cloudEnabled()?'识别完成，点击按钮后会提交审核。':'识别完成，当前会保存到这台设备。')+' AI 估算：约 '+analysis.pieceCount+' 颗积木，战力 '+analysis.aiPower+'。';
   }catch(err){
     pendingUpload=null;
     if(status)status.textContent=err.message||'图片处理失败，请换一张试试。';
@@ -3177,12 +3236,16 @@ async function submitUploadedWeapon(){
   const desc=document.getElementById('uploadDesc').value.trim()||'由玩家上传的原创积木武器，已经加入收藏武器库。';
   const shareProof=document.getElementById('uploadShareProof').value.trim();
   const id=Date.now();
+  const analysis=pendingUpload.analysis||{pieceCount:20,aiPower:100,defense:t==='spear'?92:t==='sword'?88:82,crit:t==='gun'?.18:t==='sword'?.16:.12,tags:[]};
   const item={
     i:id,n:name.slice(0,20),t,l:typeLabel(t),d:desc.slice(0,90),
-    f:['玩家原创上传','自动识别：'+typeLabel(t),'创建者：'+creator.slice(0,16)],
+    f:['玩家原创上传','自动识别：'+typeLabel(t),'AI战力：'+analysis.aiPower].concat(analysis.tags||[]).concat(['创建者：'+creator.slice(0,16)]),
     s:skill.slice(0,22),fx:typeEmoji(t),creator:creator.slice(0,16),createdAt:Date.now(),shareProof:shareProof.slice(0,180),
     img:pendingUpload.img,
-    def:{df:t==='spear'?92:t==='sword'?88:82,cr:t==='gun'?.18:t==='sword'?.16:.12}
+    def:{df:analysis.defense,cr:analysis.crit},
+    pieceCount:analysis.pieceCount,
+    aiPower:analysis.aiPower,
+    analysis
   };
   try{
     let finalItem=item;
@@ -3289,6 +3352,7 @@ function renderWeapons(){
       '<div class="card-info">'+
         '<div class="card-name-row"><span class="card-name">'+escapeHTML(w.n)+'</span><span class="type-badge '+(bc[w.t]||'')+'">'+escapeHTML(w.l)+'</span></div>'+
         (w.creator?'<div class="creator-line">🧑‍🎨 创建者：'+escapeHTML(w.creator)+'</div>':'')+
+        ((w.pieceCount||w.aiPower)?'<div class="analysis-line">'+(w.pieceCount?'<span class="analysis-pill">🧱 '+escapeHTML(w.pieceCount)+' 颗</span>':'')+(w.aiPower?'<span class="analysis-pill">🤖 战力 '+escapeHTML(w.aiPower)+'</span>':'')+'</div>':'')+
         '<ul class="card-features">'+w.f.map(f=>'<li>'+escapeHTML(f)+'</li>').join('')+'</ul>'+
         '<div class="vote-section">'+
           '<div class="vote-btn'+(hasVoted(w.i)?' voted':'')+'" onclick="event.stopPropagation();voteWeapon('+w.i+',this)">'+(hasVoted(w.i)?'❤️':'🤍')+'</div>'+
@@ -3392,9 +3456,10 @@ function openModal(id){
     '<div class="modal-info">'+
       '<div class="modal-name">'+escapeHTML(w.n)+' <span class="type-badge '+(bc[w.t]||'')+'">'+escapeHTML(w.l)+'</span></div>'+
       (w.creator?'<div class="creator-line">🧑‍🎨 创建者：'+escapeHTML(w.creator)+'</div>':'')+
+      ((w.pieceCount||w.aiPower)?'<div class="analysis-line">'+(w.pieceCount?'<span class="analysis-pill">🧱 '+escapeHTML(w.pieceCount)+' 颗积木</span>':'')+(w.aiPower?'<span class="analysis-pill">🤖 AI战力 '+escapeHTML(w.aiPower)+'</span>':'')+'</div>':'')+
       '<div class="modal-desc">'+escapeHTML(w.d)+'</div>'+
       '<div class="modal-stats">'+
-        '<div class="modal-stat"><div class="modal-stat-val">🗡️ '+(100+v*8)+'</div><div class="modal-stat-label">战力</div></div>'+
+        '<div class="modal-stat"><div class="modal-stat-val">🗡️ '+((w.aiPower||100)+v*8)+'</div><div class="modal-stat-label">战力</div></div>'+
         '<div class="modal-stat"><div class="modal-stat-val">🛡️ '+d.df+'</div><div class="modal-stat-label">防御值</div></div>'+
         '<div class="modal-stat"><div class="modal-stat-val">💥 '+(d.cr*100).toFixed(0)+'%</div><div class="modal-stat-label">暴击率</div></div>'+
         '<div class="modal-stat"><div class="modal-stat-val">'+v+' 🗳️</div><div class="modal-stat-label">得票数</div></div>'+

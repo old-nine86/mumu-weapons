@@ -15,6 +15,9 @@ create table if not exists public.weapons (
   image_url text not null,
   defense integer not null default 82,
   crit numeric not null default 0.12,
+  piece_count integer not null default 0,
+  ai_power integer not null default 100,
+  analysis jsonb not null default '{}'::jsonb,
   status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
   share_proof text not null default '',
   review_note text not null default '',
@@ -26,6 +29,9 @@ alter table public.weapons add column if not exists status text not null default
 alter table public.weapons add column if not exists share_proof text not null default '';
 alter table public.weapons add column if not exists review_note text not null default '';
 alter table public.weapons add column if not exists reviewed_at timestamptz;
+alter table public.weapons add column if not exists piece_count integer not null default 0;
+alter table public.weapons add column if not exists ai_power integer not null default 100;
+alter table public.weapons add column if not exists analysis jsonb not null default '{}'::jsonb;
 
 alter table public.weapons enable row level security;
 
@@ -178,6 +184,53 @@ $$;
 
 grant execute on function public.list_pending_weapons(text) to anon, authenticated;
 grant execute on function public.review_weapon(text, text, text, text) to anon, authenticated;
+
+create or replace function public.list_pending_weapons_v2(input_review_key text)
+returns table (
+  id text,
+  name text,
+  type text,
+  label text,
+  description text,
+  features jsonb,
+  skill text,
+  fx text,
+  creator text,
+  image_url text,
+  defense integer,
+  crit numeric,
+  piece_count integer,
+  ai_power integer,
+  analysis jsonb,
+  status text,
+  share_proof text,
+  review_note text,
+  created_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not exists (
+    select 1 from public.admin_settings
+    where admin_settings.id = 'default'
+      and admin_settings.review_key = input_review_key
+  ) then
+    raise exception 'invalid review key';
+  end if;
+
+  return query
+  select w.id, w.name, w.type, w.label, w.description, w.features, w.skill, w.fx,
+         w.creator, w.image_url, w.defense, w.crit, w.piece_count, w.ai_power, w.analysis,
+         w.status, w.share_proof, w.review_note, w.created_at
+  from public.weapons w
+  where w.status = 'pending'
+  order by w.created_at desc;
+end;
+$$;
+
+grant execute on function public.list_pending_weapons_v2(text) to anon, authenticated;
 
 drop policy if exists "Public can submit promotion proof" on public.promotion_submissions;
 create policy "Public can submit promotion proof"

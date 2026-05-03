@@ -87,7 +87,7 @@ async function loadPending(){
   if(!key()){status('先输入审核口令。');return}
   status('正在读取待审核武器...');
   try{
-    const rows=await rpc('list_pending_weapons',{input_review_key:key()});
+    const rows=await rpc('list_pending_weapons_v2',{input_review_key:key()});
     renderWeapons(rows);
     status('武器待审核 '+rows.length+' 件。');
   }catch(err){status(err.message||'读取失败');}
@@ -114,6 +114,7 @@ function renderWeapons(rows){
         </div>
         <div class="line">${escapeHTML(item.description)}</div>
         <div class="line">技能：${escapeHTML(item.skill)}</div>
+        <div class="line">AI估算：${escapeHTML(item.piece_count||0)} 颗积木 · 战力 ${escapeHTML(item.ai_power||100)}</div>
         <div class="line">推广证明：${escapeHTML(item.share_proof||'无')}</div>
         <div class="line"><a href="${escapeHTML(item.image_url)}" target="_blank" rel="noopener">新窗口看原图</a></div>
         <textarea placeholder="审核备注，可不填"></textarea>
