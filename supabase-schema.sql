@@ -232,6 +232,62 @@ $$;
 
 grant execute on function public.list_pending_weapons_v2(text) to anon, authenticated;
 
+create or replace function public.review_weapon_with_edits(
+  input_review_key text,
+  weapon_id text,
+  decision text,
+  note text default '',
+  edited_name text default null,
+  edited_creator text default null,
+  edited_piece_count integer default null,
+  edited_ai_power integer default null,
+  edited_defense integer default null,
+  edited_crit numeric default null
+)
+returns table (
+  id text,
+  name text,
+  creator text,
+  status text,
+  piece_count integer,
+  ai_power integer,
+  reviewed_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not exists (
+    select 1 from public.admin_settings
+    where admin_settings.id = 'default'
+      and admin_settings.review_key = input_review_key
+  ) then
+    raise exception 'invalid review key';
+  end if;
+
+  if decision not in ('approved', 'rejected') then
+    raise exception 'invalid decision';
+  end if;
+
+  return query
+  update public.weapons w
+  set name = coalesce(nullif(left(edited_name, 20), ''), w.name),
+      creator = coalesce(nullif(left(edited_creator, 16), ''), w.creator),
+      piece_count = greatest(0, least(300, coalesce(edited_piece_count, w.piece_count))),
+      ai_power = greatest(1, least(500, coalesce(edited_ai_power, w.ai_power))),
+      defense = greatest(1, least(300, coalesce(edited_defense, w.defense))),
+      crit = greatest(0, least(1, coalesce(edited_crit, w.crit))),
+      status = decision,
+      review_note = coalesce(note, ''),
+      reviewed_at = now()
+  where w.id = weapon_id and w.status = 'pending'
+  returning w.id, w.name, w.creator, w.status, w.piece_count, w.ai_power, w.reviewed_at;
+end;
+$$;
+
+grant execute on function public.review_weapon_with_edits(text, text, text, text, text, text, integer, integer, integer, numeric) to anon, authenticated;
+
 drop policy if exists "Public can submit promotion proof" on public.promotion_submissions;
 create policy "Public can submit promotion proof"
 on public.promotion_submissions for insert
