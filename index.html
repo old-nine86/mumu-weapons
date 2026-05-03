@@ -2360,7 +2360,7 @@ body::before{
     <div class="upload-head">
       <div>
         <div class="upload-title">🧱 上传你的积木武器</div>
-        <div class="upload-sub">上传图片后会自动识别类型，并尝试扣除浅色背景；当前先保存到本机武器库。</div>
+        <div class="upload-sub">上传图片后会自动识别类型，并尝试扣除浅色背景；配置云端后会同步到公共武器库。</div>
       </div>
       <div class="upload-limit" id="uploadLimit">每位访客限传 1 件</div>
     </div>
@@ -2403,7 +2403,7 @@ body::before{
           <textarea id="uploadDesc" maxlength="90" placeholder="给这把武器写一句可爱的说明"></textarea>
         </div>
         <div class="upload-actions">
-          <div class="upload-status" id="uploadStatus">请选择一张图片开始识别。本版本先保存到当前设备。</div>
+          <div class="upload-status" id="uploadStatus">请选择一张图片开始识别。未配置云端时会保存到当前设备。</div>
           <button class="upload-submit" id="uploadSubmit" type="button" onclick="submitUploadedWeapon()">加入武器库</button>
         </div>
       </div>
@@ -2546,6 +2546,7 @@ body::before{
 
 <div class="footer">MADE WITH 🧱 BRICKS & ❤️ · 沐沐的积木武器库 · 2026 · 16人格战士参战</div>
 
+<script src="supabase-config.js"></script>
 <script>
 // ===== PARTICLES =====
 (function(){const c=document.getElementById('particles');const colors=['#ffd70033','#e74c3c33','#3498db33','#9b59b633','#2ecc7133'];for(let i=0;i<30;i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.width=p.style.height=(2+Math.random()*4)+'px';p.style.background=colors[Math.floor(Math.random()*colors.length)];p.style.animationDuration=(8+Math.random()*12)+'s';p.style.animationDelay=Math.random()*10+'s';c.appendChild(p)}})();
@@ -2762,6 +2763,54 @@ document.querySelectorAll('.nav-tab').forEach(tab=>{
 // ===== DATA =====
 const UPLOAD_ONCE_KEY='mumu_uploaded_weapon_once';
 let pendingUpload=null;
+const CLOUD=window.MUMU_SUPABASE||{};
+
+function cloudEnabled(){
+  return !!(CLOUD&&CLOUD.enabled&&CLOUD.url&&CLOUD.anonKey);
+}
+
+function cloudBase(){
+  return String(CLOUD.url||'').replace(/\/+$/,'');
+}
+
+function cloudHeaders(extra){
+  return Object.assign({
+    apikey:CLOUD.anonKey,
+    Authorization:'Bearer '+CLOUD.anonKey
+  },extra||{});
+}
+
+function dataUrlToBlob(dataUrl){
+  return fetch(dataUrl).then(r=>r.blob());
+}
+
+function cloudRowToItem(row){
+  return {
+    i:row.id,
+    n:row.name,
+    t:row.type,
+    l:row.label||typeLabel(row.type),
+    d:row.description||'玩家上传的原创积木武器。',
+    f:Array.isArray(row.features)?row.features:['玩家原创上传','云端武器库','创建者：'+(row.creator||'匿名创造者')],
+    s:row.skill||typeEmoji(row.type)+' 积木闪光连击',
+    fx:row.fx||typeEmoji(row.type),
+    creator:row.creator||'匿名创造者',
+    createdAt:row.created_at?new Date(row.created_at).getTime():Date.now(),
+    img:row.image_url,
+    def:{df:Number(row.defense||82),cr:Number(row.crit||.12)},
+    cloud:true
+  };
+}
+
+async function loadCloudWeapons(){
+  if(!cloudEnabled())return [];
+  const table=CLOUD.weaponsTable||'weapons';
+  const url=cloudBase()+'/rest/v1/'+encodeURIComponent(table)+'?select=*&order=created_at.desc&limit=80';
+  const res=await fetch(url,{headers:cloudHeaders()});
+  if(!res.ok)throw new Error('云端武器库读取失败：'+res.status);
+  const rows=await res.json();
+  return rows.map(cloudRowToItem);
+}
 
 async function loadData(){
   try{DATA=JSON.parse(localStorage.getItem(LS_KEY))||{comments:{},votes:{},uploads:[],forum:[]}}catch(e){DATA={comments:{},votes:{},uploads:[],forum:[]}}
@@ -2769,6 +2818,15 @@ async function loadData(){
   if(!DATA.votes)DATA.votes={};
   if(!Array.isArray(DATA.uploads))DATA.uploads=[];
   if(!Array.isArray(DATA.forum))DATA.forum=[];
+  if(cloudEnabled()){
+    try{
+      DATA.uploads=await loadCloudWeapons();
+    }catch(err){
+      console.warn(err);
+      const status=document.getElementById('uploadStatus');
+      if(status)status.textContent='云端武器库暂时读取失败，已切回本机模式。';
+    }
+  }
 }
 async function saveData(){try{localStorage.setItem(LS_KEY,JSON.stringify(DATA))}catch(e){}}
 function getVotes(id){return DATA&&DATA.votes?DATA.votes[id]||0:0}
@@ -2782,7 +2840,7 @@ function formatTime(ts){
   const d=new Date(ts);
   return (d.getMonth()+1)+'/'+d.getDate()+' '+d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
 }
-function getUploadLimitReached(){return localStorage.getItem(UPLOAD_ONCE_KEY)==='1'||(DATA&&DATA.uploads&&DATA.uploads.length>0)}
+function getUploadLimitReached(){return localStorage.getItem(UPLOAD_ONCE_KEY)==='1'}
 function applyUploadedWeapons(){
   if(!DATA||!Array.isArray(DATA.uploads))return;
   DATA.uploads.forEach(item=>{
@@ -2805,9 +2863,12 @@ function refreshUploadState(){
   const submit=document.getElementById('uploadSubmit');
   const status=document.getElementById('uploadStatus');
   const limit=document.getElementById('uploadLimit');
-  if(limit)limit.textContent=reached?'本访客已上传 1 件':'每位访客限传 1 件';
+  if(limit)limit.textContent=reached?'本访客已上传 1 件':(cloudEnabled()?'云端武器库 · 每访客限传 1 件':'本机模式 · 每访客限传 1 件');
   if(submit)submit.disabled=reached||!pendingUpload;
   if(reached&&status)status.textContent='这个浏览器已经上传过 1 件武器。';
+  if(!reached&&!pendingUpload&&status&&/请选择一张图片/.test(status.textContent)){
+    status.textContent=cloudEnabled()?'请选择一张图片开始识别。云端武器库已开启。':'请选择一张图片开始识别。未配置云端时会保存到当前设备。';
+  }
 }
 
 function recognizeWeaponType(file,width,height){
@@ -2921,6 +2982,49 @@ function compressImage(file){
   });
 }
 
+async function saveUploadedWeaponToCloud(item){
+  const bucket=CLOUD.imageBucket||'mumu-weapon-images';
+  const table=CLOUD.weaponsTable||'weapons';
+  const imagePath='weapon-'+item.i+'.webp';
+  const blob=await dataUrlToBlob(item.img);
+  const uploadUrl=cloudBase()+'/storage/v1/object/'+encodeURIComponent(bucket)+'/'+encodeURIComponent(imagePath);
+  const uploadRes=await fetch(uploadUrl,{
+    method:'POST',
+    headers:cloudHeaders({
+      'Content-Type':'image/webp',
+      'x-upsert':'false'
+    }),
+    body:blob
+  });
+  if(!uploadRes.ok)throw new Error('图片上传到云端失败：'+uploadRes.status);
+  const imageUrl=cloudBase()+'/storage/v1/object/public/'+encodeURIComponent(bucket)+'/'+encodeURIComponent(imagePath);
+  const row={
+    id:String(item.i),
+    name:item.n,
+    type:item.t,
+    label:item.l,
+    description:item.d,
+    features:item.f,
+    skill:item.s,
+    fx:item.fx,
+    creator:item.creator,
+    image_url:imageUrl,
+    defense:item.def.df,
+    crit:item.def.cr
+  };
+  const insertRes=await fetch(cloudBase()+'/rest/v1/'+encodeURIComponent(table),{
+    method:'POST',
+    headers:cloudHeaders({
+      'Content-Type':'application/json',
+      Prefer:'return=representation'
+    }),
+    body:JSON.stringify(row)
+  });
+  if(!insertRes.ok)throw new Error('武器保存到云数据库失败：'+insertRes.status);
+  const rows=await insertRes.json();
+  return cloudRowToItem(rows[0]||row);
+}
+
 async function handleUploadFile(e){
   const file=e.target.files&&e.target.files[0];
   if(!file)return;
@@ -2942,7 +3046,7 @@ async function handleUploadFile(e){
     if(!document.getElementById('uploadWeaponName').value.trim())document.getElementById('uploadWeaponName').value=(cleanName||'我的积木武器').slice(0,20);
     if(!document.getElementById('uploadSkill').value.trim())document.getElementById('uploadSkill').value=typeEmoji(t)+' 积木闪光连击';
     if(!document.getElementById('uploadDesc').value.trim())document.getElementById('uploadDesc').value='由玩家上传的原创积木武器，已经加入收藏武器库。';
-    if(status)status.textContent='识别完成，已尝试扣除浅色背景。当前会保存到这台设备。';
+    if(status)status.textContent=cloudEnabled()?'识别完成，已尝试扣除浅色背景。点击按钮后会上传到云端武器库。':'识别完成，已尝试扣除浅色背景。当前会保存到这台设备。';
   }catch(err){
     pendingUpload=null;
     if(status)status.textContent=err.message||'图片处理失败，请换一张试试。';
@@ -2952,6 +3056,7 @@ async function handleUploadFile(e){
 
 async function submitUploadedWeapon(){
   if(!pendingUpload||getUploadLimitReached())return;
+  const status=document.getElementById('uploadStatus');
   const name=document.getElementById('uploadWeaponName').value.trim()||'未命名积木武器';
   const creator=document.getElementById('uploadCreator').value.trim()||'匿名创造者';
   const t=document.getElementById('uploadType').value||pendingUpload.t;
@@ -2965,19 +3070,30 @@ async function submitUploadedWeapon(){
     img:pendingUpload.img,
     def:{df:t==='spear'?92:t==='sword'?88:82,cr:t==='gun'?.18:t==='sword'?.16:.12}
   };
-  DATA.uploads=[item];
-  await saveData();
-  localStorage.setItem(UPLOAD_ONCE_KEY,'1');
-  WEAPONS.push({i:item.i,n:item.n,t:item.t,l:item.l,d:item.d,f:item.f,s:item.s,fx:item.fx,creator:item.creator,createdAt:item.createdAt,uploaded:true});
-  IMG[item.i]=item.img;
-  DEF[item.i]=item.def;
-  pendingUpload=null;
-  updateHeaderStats();
-  renderWeapons();
-  updateDashboard();
-  updateLeaderboard();
-  refreshUploadState();
-  document.getElementById('uploadStatus').textContent='已加入武器库：'+item.n;
+  try{
+    let finalItem=item;
+    if(cloudEnabled()){
+      if(status)status.textContent='正在上传到云端武器库...';
+      finalItem=await saveUploadedWeaponToCloud(item);
+      DATA.uploads.unshift(finalItem);
+    }else{
+      DATA.uploads=[item];
+      await saveData();
+    }
+    localStorage.setItem(UPLOAD_ONCE_KEY,'1');
+    WEAPONS.push({i:finalItem.i,n:finalItem.n,t:finalItem.t,l:finalItem.l,d:finalItem.d,f:finalItem.f,s:finalItem.s,fx:finalItem.fx,creator:finalItem.creator,createdAt:finalItem.createdAt,uploaded:true,cloud:finalItem.cloud});
+    IMG[finalItem.i]=finalItem.img;
+    DEF[finalItem.i]=finalItem.def;
+    pendingUpload=null;
+    updateHeaderStats();
+    renderWeapons();
+    updateDashboard();
+    updateLeaderboard();
+    refreshUploadState();
+    if(status)status.textContent=(cloudEnabled()?'已加入云端武器库：':'已加入本机武器库：')+finalItem.n;
+  }catch(err){
+    if(status)status.textContent=(err&&err.message)||'上传失败，请稍后再试。';
+  }
 }
 
 async function postForumTopic(){
