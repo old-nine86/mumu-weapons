@@ -397,6 +397,72 @@ grant execute on function public.list_pending_promotions(text) to anon, authenti
 grant execute on function public.review_promotion(text, uuid, text, text) to anon, authenticated;
 grant execute on function public.check_promotion_bonus(text) to anon, authenticated;
 
+-- Cloud forum: public read/write, with status left for future moderation.
+create table if not exists public.forum_topics (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  category text not null default '讨论',
+  title text not null,
+  body text not null,
+  status text not null default 'approved' check (status in ('approved','hidden')),
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.forum_replies (
+  id uuid primary key default gen_random_uuid(),
+  topic_id uuid not null references public.forum_topics(id) on delete cascade,
+  name text not null,
+  body text not null,
+  status text not null default 'approved' check (status in ('approved','hidden')),
+  created_at timestamptz not null default now()
+);
+
+create index if not exists forum_topics_status_created_idx
+on public.forum_topics(status, created_at desc);
+
+create index if not exists forum_replies_topic_status_created_idx
+on public.forum_replies(topic_id, status, created_at asc);
+
+alter table public.forum_topics enable row level security;
+alter table public.forum_replies enable row level security;
+
+drop policy if exists "Public can read approved forum topics" on public.forum_topics;
+create policy "Public can read approved forum topics"
+on public.forum_topics for select
+to anon, authenticated
+using (status = 'approved');
+
+drop policy if exists "Public can post forum topics" on public.forum_topics;
+create policy "Public can post forum topics"
+on public.forum_topics for insert
+to anon, authenticated
+with check (
+  status = 'approved'
+  and char_length(name) between 1 and 16
+  and char_length(category) between 1 and 12
+  and char_length(title) between 1 and 34
+  and char_length(body) between 1 and 240
+);
+
+drop policy if exists "Public can read approved forum replies" on public.forum_replies;
+create policy "Public can read approved forum replies"
+on public.forum_replies for select
+to anon, authenticated
+using (status = 'approved');
+
+drop policy if exists "Public can post forum replies" on public.forum_replies;
+create policy "Public can post forum replies"
+on public.forum_replies for insert
+to anon, authenticated
+with check (
+  status = 'approved'
+  and char_length(name) between 1 and 16
+  and char_length(body) between 1 and 120
+);
+
+grant select, insert on public.forum_topics to anon, authenticated;
+grant select, insert on public.forum_replies to anon, authenticated;
+
 -- Storage policies. Create bucket first in Storage UI:
 -- bucket id: mumu-weapon-images
 -- Public bucket: on

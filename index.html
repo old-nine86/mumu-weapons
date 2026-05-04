@@ -2313,6 +2313,12 @@ body::before{
   cursor:pointer;
   box-shadow:0 14px 30px rgba(47,143,232,.14);
 }
+.forum-status{
+  grid-column:1/-1;
+  min-height:20px;
+  color:#6f737a;
+  font-weight:800;
+}
 .forum-list{
   display:grid;
   gap:12px;
@@ -2638,6 +2644,7 @@ body::before{
       <input class="full" id="forumTitle" maxlength="34" placeholder="标题：比如我想要新的角色技能">
       <textarea class="full" id="forumBody" maxlength="240" placeholder="写下你的想法..."></textarea>
       <button class="forum-submit full" type="button" onclick="postForumTopic()">发布到论坛</button>
+      <div class="forum-status" id="forumStatus"></div>
     </div>
     <div class="forum-list" id="forumList"></div>
   </section>
@@ -2974,6 +2981,7 @@ const PROMO_TOKEN_KEY='mumu_promo_client_token';
 const PROMO_BONUS_KEY='mumu_promo_bonus_slots';
 let pendingUpload=null;
 const CLOUD=window.MUMU_SUPABASE||{};
+let forumCloudReady=false;
 
 function cloudEnabled(){
   return !!(CLOUD&&CLOUD.enabled&&CLOUD.url&&CLOUD.anonKey);
@@ -3042,6 +3050,51 @@ async function loadCloudWeapons(){
   return rows.map(cloudRowToItem);
 }
 
+function cloudReplyToForumReply(row){
+  return {
+    id:row.id,
+    name:row.name||'匿名玩家',
+    text:row.body||'',
+    ts:row.created_at?new Date(row.created_at).getTime():Date.now(),
+    cloud:true
+  };
+}
+
+function cloudTopicToForumPost(row,repliesByTopic){
+  return {
+    id:row.id,
+    name:row.name||'匿名玩家',
+    category:row.category||'讨论',
+    title:row.title||'玩家讨论',
+    body:row.body||'',
+    ts:row.created_at?new Date(row.created_at).getTime():Date.now(),
+    replies:repliesByTopic[row.id]||[],
+    cloud:true
+  };
+}
+
+async function loadCloudForum(){
+  if(!cloudEnabled())return [];
+  const topicUrl=cloudBase()+'/rest/v1/forum_topics?select=id,name,category,title,body,created_at&status=eq.approved&order=created_at.desc&limit=80';
+  const topicRes=await fetch(topicUrl,{headers:cloudHeaders()});
+  if(!topicRes.ok)throw new Error(await cloudErrorMessage(topicRes,'云端论坛读取失败'));
+  const topics=await topicRes.json();
+  if(!topics.length)return [];
+  const topicIds=new Set(topics.map(t=>String(t.id)));
+  const replyUrl=cloudBase()+'/rest/v1/forum_replies?select=id,topic_id,name,body,created_at&status=eq.approved&order=created_at.asc&limit=240';
+  const replyRes=await fetch(replyUrl,{headers:cloudHeaders()});
+  if(!replyRes.ok)throw new Error(await cloudErrorMessage(replyRes,'云端论坛回复读取失败'));
+  const replies=await replyRes.json();
+  const repliesByTopic={};
+  replies.forEach(row=>{
+    const topicId=String(row.topic_id);
+    if(!topicIds.has(topicId))return;
+    if(!repliesByTopic[topicId])repliesByTopic[topicId]=[];
+    repliesByTopic[topicId].push(cloudReplyToForumReply(row));
+  });
+  return topics.map(row=>cloudTopicToForumPost(row,repliesByTopic));
+}
+
 async function cloudErrorMessage(res,prefix){
   let detail='';
   try{
@@ -3069,6 +3122,13 @@ async function loadData(){
       console.warn(err);
       const status=document.getElementById('uploadStatus');
       if(status)status.textContent='云端武器库暂时读取失败，已切回本机模式。';
+    }
+    try{
+      DATA.forum=await loadCloudForum();
+      forumCloudReady=true;
+    }catch(err){
+      forumCloudReady=false;
+      console.warn(err);
     }
   }
 }
@@ -3465,13 +3525,39 @@ async function submitUploadedWeapon(){
 
 async function postForumTopic(){
   if(!DATA)return;
+  const status=document.getElementById('forumStatus');
   const name=document.getElementById('forumName').value.trim()||'匿名玩家';
   const category=document.getElementById('forumCategory').value||'讨论';
   const title=document.getElementById('forumTitle').value.trim();
   const body=document.getElementById('forumBody').value.trim();
   if(!title||!body)return;
-  DATA.forum.unshift({id:Date.now(),name:name.slice(0,16),category,title:title.slice(0,34),body:body.slice(0,240),ts:Date.now(),replies:[]});
-  await saveData();
+  const topic={name:name.slice(0,16),category:category.slice(0,12),title:title.slice(0,34),body:body.slice(0,240)};
+  if(status)status.textContent=cloudEnabled()?'正在发布到云端论坛...':'正在保存到本机论坛...';
+  if(cloudEnabled()){
+    try{
+      const res=await fetch(cloudBase()+'/rest/v1/forum_topics',{
+        method:'POST',
+        headers:cloudHeaders({'Content-Type':'application/json','Prefer':'return=representation'}),
+        body:JSON.stringify(Object.assign({},topic,{status:'approved'}))
+      });
+      if(!res.ok)throw new Error(await cloudErrorMessage(res,'云端论坛发布失败'));
+      const rows=await res.json();
+      DATA.forum=await loadCloudForum();
+      forumCloudReady=true;
+      if(!DATA.forum.length&&rows&&rows[0])DATA.forum.unshift(cloudTopicToForumPost(rows[0],{}));
+      if(status)status.textContent='已发布到云端论坛，其他设备刷新后也能看到。';
+    }catch(err){
+      forumCloudReady=false;
+      console.warn(err);
+      DATA.forum.unshift(Object.assign({id:Date.now(),ts:Date.now(),replies:[]},topic));
+      await saveData();
+      if(status)status.textContent=((err&&err.message)||'云端论坛发布失败')+' 已临时保存到本机。';
+    }
+  }else{
+    DATA.forum.unshift(Object.assign({id:Date.now(),ts:Date.now(),replies:[]},topic));
+    await saveData();
+    if(status)status.textContent='已保存到本机论坛。配置云端后，其他设备也能看到。';
+  }
   document.getElementById('forumTitle').value='';
   document.getElementById('forumBody').value='';
   renderForum();
@@ -3481,15 +3567,36 @@ async function postForumTopic(){
 async function postForumReply(id){
   if(!DATA||!Array.isArray(DATA.forum))return;
   const input=document.getElementById('forumReply'+id);
+  const status=document.getElementById('forumStatus');
   if(!input)return;
   const text=input.value.trim();
   if(!text)return;
-  const topic=DATA.forum.find(p=>p.id===id);
+  const topic=DATA.forum.find(p=>String(p.id)===String(id));
   if(!topic)return;
   if(!Array.isArray(topic.replies))topic.replies=[];
   const author=document.getElementById('forumName').value.trim()||'匿名玩家';
-  topic.replies.push({name:author.slice(0,16),text:text.slice(0,120),ts:Date.now()});
-  await saveData();
+  const reply={name:author.slice(0,16),text:text.slice(0,120),ts:Date.now()};
+  if(topic.cloud&&cloudEnabled()){
+    try{
+      const res=await fetch(cloudBase()+'/rest/v1/forum_replies',{
+        method:'POST',
+        headers:cloudHeaders({'Content-Type':'application/json','Prefer':'return=representation'}),
+        body:JSON.stringify({topic_id:topic.id,name:reply.name,body:reply.text,status:'approved'})
+      });
+      if(!res.ok)throw new Error(await cloudErrorMessage(res,'云端回复失败'));
+      topic.replies.push(reply);
+      if(status)status.textContent='回复已同步到云端。';
+    }catch(err){
+      console.warn(err);
+      topic.replies.push(reply);
+      await saveData();
+      if(status)status.textContent=((err&&err.message)||'云端回复失败')+' 已临时保存到本机。';
+    }
+  }else{
+    topic.replies.push(reply);
+    await saveData();
+    if(status)status.textContent='回复已保存到本机。';
+  }
   input.value='';
   renderForum();
   updateDashboard();
@@ -3505,9 +3612,9 @@ function renderForum(){
   if(!list||!count)return;
   const posts=(DATA&&Array.isArray(DATA.forum))?DATA.forum:[];
   const totalReplies=posts.reduce((sum,p)=>sum+(Array.isArray(p.replies)?p.replies.length:0),0);
-  count.textContent=posts.length+' 个帖子 · '+totalReplies+' 条回复';
+  count.textContent=posts.length+' 个帖子 · '+totalReplies+' 条回复'+(cloudEnabled()?(forumCloudReady?' · 云端':' · 本机兜底'):' · 本机');
   if(!posts.length){
-    list.innerHTML='<div class="forum-empty">还没有讨论，来发第一条建议吧。</div>';
+    list.innerHTML='<div class="forum-empty">'+(cloudEnabled()&&!forumCloudReady?'云端论坛还没启用成功，当前先用本机模式。':'还没有讨论，来发第一条建议吧。')+'</div>';
     return;
   }
   list.innerHTML=posts.map(p=>{
@@ -3521,7 +3628,7 @@ function renderForum(){
       '</div>'+
       '<div class="forum-body">'+escapeHTML(p.body)+'</div>'+
       '<div class="forum-replies">'+replies+'</div>'+
-      '<div class="forum-reply-row"><input id="forumReply'+p.id+'" maxlength="120" placeholder="回复这个话题..."><button class="forum-reply-btn" onclick="postForumReply('+p.id+')">回复</button></div>'+
+      '<div class="forum-reply-row"><input id="forumReply'+p.id+'" maxlength="120" placeholder="回复这个话题..."><button class="forum-reply-btn" onclick="postForumReply('+JSON.stringify(String(p.id))+')">回复</button></div>'+
     '</article>';
   }).join('');
 }
