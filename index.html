@@ -2477,6 +2477,73 @@ body::before{
   }
   .fighter-name{font-size:15px}
 }
+
+/* ===== PREMIUM WEAPON SHOWCASE MODAL ===== */
+.modal-content{
+  background:rgba(255,255,255,.92);
+  border:1px solid rgba(255,255,255,.72);
+  border-radius:28px;
+  box-shadow:0 30px 80px rgba(31,45,68,.22);
+}
+.modal-img-wrap{
+  position:relative;
+  min-height:330px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,.82)),
+    radial-gradient(circle at 28% 26%,rgba(255,214,224,.78),transparent 15rem),
+    radial-gradient(circle at 72% 36%,rgba(207,232,255,.82),transparent 16rem),
+    linear-gradient(180deg,#fff9ef,#f7fbff);
+  overflow:hidden;
+}
+.modal-img-wrap::before{
+  content:'';
+  position:absolute;
+  inset:auto 36px 24px;
+  height:64px;
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(65,78,98,.18),transparent 68%);
+}
+.modal-img-wrap::after{
+  content:'';
+  position:absolute;
+  left:0;right:0;bottom:0;height:40%;
+  background:linear-gradient(0deg,rgba(255,255,255,.75),transparent);
+}
+.modal-img-wrap img{
+  position:relative;
+  z-index:1;
+  max-width:min(72%,360px);
+  max-height:300px;
+  object-fit:contain;
+  filter:drop-shadow(0 24px 24px rgba(50,62,82,.18));
+  transform:rotate(-2deg);
+}
+.modal-showcase-tag{
+  position:absolute;
+  top:18px;left:18px;
+  z-index:2;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.72);
+  color:#1d1d1f;
+  font-size:12px;
+  font-weight:900;
+  box-shadow:0 10px 24px rgba(65,78,98,.1);
+}
+.modal-feature-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:4px;
+}
+.modal-feature{
+  padding:9px 10px;
+  border-radius:14px;
+  background:#fff7e8;
+  color:#5a5147;
+  font-size:12px;
+  font-weight:850;
+}
 </style>
 </head>
 <body>
@@ -3319,6 +3386,71 @@ function removeLightBackground(canvas){
   return canvas;
 }
 
+function cleanWeaponCutout(canvas){
+  const base=removeLightBackground(canvas);
+  const ctx=base.getContext('2d',{willReadFrequently:true});
+  const w=base.width,h=base.height;
+  const img=ctx.getImageData(0,0,w,h);
+  const data=img.data;
+  const keep=new Uint8Array(w*h);
+  for(let i=0;i<w*h;i++){
+    const p=i*4;
+    if(data[p+3]>28)keep[i]=1;
+  }
+  const visited=new Uint8Array(w*h);
+  const components=[];
+  for(let i=0;i<w*h;i++){
+    if(!keep[i]||visited[i])continue;
+    const queue=[i];
+    visited[i]=1;
+    let count=0,minX=w,minY=h,maxX=0,maxY=0;
+    for(let qi=0;qi<queue.length;qi++){
+      const idx=queue[qi],x=idx%w,y=(idx-x)/w;
+      count++;
+      if(x<minX)minX=x;if(y<minY)minY=y;if(x>maxX)maxX=x;if(y>maxY)maxY=y;
+      const neighbors=[idx-1,idx+1,idx-w,idx+w];
+      for(const ni of neighbors){
+        if(ni<0||ni>=w*h||visited[ni]||!keep[ni])continue;
+        const nx=ni%w;
+        if(Math.abs(nx-x)>1)continue;
+        visited[ni]=1;
+        queue.push(ni);
+      }
+    }
+    components.push({count,minX,minY,maxX,maxY});
+  }
+  components.sort((a,b)=>b.count-a.count);
+  const largest=components[0]?components[0].count:0;
+  const kept=components.filter(c=>c.count>Math.max(24,largest*.025));
+  const mask=new Uint8Array(w*h);
+  kept.forEach(c=>{
+    for(let y=c.minY;y<=c.maxY;y++)for(let x=c.minX;x<=c.maxX;x++){
+      const idx=y*w+x;
+      if(keep[idx])mask[idx]=1;
+    }
+  });
+  for(let i=0;i<w*h;i++){
+    const p=i*4;
+    if(!mask[i]){
+      data[p+3]=0;
+      continue;
+    }
+    let solidAround=0;
+    const x=i%w,y=(i-x)/w;
+    for(let yy=-1;yy<=1;yy++)for(let xx=-1;xx<=1;xx++){
+      const nx=x+xx,ny=y+yy;
+      if(nx>=0&&nx<w&&ny>=0&&ny<h&&mask[ny*w+nx])solidAround++;
+    }
+    if(solidAround<3)data[p+3]=Math.min(data[p+3],140);
+    const r=data[p],g=data[p+1],b=data[p+2];
+    const lum=r*.299+g*.587+b*.114;
+    const sat=Math.max(r,g,b)-Math.min(r,g,b);
+    if(lum>206&&sat<28&&solidAround<8)data[p+3]=Math.min(data[p+3],90);
+  }
+  ctx.putImageData(img,0,0);
+  return base;
+}
+
 function trimTransparentCanvas(source){
   const ctx=source.getContext('2d',{willReadFrequently:true});
   const w=source.width,h=source.height;
@@ -3353,7 +3485,7 @@ function compressImage(file){
         const ctx=canvas.getContext('2d');
         ctx.clearRect(0,0,canvas.width,canvas.height);
         ctx.drawImage(img,0,0,canvas.width,canvas.height);
-        const cut=trimTransparentCanvas(removeLightBackground(canvas));
+        const cut=trimTransparentCanvas(cleanWeaponCutout(canvas));
         resolve({dataUrl:cut.toDataURL('image/webp',.86),width:img.width,height:img.height,cutWidth:cut.width,cutHeight:cut.height,canvas:cut});
       };
       img.src=reader.result;
@@ -3638,7 +3770,9 @@ function renderWeapons(){
   const g=document.getElementById('weaponsGrid');g.innerHTML='';
   WEAPONS.forEach(w=>{
     const d=document.createElement('div');d.className='weapon-card';d.dataset.type=w.t;
+    d.onclick=event=>{event.stopPropagation();openModal(w.i)};
     const votes=getVotes(w.i);
+    const safeId=JSON.stringify(String(w.i));
     d.innerHTML=
       '<div class="card-showcase">'+
         '<div class="skill-fx">'+w.fx+'</div>'+
@@ -3650,12 +3784,12 @@ function renderWeapons(){
         ((w.pieceCount||w.aiPower)?'<div class="analysis-line">'+(w.pieceCount?'<span class="analysis-pill">🧱 '+escapeHTML(w.pieceCount)+' 颗</span>':'')+(w.aiPower?'<span class="analysis-pill">🤖 战力 '+escapeHTML(w.aiPower)+'</span>':'')+'</div>':'')+
         '<ul class="card-features">'+w.f.map(f=>'<li>'+escapeHTML(f)+'</li>').join('')+'</ul>'+
         '<div class="vote-section">'+
-          '<div class="vote-btn'+(hasVoted(w.i)?' voted':'')+'" onclick="event.stopPropagation();voteWeapon('+w.i+',this)">'+(hasVoted(w.i)?'❤️':'🤍')+'</div>'+
+          '<div class="vote-btn'+(hasVoted(w.i)?' voted':'')+'" onclick="event.stopPropagation();voteWeapon('+safeId+',this)">'+(hasVoted(w.i)?'❤️':'🤍')+'</div>'+
           '<span class="vote-count" id="vc'+w.i+'">'+votes+'</span>'+
           '<span class="vote-label">票 (战力+'+votes*8+')</span>'+
         '</div>'+
         '<div class="comment-section">'+
-          '<div class="comment-input-wrap"><input class="comment-input" id="ci'+w.i+'" placeholder="发表评论..." maxlength="100"><button class="comment-submit" onclick="event.stopPropagation();postComment('+w.i+')">发送</button></div>'+
+          '<div class="comment-input-wrap"><input class="comment-input" id="ci'+w.i+'" data-weapon-id="'+escapeHTML(String(w.i))+'" placeholder="发表评论..." maxlength="100"><button class="comment-submit" onclick="event.stopPropagation();postComment('+safeId+')">发送</button></div>'+
           '<div class="comment-list" id="cl'+w.i+'"></div>'+
         '</div>'+
       '</div>';
@@ -3697,7 +3831,7 @@ function renderComments(id){
   list.scrollTop=list.scrollHeight;
 }
 
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList.contains('comment-input')){const id=parseInt(e.target.id.replace('ci',''));if(id)postComment(id)}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList.contains('comment-input')){const id=e.target.dataset.weaponId||e.target.id.replace('ci','');if(id)postComment(id)}});
 
 // ===== RENDER CHARACTERS =====
 function weaponLabel(type){
@@ -3712,9 +3846,31 @@ function charSkillName(c){
   const skill=c.quotes&&c.quotes.sp&&c.quotes.sp[0]?c.quotes.sp[0]:'积木必杀技';
   return skill.replace('·',' · ');
 }
+const CHAR_TRAITS={
+  1:{label:'统帅号令',desc:'连击时额外增伤',power:.08,combo:.1},
+  2:{label:'预判棋局',desc:'削弱对手暴击',def:.08,antiCrit:.05},
+  3:{label:'逻辑超频',desc:'能量积累更快',energy:16,crit:.03},
+  4:{label:'诡雷实验',desc:'暴击更高但防御更薄',crit:.07,def:-.05},
+  5:{label:'团队鼓舞',desc:'稳定提高攻防',power:.05,def:.06},
+  6:{label:'星月预知',desc:'开局拥有护盾',def:.1,shield:18},
+  7:{label:'理想回响',desc:'残血时伤害上升',lowHp:.28},
+  8:{label:'星火灵感',desc:'开局能量更高',energy:24,power:.04},
+  9:{label:'纪律铁壁',desc:'高防御低暴击',def:.16,crit:-.02},
+  10:{label:'守护结界',desc:'受到伤害会回能',def:.18,guardEnergy:10},
+  11:{label:'效率火力',desc:'攻击稳定更高',power:.09,energy:8},
+  12:{label:'暖心支援',desc:'偶尔自我修复',def:.1,heal:.08},
+  13:{label:'孤狼狙击',desc:'高暴击高爆发',crit:.09,power:.04},
+  14:{label:'绯焰舞步',desc:'连击增长更快',crit:.04,combo:.12},
+  15:{label:'雷霆冲锋',desc:'攻击很高但防御降低',power:.13,def:-.08},
+  16:{label:'舞台焦点',desc:'必杀更容易释放',energy:18,crit:.03}
+};
+function getCharTrait(c){
+  return CHAR_TRAITS[c.id]||{label:'积木专精',desc:'稳定发挥',power:.04};
+}
 function renderCharacters(){
   const g=document.getElementById('charGrid');g.innerHTML='';
   CHARACTERS.forEach(c=>{
+    const trait=getCharTrait(c);
     const div=document.createElement('div');div.className='char-card';
     div.style.setProperty('--card-accent',c.colors.a);
     div.innerHTML=
@@ -3727,6 +3883,7 @@ function renderCharacters(){
         '<div class="char-name">'+c.name+'</div>'+
         '<div class="char-type">'+c.mbti+' · '+c.mbtiName+'</div>'+
         '<div class="char-trait">偏好：'+weaponLabel(c.weaponPref)+'</div>'+
+        '<div class="char-trait">人格技：'+escapeHTML(trait.label)+' · '+escapeHTML(trait.desc)+'</div>'+
         '<div class="char-quote">“'+(c.quotes.atk&&c.quotes.atk[0]?c.quotes.atk[0]:c.quotes.win)+'”</div>'+
         '<div class="char-stats">'+
           '<div class="char-stat-row"><b>⚔️ 攻击</b><div class="char-meter"><span style="width:'+c.stats.atk+'%"></span></div><em>'+c.stats.atk+'</em></div>'+
@@ -3735,6 +3892,7 @@ function renderCharacters(){
         '</div>'+
         '<div class="char-skills">'+
           '<span class="char-skill">🧩 '+charSkillName(c)+'</span>'+
+          '<span class="char-skill">✨ '+escapeHTML(trait.label)+'</span>'+
           '<span class="char-skill">🎒 '+weaponLabel(c.weaponPref)+'</span>'+
         '</div>'+
       '</div>';
@@ -3746,13 +3904,18 @@ function renderCharacters(){
 function openModal(id){
   const w=WEAPONS.find(x=>x.i===id);if(!w)return;
   const v=getVotes(w.i);const d=DEF[w.i]||{df:80,cr:0.08};
+  const featureGrid=(w.f||[]).slice(0,6).map(f=>'<div class="modal-feature">'+escapeHTML(f)+'</div>').join('');
   document.getElementById('modalContent').innerHTML=
-    '<div class="modal-img-wrap"><img src="'+IMG[w.i]+'" alt="'+escapeHTML(w.n)+'"></div>'+
+    '<div class="modal-img-wrap">'+
+      '<div class="modal-showcase-tag">SHOWCASE · '+escapeHTML(w.l)+'</div>'+
+      '<img src="'+IMG[w.i]+'" alt="'+escapeHTML(w.n)+'">'+
+    '</div>'+
     '<div class="modal-info">'+
       '<div class="modal-name">'+escapeHTML(w.n)+' <span class="type-badge '+(bc[w.t]||'')+'">'+escapeHTML(w.l)+'</span></div>'+
       (w.creator?'<div class="creator-line">🧑‍🎨 创建者：'+escapeHTML(w.creator)+'</div>':'')+
       ((w.pieceCount||w.aiPower)?'<div class="analysis-line">'+(w.pieceCount?'<span class="analysis-pill">🧱 '+escapeHTML(w.pieceCount)+' 颗积木</span>':'')+(w.aiPower?'<span class="analysis-pill">🤖 AI战力 '+escapeHTML(w.aiPower)+'</span>':'')+'</div>':'')+
       '<div class="modal-desc">'+escapeHTML(w.d)+'</div>'+
+      '<div class="modal-feature-grid">'+featureGrid+'</div>'+
       '<div class="modal-stats">'+
         '<div class="modal-stat"><div class="modal-stat-val">🗡️ '+((w.aiPower||100)+v*8)+'</div><div class="modal-stat-label">战力</div></div>'+
         '<div class="modal-stat"><div class="modal-stat-val">🛡️ '+d.df+'</div><div class="modal-stat-label">防御值</div></div>'+
@@ -3760,7 +3923,7 @@ function openModal(id){
         '<div class="modal-stat"><div class="modal-stat-val">'+v+' 🗳️</div><div class="modal-stat-label">得票数</div></div>'+
       '</div>'+
       '<div class="vote-section">'+
-        '<div class="vote-btn'+(hasVoted(w.i)?' voted':'')+'" onclick="event.stopPropagation();voteWeapon('+w.i+',this)">'+(hasVoted(w.i)?'❤️':'🤍')+'</div>'+
+        '<div class="vote-btn'+(hasVoted(w.i)?' voted':'')+'" onclick="event.stopPropagation();voteWeapon('+JSON.stringify(String(w.i))+',this)">'+(hasVoted(w.i)?'❤️':'🤍')+'</div>'+
         '<span class="vote-count" id="mvc'+w.i+'">'+v+'</span>'+
         '<span class="vote-label">投票 (+'+v*8+'战力)</span>'+
       '</div>'+
@@ -3944,10 +4107,15 @@ function getPowerFull(c,w,stage){
   const votes=getVotes(w.i);const d=DEF[w.i]||{df:80,cr:0.08};
   const aiPower=Number(w.aiPower||100);
   const pieceCount=Number(w.pieceCount||0);
+  const trait=getCharTrait(c);
   let power=72+votes*8+aiPower*.35+c.stats.atk*.62+pieceCount*.22;
   let defense=d.df+c.stats.def*.36+pieceCount*.08;
   let crit=Math.min(.55,d.cr+c.stats.crit*.76+(pieceCount>80?.02:0));
   let energy=18+c.stats.crit*42+(w.t===c.weaponPref?10:0);
+  power*=1+(trait.power||0);
+  defense*=1+(trait.def||0);
+  crit+=trait.crit||0;
+  energy+=trait.energy||0;
   if(stage&&stage.buff==='power')power*=1.08;
   if(stage&&stage.buff==='defense')defense*=1.1;
   if(stage&&stage.buff==='crit')crit+=.04;
@@ -3958,6 +4126,7 @@ function getPowerFull(c,w,stage){
     defense:Math.round(defense),
     crit:Math.min(.62,crit),
     energy,
+    trait,
     name:w.n,skill:w.s,img:IMG[w.i],i:w.i,
     skillName:w.s.split(' ')[0]
   };
@@ -3969,7 +4138,8 @@ function setupFighter(side,c,w,p){
   document.getElementById('fst'+side).innerHTML=
     '<div class="fighter-stat">⚔️ '+p.power+'</div>'+
     '<div class="fighter-stat">🛡️ '+p.defense+'</div>'+
-    '<div class="fighter-stat">💥 '+Math.round(p.crit*100)+'%</div>';
+    '<div class="fighter-stat">💥 '+Math.round(p.crit*100)+'%</div>'+
+    '<div class="fighter-stat">✨ '+p.trait.label+'</div>';
   const body=document.getElementById('fb'+side);
   body.innerHTML=genCharSVG(c,90)+'<img class="weapon-img" src="'+IMG[w.i]+'" alt="'+w.n+'">';
   body.classList.remove('attacking','hit');
@@ -3991,9 +4161,11 @@ function playBattleTurn(){
   const energyKey=af===1?'e1':'e2';
   const defEnergyKey=af===1?'e2':'e1';
   let isSpecial=false;
-  let isCrit=Math.random()<atk.crit;
-  let comboBonus=Math.min(.28,(s.combo-1)*.08);
+  let isCrit=Math.random()<Math.max(.02,atk.crit-(def.trait.antiCrit||0));
+  let comboBonus=Math.min(.42,(s.combo-1)*(.08+(atk.trait.combo||0)));
   let dmg=(18+atk.power*.18+Math.random()*18)*(1-def.defense/420)*(1+comboBonus);
+  const atkHpRate=af===1?s.h1/s.hp1:s.h2/s.hp2;
+  if(atk.trait.lowHp&&atkHpRate<.38)dmg*=1+atk.trait.lowHp;
   if(isCrit)dmg*=1.75;
   if(s[energyKey]>=100){
     isSpecial=true;
@@ -4005,13 +4177,19 @@ function playBattleTurn(){
   }else{
     s[energyKey]=Math.min(100,s[energyKey]+atk.energy+(isCrit?14:0)+s.combo*3);
   }
-  s[defEnergyKey]=Math.min(100,s[defEnergyKey]+11+def.defense*.03);
+  s[defEnergyKey]=Math.min(100,s[defEnergyKey]+11+def.defense*.03+(def.trait.guardEnergy||0));
   dmg=Math.max(8,Math.round(dmg));
+  if(def.trait.shield&&s.round<=2)dmg=Math.max(5,Math.round(dmg-def.trait.shield));
   const atkBody=document.getElementById('fb'+af);
   const defBody=document.getElementById('fb'+(af===1?2:1));
   atkBody.classList.remove('attacking');void atkBody.offsetWidth;atkBody.classList.add('attacking');
   setTimeout(()=>{defBody.classList.add('hit');setTimeout(()=>defBody.classList.remove('hit'),300)},190);
   if(af===1)s.h2=Math.max(0,s.h2-dmg);else s.h1=Math.max(0,s.h1-dmg);
+  if(def.trait.heal&&Math.random()<.24){
+    const heal=Math.round((af===1?s.hp2:s.hp1)*def.trait.heal);
+    if(af===1)s.h2=Math.min(s.hp2,s.h2+heal);else s.h1=Math.min(s.hp1,s.h1+heal);
+    addBattleLog('💗 '+defChar.name+' 触发「'+def.trait.label+'」，回复 '+heal+' 点生命。');
+  }
   logBattleEnhanced(atk,def,dmg,isCrit,isSpecial,atkChar,defChar,s.round,s.combo);
   updateArenaBars();
   if(s.h1<=0||s.h2<=0)finishBattle();
