@@ -1787,6 +1787,72 @@ body::before{
   color:#77726b;
   font-weight:900;
 }
+.arena-hud{
+  position:relative;
+  z-index:2;
+  width:min(900px,100%);
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin:6px 0 12px;
+}
+.arena-hud-card{
+  min-height:58px;
+  padding:10px 12px;
+  border:2px solid rgba(255,255,255,.82);
+  border-radius:22px;
+  background:rgba(255,255,255,.72);
+  box-shadow:0 12px 30px rgba(78,64,44,.08);
+  color:#202124;
+  text-align:center;
+  display:grid;
+  place-items:center;
+  gap:2px;
+}
+.arena-hud-card b{
+  font-size:18px;
+  line-height:1;
+}
+.arena-hud-card span{
+  color:#77726b;
+  font-size:11px;
+  font-weight:900;
+}
+.fighter-stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+  width:min(240px,100%);
+  margin:8px 0;
+}
+.fighter-stat{
+  padding:6px 4px;
+  border-radius:14px;
+  background:rgba(255,255,255,.62);
+  color:#202124;
+  font-size:11px;
+  font-weight:900;
+  text-align:center;
+}
+.energy-wrap{
+  width:min(240px,100%);
+  height:10px;
+  margin-top:7px;
+  border-radius:999px;
+  background:rgba(78,64,44,.1);
+  overflow:hidden;
+}
+.energy-bar{
+  width:0%;
+  height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg,#9fd7ff,#ffd96a,#ff8a72);
+  transition:width .28s ease;
+}
+.fighter.leading{
+  border-color:rgba(255,217,106,.95);
+  box-shadow:0 26px 80px rgba(255,217,106,.22);
+}
 .arena-vs{
   align-self:center;
   width:92px;
@@ -1801,7 +1867,7 @@ body::before{
 }
 .arena-log{
   width:min(760px,100%);
-  min-height:64px;
+  min-height:74px;
   padding:14px 18px;
   border:2px solid rgba(255,255,255,.82);
   border-radius:26px;
@@ -1810,8 +1876,37 @@ body::before{
   box-shadow:0 16px 42px rgba(78,64,44,.08);
   font-size:14px;
 }
+.arena-log-main{
+  font-weight:900;
+}
+.arena-log-list{
+  width:min(760px,100%);
+  max-height:122px;
+  margin:8px 0 0;
+  padding:0;
+  list-style:none;
+  overflow:hidden;
+  display:grid;
+  gap:6px;
+}
+.arena-log-list li{
+  padding:7px 10px;
+  border-radius:14px;
+  background:rgba(255,255,255,.62);
+  color:#77726b;
+  font-size:12px;
+  font-weight:800;
+}
 .arena-result{
   color:#202124;
+}
+.arena-controls{
+  position:relative;
+  z-index:2;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
 }
 .arena-again{
   border:0;
@@ -1819,6 +1914,21 @@ body::before{
   background:linear-gradient(135deg,#9fd7ff,#8ee6c6);
   color:#202124;
   box-shadow:0 14px 34px rgba(47,143,232,.18);
+}
+.arena-control-btn{
+  display:none;
+  padding:10px 20px;
+  border:0;
+  border-radius:999px;
+  background:#fffdf8;
+  color:#202124;
+  font-family:inherit;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 14px 34px rgba(78,64,44,.1);
+}
+.arena-control-btn.active{
+  background:linear-gradient(135deg,#ffd96a,#ffb7c8);
 }
 .arena-special{
   color:#202124;
@@ -2302,6 +2412,18 @@ body::before{
   .upload-form{grid-template-columns:1fr}
   .upload-actions{align-items:stretch;flex-direction:column}
   .upload-submit{width:100%}
+  .arena{
+    padding:18px 10px;
+  }
+  .arena-hud{
+    grid-template-columns:1fr;
+    gap:7px;
+  }
+  .arena-hud-card{
+    min-height:44px;
+    border-radius:18px;
+    padding:8px 10px;
+  }
   .arena-fighters{
     gap:10px;
     min-height:260px;
@@ -2323,6 +2445,23 @@ body::before{
   .fighter-body img.weapon-img{
     width:56px;
     right:-6px;
+  }
+  .fighter-stats{
+    grid-template-columns:1fr;
+    gap:4px;
+    margin:5px 0;
+  }
+  .fighter-stat{
+    padding:4px;
+    font-size:10px;
+  }
+  .arena-log{
+    font-size:12px;
+    border-radius:20px;
+    padding:10px;
+  }
+  .arena-log-list li{
+    font-size:11px;
   }
   .arena-vs{
     width:58px;
@@ -2535,27 +2674,40 @@ body::before{
   <div class="arena-close" onclick="closeArena()">✕</div>
   <div class="arena-ground"></div>
   <div class="arena-title">⚔️ 积木战士大乱斗 ⚔️</div>
+  <div class="arena-hud">
+    <div class="arena-hud-card"><b id="arenaRound">第 0 回合</b><span>回合</span></div>
+    <div class="arena-hud-card"><b id="arenaStage">甜品擂台</b><span>战场地形</span></div>
+    <div class="arena-hud-card"><b id="arenaCombo">准备中</b><span>战斗节奏</span></div>
+  </div>
   <div class="arena-fighters">
     <div class="fighter" id="f1">
       <div class="fighter-body" id="fb1"></div>
       <div class="fighter-name" id="fn1"></div>
       <div class="fighter-sub" id="fs1"></div>
+      <div class="fighter-stats" id="fst1"></div>
       <div class="hp-wrap"><div class="hp-bar" id="hp1"></div></div>
       <div class="hp-text" id="ht1"></div>
+      <div class="energy-wrap"><div class="energy-bar" id="en1"></div></div>
     </div>
     <div class="arena-vs">VS</div>
     <div class="fighter" id="f2">
       <div class="fighter-body" id="fb2"></div>
       <div class="fighter-name" id="fn2"></div>
       <div class="fighter-sub" id="fs2"></div>
+      <div class="fighter-stats" id="fst2"></div>
       <div class="hp-wrap"><div class="hp-bar" id="hp2"></div></div>
       <div class="hp-text" id="ht2"></div>
+      <div class="energy-wrap"><div class="energy-bar" id="en2"></div></div>
     </div>
   </div>
   <div class="arena-special" id="specialFx"></div>
-  <div class="arena-log" id="alog"></div>
+  <div class="arena-log" id="alog"><div class="arena-log-main" id="alogMain"></div><ul class="arena-log-list" id="alogList"></ul></div>
   <div class="arena-result" id="aresult"></div>
-  <button class="arena-again" id="againBtn" onclick="startArenaBattle()">🔄 再来一局</button>
+  <div class="arena-controls">
+    <button class="arena-control-btn" id="pauseBtn" onclick="toggleBattlePause()">⏸ 暂停</button>
+    <button class="arena-control-btn" id="speedBtn" onclick="toggleBattleSpeed()">⚡ 加速</button>
+    <button class="arena-again" id="againBtn" onclick="startArenaBattle()">🔄 再来一局</button>
+  </div>
 </div>
 
 <!-- WEAPON DETAIL MODAL -->
@@ -3626,10 +3778,19 @@ function updateSelUI(){
 
 // ===== BATTLE =====
 let battleTimer=null;
+let battleState=null;
+let battleSpeed=720;
 
 function getCompatibleWeapons(char){
   return WEAPONS.filter(w=>w.t===char.weaponPref);
 }
+
+const ARENA_STAGES=[
+  {name:'甜品擂台',emoji:'🍰',buff:'defense',text:'软糖护栏让防御更稳'},
+  {name:'彩虹轨道',emoji:'🌈',buff:'crit',text:'彩虹灯提高暴击灵感'},
+  {name:'积木工坊',emoji:'🧱',buff:'power',text:'备用零件提高攻击输出'},
+  {name:'云朵高台',emoji:'☁️',buff:'energy',text:'轻盈地形让能量更快充满'}
+];
 
 function startArenaBattle(){
   if(!selChar1||!selChar2)return;
@@ -3640,77 +3801,56 @@ function startArenaBattle(){
   const c1=selChar1,c2=selChar2;
   const ww1=getCompatibleWeapons(c1),ww2=getCompatibleWeapons(c2);
   const w1=ww1[Math.floor(Math.random()*ww1.length)],w2=ww2[Math.floor(Math.random()*ww2.length)];
+  const stage=ARENA_STAGES[Math.floor(Math.random()*ARENA_STAGES.length)];
 
-  const p1=getPowerFull(c1,w1),p2=getPowerFull(c2,w2);
+  const p1=getPowerFull(c1,w1,stage),p2=getPowerFull(c2,w2,stage);
 
   setupFighter('1',c1,w1,p1);
   setupFighter('2',c2,w2,p2);
 
-  const hp1=p1.power,hp2=p2.power;
-  let h1=hp1,h2=hp2;
-  document.getElementById('ht1').textContent=Math.round(h1)+'/'+Math.round(hp1);
-  document.getElementById('ht2').textContent=Math.round(h2)+'/'+Math.round(hp2);
-  document.getElementById('hp1').style.width='100%';
-  document.getElementById('hp2').style.width='100%';
+  battleState={
+    c1,c2,w1,w2,p1,p2,stage,
+    hp1:p1.hp,hp2:p2.hp,h1:p1.hp,h2:p2.hp,
+    e1:18,e2:18,round:0,lastAttacker:0,combo:0,paused:false,done:false,log:[]
+  };
+  updateArenaBars();
+  document.getElementById('arenaRound').textContent='第 0 回合';
+  document.getElementById('arenaStage').textContent=stage.emoji+' '+stage.name;
+  document.getElementById('arenaCombo').textContent=stage.text;
   document.getElementById('aresult').textContent='';
   document.getElementById('againBtn').style.display='none';
-  document.getElementById('alog').innerHTML='🎲 积木骰子滚动中，第一回合准备开始！';
+  document.getElementById('pauseBtn').style.display='inline-block';
+  document.getElementById('speedBtn').style.display='inline-block';
+  document.getElementById('pauseBtn').textContent='⏸ 暂停';
+  document.getElementById('pauseBtn').classList.remove('active');
+  document.getElementById('speedBtn').classList.toggle('active',battleSpeed<520);
+  document.getElementById('alogMain').innerHTML='🎲 '+stage.emoji+' '+stage.name+' 开启：'+stage.text+'。第一回合准备开始！';
+  document.getElementById('alogList').innerHTML='';
   document.getElementById('specialFx').classList.remove('show');
   document.getElementById('fb1').classList.remove('attacking','hit');
   document.getElementById('fb2').classList.remove('attacking','hit');
 
-  let turnCount=0;
-  battleTimer=setInterval(()=>{
-    turnCount++;
-    const af=Math.random()<0.5?1:2;
-    const atk=af===1?p1:p2;
-    const def=af===1?p2:p1;
-    const atkChar=af===1?c1:c2;
-    const defChar=af===1?c2:c1;
-
-    let dmg=10+Math.random()*24;
-    dmg=dmg*(1-def.defense/300);
-    let isCrit=false;if(Math.random()<atk.crit){dmg*=1.8;isCrit=true;}
-    let isSpecial=false;
-    if(turnCount%3===0||Math.random()<0.12){dmg*=1.45;isSpecial=true;
-      const fx=document.getElementById('specialFx');
-      fx.textContent=['🧱','✨','💥','🎯'][Math.floor(Math.random()*4)]+' '+(atk.skillName||atk.skill.split(' ')[0]);
-      fx.classList.remove('show');void fx.offsetWidth;fx.classList.add('show');
-    }
-    dmg=Math.round(dmg);
-
-    // Animations
-    const atkBody=document.getElementById('fb'+(af===1?1:2));
-    const defBody=document.getElementById('fb'+(af===1?2:1));
-    atkBody.classList.remove('attacking');void atkBody.offsetWidth;atkBody.classList.add('attacking');
-    setTimeout(()=>{defBody.classList.add('hit');setTimeout(()=>defBody.classList.remove('hit'),300)},200);
-
-    let dh=af===1?h2:h1;dh-=dmg;if(dh<0)dh=0;
-    if(af===1)h2=dh;else h1=dh;
-
-    logBattleEnhanced(atk,def,dmg,isCrit,isSpecial,atkChar,defChar,turnCount);
-
-    document.getElementById('hp1').style.width=Math.max(0,(h1/hp1)*100)+'%';
-    document.getElementById('hp2').style.width=Math.max(0,(h2/hp2)*100)+'%';
-    document.getElementById('ht1').textContent=Math.round(Math.max(0,h1))+'/'+Math.round(hp1);
-    document.getElementById('ht2').textContent=Math.round(Math.max(0,h2))+'/'+Math.round(hp2);
-
-    if(h1<=0||h2<=0){
-      clearInterval(battleTimer);
-      const wn=h1<=0?p2:p1;
-      const wc=h1<=0?c2:c1;
-      document.getElementById('aresult').innerHTML='🏆 '+wc.name+' 赢下玩具擂台！<br><span style="font-size:13px;color:#77726b">“'+wc.quotes.win+'” · 使用 '+wn.name+' · '+turnCount+' 回合</span>';
-      document.getElementById('againBtn').style.display='inline-block';
-    }
-  },620);
+  battleTimer=setInterval(playBattleTurn,battleSpeed);
 }
 
-function getPowerFull(c,w){
+function getPowerFull(c,w,stage){
   const votes=getVotes(w.i);const d=DEF[w.i]||{df:80,cr:0.08};
+  const aiPower=Number(w.aiPower||100);
+  const pieceCount=Number(w.pieceCount||0);
+  let power=72+votes*8+aiPower*.35+c.stats.atk*.62+pieceCount*.22;
+  let defense=d.df+c.stats.def*.36+pieceCount*.08;
+  let crit=Math.min(.55,d.cr+c.stats.crit*.76+(pieceCount>80?.02:0));
+  let energy=18+c.stats.crit*42+(w.t===c.weaponPref?10:0);
+  if(stage&&stage.buff==='power')power*=1.08;
+  if(stage&&stage.buff==='defense')defense*=1.1;
+  if(stage&&stage.buff==='crit')crit+=.04;
+  if(stage&&stage.buff==='energy')energy+=16;
   return {
-    power:90+votes*8+c.stats.atk*0.5,
-    defense:d.df+c.stats.def*0.3,
-    crit:d.cr+c.stats.crit*0.7,
+    hp:Math.round(116+defense*.72+power*.18),
+    power:Math.round(power),
+    defense:Math.round(defense),
+    crit:Math.min(.62,crit),
+    energy,
     name:w.n,skill:w.s,img:IMG[w.i],i:w.i,
     skillName:w.s.split(' ')[0]
   };
@@ -3719,9 +3859,102 @@ function getPowerFull(c,w){
 function setupFighter(side,c,w,p){
   document.getElementById('fn'+side).textContent=c.name;
   document.getElementById('fs'+side).textContent=c.mbti+' · '+c.mbtiName;
+  document.getElementById('fst'+side).innerHTML=
+    '<div class="fighter-stat">⚔️ '+p.power+'</div>'+
+    '<div class="fighter-stat">🛡️ '+p.defense+'</div>'+
+    '<div class="fighter-stat">💥 '+Math.round(p.crit*100)+'%</div>';
   const body=document.getElementById('fb'+side);
   body.innerHTML=genCharSVG(c,90)+'<img class="weapon-img" src="'+IMG[w.i]+'" alt="'+w.n+'">';
   body.classList.remove('attacking','hit');
+}
+
+function playBattleTurn(){
+  const s=battleState;
+  if(!s||s.paused||s.done)return;
+  s.round++;
+  const firstScore=s.p1.power+s.e1+s.c1.stats.crit*100+(Math.random()*38);
+  const secondScore=s.p2.power+s.e2+s.c2.stats.crit*100+(Math.random()*38);
+  const af=firstScore>=secondScore?1:2;
+  if(s.lastAttacker===af)s.combo++;else s.combo=1;
+  s.lastAttacker=af;
+  const atk=af===1?s.p1:s.p2;
+  const def=af===1?s.p2:s.p1;
+  const atkChar=af===1?s.c1:s.c2;
+  const defChar=af===1?s.c2:s.c1;
+  const energyKey=af===1?'e1':'e2';
+  const defEnergyKey=af===1?'e2':'e1';
+  let isSpecial=false;
+  let isCrit=Math.random()<atk.crit;
+  let comboBonus=Math.min(.28,(s.combo-1)*.08);
+  let dmg=(18+atk.power*.18+Math.random()*18)*(1-def.defense/420)*(1+comboBonus);
+  if(isCrit)dmg*=1.75;
+  if(s[energyKey]>=100){
+    isSpecial=true;
+    dmg*=1.52;
+    s[energyKey]=18;
+    const fx=document.getElementById('specialFx');
+    fx.textContent=['🧱','✨','💥','🎯'][Math.floor(Math.random()*4)]+' '+(atk.skillName||atk.skill.split(' ')[0]);
+    fx.classList.remove('show');void fx.offsetWidth;fx.classList.add('show');
+  }else{
+    s[energyKey]=Math.min(100,s[energyKey]+atk.energy+(isCrit?14:0)+s.combo*3);
+  }
+  s[defEnergyKey]=Math.min(100,s[defEnergyKey]+11+def.defense*.03);
+  dmg=Math.max(8,Math.round(dmg));
+  const atkBody=document.getElementById('fb'+af);
+  const defBody=document.getElementById('fb'+(af===1?2:1));
+  atkBody.classList.remove('attacking');void atkBody.offsetWidth;atkBody.classList.add('attacking');
+  setTimeout(()=>{defBody.classList.add('hit');setTimeout(()=>defBody.classList.remove('hit'),300)},190);
+  if(af===1)s.h2=Math.max(0,s.h2-dmg);else s.h1=Math.max(0,s.h1-dmg);
+  logBattleEnhanced(atk,def,dmg,isCrit,isSpecial,atkChar,defChar,s.round,s.combo);
+  updateArenaBars();
+  if(s.h1<=0||s.h2<=0)finishBattle();
+}
+
+function updateArenaBars(){
+  const s=battleState;if(!s)return;
+  document.getElementById('hp1').style.width=Math.max(0,(s.h1/s.hp1)*100)+'%';
+  document.getElementById('hp2').style.width=Math.max(0,(s.h2/s.hp2)*100)+'%';
+  document.getElementById('en1').style.width=Math.max(0,s.e1)+'%';
+  document.getElementById('en2').style.width=Math.max(0,s.e2)+'%';
+  document.getElementById('ht1').textContent=Math.round(Math.max(0,s.h1))+'/'+Math.round(s.hp1)+' · 能量 '+Math.round(s.e1)+'%';
+  document.getElementById('ht2').textContent=Math.round(Math.max(0,s.h2))+'/'+Math.round(s.hp2)+' · 能量 '+Math.round(s.e2)+'%';
+  document.getElementById('arenaRound').textContent='第 '+s.round+' 回合';
+  document.getElementById('arenaCombo').textContent=s.combo>1?'连击 x'+s.combo:'节奏观察中';
+  document.getElementById('f1').classList.toggle('leading',s.h1/s.hp1>s.h2/s.hp2);
+  document.getElementById('f2').classList.toggle('leading',s.h2/s.hp2>s.h1/s.hp1);
+}
+
+function finishBattle(){
+  const s=battleState;if(!s)return;
+  s.done=true;
+  clearInterval(battleTimer);
+  const side=s.h1<=0?2:1;
+  const wc=side===1?s.c1:s.c2;
+  const wn=side===1?s.p1:s.p2;
+  const left=Math.round(side===1?s.h1:s.h2);
+  document.getElementById('aresult').innerHTML='🏆 '+wc.name+' 赢下玩具擂台！<br><span style="font-size:13px;color:#77726b">“'+wc.quotes.win+'” · 使用 '+wn.name+' · '+s.round+' 回合 · 剩余耐久 '+left+'</span>';
+  document.getElementById('againBtn').style.display='inline-block';
+  document.getElementById('pauseBtn').style.display='none';
+  document.getElementById('speedBtn').style.display='none';
+}
+
+function toggleBattlePause(){
+  if(!battleState||battleState.done)return;
+  battleState.paused=!battleState.paused;
+  const btn=document.getElementById('pauseBtn');
+  btn.textContent=battleState.paused?'▶️ 继续':'⏸ 暂停';
+  btn.classList.toggle('active',battleState.paused);
+}
+
+function toggleBattleSpeed(){
+  battleSpeed=battleSpeed<520?720:380;
+  const btn=document.getElementById('speedBtn');
+  btn.classList.toggle('active',battleSpeed<520);
+  btn.textContent=battleSpeed<520?'🐇 高速':'⚡ 加速';
+  if(battleTimer){
+    clearInterval(battleTimer);
+    battleTimer=setInterval(playBattleTurn,battleSpeed);
+  }
 }
 
 const battleLogs=[
@@ -3737,8 +3970,8 @@ const specialMoves=[
   "👑 第 {r} 回合，{a}抽到幸运颗粒，「{s}」威力翻倍！"
 ];
 
-function logBattleEnhanced(atk,def,dmg,isCrit,isSpecial,atkChar,defChar,round){
-  const log=document.getElementById('alog');let t;
+function logBattleEnhanced(atk,def,dmg,isCrit,isSpecial,atkChar,defChar,round,combo){
+  let t;
   if(isSpecial){
     t=specialMoves[Math.floor(Math.random()*specialMoves.length)];
     // Add character quote
@@ -3751,12 +3984,22 @@ function logBattleEnhanced(atk,def,dmg,isCrit,isSpecial,atkChar,defChar,round){
   t=t.replace('{b}','<b>'+defChar.name+'</b>');
   t=t.replace('{s}',atk.skillName||atk.skill.split(' ')[0]);
   t=t.replace('{r}',round);
-  log.innerHTML=t+' <span style="color:#ff6f61;font-weight:900">-'+dmg+(isCrit?' · 暴击':'')+'</span>';
+  const suffix=' <span style="color:#ff6f61;font-weight:900">-'+dmg+(isCrit?' · 暴击':'')+(combo>1?' · 连击 x'+combo:'')+'</span>';
+  const main=document.getElementById('alogMain');
+  const list=document.getElementById('alogList');
+  main.innerHTML=t+suffix;
+  if(list){
+    const item=document.createElement('li');
+    item.innerHTML='第 '+round+' 回合：'+atkChar.name+' 对 '+defChar.name+' 造成 '+dmg+' 点伤害'+(isSpecial?'，发动大招':'')+(isCrit?'，暴击':'');
+    list.prepend(item);
+    while(list.children.length>4)list.removeChild(list.lastElementChild);
+  }
 }
 
 function closeArena(){
   document.getElementById('arena').classList.remove('active');
   if(battleTimer)clearInterval(battleTimer);
+  battleState=null;
 }
 
 // ===== INIT =====
