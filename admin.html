@@ -13,11 +13,11 @@ h1{margin:0;font-size:clamp(28px,4vw,48px);letter-spacing:0}
 .sub{margin-top:8px;color:#667085;font-weight:700}
 .panel{background:rgba(255,255,255,.82);border:1px solid rgba(31,41,51,.1);box-shadow:0 18px 50px rgba(31,41,51,.08);border-radius:20px;padding:18px}
 .login{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:18px}
-input,textarea{width:100%;border:1px solid rgba(31,41,51,.14);border-radius:14px;padding:13px 14px;font:inherit;background:white;outline:none}
+input,textarea,select{width:100%;border:1px solid rgba(31,41,51,.14);border-radius:14px;padding:13px 14px;font:inherit;background:white;outline:none}
 textarea{min-height:78px;resize:vertical}
 .edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
 .edit-grid label{display:flex;flex-direction:column;gap:5px;color:#667085;font-size:12px;font-weight:900}
-.edit-grid input{padding:10px 11px;border-radius:12px;font-size:14px;font-weight:850}
+.edit-grid input,.edit-grid select{padding:10px 11px;border-radius:12px;font-size:14px;font-weight:850}
 button{border:0;border-radius:14px;padding:13px 16px;font:inherit;font-weight:900;cursor:pointer;background:#1f2933;color:white}
 button.secondary{background:#edf2f7;color:#1f2933}
 button.good{background:#17a36b}
@@ -35,6 +35,9 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
 .chip{background:#edf2f7;border-radius:999px;padding:6px 10px;font-weight:900;font-size:13px}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.actions.three{grid-template-columns:1fr 1fr 1fr}
+.showcase-tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px;align-items:center}
+.showcase-tools input{padding:10px;border-radius:12px}
 .empty{padding:34px;text-align:center;color:#667085;font-weight:900}
 a{color:#0b69d1}
 @media(max-width:640px){.top{display:block}.login{grid-template-columns:1fr}.wrap{padding:18px 12px 40px}}
@@ -60,6 +63,8 @@ a{color:#0b69d1}
 
   <div class="section-title">待审核武器</div>
   <div class="grid" id="weaponGrid"></div>
+  <div class="section-title">已通过武器管理</div>
+  <div class="grid" id="approvedGrid"></div>
   <div class="section-title">待审核推广证明</div>
   <div class="grid" id="promoGrid"></div>
 </div>
@@ -84,6 +89,7 @@ async function rpc(name,body){
 function typeLabel(t){return t==='sword'?'剑刃':t==='gun'?'枪械':'长柄'}
 async function loadAll(){
   await loadPending();
+  await loadApproved();
   await loadPromotions();
 }
 async function loadPending(){
@@ -100,8 +106,34 @@ async function loadPromotions(){
   try{
     const rows=await rpc('list_pending_promotions',{input_review_key:key()});
     renderPromotions(rows);
-    status((document.querySelectorAll('#weaponGrid .card').length||0)+' 件武器，'+rows.length+' 条推广证明待审核。');
+    status((document.querySelectorAll('#weaponGrid .card').length||0)+' 件武器待审，'+(document.querySelectorAll('#approvedGrid .card').length||0)+' 件已通过，'+rows.length+' 条推广证明待审核。');
   }catch(err){status(err.message||'读取推广证明失败');}
+}
+function weaponEditor(item,extra=''){
+  return `
+    <div class="edit-grid">
+      <label>武器名<input data-field="name" maxlength="20" value="${escapeHTML(item.name)}"></label>
+      <label>创建者<input data-field="creator" maxlength="16" value="${escapeHTML(item.creator)}"></label>
+      <label>类型<select data-field="type">
+        <option value="sword" ${item.type==='sword'?'selected':''}>剑刃</option>
+        <option value="gun" ${item.type==='gun'?'selected':''}>枪械</option>
+        <option value="spear" ${item.type==='spear'?'selected':''}>长柄</option>
+      </select></label>
+      <label>分类名<input data-field="label" maxlength="20" value="${escapeHTML(item.label||typeLabel(item.type))}"></label>
+      <label>技能<input data-field="skill" maxlength="28" value="${escapeHTML(item.skill||'')}"></label>
+      <label>积木数<input data-field="piece_count" type="number" min="0" max="300" value="${escapeHTML(item.piece_count||0)}"></label>
+      <label>AI战力<input data-field="ai_power" type="number" min="1" max="500" value="${escapeHTML(item.ai_power||100)}"></label>
+      <label>防御<input data-field="defense" type="number" min="1" max="300" value="${escapeHTML(item.defense||82)}"></label>
+      <label>暴击<input data-field="crit" type="number" min="0" max="1" step="0.01" value="${escapeHTML(item.crit||0.12)}"></label>
+      <label>展示图地址<input data-field="showcase_url" value="${escapeHTML(item.showcase_url||'')}" placeholder="上传后自动填入"></label>
+    </div>
+    <textarea data-field="description" maxlength="120" placeholder="武器介绍">${escapeHTML(item.description||'')}</textarea>
+    ${extra}`;
+}
+function collectWeaponFields(card){
+  const fields={};
+  card.querySelectorAll('[data-field]').forEach(input=>fields[input.dataset.field]=input.value.trim());
+  return fields;
 }
 function renderWeapons(rows){
   const grid=document.getElementById('weaponGrid');
@@ -120,16 +152,14 @@ function renderWeapons(rows){
         <div class="line">AI估算：${escapeHTML(item.piece_count||0)} 颗积木 · 战力 ${escapeHTML(item.ai_power||100)}</div>
         <div class="line">推广证明：${escapeHTML(item.share_proof||'无')}</div>
         <div class="line"><a href="${escapeHTML(item.image_url)}" target="_blank" rel="noopener">新窗口看原图</a></div>
-        <div class="edit-grid">
-          <label>武器名<input data-field="name" maxlength="20" value="${escapeHTML(item.name)}"></label>
-          <label>创建者<input data-field="creator" maxlength="16" value="${escapeHTML(item.creator)}"></label>
-          <label>积木数<input data-field="piece_count" type="number" min="0" max="300" value="${escapeHTML(item.piece_count||0)}"></label>
-          <label>AI战力<input data-field="ai_power" type="number" min="1" max="500" value="${escapeHTML(item.ai_power||100)}"></label>
-          <label>防御<input data-field="defense" type="number" min="1" max="300" value="${escapeHTML(item.defense||82)}"></label>
-          <label>暴击<input data-field="crit" type="number" min="0" max="1" step="0.01" value="${escapeHTML(item.crit||0.12)}"></label>
+        ${weaponEditor(item)}
+        <div class="showcase-tools">
+          <input type="file" accept="image/*" data-showcase-file>
+          <button class="secondary" onclick="uploadShowcase('${escapeHTML(item.id)}',this)">上传展示图</button>
         </div>
         <textarea placeholder="审核备注，可不填"></textarea>
-        <div class="actions">
+        <div class="actions three">
+          <button class="secondary" onclick="saveWeapon('${escapeHTML(item.id)}',this)">仅保存修改</button>
           <button class="good" onclick="reviewWeapon('${escapeHTML(item.id)}','approved',this)">通过</button>
           <button class="bad" onclick="reviewWeapon('${escapeHTML(item.id)}','rejected',this)">拒绝</button>
         </div>
@@ -138,9 +168,9 @@ function renderWeapons(rows){
 }
 async function reviewWeapon(id,decision,btn){
   const card=btn.closest('.card');
-  const note=card.querySelector('textarea').value.trim();
-  const fields={};
-  card.querySelectorAll('[data-field]').forEach(input=>fields[input.dataset.field]=input.value.trim());
+  const note=card.querySelector('textarea:not([data-field])').value.trim();
+  await saveWeapon(id,btn,true);
+  const fields=collectWeaponFields(card);
   btn.disabled=true;
   status(decision==='approved'?'正在通过...':'正在拒绝...');
   try{
@@ -162,6 +192,93 @@ async function reviewWeapon(id,decision,btn){
   }catch(err){
     btn.disabled=false;
     status(err.message||'操作失败');
+  }
+}
+async function loadApproved(){
+  if(!key())return;
+  status('正在读取已通过武器...');
+  try{
+    const rows=await rpc('list_admin_weapons',{input_review_key:key()});
+    renderApproved(rows);
+  }catch(err){status(err.message||'读取已通过武器失败');}
+}
+function renderApproved(rows){
+  const grid=document.getElementById('approvedGrid');
+  if(!rows.length){grid.innerHTML='<div class="panel empty">暂时没有已通过武器。</div>';return}
+  grid.innerHTML=rows.map(item=>`
+    <div class="panel card" data-id="${escapeHTML(item.id)}">
+      <div class="image"><img src="${escapeHTML(item.showcase_url||item.image_url)}" alt="${escapeHTML(item.name)}"></div>
+      <div class="meta">
+        <div class="name">${escapeHTML(item.name)}</div>
+        <div class="chips">
+          <span class="chip">${escapeHTML(typeLabel(item.type))}</span>
+          <span class="chip">创建者：${escapeHTML(item.creator)}</span>
+        </div>
+        <div class="line"><a href="${escapeHTML(item.image_url)}" target="_blank" rel="noopener">原武器图</a>${item.showcase_url?' · <a href="'+escapeHTML(item.showcase_url)+'" target="_blank" rel="noopener">展示图</a>':' · 未配展示图'}</div>
+        ${weaponEditor(item)}
+        <div class="showcase-tools">
+          <input type="file" accept="image/*" data-showcase-file>
+          <button class="secondary" onclick="uploadShowcase('${escapeHTML(item.id)}',this)">上传/更换展示图</button>
+        </div>
+        <div class="actions">
+          <button class="good" onclick="saveWeapon('${escapeHTML(item.id)}',this)">保存信息</button>
+          <button class="secondary" onclick="loadApproved()">刷新</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+async function uploadShowcase(id,btn){
+  const card=btn.closest('.card');
+  const file=card.querySelector('[data-showcase-file]').files[0];
+  if(!file){status('先选择一张展示图。');return}
+  btn.disabled=true;
+  status('正在上传展示图...');
+  try{
+    const ext=(file.type&&file.type.includes('png'))?'png':'webp';
+    const path='showcase-'+id+'-'+Date.now()+'.'+ext;
+    const res=await fetch(cloudBase()+'/storage/v1/object/'+encodeURIComponent(CLOUD.imageBucket||'mumu-weapon-images')+'/'+encodeURIComponent(path),{
+      method:'POST',
+      headers:{apikey:CLOUD.anonKey,Authorization:'Bearer '+CLOUD.anonKey,'Content-Type':file.type||'image/webp'},
+      body:file
+    });
+    if(!res.ok)throw new Error('展示图上传失败：'+res.status);
+    const url=cloudBase()+'/storage/v1/object/public/'+encodeURIComponent(CLOUD.imageBucket||'mumu-weapon-images')+'/'+encodeURIComponent(path);
+    card.querySelector('[data-field="showcase_url"]').value=url;
+    await saveWeapon(id,btn,true);
+    status('展示图已上传并保存。');
+    loadApproved();
+  }catch(err){
+    status(err.message||'展示图上传失败');
+  }finally{
+    btn.disabled=false;
+  }
+}
+async function saveWeapon(id,btn,silent=false){
+  const card=btn.closest('.card');
+  const fields=collectWeaponFields(card);
+  if(!silent){btn.disabled=true;status('正在保存武器信息...')}
+  try{
+    await rpc('admin_update_weapon',{
+      input_review_key:key(),
+      weapon_id:id,
+      edited_name:fields.name,
+      edited_type:fields.type,
+      edited_label:fields.label,
+      edited_description:fields.description,
+      edited_skill:fields.skill,
+      edited_creator:fields.creator,
+      edited_showcase_url:fields.showcase_url,
+      edited_piece_count:Number(fields.piece_count||0),
+      edited_ai_power:Number(fields.ai_power||100),
+      edited_defense:Number(fields.defense||82),
+      edited_crit:Number(fields.crit||0.12)
+    });
+    if(!silent)status('武器信息已保存。');
+  }catch(err){
+    status(err.message||'保存失败');
+    throw err;
+  }finally{
+    if(!silent)btn.disabled=false;
   }
 }
 function renderPromotions(rows){

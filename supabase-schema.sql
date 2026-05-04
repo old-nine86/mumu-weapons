@@ -13,6 +13,7 @@ create table if not exists public.weapons (
   fx text not null,
   creator text not null,
   image_url text not null,
+  showcase_url text not null default '',
   defense integer not null default 82,
   crit numeric not null default 0.12,
   piece_count integer not null default 0,
@@ -32,6 +33,7 @@ alter table public.weapons add column if not exists reviewed_at timestamptz;
 alter table public.weapons add column if not exists piece_count integer not null default 0;
 alter table public.weapons add column if not exists ai_power integer not null default 100;
 alter table public.weapons add column if not exists analysis jsonb not null default '{}'::jsonb;
+alter table public.weapons add column if not exists showcase_url text not null default '';
 
 alter table public.weapons enable row level security;
 
@@ -185,6 +187,7 @@ $$;
 grant execute on function public.list_pending_weapons(text) to anon, authenticated;
 grant execute on function public.review_weapon(text, text, text, text) to anon, authenticated;
 
+drop function if exists public.list_pending_weapons_v2(text);
 create or replace function public.list_pending_weapons_v2(input_review_key text)
 returns table (
   id text,
@@ -197,6 +200,7 @@ returns table (
   fx text,
   creator text,
   image_url text,
+  showcase_url text,
   defense integer,
   crit numeric,
   piece_count integer,
@@ -222,7 +226,7 @@ begin
 
   return query
   select w.id, w.name, w.type, w.label, w.description, w.features, w.skill, w.fx,
-         w.creator, w.image_url, w.defense, w.crit, w.piece_count, w.ai_power, w.analysis,
+         w.creator, w.image_url, w.showcase_url, w.defense, w.crit, w.piece_count, w.ai_power, w.analysis,
          w.status, w.share_proof, w.review_note, w.created_at
   from public.weapons w
   where w.status = 'pending'
@@ -287,6 +291,116 @@ end;
 $$;
 
 grant execute on function public.review_weapon_with_edits(text, text, text, text, text, text, integer, integer, integer, numeric) to anon, authenticated;
+
+create or replace function public.list_admin_weapons(input_review_key text)
+returns table (
+  id text,
+  name text,
+  type text,
+  label text,
+  description text,
+  skill text,
+  creator text,
+  image_url text,
+  showcase_url text,
+  defense integer,
+  crit numeric,
+  piece_count integer,
+  ai_power integer,
+  status text,
+  created_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not exists (
+    select 1 from public.admin_settings
+    where admin_settings.id = 'default'
+      and admin_settings.review_key = input_review_key
+  ) then
+    raise exception 'invalid review key';
+  end if;
+
+  return query
+  select w.id, w.name, w.type, w.label, w.description, w.skill, w.creator,
+         w.image_url, w.showcase_url, w.defense, w.crit, w.piece_count,
+         w.ai_power, w.status, w.created_at
+  from public.weapons w
+  where w.status = 'approved'
+  order by w.created_at desc;
+end;
+$$;
+
+create or replace function public.admin_update_weapon(
+  input_review_key text,
+  weapon_id text,
+  edited_name text default null,
+  edited_type text default null,
+  edited_label text default null,
+  edited_description text default null,
+  edited_skill text default null,
+  edited_creator text default null,
+  edited_showcase_url text default null,
+  edited_piece_count integer default null,
+  edited_ai_power integer default null,
+  edited_defense integer default null,
+  edited_crit numeric default null
+)
+returns table (
+  id text,
+  name text,
+  type text,
+  label text,
+  description text,
+  skill text,
+  creator text,
+  showcase_url text,
+  piece_count integer,
+  ai_power integer,
+  defense integer,
+  crit numeric,
+  status text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not exists (
+    select 1 from public.admin_settings
+    where admin_settings.id = 'default'
+      and admin_settings.review_key = input_review_key
+  ) then
+    raise exception 'invalid review key';
+  end if;
+
+  if edited_type is not null and edited_type not in ('sword','gun','spear') then
+    raise exception 'invalid weapon type';
+  end if;
+
+  return query
+  update public.weapons w
+  set name = coalesce(nullif(left(edited_name, 20), ''), w.name),
+      type = coalesce(nullif(edited_type, ''), w.type),
+      label = coalesce(nullif(left(edited_label, 20), ''), w.label),
+      description = coalesce(nullif(left(edited_description, 120), ''), w.description),
+      skill = coalesce(nullif(left(edited_skill, 28), ''), w.skill),
+      creator = coalesce(nullif(left(edited_creator, 16), ''), w.creator),
+      showcase_url = coalesce(edited_showcase_url, w.showcase_url),
+      piece_count = greatest(0, least(300, coalesce(edited_piece_count, w.piece_count))),
+      ai_power = greatest(1, least(500, coalesce(edited_ai_power, w.ai_power))),
+      defense = greatest(1, least(300, coalesce(edited_defense, w.defense))),
+      crit = greatest(0, least(1, coalesce(edited_crit, w.crit)))
+  where w.id = weapon_id
+  returning w.id, w.name, w.type, w.label, w.description, w.skill, w.creator,
+            w.showcase_url, w.piece_count, w.ai_power, w.defense, w.crit, w.status;
+end;
+$$;
+
+grant execute on function public.list_admin_weapons(text) to anon, authenticated;
+grant execute on function public.admin_update_weapon(text, text, text, text, text, text, text, text, text, integer, integer, integer, numeric) to anon, authenticated;
 
 drop policy if exists "Public can submit promotion proof" on public.promotion_submissions;
 create policy "Public can submit promotion proof"

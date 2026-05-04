@@ -2819,8 +2819,8 @@ const WEAPONS=[
 
 const DEF={1:{df:93,cr:0.11},2:{df:110,cr:0.22},3:{df:102,cr:0.15},4:{df:113,cr:0.11},5:{df:77,cr:0.13},6:{df:85,cr:0.09},7:{df:95,cr:0.18},8:{df:88,cr:0.12},9:{df:91,cr:0.14},10:{df:80,cr:0.16},11:{df:87,cr:0.10}};
 const bc={sword:'badge-sword',gun:'badge-gun',spear:'badge-spear'};
-const SHOWCASE_IMG={
-  1:'assets/showcase-keyblade-golden-sword.webp'
+const SHOWCASE_BY_NAME={
+  'IMG 4355':'assets/showcase-img-4355.webp'
 };
 
 // ===== 16 MBTI CHARACTERS =====
@@ -3102,6 +3102,7 @@ function cloudRowToItem(row){
     creator:row.creator||'匿名创造者',
     createdAt:row.created_at?new Date(row.created_at).getTime():Date.now(),
     img:row.image_url,
+    showcaseUrl:row.showcase_url||'',
     def:{df:Number(row.defense||82),cr:Number(row.crit||.12)},
     pieceCount:Number(row.piece_count||0),
     aiPower:Number(row.ai_power||100),
@@ -3247,7 +3248,7 @@ function applyUploadedWeapons(){
   if(!DATA||!Array.isArray(DATA.uploads))return;
   DATA.uploads.forEach(item=>{
     if(!item||!item.i)return;
-    const next={i:item.i,n:item.n,t:item.t,l:item.l,d:item.d,f:item.f,s:item.s,fx:item.fx,creator:item.creator,createdAt:item.createdAt,uploaded:true,cloud:item.cloud,pieceCount:item.pieceCount,aiPower:item.aiPower,analysis:item.analysis};
+    const next={i:item.i,n:item.n,t:item.t,l:item.l,d:item.d,f:item.f,s:item.s,fx:item.fx,creator:item.creator,createdAt:item.createdAt,uploaded:true,cloud:item.cloud,pieceCount:item.pieceCount,aiPower:item.aiPower,analysis:item.analysis,showcaseUrl:item.showcaseUrl};
     const existing=WEAPONS.find(w=>String(w.i)===String(item.i));
     if(existing){
       Object.assign(existing,next);
@@ -3908,7 +3909,7 @@ function openModal(id){
   const w=WEAPONS.find(x=>x.i===id);if(!w)return;
   const v=getVotes(w.i);const d=DEF[w.i]||{df:80,cr:0.08};
   const featureGrid=(w.f||[]).slice(0,6).map(f=>'<div class="modal-feature">'+escapeHTML(f)+'</div>').join('');
-  const showcaseSrc=SHOWCASE_IMG[w.i]||IMG[w.i];
+  const showcaseSrc=w.showcaseUrl||SHOWCASE_BY_NAME[w.n]||IMG[w.i];
   document.getElementById('modalContent').innerHTML=
     '<div class="modal-img-wrap">'+
       '<div class="modal-showcase-tag">SHOWCASE · '+escapeHTML(w.l)+'</div>'+
