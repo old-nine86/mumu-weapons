@@ -2819,6 +2819,9 @@ const WEAPONS=[
 
 const DEF={1:{df:93,cr:0.11},2:{df:110,cr:0.22},3:{df:102,cr:0.15},4:{df:113,cr:0.11},5:{df:77,cr:0.13},6:{df:85,cr:0.09},7:{df:95,cr:0.18},8:{df:88,cr:0.12},9:{df:91,cr:0.14},10:{df:80,cr:0.16},11:{df:87,cr:0.10}};
 const bc={sword:'badge-sword',gun:'badge-gun',spear:'badge-spear'};
+const SHOWCASE_IMG={
+  1:'assets/showcase-keyblade-golden-sword.webp'
+};
 
 // ===== 16 MBTI CHARACTERS =====
 // Each has: id, name, mbti, mbtiName, group, colors (primary, secondary, accent), weaponPref, stats, quotes, svg generator
@@ -3905,10 +3908,11 @@ function openModal(id){
   const w=WEAPONS.find(x=>x.i===id);if(!w)return;
   const v=getVotes(w.i);const d=DEF[w.i]||{df:80,cr:0.08};
   const featureGrid=(w.f||[]).slice(0,6).map(f=>'<div class="modal-feature">'+escapeHTML(f)+'</div>').join('');
+  const showcaseSrc=SHOWCASE_IMG[w.i]||IMG[w.i];
   document.getElementById('modalContent').innerHTML=
     '<div class="modal-img-wrap">'+
       '<div class="modal-showcase-tag">SHOWCASE · '+escapeHTML(w.l)+'</div>'+
-      '<img src="'+IMG[w.i]+'" alt="'+escapeHTML(w.n)+'">'+
+      '<img src="'+showcaseSrc+'" alt="'+escapeHTML(w.n)+'">'+
     '</div>'+
     '<div class="modal-info">'+
       '<div class="modal-name">'+escapeHTML(w.n)+' <span class="type-badge '+(bc[w.t]||'')+'">'+escapeHTML(w.l)+'</span></div>'+
