@@ -3119,7 +3119,7 @@ async function loadCloudWeapons(){
   const res=await fetch(url,{headers:cloudHeaders()});
   if(!res.ok)throw new Error(await cloudErrorMessage(res,'云端武器库读取失败'));
   const rows=await res.json();
-  return rows.map(cloudRowToItem);
+  return rows.filter(row=>row.locale!=='en').map(cloudRowToItem);
 }
 
 function cloudReplyToForumReply(row){

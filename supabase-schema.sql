@@ -14,6 +14,12 @@ create table if not exists public.weapons (
   creator text not null,
   image_url text not null,
   showcase_url text not null default '',
+  name_en text not null default '',
+  label_en text not null default '',
+  description_en text not null default '',
+  skill_en text not null default '',
+  features_en jsonb not null default '[]'::jsonb,
+  locale text not null default 'both' check (locale in ('zh-CN','en','both')),
   defense integer not null default 82,
   crit numeric not null default 0.12,
   piece_count integer not null default 0,
@@ -34,6 +40,12 @@ alter table public.weapons add column if not exists piece_count integer not null
 alter table public.weapons add column if not exists ai_power integer not null default 100;
 alter table public.weapons add column if not exists analysis jsonb not null default '{}'::jsonb;
 alter table public.weapons add column if not exists showcase_url text not null default '';
+alter table public.weapons add column if not exists name_en text not null default '';
+alter table public.weapons add column if not exists label_en text not null default '';
+alter table public.weapons add column if not exists description_en text not null default '';
+alter table public.weapons add column if not exists skill_en text not null default '';
+alter table public.weapons add column if not exists features_en jsonb not null default '[]'::jsonb;
+alter table public.weapons add column if not exists locale text not null default 'both';
 
 alter table public.weapons enable row level security;
 
@@ -201,6 +213,12 @@ returns table (
   creator text,
   image_url text,
   showcase_url text,
+  name_en text,
+  label_en text,
+  description_en text,
+  skill_en text,
+  features_en jsonb,
+  locale text,
   defense integer,
   crit numeric,
   piece_count integer,
@@ -226,7 +244,7 @@ begin
 
   return query
   select w.id, w.name, w.type, w.label, w.description, w.features, w.skill, w.fx,
-         w.creator, w.image_url, w.showcase_url, w.defense, w.crit, w.piece_count, w.ai_power, w.analysis,
+         w.creator, w.image_url, w.showcase_url, w.name_en, w.label_en, w.description_en, w.skill_en, w.features_en, w.locale, w.defense, w.crit, w.piece_count, w.ai_power, w.analysis,
          w.status, w.share_proof, w.review_note, w.created_at
   from public.weapons w
   where w.status = 'pending'
@@ -292,6 +310,7 @@ $$;
 
 grant execute on function public.review_weapon_with_edits(text, text, text, text, text, text, integer, integer, integer, numeric) to anon, authenticated;
 
+drop function if exists public.list_admin_weapons(text);
 create or replace function public.list_admin_weapons(input_review_key text)
 returns table (
   id text,
@@ -303,6 +322,12 @@ returns table (
   creator text,
   image_url text,
   showcase_url text,
+  name_en text,
+  label_en text,
+  description_en text,
+  skill_en text,
+  features_en jsonb,
+  locale text,
   defense integer,
   crit numeric,
   piece_count integer,
@@ -325,7 +350,7 @@ begin
 
   return query
   select w.id, w.name, w.type, w.label, w.description, w.skill, w.creator,
-         w.image_url, w.showcase_url, w.defense, w.crit, w.piece_count,
+         w.image_url, w.showcase_url, w.name_en, w.label_en, w.description_en, w.skill_en, w.features_en, w.locale, w.defense, w.crit, w.piece_count,
          w.ai_power, w.status, w.created_at
   from public.weapons w
   where w.status = 'approved'
@@ -333,6 +358,8 @@ begin
 end;
 $$;
 
+drop function if exists public.admin_update_weapon(text, text, text, text, text, text, text, text, text, integer, integer, integer, numeric);
+drop function if exists public.admin_update_weapon(text, text, text, text, text, text, text, text, text, text, text, text, text, text, integer, integer, integer, numeric);
 create or replace function public.admin_update_weapon(
   input_review_key text,
   weapon_id text,
@@ -343,6 +370,11 @@ create or replace function public.admin_update_weapon(
   edited_skill text default null,
   edited_creator text default null,
   edited_showcase_url text default null,
+  edited_name_en text default null,
+  edited_label_en text default null,
+  edited_description_en text default null,
+  edited_skill_en text default null,
+  edited_locale text default null,
   edited_piece_count integer default null,
   edited_ai_power integer default null,
   edited_defense integer default null,
@@ -357,6 +389,11 @@ returns table (
   skill text,
   creator text,
   showcase_url text,
+  name_en text,
+  label_en text,
+  description_en text,
+  skill_en text,
+  locale text,
   piece_count integer,
   ai_power integer,
   defense integer,
@@ -380,6 +417,10 @@ begin
     raise exception 'invalid weapon type';
   end if;
 
+  if edited_locale is not null and edited_locale not in ('zh-CN','en','both') then
+    raise exception 'invalid locale';
+  end if;
+
   return query
   update public.weapons w
   set name = coalesce(nullif(left(edited_name, 20), ''), w.name),
@@ -389,18 +430,23 @@ begin
       skill = coalesce(nullif(left(edited_skill, 28), ''), w.skill),
       creator = coalesce(nullif(left(edited_creator, 16), ''), w.creator),
       showcase_url = coalesce(edited_showcase_url, w.showcase_url),
+      name_en = coalesce(left(edited_name_en, 40), w.name_en),
+      label_en = coalesce(left(edited_label_en, 28), w.label_en),
+      description_en = coalesce(left(edited_description_en, 180), w.description_en),
+      skill_en = coalesce(left(edited_skill_en, 40), w.skill_en),
+      locale = coalesce(nullif(edited_locale, ''), w.locale),
       piece_count = greatest(0, least(300, coalesce(edited_piece_count, w.piece_count))),
       ai_power = greatest(1, least(500, coalesce(edited_ai_power, w.ai_power))),
       defense = greatest(1, least(300, coalesce(edited_defense, w.defense))),
       crit = greatest(0, least(1, coalesce(edited_crit, w.crit)))
   where w.id = weapon_id
   returning w.id, w.name, w.type, w.label, w.description, w.skill, w.creator,
-            w.showcase_url, w.piece_count, w.ai_power, w.defense, w.crit, w.status;
+            w.showcase_url, w.name_en, w.label_en, w.description_en, w.skill_en, w.locale, w.piece_count, w.ai_power, w.defense, w.crit, w.status;
 end;
 $$;
 
 grant execute on function public.list_admin_weapons(text) to anon, authenticated;
-grant execute on function public.admin_update_weapon(text, text, text, text, text, text, text, text, text, integer, integer, integer, numeric) to anon, authenticated;
+grant execute on function public.admin_update_weapon(text, text, text, text, text, text, text, text, text, text, text, text, text, text, integer, integer, integer, numeric) to anon, authenticated;
 
 drop policy if exists "Public can submit promotion proof" on public.promotion_submissions;
 create policy "Public can submit promotion proof"

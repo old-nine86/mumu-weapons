@@ -3093,14 +3093,14 @@ function dataUrlToBlob(dataUrl){
 function cloudRowToItem(row){
   return {
     i:row.id,
-    n:row.name,
+    n:row.name_en||row.name,
     t:row.type,
-    l:row.label||typeLabel(row.type),
-    d:row.description||'玩家Upload的原创积木Weapon。',
-    f:Array.isArray(row.features)?row.features:['Player original upload','CloudWeapon库','Creator: '+(row.creator||'匿名创造者')],
-    s:row.skill||typeEmoji(row.type)+' Brick Flash Combo',
+    l:row.label_en||row.label||typeLabel(row.type),
+    d:row.description_en||row.description||'Original brick weapon uploaded by a player.',
+    f:Array.isArray(row.features_en)&&row.features_en.length?row.features_en:(Array.isArray(row.features)?row.features:['Player original upload','Cloud weapon library','Creator: '+(row.creator||'Anonymous creator')]),
+    s:row.skill_en||row.skill||typeEmoji(row.type)+' Brick Flash Combo',
     fx:row.fx||typeEmoji(row.type),
-    creator:row.creator||'匿名创造者',
+    creator:row.creator||'Anonymous creator',
     createdAt:row.created_at?new Date(row.created_at).getTime():Date.now(),
     img:row.image_url,
     showcaseUrl:row.showcase_url||'',
@@ -3119,7 +3119,7 @@ async function loadCloudWeapons(){
   const res=await fetch(url,{headers:cloudHeaders()});
   if(!res.ok)throw new Error(await cloudErrorMessage(res,'CloudWeapon库读取失败'));
   const rows=await res.json();
-  return rows.map(cloudRowToItem);
+  return rows.filter(row=>row.locale!=='zh-CN').map(cloudRowToItem);
 }
 
 function cloudReplyToForumReply(row){

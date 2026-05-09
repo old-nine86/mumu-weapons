@@ -126,8 +126,17 @@ function weaponEditor(item,extra=''){
       <label>防御<input data-field="defense" type="number" min="1" max="300" value="${escapeHTML(item.defense||82)}"></label>
       <label>暴击<input data-field="crit" type="number" min="0" max="1" step="0.01" value="${escapeHTML(item.crit||0.12)}"></label>
       <label>展示图地址<input data-field="showcase_url" value="${escapeHTML(item.showcase_url||'')}" placeholder="上传后自动填入"></label>
+      <label>显示站点<select data-field="locale">
+        <option value="both" ${(item.locale||'both')==='both'?'selected':''}>中英文都显示</option>
+        <option value="zh-CN" ${item.locale==='zh-CN'?'selected':''}>只显示中文站</option>
+        <option value="en" ${item.locale==='en'?'selected':''}>只显示英文站</option>
+      </select></label>
+      <label>英文名<input data-field="name_en" maxlength="40" value="${escapeHTML(item.name_en||'')}" placeholder="English weapon name"></label>
+      <label>英文分类<input data-field="label_en" maxlength="28" value="${escapeHTML(item.label_en||'')}" placeholder="Blade / Blaster..."></label>
+      <label>英文技能<input data-field="skill_en" maxlength="40" value="${escapeHTML(item.skill_en||'')}" placeholder="English skill name"></label>
     </div>
     <textarea data-field="description" maxlength="120" placeholder="武器介绍">${escapeHTML(item.description||'')}</textarea>
+    <textarea data-field="description_en" maxlength="180" placeholder="English description">${escapeHTML(item.description_en||'')}</textarea>
     ${extra}`;
 }
 function collectWeaponFields(card){
@@ -268,6 +277,11 @@ async function saveWeapon(id,btn,silent=false){
       edited_skill:fields.skill,
       edited_creator:fields.creator,
       edited_showcase_url:fields.showcase_url,
+      edited_name_en:fields.name_en,
+      edited_label_en:fields.label_en,
+      edited_description_en:fields.description_en,
+      edited_skill_en:fields.skill_en,
+      edited_locale:fields.locale,
       edited_piece_count:Number(fields.piece_count||0),
       edited_ai_power:Number(fields.ai_power||100),
       edited_defense:Number(fields.defense||82),
