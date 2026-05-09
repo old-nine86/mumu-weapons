@@ -72,7 +72,7 @@ grant select on public.upload_quota_rules to anon, authenticated;
 
 create table if not exists public.upload_quota_rules (
   id text primary key default 'default',
-  free_per_ip integer not null default 2,
+  free_per_ip integer not null default 50,
   bonus_per_approved_promotion integer not null default 10,
   updated_at timestamptz not null default now()
 );
@@ -80,7 +80,7 @@ create table if not exists public.upload_quota_rules (
 alter table public.upload_quota_rules enable row level security;
 
 insert into public.upload_quota_rules (id, free_per_ip, bonus_per_approved_promotion)
-values ('default', 2, 10)
+values ('default', 50, 10)
 on conflict (id) do update
 set free_per_ip = excluded.free_per_ip,
     bonus_per_approved_promotion = excluded.bonus_per_approved_promotion,

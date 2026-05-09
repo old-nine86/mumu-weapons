@@ -3083,7 +3083,7 @@ function getBonusSlots(){
 }
 
 function getUploadAllowance(){
-  return cloudEnabled()?2+getBonusSlots():1;
+  return cloudEnabled()?50+getBonusSlots():1;
 }
 
 function dataUrlToBlob(dataUrl){
