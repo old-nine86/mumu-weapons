@@ -3285,52 +3285,112 @@ function refreshUploadState(){
   }
 }
 
-function recognizeWeaponType(file,width,height){
-  const name=(file.name||'').toLowerCase();
-  if(/枪|炮|gun|blaster|rifle|pistol/.test(name))return 'gun';
-  if(/矛|枪矛|长柄|spear|pole|staff|halberd|lance/.test(name))return 'spear';
-  if(/剑|刀|刃|sword|blade|katana/.test(name))return 'sword';
-  if(height>width*1.35)return 'spear';
-  if(width>height*1.35)return 'gun';
-  return 'sword';
+function weaponKeywordScores(file){
+  const name=((file&&file.name)||'').toLowerCase();
+  const scores={sword:0,gun:0,spear:0};
+  if(/枪|炮|弩|gun|blaster|rifle|pistol|cannon|crossbow/.test(name))scores.gun+=3;
+  if(/矛|长柄|戟|三叉|spear|pole|staff|halberd|lance|trident/.test(name))scores.spear+=3;
+  if(/剑|刀|刃|光剑|sword|blade|katana|saber|keyblade/.test(name))scores.sword+=3;
+  return scores;
 }
 
-function analyzeBrickWeapon(canvas,type){
+function extractWeaponMetrics(canvas){
   const ctx=canvas.getContext('2d',{willReadFrequently:true});
   const w=canvas.width,h=canvas.height;
   const img=ctx.getImageData(0,0,w,h).data;
-  let solid=0,minX=w,minY=h,maxX=0,maxY=0;
+  const step=Math.max(1,Math.floor(Math.min(w,h)/150));
+  let solid=0,minX=w,minY=h,maxX=-1,maxY=-1,sumX=0,sumY=0;
   const colors=new Map();
-  const step=Math.max(1,Math.floor(Math.min(w,h)/120));
   for(let y=0;y<h;y+=step){
     for(let x=0;x<w;x+=step){
       const p=(y*w+x)*4,a=img[p+3];
-      if(a<48)continue;
-      solid++;
+      if(a<42)continue;
+      solid++;sumX+=x;sumY+=y;
       if(x<minX)minX=x;if(y<minY)minY=y;if(x>maxX)maxX=x;if(y>maxY)maxY=y;
-      const r=Math.round(img[p]/42)*42,g=Math.round(img[p+1]/42)*42,b=Math.round(img[p+2]/42)*42;
+      const r=Math.round(img[p]/36)*36,g=Math.round(img[p+1]/36)*36,b=Math.round(img[p+2]/36)*36;
       colors.set(r+','+g+','+b,(colors.get(r+','+g+','+b)||0)+1);
     }
   }
+  if(!solid){return {empty:true,boxW:w,boxH:h,aspect:w/Math.max(1,h),fill:0,longShape:1,colorCount:0,centerOffsetX:0,centerOffsetY:0,endMassSkew:0,crossMass:0,symmetry:.5,solid:0,step};}
   const boxW=Math.max(1,maxX-minX+1),boxH=Math.max(1,maxY-minY+1);
-  const fill=solid/Math.max(1,(boxW/step)*(boxH/step));
-  const colorCount=Math.min(12,colors.size);
   const aspect=boxW/boxH;
   const longShape=Math.max(boxW,boxH)/Math.max(1,Math.min(boxW,boxH));
-  let pieceCount=Math.round(Math.max(6,solid/18+colorCount*2+longShape*3));
-  pieceCount=Math.max(6,Math.min(180,pieceCount));
-  const complexity=Math.max(1,Math.min(10,Math.round(colorCount*.7+longShape*.9+fill*4)));
-  const balance=Math.max(1,Math.min(10,Math.round(10-Math.abs(aspect-1.8)*2)));
-  const typeBonus=type==='spear'?8:type==='gun'?12:10;
-  const aiPower=Math.max(60,Math.min(260,Math.round(72+pieceCount*1.35+complexity*5+balance*3+typeBonus)));
-  const defense=Math.max(45,Math.min(150,Math.round(58+pieceCount*.42+(type==='spear'?22:type==='sword'?16:8)+fill*24)));
-  const crit=Math.max(.06,Math.min(.36,(.07+complexity*.012+(type==='gun'?.08:type==='sword'?.05:.035))));
+  const sampledBox=Math.max(1,(boxW/step)*(boxH/step));
+  const fill=Math.max(0,Math.min(1,solid/sampledBox));
+  const centerX=(sumX/solid-minX)/boxW;
+  const centerY=(sumY/solid-minY)/boxH;
+  let start=0,end=0,mid=0,wideBand=0;
+  const horizontal=aspect>=1;
+  for(let y=0;y<h;y+=step){
+    for(let x=0;x<w;x+=step){
+      const p=(y*w+x)*4;
+      if(img[p+3]<42||x<minX||x>maxX||y<minY||y>maxY)continue;
+      const nx=(x-minX)/boxW,ny=(y-minY)/boxH;
+      const longPos=horizontal?nx:ny;
+      const shortPos=horizontal?ny:nx;
+      if(longPos<.25)start++;
+      if(longPos>.75)end++;
+      if(longPos>.36&&longPos<.64)mid++;
+      if(shortPos>.22&&shortPos<.78)wideBand++;
+    }
+  }
+  const endTotal=Math.max(1,start+end);
+  const endMassSkew=Math.abs(start-end)/endTotal;
+  const symmetry=Math.max(0,Math.min(1,1-endMassSkew));
+  const crossMass=mid/Math.max(1,solid);
+  return {empty:false,boxW,boxH,aspect,fill,longShape,colorCount:Math.min(18,colors.size),centerOffsetX:Math.abs(centerX-.5),centerOffsetY:Math.abs(centerY-.5),endMassSkew,crossMass,symmetry,solid,step,canvasW:w,canvasH:h,wideBand:wideBand/Math.max(1,solid)};
+}
+
+function recognizeWeaponProfile(file,width,height,canvas){
+  const metrics=canvas?extractWeaponMetrics(canvas):{aspect:width/Math.max(1,height),longShape:Math.max(width,height)/Math.max(1,Math.min(width,height)),fill:.45,colorCount:1,centerOffsetX:0,centerOffsetY:0,endMassSkew:0,crossMass:.3,symmetry:.6,solid:1,step:1,boxW:width,boxH:height};
+  const scores=weaponKeywordScores(file);
+  const a=metrics.aspect||1;
+  const longShape=metrics.longShape||1;
+  if(a>1.45)scores.gun+=1.1;
+  if(a>2.3)scores.gun+=.8;
+  if(a<.7)scores.spear+=1.2;
+  if(a<.45)scores.spear+=.9;
+  if(longShape>2.1){scores.sword+=.55;scores.spear+=.45;}
+  if(longShape>3.1&&metrics.fill<.42)scores.spear+=1.1;
+  if(metrics.centerOffsetX>.1&&a>1.15)scores.gun+=.85;
+  if(metrics.endMassSkew>.2&&a>1.12)scores.gun+=1.25;
+  if(metrics.symmetry>.72&&longShape>1.45)scores.sword+=1.05;
+  if(metrics.crossMass>.2&&metrics.crossMass<.55)scores.sword+=.75;
+  if(a>=.55&&a<=1.65)scores.sword+=.8;
+  if(metrics.fill>.5&&a>1.2&&a<2.2)scores.gun+=.35;
+  const entries=Object.entries(scores).sort((x,y)=>y[1]-x[1]);
+  const type=entries[0][0];
+  const best=entries[0][1],second=entries[1][1];
+  const confidence=Math.max(54,Math.min(96,Math.round(58+(best-second)*12+Math.min(16,longShape*2)+Math.min(8,metrics.colorCount))));
+  const shape=longShape>3?'超长轮廓':a>1.5?'横向武器':a<.7?'竖向武器':'均衡轮廓';
+  return {type,confidence,scores,metrics,shape};
+}
+
+function recognizeWeaponType(file,width,height,canvas){
+  return recognizeWeaponProfile(file,width,height,canvas).type;
+}
+
+function analyzeBrickWeapon(canvas,type,profile){
+  const metrics=(profile&&profile.metrics)||extractWeaponMetrics(canvas);
+  const approxPixels=metrics.solid*metrics.step*metrics.step;
+  let pieceCount=Math.round(Math.max(8,approxPixels/1300+metrics.colorCount*2.8+metrics.longShape*4.5+metrics.fill*18));
+  pieceCount=Math.max(8,Math.min(260,pieceCount));
+  const complexity=Math.max(1,Math.min(10,Math.round(metrics.colorCount*.5+metrics.longShape*.85+metrics.fill*4+metrics.endMassSkew*2)));
+  const balance=Math.max(1,Math.min(10,Math.round(metrics.symmetry*5+(1-Math.min(1,metrics.centerOffsetX*2))*3+(1-Math.min(1,metrics.centerOffsetY*2))*2)));
+  const typeBonus=type==='spear'?10:type==='gun'?14:12;
+  const confidence=(profile&&profile.confidence)||70;
+  const aiPower=Math.max(60,Math.min(320,Math.round(68+pieceCount*1.18+complexity*6+balance*3.5+typeBonus+confidence*.18)));
+  const defense=Math.max(45,Math.min(170,Math.round(56+pieceCount*.38+(type==='spear'?24:type==='sword'?18:10)+metrics.fill*28+balance*2)));
+  const crit=Math.max(.06,Math.min(.38,(.065+complexity*.012+(type==='gun'?.085:type==='sword'?.055:.04)+confidence*.00035)));
   const tags=[
     'AI估算：约 '+pieceCount+' 颗积木',
+    '识别置信度 '+confidence+'%',
+    '轮廓：'+((profile&&profile.shape)||'积木武器'),
+    '颜色层次 '+metrics.colorCount,
     '复杂度 '+complexity+'/10',
     '平衡 '+balance+'/10'
   ];
-  return {pieceCount,aiPower,defense,crit:Number(crit.toFixed(2)),complexity,balance,colorCount,tags};
+  return {pieceCount,aiPower,defense,crit:Number(crit.toFixed(2)),complexity,balance,colorCount:metrics.colorCount,confidence,shape:(profile&&profile.shape)||'',scores:(profile&&profile.scores)||{},metrics,tags};
 }
 
 function removeLightBackground(canvas){
@@ -3591,19 +3651,20 @@ async function handleUploadFile(e){
   if(status)status.textContent='正在识别图片并扣除背景...';
   try{
     const packed=await compressImage(file);
-    const t=recognizeWeaponType(file,packed.width,packed.height);
-    const analysis=analyzeBrickWeapon(packed.canvas,t);
+    const profile=recognizeWeaponProfile(file,packed.width,packed.height,packed.canvas);
+    const t=profile.type;
+    const analysis=analyzeBrickWeapon(packed.canvas,t,profile);
     pendingUpload={fileName:file.name,img:packed.dataUrl,t,analysis};
     document.getElementById('uploadEmpty').style.display='none';
     document.getElementById('uploadPreview').style.display='flex';
     document.getElementById('uploadPreviewImg').src=packed.dataUrl;
-    document.getElementById('uploadRecognition').textContent='识别为 '+typeEmoji(t)+' '+typeLabel(t)+' · 约 '+analysis.pieceCount+' 颗 · 战力 '+analysis.aiPower;
+    document.getElementById('uploadRecognition').textContent='识别为 '+typeEmoji(t)+' '+typeLabel(t)+' · 置信度 '+analysis.confidence+'% · 约 '+analysis.pieceCount+' 颗 · 战力 '+analysis.aiPower;
     document.getElementById('uploadType').value=t;
     const cleanName=file.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').trim();
     if(!document.getElementById('uploadWeaponName').value.trim())document.getElementById('uploadWeaponName').value=(cleanName||'我的积木武器').slice(0,20);
     if(!document.getElementById('uploadSkill').value.trim())document.getElementById('uploadSkill').value=typeEmoji(t)+' 积木闪光连击';
     if(!document.getElementById('uploadDesc').value.trim())document.getElementById('uploadDesc').value='由玩家上传的原创积木武器，已经加入收藏武器库。';
-    if(status)status.textContent=(cloudEnabled()?'识别完成，点击按钮后会提交审核。':'识别完成，当前会保存到这台设备。')+' AI 估算：约 '+analysis.pieceCount+' 颗积木，战力 '+analysis.aiPower+'。';
+    if(status)status.textContent=(cloudEnabled()?'识别完成，点击按钮后会提交审核。':'识别完成，当前会保存到这台设备。')+' AI 估算：约 '+analysis.pieceCount+' 颗积木，战力 '+analysis.aiPower+'，识别置信度 '+analysis.confidence+'%。';
   }catch(err){
     pendingUpload=null;
     if(status)status.textContent=err.message||'图片处理失败，请换一张试试。';
