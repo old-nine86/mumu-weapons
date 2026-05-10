@@ -2,6 +2,27 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-10: Auto Rarity Weapon Cards
+
+Goal:
+- Turn uploaded weapons into collectible cards with automatic SSR/SR/R/N rarity and matching backgrounds.
+
+Shipped:
+- Added automatic weapon rarity scoring based on AI power, estimated brick count, complexity, and detection confidence.
+- Added SSR, SR, R, and N rarity badges to weapon cards.
+- Added rarity-specific card backgrounds and shimmer treatment for high-rarity cards.
+- Added rarity score and rarity label in weapon cards and weapon detail modal.
+- Added rarity tag to uploaded weapon analysis so approved uploads keep their collectible identity.
+- Synced the feature to the English site.
+
+Verification:
+- Parse scripts in `index.html`, `en/index.html`, and `admin.html`.
+- Check diff formatting.
+
+Next:
+- Tune rarity thresholds after testing several real uploaded weapons.
+- Optionally add admin override for rarity.
+
 ## 2026-05-10: Upload Quality Preview Upgrade
 
 Goal:
