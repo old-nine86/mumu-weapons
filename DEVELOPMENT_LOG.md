@@ -2,6 +2,20 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-10: Weapon Card Background Fix
+
+Goal:
+- Fix generated weapon background art being cropped awkwardly in the weapon grid.
+
+Shipped:
+- Changed weapon showcase panels to use the same portrait ratio as the generated card backgrounds.
+- Kept rarity ribbons, score badges, effects, and weapon images above the background art.
+- Applied the same fix to the Chinese and English pages.
+
+Verification:
+- Parse scripts in `index.html`, `en/index.html`, and `admin.html`.
+- Check diff formatting.
+
 ## 2026-05-10: Legacy Weapon Data Upgrade
 
 Goal:

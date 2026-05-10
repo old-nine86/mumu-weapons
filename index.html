@@ -2233,6 +2233,33 @@ body::before{
 .weapon-card[data-rarity="SR"]:hover .card-showcase::after{
   transform:translateX(50%) rotate(8deg);
 }
+.weapon-card .card-showcase.card-bg-art{
+  aspect-ratio:640/860;
+  min-height:0;
+  height:auto;
+  padding:clamp(18px,4vw,34px);
+  background-size:cover;
+  background-position:center;
+  isolation:isolate;
+}
+.weapon-card .card-showcase.card-bg-art::before{
+  z-index:0;
+  opacity:.16;
+}
+.weapon-card .card-showcase.card-bg-art img{
+  position:relative;
+  z-index:3;
+  max-width:min(78%,260px);
+  max-height:58%;
+  object-fit:contain;
+}
+.weapon-card .card-showcase.card-bg-art .skill-fx{
+  z-index:2;
+}
+.weapon-card .card-showcase.card-bg-art .rarity-ribbon,
+.weapon-card .card-showcase.card-bg-art .rarity-score{
+  z-index:6;
+}
 .commerce-row{
   display:grid;
   grid-template-columns:1.15fr .85fr;
