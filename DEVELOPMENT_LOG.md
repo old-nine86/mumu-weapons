@@ -2,6 +2,24 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-10: Legacy Weapon Data Upgrade
+
+Goal:
+- Bring the original built-in weapons up to the same standard as newly uploaded weapons.
+
+Shipped:
+- Added estimated brick count, AI power, complexity, balance, confidence, color count, and shape analysis to all 11 built-in weapons.
+- Assigned built-in weapons to SSR, SR, and R rarity tiers through the same rarity formula used by uploaded weapons.
+- Updated built-in weapon feature lists with rarity and AI estimate tags.
+- Cleaned up English built-in weapon names, descriptions, skills, and feature text.
+
+Verification:
+- Parse scripts in `index.html`, `en/index.html`, and `admin.html`.
+- Check diff formatting.
+
+Next:
+- Tune individual weapon stats after looking at the new card backgrounds and battle balance.
+
 ## 2026-05-10: Generated Card Background Set
 
 Goal:
