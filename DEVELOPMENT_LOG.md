@@ -2,6 +2,24 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-10: Upload Quality Preview Upgrade
+
+Goal:
+- Make the upload experience clearer and make background cleaning easier to judge before submission.
+
+Shipped:
+- Added upload photo guidance chips: lay the weapon flat, use a clean background, use even lighting, and fill the frame.
+- Added side-by-side upload preview: original image and cleaned cutout.
+- Improved background removal thresholds for pale backgrounds, warm floor colors, shadows, and low-saturation background edges.
+- Synced the same upload UI and cleaning behavior to the English site.
+
+Verification:
+- Parse scripts in `index.html`, `en/index.html`, and `admin.html`.
+- Check diff formatting.
+
+Next:
+- Test with real uploaded brick weapon photos and tune the cutout thresholds if some weapon colors are removed too aggressively.
+
 ## 2026-05-10: Project Memory And Roadmap
 
 Goal:
