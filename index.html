@@ -1383,6 +1383,11 @@ body::before{
     radial-gradient(circle at 82% 20%,rgba(159,215,255,.45),transparent 10rem),
     linear-gradient(180deg,#fffdf8,#f4fbff);
 }
+.card-showcase.card-bg-art{
+  background-position:center;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
 .section-header h2{
   color:#202124;
 }
@@ -3370,6 +3375,20 @@ function weaponRarityInfo(w){
   const label={SSR:'SSR 传说收藏卡',SR:'SR 稀有收藏卡',R:'R 精良收藏卡',N:'N 普通收藏卡'}[key];
   return {key,label,score};
 }
+const CARD_BG_BASE='assets/card-bg/';
+const CARD_BACKGROUNDS={
+  SSR:['card-bg-01-ssr.webp','card-bg-02-ssr.webp','card-bg-03-ssr.webp','card-bg-04-ssr.webp','card-bg-05-ssr.webp'],
+  SR:['card-bg-06-sr.webp','card-bg-07-sr.webp','card-bg-08-sr.webp','card-bg-09-sr.webp','card-bg-10-sr.webp'],
+  R:['card-bg-11-r.webp','card-bg-12-r.webp','card-bg-13-r.webp','card-bg-14-r.webp','card-bg-15-r.webp'],
+  N:['card-bg-16-n.webp','card-bg-17-n.webp','card-bg-18-n.webp','card-bg-19-n.webp','card-bg-20-n.webp']
+};
+function weaponCardBackground(w,rarity){
+  const pool=CARD_BACKGROUNDS[rarity.key]||CARD_BACKGROUNDS.N;
+  const typeOffset=w.t==='sword'?0:w.t==='gun'?1:w.t==='spear'?2:3;
+  const scoreOffset=Math.max(0,Math.floor((rarity.score||0)/37));
+  const idx=(typeOffset+scoreOffset+String(w.i||w.n||'').length)%pool.length;
+  return CARD_BG_BASE+pool[idx];
+}
 function formatTime(ts){
   const d=new Date(ts);
   return (d.getMonth()+1)+'/'+d.getDate()+' '+d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
@@ -3990,12 +4009,13 @@ function renderWeapons(){
   const g=document.getElementById('weaponsGrid');g.innerHTML='';
   WEAPONS.forEach(w=>{
     const rarity=weaponRarityInfo(w);
+    const bg=weaponCardBackground(w,rarity);
     const d=document.createElement('div');d.className='weapon-card';d.dataset.type=w.t;d.dataset.rarity=rarity.key;
     d.onclick=event=>{event.stopPropagation();openModal(w.i)};
     const votes=getVotes(w.i);
     const safeId=JSON.stringify(String(w.i));
     d.innerHTML=
-      '<div class="card-showcase">'+
+      '<div class="card-showcase card-bg-art" style="background-image:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.2)),url(\''+bg+'\')">'+
         '<div class="rarity-ribbon">'+rarity.key+'</div>'+
         '<div class="rarity-score">评分 '+rarity.score+'</div>'+
         '<div class="skill-fx">'+w.fx+'</div>'+

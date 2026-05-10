@@ -2,6 +2,26 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-10: Generated Card Background Set
+
+Goal:
+- Replace simple CSS card backgrounds with a richer generated collectible-card background set.
+
+Shipped:
+- Used `imagegen` to generate a unified 5x4 sheet of 20 premium brick-toy card backgrounds.
+- Cropped the sheet into 20 WebP assets under `assets/card-bg/`.
+- Added 5 SSR backgrounds, 5 SR backgrounds, 5 R backgrounds, and 5 N backgrounds.
+- Added automatic background matching by rarity, weapon type, score, and weapon identity.
+- Synced card background matching to the English site.
+
+Verification:
+- Review generated contact sheet at `assets/card-bg/contact-sheet.webp`.
+- Parse scripts in `index.html`, `en/index.html`, and `admin.html`.
+- Check diff formatting.
+
+Next:
+- Test several uploaded weapons and tune background selection if some types feel mismatched.
+
 ## 2026-05-10: Auto Rarity Weapon Cards
 
 Goal:
