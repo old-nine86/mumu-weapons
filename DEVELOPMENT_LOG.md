@@ -2,6 +2,22 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-10: Arena Battle Pacing Upgrade
+
+Goal:
+- Make arena battles longer, more readable, and more fun to watch.
+
+Shipped:
+- Slowed the default battle rhythm and added fast mode as an optional control.
+- Raised fighter durability, reduced burst damage, added a minimum 9-round battle window, and capped battles at 18 rounds.
+- Added active-fighter highlighting, floating damage numbers, brick burst particles, crit/special screen shake, and longer attack/hit animations.
+- Fixed timeout wins so the fighter with the higher remaining durability ratio wins instead of always picking player one.
+- Applied the same pacing and visual feedback changes to the Chinese and English pages.
+
+Verification:
+- Parse scripts in `index.html`, `en/index.html`, and `admin.html`.
+- Check diff formatting.
+
 ## 2026-05-10: Weapon Card Background Fix
 
 Goal:

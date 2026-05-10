@@ -1752,6 +1752,7 @@ body::before{
     radial-gradient(circle at 50% 64%,rgba(255,255,255,.98),transparent 7rem),
     linear-gradient(160deg,rgba(255,255,255,.82),rgba(244,251,255,.68));
   box-shadow:0 24px 70px rgba(78,64,44,.12);
+  transition:transform .32s ease,border-color .32s ease,box-shadow .32s ease;
 }
 .fighter-body{
   width:210px;
@@ -1858,6 +1859,11 @@ body::before{
   border-color:rgba(255,217,106,.95);
   box-shadow:0 26px 80px rgba(255,217,106,.22);
 }
+.fighter.active-turn{
+  transform:translateY(-8px);
+  border-color:rgba(47,143,232,.55);
+  box-shadow:0 30px 90px rgba(47,143,232,.2);
+}
 .arena-vs{
   align-self:center;
   width:92px;
@@ -1942,17 +1948,47 @@ body::before{
 .arena-special.show{
   animation:specialBrickPop .8s ease-out forwards;
 }
+.damage-pop{
+  position:absolute;
+  z-index:12;
+  pointer-events:none;
+  padding:5px 9px;
+  border-radius:999px;
+  background:rgba(255,255,255,.88);
+  color:#e34d35;
+  border:1px solid rgba(255,255,255,.8);
+  box-shadow:0 12px 28px rgba(78,64,44,.14);
+  font-weight:1000;
+  animation:damageFloat 1.05s ease-out forwards;
+}
+.arena-burst{
+  position:absolute;
+  z-index:11;
+  pointer-events:none;
+  width:12px;
+  height:12px;
+  border-radius:4px;
+  background:var(--burst,#ffd96a);
+  box-shadow:0 0 16px var(--burst,#ffd96a);
+  animation:brickBurst 1.05s ease-out forwards;
+}
+.arena.shake::before{
+  animation:arenaShake .34s ease-out;
+}
 @keyframes specialBrickPop{
   0%{opacity:0;transform:scale(.45) translateY(20px)}
   28%{opacity:1;transform:scale(1.08)}
   100%{opacity:0;transform:scale(1.25) translateY(-56px)}
 }
-.fighter-body.attacking svg.char-figure{animation:toyAtk .45s ease-out}
-.fighter-body.attacking img.weapon-img{animation:toyWeapon .45s ease-out}
-.fighter-body.hit svg.char-figure{animation:toyHit .34s ease-out}
-@keyframes toyAtk{0%{transform:translateX(0) rotate(0)}45%{transform:translateX(22px) translateY(-8px) rotate(-7deg)}100%{transform:translateX(0) rotate(0)}}
-@keyframes toyWeapon{0%{transform:rotate(0)}45%{transform:rotate(-28deg) scale(1.18)}100%{transform:rotate(0) scale(1)}}
-@keyframes toyHit{0%{transform:translateX(0)}25%{transform:translateX(-9px) rotate(-4deg)}60%{transform:translateX(7px) rotate(3deg)}100%{transform:translateX(0)}}
+.fighter-body.attacking svg.char-figure{animation:toyAtk .78s cubic-bezier(.2,1.4,.3,1)}
+.fighter-body.attacking img.weapon-img{animation:toyWeapon .78s cubic-bezier(.2,1.4,.3,1)}
+.fighter-body.hit svg.char-figure{animation:toyHit .55s ease-out}
+@keyframes toyAtk{0%{transform:translateX(0) rotate(0)}28%{transform:translateX(14px) translateY(-14px) rotate(-5deg)}56%{transform:translateX(38px) translateY(-4px) rotate(8deg)}100%{transform:translateX(0) rotate(0)}}
+@keyframes toyWeapon{0%{transform:rotate(0) scale(1)}35%{transform:rotate(-24deg) scale(1.18)}58%{transform:rotate(20deg) scale(1.28)}100%{transform:rotate(0) scale(1)}}
+@keyframes toyHit{0%{transform:translateX(0)}20%{transform:translateX(-13px) rotate(-5deg)}45%{transform:translateX(10px) rotate(4deg)}70%{transform:translateX(-5px) rotate(-2deg)}100%{transform:translateX(0)}}
+@keyframes damageFloat{0%{opacity:0;transform:translate(-50%,0) scale(.75)}20%{opacity:1;transform:translate(-50%,-14px) scale(1.08)}100%{opacity:0;transform:translate(-50%,-64px) scale(.95)}}
+@keyframes brickBurst{0%{opacity:0;transform:translate(0,0) scale(.4) rotate(0)}22%{opacity:1}100%{opacity:0;transform:translate(var(--dx,40px),var(--dy,-40px)) scale(1.1) rotate(220deg)}}
+@keyframes arenaShake{0%,100%{transform:translate(0,0)}25%{transform:translate(5px,-3px)}50%{transform:translate(-4px,3px)}75%{transform:translate(3px,2px)}}
 .upload-station{
   margin:14px 0 22px;
   padding:18px;
@@ -4322,7 +4358,7 @@ function updateSelUI(){
 // ===== BATTLE =====
 let battleTimer=null;
 let battleState=null;
-let battleSpeed=720;
+let battleSpeed=1050;
 
 function getCompatibleWeapons(char){
   return WEAPONS.filter(w=>w.t===char.weaponPref);
@@ -4354,7 +4390,8 @@ function startArenaBattle(){
   battleState={
     c1,c2,w1,w2,p1,p2,stage,
     hp1:p1.hp,hp2:p2.hp,h1:p1.hp,h2:p2.hp,
-    e1:18,e2:18,round:0,lastAttacker:0,combo:0,paused:false,done:false,log:[]
+    e1:10,e2:10,round:0,lastAttacker:0,combo:0,paused:false,done:false,log:[],
+    minRounds:9,maxRounds:18
   };
   updateArenaBars();
   document.getElementById('arenaRound').textContent='Round 0';
@@ -4366,7 +4403,7 @@ function startArenaBattle(){
   document.getElementById('speedBtn').style.display='inline-block';
   document.getElementById('pauseBtn').textContent='⏸ Pause';
   document.getElementById('pauseBtn').classList.remove('active');
-  document.getElementById('speedBtn').classList.toggle('active',battleSpeed<520);
+  document.getElementById('speedBtn').classList.toggle('active',battleSpeed<800);
   document.getElementById('alogMain').innerHTML='🎲 '+stage.emoji+' '+stage.name+' 开启：'+stage.text+'。第一回合准备开始！';
   document.getElementById('alogList').innerHTML='';
   document.getElementById('specialFx').classList.remove('show');
@@ -4394,7 +4431,7 @@ function getPowerFull(c,w,stage){
   if(stage&&stage.buff==='crit')crit+=.04;
   if(stage&&stage.buff==='energy')energy+=16;
   return {
-    hp:Math.round(116+defense*.72+power*.18),
+    hp:Math.round(190+defense*.92+power*.28),
     power:Math.round(power),
     defense:Math.round(defense),
     crit:Math.min(.62,crit),
@@ -4435,15 +4472,15 @@ function playBattleTurn(){
   const defEnergyKey=af===1?'e2':'e1';
   let isSpecial=false;
   let isCrit=Math.random()<Math.max(.02,atk.crit-(def.trait.antiCrit||0));
-  let comboBonus=Math.min(.42,(s.combo-1)*(.08+(atk.trait.combo||0)));
-  let dmg=(18+atk.power*.18+Math.random()*18)*(1-def.defense/420)*(1+comboBonus);
+  let comboBonus=Math.min(.32,(s.combo-1)*(.06+(atk.trait.combo||0)));
+  let dmg=(14+atk.power*.11+Math.random()*13)*(1-def.defense/620)*(1+comboBonus);
   const atkHpRate=af===1?s.h1/s.hp1:s.h2/s.hp2;
   if(atk.trait.lowHp&&atkHpRate<.38)dmg*=1+atk.trait.lowHp;
   if(isCrit)dmg*=1.75;
   if(s[energyKey]>=100){
     isSpecial=true;
-    dmg*=1.52;
-    s[energyKey]=18;
+    dmg*=1.38;
+    s[energyKey]=10;
     const fx=document.getElementById('specialFx');
     fx.textContent=['🧱','✨','💥','🎯'][Math.floor(Math.random()*4)]+' '+(atk.skillName||atk.skill.split(' ')[0]);
     fx.classList.remove('show');void fx.offsetWidth;fx.classList.add('show');
@@ -4451,13 +4488,23 @@ function playBattleTurn(){
     s[energyKey]=Math.min(100,s[energyKey]+atk.energy+(isCrit?14:0)+s.combo*3);
   }
   s[defEnergyKey]=Math.min(100,s[defEnergyKey]+11+def.defense*.03+(def.trait.guardEnergy||0));
-  dmg=Math.max(8,Math.round(dmg));
+  dmg=Math.max(6,Math.round(dmg));
   if(def.trait.shield&&s.round<=2)dmg=Math.max(5,Math.round(dmg-def.trait.shield));
   const atkBody=document.getElementById('fb'+af);
   const defBody=document.getElementById('fb'+(af===1?2:1));
+  document.getElementById('f1').classList.toggle('active-turn',af===1);
+  document.getElementById('f2').classList.toggle('active-turn',af===2);
   atkBody.classList.remove('attacking');void atkBody.offsetWidth;atkBody.classList.add('attacking');
-  setTimeout(()=>{defBody.classList.add('hit');setTimeout(()=>defBody.classList.remove('hit'),300)},190);
+  setTimeout(()=>{
+    defBody.classList.add('hit');
+    spawnBattleEffect(af,dmg,isCrit,isSpecial);
+    setTimeout(()=>defBody.classList.remove('hit'),520)
+  },360);
   if(af===1)s.h2=Math.max(0,s.h2-dmg);else s.h1=Math.max(0,s.h1-dmg);
+  if(s.round<s.minRounds){
+    if(s.h1<=0)s.h1=1;
+    if(s.h2<=0)s.h2=1;
+  }
   if(def.trait.heal&&Math.random()<.24){
     const heal=Math.round((af===1?s.hp2:s.hp1)*def.trait.heal);
     if(af===1)s.h2=Math.min(s.hp2,s.h2+heal);else s.h1=Math.min(s.hp1,s.h1+heal);
@@ -4465,7 +4512,39 @@ function playBattleTurn(){
   }
   logBattleEnhanced(atk,def,dmg,isCrit,isSpecial,atkChar,defChar,s.round,s.combo);
   updateArenaBars();
-  if(s.h1<=0||s.h2<=0)finishBattle();
+  if((s.h1<=0||s.h2<=0)||s.round>=s.maxRounds)finishBattle();
+}
+
+function spawnBattleEffect(attackerSide,dmg,isCrit,isSpecial){
+  const arena=document.getElementById('arena');
+  const target=document.getElementById('f'+(attackerSide===1?2:1));
+  const rect=target.getBoundingClientRect();
+  const arenaRect=arena.getBoundingClientRect();
+  const x=rect.left-arenaRect.left+rect.width*.5;
+  const y=rect.top-arenaRect.top+rect.height*.33;
+  const pop=document.createElement('div');
+  pop.className='damage-pop';
+  pop.textContent='-'+dmg+(isCrit?' CRIT':'')+(isSpecial?' SPECIAL':'');
+  pop.style.left=x+'px';
+  pop.style.top=y+'px';
+  arena.appendChild(pop);
+  setTimeout(()=>pop.remove(),1100);
+  const colors=['#ff8a72','#ffd96a','#8ee6c6','#9fd7ff','#ffb7c8'];
+  for(let i=0;i<(isSpecial?16:isCrit?12:8);i++){
+    const bit=document.createElement('div');
+    bit.className='arena-burst';
+    bit.style.left=x+'px';
+    bit.style.top=y+'px';
+    bit.style.setProperty('--burst',colors[i%colors.length]);
+    bit.style.setProperty('--dx',((Math.random()-.5)*(isSpecial?210:140))+'px');
+    bit.style.setProperty('--dy',(-30-Math.random()*(isSpecial?120:80))+'px');
+    arena.appendChild(bit);
+    setTimeout(()=>bit.remove(),1100);
+  }
+  if(isCrit||isSpecial){
+    arena.classList.remove('shake');void arena.offsetWidth;arena.classList.add('shake');
+    setTimeout(()=>arena.classList.remove('shake'),360);
+  }
 }
 
 function updateArenaBars(){
@@ -4486,7 +4565,7 @@ function finishBattle(){
   const s=battleState;if(!s)return;
   s.done=true;
   clearInterval(battleTimer);
-  const side=s.h1<=0?2:1;
+  const side=s.h1<=0?2:(s.h2<=0?1:(s.h1/s.hp1>=s.h2/s.hp2?1:2));
   const wc=side===1?s.c1:s.c2;
   const wn=side===1?s.p1:s.p2;
   const left=Math.round(side===1?s.h1:s.h2);
@@ -4494,6 +4573,8 @@ function finishBattle(){
   document.getElementById('againBtn').style.display='inline-block';
   document.getElementById('pauseBtn').style.display='none';
   document.getElementById('speedBtn').style.display='none';
+  document.getElementById('f1').classList.remove('active-turn');
+  document.getElementById('f2').classList.remove('active-turn');
 }
 
 function toggleBattlePause(){
@@ -4505,9 +4586,9 @@ function toggleBattlePause(){
 }
 
 function toggleBattleSpeed(){
-  battleSpeed=battleSpeed<520?720:380;
+  battleSpeed=battleSpeed<800?1050:620;
   const btn=document.getElementById('speedBtn');
-  btn.classList.toggle('active',battleSpeed<520);
+  btn.classList.toggle('active',battleSpeed<800);
   btn.textContent=battleSpeed<520?'🐇 Fast':'⚡ Speed Up';
   if(battleTimer){
     clearInterval(battleTimer);
