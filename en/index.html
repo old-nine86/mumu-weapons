@@ -2079,6 +2079,9 @@ body::before{
   grid-template-columns:1fr 1fr;
   gap:8px;
 }
+.upload-preview-grid.with-card{
+  grid-template-columns:1fr 1fr;
+}
 .upload-preview-tile{
   min-height:154px;
   display:flex;
@@ -2106,6 +2109,63 @@ body::before{
   max-height:118px;
   object-fit:contain;
   filter:drop-shadow(0 18px 20px rgba(78,64,44,.18));
+}
+.upload-card-preview{
+  grid-column:1/-1;
+  min-height:280px;
+  padding:12px;
+  border-radius:22px;
+  border:1px solid rgba(78,64,44,.08);
+  background:#fffdf8;
+}
+.upload-card-preview-inner{
+  position:relative;
+  min-height:258px;
+  border-radius:18px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background-position:center;
+  background-size:cover;
+  box-shadow:0 18px 42px rgba(78,64,44,.12);
+}
+.upload-card-preview-inner::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.26));
+  pointer-events:none;
+}
+.upload-card-preview-inner img{
+  position:relative;
+  z-index:2;
+  max-width:min(78%,260px);
+  max-height:150px;
+  filter:drop-shadow(0 24px 24px rgba(78,64,44,.24));
+}
+.upload-card-rarity,.upload-card-score,.upload-card-meta{
+  position:absolute;
+  z-index:3;
+  border-radius:999px;
+  background:rgba(255,255,255,.82);
+  border:1px solid rgba(255,255,255,.76);
+  box-shadow:0 10px 22px rgba(78,64,44,.12);
+  color:#202124;
+  font-weight:1000;
+}
+.upload-card-rarity{top:12px;left:12px;padding:6px 10px;letter-spacing:.08em}
+.upload-card-score{right:12px;bottom:12px;padding:5px 8px;font-size:11px;color:#6c6258}
+.upload-card-meta{
+  left:12px;
+  right:12px;
+  bottom:48px;
+  padding:8px 10px;
+  border-radius:16px;
+  font-size:12px;
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
 }
 .upload-recognition{
   padding:8px 12px;
@@ -2789,7 +2849,7 @@ body::before{
           </div>
         </div>
         <div class="upload-preview" id="uploadPreview">
-          <div class="upload-preview-grid">
+          <div class="upload-preview-grid with-card">
             <div class="upload-preview-tile">
               <div class="upload-preview-label">Original</div>
               <img id="uploadOriginalImg" alt="Original preview">
@@ -2797,6 +2857,15 @@ body::before{
             <div class="upload-preview-tile">
               <div class="upload-preview-label">Cleaned</div>
               <img id="uploadPreviewImg" alt="Cleaned preview">
+            </div>
+            <div class="upload-card-preview">
+              <div class="upload-preview-label">Final card preview</div>
+              <div class="upload-card-preview-inner" id="uploadCardPreview">
+                <div class="upload-card-rarity">SSR</div>
+                <img id="uploadCardImg" alt="Card preview">
+                <div class="upload-card-meta"><span>🧱 0 bricks</span><span>🤖 Power 0</span></div>
+                <div class="upload-card-score">Score 0</div>
+              </div>
             </div>
           </div>
           <div class="upload-recognition" id="uploadRecognition">Waiting for detection</div>
@@ -3486,6 +3555,11 @@ function applyUploadedWeapons(){
 function initUploader(){
   const file=document.getElementById('weaponUploadFile');
   if(file)file.addEventListener('change',handleUploadFile);
+  ['uploadWeaponName','uploadType','uploadSkill'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.addEventListener('input',updateUploadCardPreview);
+    if(el)el.addEventListener('change',updateUploadCardPreview);
+  });
   refreshUploadState();
 }
 
@@ -3504,6 +3578,42 @@ function refreshUploadState(){
   if(!reached&&!pendingUpload&&status&&/Choose a photo|请选择一张图片/.test(status.textContent)){
     status.textContent=cloudEnabled()?'Choose a photo to start detection. Uploads enter review first.':'Choose a photo to start detection.';
   }
+}
+
+function uploadPreviewWeapon(){
+  if(!pendingUpload)return null;
+  const t=document.getElementById('uploadType').value||pendingUpload.t;
+  const name=document.getElementById('uploadWeaponName').value.trim()||'My Brick Weapon';
+  const skill=document.getElementById('uploadSkill').value.trim()||typeEmoji(t)+' Brick Flash Combo';
+  const analysis=pendingUpload.analysis||{};
+  return {
+    i:'upload-preview',
+    n:name,
+    t,
+    l:typeLabel(t),
+    s:skill,
+    img:pendingUpload.img,
+    pieceCount:analysis.pieceCount||0,
+    aiPower:analysis.aiPower||0,
+    analysis
+  };
+}
+
+function updateUploadCardPreview(){
+  const w=uploadPreviewWeapon();
+  const wrap=document.getElementById('uploadCardPreview');
+  const img=document.getElementById('uploadCardImg');
+  if(!w||!wrap||!img)return;
+  const rarity=weaponRarityInfo(w);
+  const bg=weaponCardBackground(w,rarity);
+  wrap.style.backgroundImage="linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.22)),url('"+bg+"')";
+  img.src=w.img;
+  const rarityEl=wrap.querySelector('.upload-card-rarity');
+  const metaEl=wrap.querySelector('.upload-card-meta');
+  const scoreEl=wrap.querySelector('.upload-card-score');
+  if(rarityEl)rarityEl.textContent=rarity.key;
+  if(metaEl)metaEl.innerHTML='<span>🧱 '+escapeHTML(w.pieceCount||0)+' bricks</span><span>🤖 Power '+escapeHTML(w.aiPower||0)+'</span>';
+  if(scoreEl)scoreEl.textContent='Score '+rarity.score;
 }
 
 function weaponKeywordScores(file){
@@ -3899,6 +4009,7 @@ async function handleUploadFile(e){
     if(!document.getElementById('uploadWeaponName').value.trim())document.getElementById('uploadWeaponName').value=(cleanName||'My Brick Weapon').slice(0,20);
     if(!document.getElementById('uploadSkill').value.trim())document.getElementById('uploadSkill').value=typeEmoji(t)+' Brick Flash Combo';
     if(!document.getElementById('uploadDesc').value.trim())document.getElementById('uploadDesc').value='An original brick weapon uploaded by a player for the collection.';
+    updateUploadCardPreview();
     if(status)status.textContent=(cloudEnabled()?'Detection complete. Submit to enter review.':'Detection complete. It will be saved on this device.')+' AI estimate: about '+analysis.pieceCount+' bricks, Power '+analysis.aiPower+', confidence '+analysis.confidence+'%.';
   }catch(err){
     pendingUpload=null;

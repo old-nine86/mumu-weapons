@@ -2,6 +2,21 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-11: Upload Final Card Preview
+
+Goal:
+- Let users see the final collectible card result before submitting an uploaded weapon for review.
+
+Shipped:
+- Added a third upload preview panel showing the generated weapon card with matched rarity background.
+- Displayed auto rarity, rarity score, estimated brick count, and AI power inside the preview card.
+- Kept the preview synced with name, type, and skill edits.
+- Applied the same upload preview experience to the Chinese and English pages.
+
+Verification:
+- Parse scripts in `index.html`, `en/index.html`, and `admin.html`.
+- Check diff formatting.
+
 ## 2026-05-10: Arena Battle Pacing Upgrade
 
 Goal:
