@@ -14,10 +14,11 @@ Shipped:
 - Updated Supabase schema and admin RPCs with `card_rarity` and `card_score`.
 
 Verification:
-- Pending in-browser test after the live Supabase SQL is applied.
+- Live Supabase SQL migration applied successfully in the dashboard.
+- Pending admin save smoke test with a real uploaded weapon.
 
 Next:
-- Run the updated Supabase SQL in the project dashboard before using the new admin fields online.
+- Use the admin page to set one real weapon to SSR/SR and confirm the public card updates.
 
 ## 2026-05-11: Upload Final Card Preview
 
