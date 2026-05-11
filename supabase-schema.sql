@@ -24,6 +24,8 @@ create table if not exists public.weapons (
   crit numeric not null default 0.12,
   piece_count integer not null default 0,
   ai_power integer not null default 100,
+  card_rarity text not null default '' check (card_rarity in ('','SSR','SR','R','N')),
+  card_score integer not null default 0,
   analysis jsonb not null default '{}'::jsonb,
   status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
   share_proof text not null default '',
@@ -38,6 +40,8 @@ alter table public.weapons add column if not exists review_note text not null de
 alter table public.weapons add column if not exists reviewed_at timestamptz;
 alter table public.weapons add column if not exists piece_count integer not null default 0;
 alter table public.weapons add column if not exists ai_power integer not null default 100;
+alter table public.weapons add column if not exists card_rarity text not null default '';
+alter table public.weapons add column if not exists card_score integer not null default 0;
 alter table public.weapons add column if not exists analysis jsonb not null default '{}'::jsonb;
 alter table public.weapons add column if not exists showcase_url text not null default '';
 alter table public.weapons add column if not exists name_en text not null default '';
@@ -46,6 +50,15 @@ alter table public.weapons add column if not exists description_en text not null
 alter table public.weapons add column if not exists skill_en text not null default '';
 alter table public.weapons add column if not exists features_en jsonb not null default '[]'::jsonb;
 alter table public.weapons add column if not exists locale text not null default 'both';
+
+do $$
+begin
+  alter table public.weapons
+  add constraint weapons_card_rarity_check
+  check (card_rarity in ('','SSR','SR','R','N'));
+exception when duplicate_object then null;
+end;
+$$;
 
 alter table public.weapons enable row level security;
 
@@ -223,6 +236,8 @@ returns table (
   crit numeric,
   piece_count integer,
   ai_power integer,
+  card_rarity text,
+  card_score integer,
   analysis jsonb,
   status text,
   share_proof text,
@@ -244,7 +259,7 @@ begin
 
   return query
   select w.id, w.name, w.type, w.label, w.description, w.features, w.skill, w.fx,
-         w.creator, w.image_url, w.showcase_url, w.name_en, w.label_en, w.description_en, w.skill_en, w.features_en, w.locale, w.defense, w.crit, w.piece_count, w.ai_power, w.analysis,
+         w.creator, w.image_url, w.showcase_url, w.name_en, w.label_en, w.description_en, w.skill_en, w.features_en, w.locale, w.defense, w.crit, w.piece_count, w.ai_power, w.card_rarity, w.card_score, w.analysis,
          w.status, w.share_proof, w.review_note, w.created_at
   from public.weapons w
   where w.status = 'pending'
@@ -254,6 +269,7 @@ $$;
 
 grant execute on function public.list_pending_weapons_v2(text) to anon, authenticated;
 
+drop function if exists public.review_weapon_with_edits(text, text, text, text, text, text, integer, integer, integer, numeric);
 create or replace function public.review_weapon_with_edits(
   input_review_key text,
   weapon_id text,
@@ -264,7 +280,9 @@ create or replace function public.review_weapon_with_edits(
   edited_piece_count integer default null,
   edited_ai_power integer default null,
   edited_defense integer default null,
-  edited_crit numeric default null
+  edited_crit numeric default null,
+  edited_card_rarity text default null,
+  edited_card_score integer default null
 )
 returns table (
   id text,
@@ -273,6 +291,8 @@ returns table (
   status text,
   piece_count integer,
   ai_power integer,
+  card_rarity text,
+  card_score integer,
   reviewed_at timestamptz
 )
 language plpgsql
@@ -292,23 +312,29 @@ begin
     raise exception 'invalid decision';
   end if;
 
+  if edited_card_rarity is not null and edited_card_rarity not in ('','SSR','SR','R','N') then
+    raise exception 'invalid card rarity';
+  end if;
+
   return query
   update public.weapons w
   set name = coalesce(nullif(left(edited_name, 20), ''), w.name),
       creator = coalesce(nullif(left(edited_creator, 16), ''), w.creator),
       piece_count = greatest(0, least(300, coalesce(edited_piece_count, w.piece_count))),
       ai_power = greatest(1, least(500, coalesce(edited_ai_power, w.ai_power))),
+      card_rarity = coalesce(edited_card_rarity, w.card_rarity),
+      card_score = greatest(0, least(999, coalesce(edited_card_score, w.card_score))),
       defense = greatest(1, least(300, coalesce(edited_defense, w.defense))),
       crit = greatest(0, least(1, coalesce(edited_crit, w.crit))),
       status = decision,
       review_note = coalesce(note, ''),
       reviewed_at = now()
   where w.id = weapon_id and w.status = 'pending'
-  returning w.id, w.name, w.creator, w.status, w.piece_count, w.ai_power, w.reviewed_at;
+  returning w.id, w.name, w.creator, w.status, w.piece_count, w.ai_power, w.card_rarity, w.card_score, w.reviewed_at;
 end;
 $$;
 
-grant execute on function public.review_weapon_with_edits(text, text, text, text, text, text, integer, integer, integer, numeric) to anon, authenticated;
+grant execute on function public.review_weapon_with_edits(text, text, text, text, text, text, integer, integer, integer, numeric, text, integer) to anon, authenticated;
 
 drop function if exists public.list_admin_weapons(text);
 create or replace function public.list_admin_weapons(input_review_key text)
@@ -332,6 +358,8 @@ returns table (
   crit numeric,
   piece_count integer,
   ai_power integer,
+  card_rarity text,
+  card_score integer,
   status text,
   created_at timestamptz
 )
@@ -351,7 +379,7 @@ begin
   return query
   select w.id, w.name, w.type, w.label, w.description, w.skill, w.creator,
          w.image_url, w.showcase_url, w.name_en, w.label_en, w.description_en, w.skill_en, w.features_en, w.locale, w.defense, w.crit, w.piece_count,
-         w.ai_power, w.status, w.created_at
+         w.ai_power, w.card_rarity, w.card_score, w.status, w.created_at
   from public.weapons w
   where w.status = 'approved'
   order by w.created_at desc;
@@ -360,6 +388,7 @@ $$;
 
 drop function if exists public.admin_update_weapon(text, text, text, text, text, text, text, text, text, integer, integer, integer, numeric);
 drop function if exists public.admin_update_weapon(text, text, text, text, text, text, text, text, text, text, text, text, text, text, integer, integer, integer, numeric);
+drop function if exists public.admin_update_weapon(text, text, text, text, text, text, text, text, text, text, text, text, text, text, integer, integer, integer, numeric, text, integer);
 create or replace function public.admin_update_weapon(
   input_review_key text,
   weapon_id text,
@@ -378,7 +407,9 @@ create or replace function public.admin_update_weapon(
   edited_piece_count integer default null,
   edited_ai_power integer default null,
   edited_defense integer default null,
-  edited_crit numeric default null
+  edited_crit numeric default null,
+  edited_card_rarity text default null,
+  edited_card_score integer default null
 )
 returns table (
   id text,
@@ -396,6 +427,8 @@ returns table (
   locale text,
   piece_count integer,
   ai_power integer,
+  card_rarity text,
+  card_score integer,
   defense integer,
   crit numeric,
   status text
@@ -421,6 +454,10 @@ begin
     raise exception 'invalid locale';
   end if;
 
+  if edited_card_rarity is not null and edited_card_rarity not in ('','SSR','SR','R','N') then
+    raise exception 'invalid card rarity';
+  end if;
+
   return query
   update public.weapons w
   set name = coalesce(nullif(left(edited_name, 20), ''), w.name),
@@ -437,16 +474,18 @@ begin
       locale = coalesce(nullif(edited_locale, ''), w.locale),
       piece_count = greatest(0, least(300, coalesce(edited_piece_count, w.piece_count))),
       ai_power = greatest(1, least(500, coalesce(edited_ai_power, w.ai_power))),
+      card_rarity = coalesce(edited_card_rarity, w.card_rarity),
+      card_score = greatest(0, least(999, coalesce(edited_card_score, w.card_score))),
       defense = greatest(1, least(300, coalesce(edited_defense, w.defense))),
       crit = greatest(0, least(1, coalesce(edited_crit, w.crit)))
   where w.id = weapon_id
   returning w.id, w.name, w.type, w.label, w.description, w.skill, w.creator,
-            w.showcase_url, w.name_en, w.label_en, w.description_en, w.skill_en, w.locale, w.piece_count, w.ai_power, w.defense, w.crit, w.status;
+            w.showcase_url, w.name_en, w.label_en, w.description_en, w.skill_en, w.locale, w.piece_count, w.ai_power, w.card_rarity, w.card_score, w.defense, w.crit, w.status;
 end;
 $$;
 
 grant execute on function public.list_admin_weapons(text) to anon, authenticated;
-grant execute on function public.admin_update_weapon(text, text, text, text, text, text, text, text, text, text, text, text, text, text, integer, integer, integer, numeric) to anon, authenticated;
+grant execute on function public.admin_update_weapon(text, text, text, text, text, text, text, text, text, text, text, text, text, text, integer, integer, integer, numeric, text, integer) to anon, authenticated;
 
 drop policy if exists "Public can submit promotion proof" on public.promotion_submissions;
 create policy "Public can submit promotion proof"

@@ -2,6 +2,23 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-11: Admin Card Override Workflow
+
+Goal:
+- Let the admin review page control each uploaded weapon's collectible-card rarity and score.
+- Keep automatic recognition as the fallback when no manual value is set.
+
+Shipped:
+- Added admin fields for card rarity and card score.
+- Updated Chinese and English frontend loading so public cards prefer admin rarity/score overrides.
+- Updated Supabase schema and admin RPCs with `card_rarity` and `card_score`.
+
+Verification:
+- Pending in-browser test after the live Supabase SQL is applied.
+
+Next:
+- Run the updated Supabase SQL in the project dashboard before using the new admin fields online.
+
 ## 2026-05-11: Upload Final Card Preview
 
 Goal:

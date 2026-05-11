@@ -3372,6 +3372,8 @@ function cloudRowToItem(row){
     def:{df:Number(row.defense||82),cr:Number(row.crit||.12)},
     pieceCount:Number(row.piece_count||0),
     aiPower:Number(row.ai_power||100),
+    cardRarity:row.card_rarity||'',
+    cardScore:Number(row.card_score||0),
     analysis:row.analysis||{},
     cloud:true
   };
@@ -3501,10 +3503,12 @@ function weaponRarityInfo(w){
   const power=Number(w.aiPower||analysis.aiPower||100);
   const complexity=Number(analysis.complexity||0);
   const confidence=Number(analysis.confidence||70);
-  const score=Math.round(power*.58+piece*.34+complexity*4+confidence*.18);
-  const key=score>=250?'SSR':score>=190?'SR':score>=135?'R':'N';
+  const autoScore=Math.round(power*.58+piece*.34+complexity*4+confidence*.18);
+  const score=Number(w.cardScore||analysis.cardScore||0)||autoScore;
+  const manualKey=String(w.cardRarity||analysis.cardRarity||'').toUpperCase();
+  const key=['SSR','SR','R','N'].includes(manualKey)?manualKey:(score>=250?'SSR':score>=190?'SR':score>=135?'R':'N');
   const label={SSR:'SSR 传说收藏卡',SR:'SR 稀有收藏卡',R:'R 精良收藏卡',N:'N 普通收藏卡'}[key];
-  return {key,label,score};
+  return {key,label,score,manual:['SSR','SR','R','N'].includes(manualKey)||Number(w.cardScore||analysis.cardScore||0)>0};
 }
 const CARD_BG_BASE='assets/card-bg/';
 const CARD_BACKGROUNDS={
@@ -3539,7 +3543,7 @@ function applyUploadedWeapons(){
   if(!DATA||!Array.isArray(DATA.uploads))return;
   DATA.uploads.forEach(item=>{
     if(!item||!item.i)return;
-    const next={i:item.i,n:item.n,t:item.t,l:item.l,d:item.d,f:item.f,s:item.s,fx:item.fx,creator:item.creator,createdAt:item.createdAt,uploaded:true,cloud:item.cloud,pieceCount:item.pieceCount,aiPower:item.aiPower,analysis:item.analysis,showcaseUrl:item.showcaseUrl};
+    const next={i:item.i,n:item.n,t:item.t,l:item.l,d:item.d,f:item.f,s:item.s,fx:item.fx,creator:item.creator,createdAt:item.createdAt,uploaded:true,cloud:item.cloud,pieceCount:item.pieceCount,aiPower:item.aiPower,analysis:item.analysis,showcaseUrl:item.showcaseUrl,cardRarity:item.cardRarity,cardScore:item.cardScore};
     const existing=WEAPONS.find(w=>String(w.i)===String(item.i));
     if(existing){
       Object.assign(existing,next);

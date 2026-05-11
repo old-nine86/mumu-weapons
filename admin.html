@@ -123,6 +123,14 @@ function weaponEditor(item,extra=''){
       <label>技能<input data-field="skill" maxlength="28" value="${escapeHTML(item.skill||'')}"></label>
       <label>积木数<input data-field="piece_count" type="number" min="0" max="300" value="${escapeHTML(item.piece_count||0)}"></label>
       <label>AI战力<input data-field="ai_power" type="number" min="1" max="500" value="${escapeHTML(item.ai_power||100)}"></label>
+      <label>收藏等级<select data-field="card_rarity">
+        <option value="" ${!item.card_rarity?'selected':''}>自动计算</option>
+        <option value="SSR" ${item.card_rarity==='SSR'?'selected':''}>SSR 传说</option>
+        <option value="SR" ${item.card_rarity==='SR'?'selected':''}>SR 稀有</option>
+        <option value="R" ${item.card_rarity==='R'?'selected':''}>R 精良</option>
+        <option value="N" ${item.card_rarity==='N'?'selected':''}>N 普通</option>
+      </select></label>
+      <label>卡片评分<input data-field="card_score" type="number" min="0" max="999" value="${escapeHTML(item.card_score||0)}" placeholder="0 为自动"></label>
       <label>防御<input data-field="defense" type="number" min="1" max="300" value="${escapeHTML(item.defense||82)}"></label>
       <label>暴击<input data-field="crit" type="number" min="0" max="1" step="0.01" value="${escapeHTML(item.crit||0.12)}"></label>
       <label>展示图地址<input data-field="showcase_url" value="${escapeHTML(item.showcase_url||'')}" placeholder="上传后自动填入"></label>
@@ -192,6 +200,8 @@ async function reviewWeapon(id,decision,btn){
       edited_creator:fields.creator,
       edited_piece_count:Number(fields.piece_count||0),
       edited_ai_power:Number(fields.ai_power||100),
+      edited_card_rarity:fields.card_rarity,
+      edited_card_score:Number(fields.card_score||0),
       edited_defense:Number(fields.defense||82),
       edited_crit:Number(fields.crit||0.12)
     });
@@ -284,6 +294,8 @@ async function saveWeapon(id,btn,silent=false){
       edited_locale:fields.locale,
       edited_piece_count:Number(fields.piece_count||0),
       edited_ai_power:Number(fields.ai_power||100),
+      edited_card_rarity:fields.card_rarity,
+      edited_card_score:Number(fields.card_score||0),
       edited_defense:Number(fields.defense||82),
       edited_crit:Number(fields.crit||0.12)
     });
