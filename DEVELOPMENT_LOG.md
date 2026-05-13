@@ -2,6 +2,25 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-13: Premium Weapon Showcase Modal
+
+Goal:
+- Make the weapon detail popup feel like a premium collectible display window.
+- Use admin showcase images when available and fall back gracefully to the weapon image.
+
+Shipped:
+- Rebuilt the weapon modal into a two-column display case layout on desktop and stacked layout on mobile.
+- Added large rarity medal, card score, creator, brick count, AI power, signature skill, feature chips, and analysis chips.
+- Added showcase-image background treatment for weapons with admin/AI showcase art.
+- Synced the upgraded modal to the Chinese and English sites.
+
+Verification:
+- Parsed scripts in `index.html`, `en/index.html`, and `admin.html`.
+- Checked diff formatting.
+
+Next:
+- Test one weapon with an uploaded admin showcase image and tune the crop/contrast if needed.
+
 ## 2026-05-13: Upload Cutout Controls
 
 Goal:
