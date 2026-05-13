@@ -2,6 +2,25 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-13: Upload Cutout Controls
+
+Goal:
+- Make uploaded weapon cutouts cleaner without forcing one aggressive background-removal setting on every photo.
+- Improve handling of pale floors, warm wood floors, gray backgrounds, and soft shadows.
+
+Shipped:
+- Added four upload cleanup modes: keep more, standard, cleaner, and strong.
+- Reprocesses the selected photo when the user changes cleanup strength.
+- Tuned background flood fill to remove more connected floor/shadow pixels while protecting saturated brick colors.
+- Synced the upload cleanup controls to the Chinese and English sites.
+
+Verification:
+- Parsed scripts in `index.html`, `en/index.html`, and `admin.html`.
+- Checked diff formatting.
+
+Next:
+- Test with real uploaded brick photos and tune the mode thresholds if strong mode removes small weapon details.
+
 ## 2026-05-11: Admin Card Override Workflow
 
 Goal:
