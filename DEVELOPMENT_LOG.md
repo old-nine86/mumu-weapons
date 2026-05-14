@@ -2,6 +2,25 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-14: MBTI Battle Personality Depth
+
+Goal:
+- Make the 16 MBTI fighters feel more distinct in both card identity and arena behavior.
+- Move beyond simple stat differences by adding personality-specific battle moments.
+
+Shipped:
+- Added role and combat style labels to every MBTI character card.
+- Added role chips to the character card skill area.
+- Added personality-triggered arena effects such as command combo damage, predictive strikes, overclock energy, trap bursts, morale repair, prepared shields, low-HP ideal echoes, precision snipes, dance combo energy, and opening rush pressure.
+- Synced the character depth and arena behavior to the Chinese and English sites.
+
+Verification:
+- Parsed scripts in `index.html`, `en/index.html`, and `admin.html`.
+- Checked diff formatting.
+
+Next:
+- Play several arena matches and tune any personality effect that feels too frequent or too strong.
+
 ## 2026-05-13: Premium Weapon Showcase Modal
 
 Goal:

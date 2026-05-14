@@ -4429,22 +4429,22 @@ function charSkillName(c){
   return skill.replace('·',' · ');
 }
 const CHAR_TRAITS={
-  1:{label:'统帅号令',desc:'连击时额外增伤',power:.08,combo:.1},
-  2:{label:'预判棋局',desc:'削弱对手暴击',def:.08,antiCrit:.05},
-  3:{label:'逻辑超频',desc:'能量积累更快',energy:16,crit:.03},
-  4:{label:'诡雷实验',desc:'暴击更高但防御更薄',crit:.07,def:-.05},
-  5:{label:'团队鼓舞',desc:'稳定提高攻防',power:.05,def:.06},
-  6:{label:'星月预知',desc:'开局拥有护盾',def:.1,shield:18},
-  7:{label:'理想回响',desc:'残血时伤害上升',lowHp:.28},
-  8:{label:'星火灵感',desc:'开局能量更高',energy:24,power:.04},
-  9:{label:'纪律铁壁',desc:'高防御低暴击',def:.16,crit:-.02},
-  10:{label:'守护结界',desc:'受到伤害会回能',def:.18,guardEnergy:10},
-  11:{label:'效率火力',desc:'攻击稳定更高',power:.09,energy:8},
-  12:{label:'暖心支援',desc:'偶尔自我修复',def:.1,heal:.08},
-  13:{label:'孤狼狙击',desc:'高暴击高爆发',crit:.09,power:.04},
-  14:{label:'绯焰舞步',desc:'连击增长更快',crit:.04,combo:.12},
-  15:{label:'雷霆冲锋',desc:'攻击很高但防御降低',power:.13,def:-.08},
-  16:{label:'舞台焦点',desc:'必杀更容易释放',energy:18,crit:.03}
+  1:{label:'统帅号令',role:'指挥爆发',style:'越战越强',desc:'连击时额外增伤',power:.08,combo:.1},
+  2:{label:'预判棋局',role:'冷静反制',style:'压低暴击',desc:'削弱对手暴击',def:.08,antiCrit:.05},
+  3:{label:'逻辑超频',role:'科技蓄能',style:'快速攒大招',desc:'能量积累更快',energy:16,crit:.03},
+  4:{label:'诡雷实验',role:'混乱爆破',style:'高风险高收益',desc:'暴击更高但防御更薄',crit:.07,def:-.05},
+  5:{label:'团队鼓舞',role:'均衡领袖',style:'攻防稳定',desc:'稳定提高攻防',power:.05,def:.06},
+  6:{label:'星月预知',role:'预判守护',style:'开局减伤',desc:'开局拥有护盾',def:.1,shield:18},
+  7:{label:'理想回响',role:'信念反击',style:'残血变强',desc:'残血时伤害上升',lowHp:.28},
+  8:{label:'星火灵感',role:'灵感突袭',style:'先手高能',desc:'开局能量更高',energy:24,power:.04},
+  9:{label:'纪律铁壁',role:'重甲防线',style:'抗伤很强',desc:'高防御低暴击',def:.16,crit:-.02},
+  10:{label:'守护结界',role:'护盾支援',style:'挨打回能',desc:'受到伤害会回能',def:.18,guardEnergy:10},
+  11:{label:'效率火力',role:'秩序压制',style:'稳定输出',desc:'攻击稳定更高',power:.09,energy:8},
+  12:{label:'暖心支援',role:'续航治疗',style:'偶尔回血',desc:'偶尔自我修复',def:.1,heal:.08},
+  13:{label:'孤狼狙击',role:'精准猎杀',style:'暴击爆发',desc:'高暴击高爆发',crit:.09,power:.04},
+  14:{label:'绯焰舞步',role:'连舞追击',style:'连击成长',desc:'连击增长更快',crit:.04,combo:.12},
+  15:{label:'雷霆冲锋',role:'速度强攻',style:'攻高防低',desc:'攻击很高但防御降低',power:.13,def:-.08},
+  16:{label:'舞台焦点',role:'表演终结',style:'大招频繁',desc:'必杀更容易释放',energy:18,crit:.03}
 };
 function getCharTrait(c){
   return CHAR_TRAITS[c.id]||{label:'积木专精',desc:'稳定发挥',power:.04};
@@ -4465,6 +4465,7 @@ function renderCharacters(){
         '<div class="char-name">'+c.name+'</div>'+
         '<div class="char-type">'+c.mbti+' · '+c.mbtiName+'</div>'+
         '<div class="char-trait">偏好：'+weaponLabel(c.weaponPref)+'</div>'+
+        '<div class="char-trait">定位：'+escapeHTML(trait.role)+' · '+escapeHTML(trait.style)+'</div>'+
         '<div class="char-trait">人格技：'+escapeHTML(trait.label)+' · '+escapeHTML(trait.desc)+'</div>'+
         '<div class="char-quote">“'+(c.quotes.atk&&c.quotes.atk[0]?c.quotes.atk[0]:c.quotes.win)+'”</div>'+
         '<div class="char-stats">'+
@@ -4475,6 +4476,7 @@ function renderCharacters(){
         '<div class="char-skills">'+
           '<span class="char-skill">🧩 '+charSkillName(c)+'</span>'+
           '<span class="char-skill">✨ '+escapeHTML(trait.label)+'</span>'+
+          '<span class="char-skill">🎭 '+escapeHTML(trait.role)+'</span>'+
           '<span class="char-skill">🎒 '+weaponLabel(c.weaponPref)+'</span>'+
         '</div>'+
       '</div>';
@@ -4734,6 +4736,69 @@ function getPowerFull(c,w,stage){
   };
 }
 
+function applyPersonalityMoment(s,af,atk,def,atkChar,defChar,dmg,isCrit,isSpecial){
+  let note='',heal=0,healTarget='attacker',energy=0,shield=0;
+  const atkHpRate=af===1?s.h1/s.hp1:s.h2/s.hp2;
+  const defHpRate=af===1?s.h2/s.hp2:s.h1/s.hp1;
+  switch(atkChar.id){
+    case 1:
+      if(s.combo>=2){const bonus=Math.round(4+s.combo*3);dmg+=bonus;note='📣 '+atkChar.name+' 发布「统帅号令」，连击追加 '+bonus+' 点伤害。'}
+      break;
+    case 2:
+      if(s.round%3===0){dmg=Math.round(dmg*1.16);note='♟️ '+atkChar.name+' 看穿破绽，本回合伤害提升。'}
+      break;
+    case 3:
+      if(!isSpecial){energy=10;note='🧠 '+atkChar.name+' 完成逻辑超频，额外回复 10% 能量。'}
+      break;
+    case 4:
+      if(isCrit){const bonus=Math.round(dmg*.22);dmg+=bonus;note='💣 '+atkChar.name+' 的诡雷连锁爆开，追加 '+bonus+' 点伤害。'}
+      break;
+    case 5:
+      if(s.round%4===1){heal=Math.round((af===1?s.hp1:s.hp2)*.035);note='🌟 '+atkChar.name+' 鼓舞士气，回复 '+heal+' 点耐久。'}
+      break;
+    case 6:
+      if(s.round<=2){shield=8;note='🌙 '+atkChar.name+' 提前预知轨迹，对手下次伤害降低。'}
+      break;
+    case 7:
+      if(atkHpRate<.45){dmg=Math.round(dmg*1.18);note='🕊️ '+atkChar.name+' 触发理想回响，低耐久反击更强。'}
+      break;
+    case 8:
+      if(s.round<=3){energy=8;dmg=Math.round(dmg*1.08);note='🔥 '+atkChar.name+' 灵感爆发，先手节奏更快。'}
+      break;
+    case 9:
+      if(defHpRate>.55){shield=10;note='📏 '+atkChar.name+' 维持纪律阵型，下一击更难突破。'}
+      break;
+    case 10:
+      if(defHpRate<.6){healTarget='defender';heal=Math.round((af===1?s.hp2:s.hp1)*.025);note='🛡️ '+defChar.name+' 的守护结界仍在发光，回复 '+heal+' 点耐久。'}
+      break;
+    case 11:
+      if(!isCrit){dmg+=7;note='📊 '+atkChar.name+' 执行效率火力，普通攻击也稳定加压。'}
+      break;
+    case 12:
+      if(defHpRate<.55){healTarget='defender';heal=Math.round((af===1?s.hp2:s.hp1)*.03);note='💗 '+defChar.name+' 释放暖心支援，回复 '+heal+' 点耐久。'}
+      break;
+    case 13:
+      if(isCrit){dmg=Math.round(dmg*1.18);note='🎯 '+atkChar.name+' 锁定弱点，暴击变成致命狙击。'}
+      break;
+    case 14:
+      if(s.combo>=2){energy=7;note='💃 '+atkChar.name+' 用绯焰舞步接上节奏，额外回复能量。'}
+      break;
+    case 15:
+      if(s.round<=4){dmg=Math.round(dmg*1.13);note='⚡ '+atkChar.name+' 雷霆冲锋，开局强压。'}
+      break;
+    case 16:
+      if(isSpecial||s.combo>=3){energy=6;note='🎤 '+atkChar.name+' 点燃全场，表演节奏继续升温。'}
+      break;
+  }
+  if(energy)s[af===1?'e1':'e2']=Math.min(100,s[af===1?'e1':'e2']+energy);
+  if(heal){
+    const side=healTarget==='defender'?(af===1?2:1):af;
+    if(side===1)s.h1=Math.min(s.hp1,s.h1+heal);else s.h2=Math.min(s.hp2,s.h2+heal);
+  }
+  if(shield)s[af===1?'p1':'p2'].momentShield=(s[af===1?'p1':'p2'].momentShield||0)+shield;
+  return {dmg,note};
+}
+
 function setupFighter(side,c,w,p){
   document.getElementById('fn'+side).textContent=c.name;
   document.getElementById('fs'+side).textContent=c.mbti+' · '+c.mbtiName;
@@ -4780,8 +4845,17 @@ function playBattleTurn(){
     s[energyKey]=Math.min(100,s[energyKey]+atk.energy+(isCrit?14:0)+s.combo*3);
   }
   s[defEnergyKey]=Math.min(100,s[defEnergyKey]+11+def.defense*.03+(def.trait.guardEnergy||0));
+  if(def.momentShield){
+    const block=Math.min(def.momentShield,Math.max(0,dmg-5));
+    dmg-=block;
+    def.momentShield=0;
+    if(block>0)addBattleLog('🛡️ '+defChar.name+' 的预备护盾挡下 '+Math.round(block)+' 点伤害。');
+  }
   dmg=Math.max(6,Math.round(dmg));
   if(def.trait.shield&&s.round<=2)dmg=Math.max(5,Math.round(dmg-def.trait.shield));
+  const moment=applyPersonalityMoment(s,af,atk,def,atkChar,defChar,dmg,isCrit,isSpecial);
+  dmg=Math.max(6,Math.round(moment.dmg));
+  if(moment.note)addBattleLog(moment.note);
   const atkBody=document.getElementById('fb'+af);
   const defBody=document.getElementById('fb'+(af===1?2:1));
   document.getElementById('f1').classList.toggle('active-turn',af===1);
