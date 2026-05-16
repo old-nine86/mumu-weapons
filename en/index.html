@@ -810,6 +810,57 @@ body::before{
 .author-mini-card img{width:100%;height:120px;object-fit:contain;border-radius:14px;background:#f7f9fd}
 .author-mini-name{margin-top:10px;color:var(--ink);font-weight:900}
 .author-mini-meta{margin-top:4px;color:#86868b;font-size:12px}
+.char-media-badge{
+  margin-top:12px;
+  width:100%;
+  border:0;
+  border-radius:999px;
+  padding:10px 12px;
+  background:linear-gradient(135deg,#1d1d1f,#3b4458);
+  color:#fff;
+  font-family:inherit;
+  font-size:12px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 12px 28px rgba(29,29,31,.18);
+}
+.char-media-badge:hover{transform:translateY(-1px)}
+.char-profile-modal{
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);
+  gap:0;
+  max-width:1180px;
+  background:#0e1422;
+  color:#fff;
+}
+.char-profile-art{
+  min-height:520px;
+  background:#0b1020;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.char-profile-art img{width:100%;height:100%;object-fit:contain;filter:none}
+.char-profile-side{
+  padding:28px;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  background:radial-gradient(circle at 20% 0,rgba(126,47,255,.28),transparent 16rem),linear-gradient(180deg,#111827,#0e1422);
+}
+.char-profile-kicker{color:#9f7aea;font-size:12px;font-weight:900;letter-spacing:.12em!important}
+.char-profile-name{font-size:34px;font-weight:900;line-height:1}
+.char-profile-type{color:#b8c7ff;font-weight:800}
+.char-profile-quote{padding:16px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(255,255,255,.06);line-height:1.7}
+.char-profile-video{width:100%;aspect-ratio:9/16;max-height:420px;border-radius:18px;background:#05070d;object-fit:contain}
+.char-profile-tags{display:flex;flex-wrap:wrap;gap:8px}
+.char-profile-tags span{border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:8px 10px;background:rgba(255,255,255,.06);color:#dbe5ff;font-size:12px;font-weight:800}
+@media(max-width:860px){
+  .char-profile-modal{grid-template-columns:1fr;max-width:620px}
+  .char-profile-art{min-height:auto}
+  .char-profile-art img{height:auto}
+}
 .arena{
   background:
     linear-gradient(rgba(8,12,22,.86),rgba(8,12,22,.92)),
@@ -3390,7 +3441,7 @@ const CHARACTERS=[
 {id:6,name:"月影先知",mbti:"INFJ",mbtiName:"提倡者",group:"NF",colors:{p:"#1a5276",s:"#2980b9",a:"#d4af37"},weaponPref:"spear",stats:{atk:72,def:85,crit:0.17},quotes:{atk:["星光指引我。","命中注定的一击。","命运的丝线..."],def:["我看到了你的轨迹。","平静如水...","预知已告诉我一切。"],sp:["月影·命运裁决！","星辰为我而闪耀！"],win:"命运早已注定。",lose:"新的命运开始了..."}},
 {id:7,name:"光之咏者",mbti:"INFP",mbtiName:"调停者",group:"NF",colors:{p:"#e8da5e",s:"#f1c40f",a:"#e74c3c"},weaponPref:"spear",stats:{atk:65,def:72,crit:0.14},quotes:{atk:["为了理想！","我心中的火焰！","不会放弃！"],def:["我还能坚持...","为了心中的信念！","伤痛让我更坚强。"],sp:["光之咏叹·神圣裁决！","请聆听我的祈祷！"],win:"爱与和平...",lose:"梦想不会终结。"}},
 {id:8,name:"星火游侠",mbti:"ENFP",mbtiName:"竞选者",group:"NF",colors:{p:"#d35400",s:"#e67e22",a:"#f39c12"},weaponPref:"gun",stats:{atk:90,def:55,crit:0.19},quotes:{atk:["嗨起来！","自由开火！","看我表演！"],def:["哇哦！刺激！","差一点～","再来再来！"],sp:["星火燎原！","燃烧吧小宇宙！"],win:"太好玩了哈哈哈！",lose:"下次一定更精彩！"}},
-{id:9,name:"铁壁守卫",mbti:"ISTJ",mbtiName:"物流师",group:"SJ",colors:{p:"#566573",s:"#7f8c8d",a:"#2c3e50"},weaponPref:"sword",stats:{atk:70,def:95,crit:0.10},quotes:{atk:["严格按标准执行。","精准打击。","没有多余动作。"],def:["坚如磐石。","阵型不破！","守住阵线。"],sp:["铁壁·绝对Defense反击！","纪律就是力量！"],win:"纪律带来胜利。",lose:"需要复盘改进。"}},
+{id:9,name:"Inspector",mbti:"ISTJ",mbtiName:"Inspector",group:"SJ",colors:{p:"#1e3a5f",s:"#3d5a80",a:"#5aa7ff"},weaponPref:"sword",stats:{atk:70,def:95,crit:0.10},quotes:{atk:["Execute by the rules.","Precise strike.","No wasted motion."],def:["Rock solid.","Formation holds!","Hold the line."],sp:["Ironwall Counter!","Discipline is strength!"],win:"Discipline brings victory.",lose:"Review and improve."}},
 {id:10,name:"坚盾卫士",mbti:"ISFJ",mbtiName:"守卫者",group:"SJ",colors:{p:"#5b6c5d",s:"#7d9b7e",a:"#c9a96e"},weaponPref:"spear",stats:{atk:60,def:98,crit:0.08},quotes:{atk:["请退后！","小心！","保护好大家！"],def:["我不会倒下！","盾在人在！","守护是我的使命。"],sp:["坚盾·圣光庇护！","为了需要守护的人！"],win:"太好了，大家安全了。",lose:"没关系，只要大家没事..."}},
 {id:11,name:"钢铁督军",mbti:"ESTJ",mbtiName:"总经理",group:"SJ",colors:{p:"#4a4a4a",s:"#6e6e6e",a:"#c0392b"},weaponPref:"gun",stats:{atk:92,def:78,crit:0.12},quotes:{atk:["火力全开！","效率第一！","速战速决！"],def:["这不是问题。","标准流程应对。","井然有序。"],sp:["钢铁洪流·饱和打击！","压倒性火力！"],win:"效率就是一切。",lose:"战术需要调整。"}},
 {id:12,name:"暖心护使",mbti:"ESFJ",mbtiName:"执政官",group:"SJ",colors:{p:"#e67e73",s:"#f5a9a0",a:"#d4af37"},weaponPref:"spear",stats:{atk:68,def:88,crit:0.11},quotes:{atk:["大家一起加油！","别怕，我在这里！","齐心协力！"],def:["来我身后！","我会保护你的！","稳住！"],sp:["暖心·治愈风暴！","爱是最强的力量！"],win:"我们做到了！",lose:"下次一起努力吧！"}},
@@ -3399,6 +3450,25 @@ const CHARACTERS=[
 {id:15,name:"雷霆先锋",mbti:"ESTP",mbtiName:"企业家",group:"SP",colors:{p:"#d4ac0d",s:"#f1c40f",a:"#e67e22"},weaponPref:"gun",stats:{atk:93,def:50,crit:0.21},quotes:{atk:["冲啊！","来得正好！","接招！"],def:["哈哈不够看！","太慢了！","再来再来！"],sp:["雷霆万钧·先锋冲锋！","谁也别想挡我！"],win:"就知道会赢！",lose:"偶尔输一次也不错！"}},
 {id:16,name:"烈阳舞者",mbti:"ESFP",mbtiName:"表演者",group:"SP",colors:{p:"#e67e22",s:"#f39c12",a:"#d35400"},weaponPref:"sword",stats:{atk:80,def:55,crit:0.18},quotes:{atk:["看我华丽的表演！","舞台属于我！","灯光！音乐！"],def:["华丽闪避！","太慢了太慢了～","优雅～"],sp:["烈阳·终极演出！","全场目光聚焦于我！"],win:"谢谢观众朋友们！",lose:"安可！安可！"}}
 ];
+
+const CHAR_MEDIA={
+  INTJ:{
+    image:'../assets/characters/intj-position.png',
+    video:'../assets/characters/intj-promo.mp4',
+    title:'INTJ Architect',
+    subtitle:'Strategic planner / efficiency optimizer',
+    quote:'I am not solving problems. I am optimizing the code of the world.',
+    tags:['Quantum Strategy Blade','Energy visor','Purple-black palette','Low efficiency / chaos / meaningless small talk']
+  },
+  ISTJ:{
+    image:'../assets/characters/istj-position.png',
+    video:'../assets/characters/istj-promo.mp4',
+    title:'ISTJ Inspector',
+    subtitle:'Quality controller / order keeper',
+    quote:'Rules are not limits. They are the guarantee that everything runs correctly.',
+    tags:['Precision Calibrator','Goggle details','Deep-blue palette','Chaos / mistakes / rule breaking']
+  }
+};
 
 // ===== SVG CHARACTER GENERATOR =====
 function charPersonaParts(c){
@@ -4781,6 +4851,7 @@ function renderCharacters(){
   const g=document.getElementById('charGrid');g.innerHTML='';
   CHARACTERS.forEach(c=>{
     const trait=getCharTrait(c);
+    const media=CHAR_MEDIA[c.mbti];
     const div=document.createElement('div');div.className='char-card';
     div.style.setProperty('--card-accent',c.colors.a);
     div.innerHTML=
@@ -4807,9 +4878,34 @@ function renderCharacters(){
           '<span class="char-skill">🎭 '+escapeHTML(trait.role)+'</span>'+
           '<span class="char-skill">🎒 '+weaponLabel(c.weaponPref)+'</span>'+
         '</div>'+
+        (media?'<button class="char-media-badge" type="button" onclick="event.stopPropagation();openCharacterProfile('+JSON.stringify(c.mbti)+')">View dossier · Play promo</button>':'')+
       '</div>';
     g.appendChild(div);
   });
+}
+
+function openCharacterProfile(mbti){
+  const c=CHARACTERS.find(x=>x.mbti===mbti);
+  const media=CHAR_MEDIA[mbti];
+  if(!c||!media)return;
+  const trait=getCharTrait(c);
+  document.getElementById('modalContent').className='modal-content char-profile-modal';
+  document.getElementById('modalContent').innerHTML=
+    '<div class="char-profile-art"><img src="'+media.image+'" alt="'+escapeHTML(media.title)+' dossier"></div>'+
+    '<div class="char-profile-side">'+
+      '<div class="char-profile-kicker">CHARACTER DOSSIER</div>'+
+      '<div class="char-profile-name">'+escapeHTML(media.title)+'</div>'+
+      '<div class="char-profile-type">'+escapeHTML(media.subtitle)+' · '+escapeHTML(c.group)+' faction</div>'+
+      '<div class="char-profile-quote">“'+escapeHTML(media.quote)+'”</div>'+
+      '<video class="char-profile-video" src="'+media.video+'" poster="'+media.image+'" controls autoplay muted loop playsinline></video>'+
+      '<div class="char-profile-tags">'+
+        '<span>Trait: '+escapeHTML(trait.label)+'</span>'+
+        '<span>Role: '+escapeHTML(trait.role)+'</span>'+
+        '<span>Preference: '+weaponLabel(c.weaponPref)+'</span>'+
+        media.tags.map(tag=>'<span>'+escapeHTML(tag)+'</span>').join('')+
+      '</div>'+
+    '</div>';
+  document.getElementById('modal').classList.add('active');
 }
 
 // ===== WEAPON DETAIL MODAL =====
@@ -4828,6 +4924,7 @@ function openModal(id){
   const showcaseSrc=w.showcaseUrl||SHOWCASE_BY_NAME[w.n]||IMG[w.i];
   const hasShowcase=!!(w.showcaseUrl||SHOWCASE_BY_NAME[w.n]);
   const heroStyle=hasShowcase?' style="background-image:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,253,248,.78)),url(\''+showcaseSrc+'\')"':'';
+  document.getElementById('modalContent').className='modal-content';
   document.getElementById('modalContent').innerHTML=
     '<div class="modal-img-wrap '+(hasShowcase?'has-showcase':'')+'"'+heroStyle+'>'+
       '<div class="modal-showcase-tag">Showcase · '+escapeHTML(w.l)+'</div>'+
@@ -4861,7 +4958,11 @@ function openModal(id){
     '</div>';
   document.getElementById('modal').classList.add('active');
 }
-function closeModal(e){if(e&&e.target!==document.getElementById('modal'))return;document.getElementById('modal').classList.remove('active');}
+function closeModal(e){
+  if(e&&e.target!==document.getElementById('modal'))return;
+  document.querySelectorAll('#modal video').forEach(v=>{try{v.pause()}catch(err){}});
+  document.getElementById('modal').classList.remove('active');
+}
 
 document.addEventListener('click',function(e){
   const card=e.target.closest('.weapon-card');if(!card)return;

@@ -2,6 +2,29 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-16: Character Dossier Media
+
+Goal:
+- Add user-provided positioning images and promo animations for the first two premium character dossiers.
+- Make character cards feel closer to collectible toy marketing material.
+
+Shipped:
+- Added INTJ Architect/Strategist dossier image and compressed promo video.
+- Added ISTJ Inspector dossier image and compressed promo video.
+- Added character-card media buttons for INTJ and ISTJ.
+- Added a character dossier modal that shows the full positioning board, quote, role tags, and autoplay muted promo animation.
+- Renamed ISTJ display from the old guard-style identity to `检查员 / Inspector` to match the supplied positioning art.
+- Synced the feature to Chinese and English pages.
+
+Verification:
+- Parsed JavaScript in `index.html` and `en/index.html` with Node.
+- Ran `git diff --check`.
+- Verified local HTTP responses for both pages and all four new media files.
+
+Next:
+- Add dossier media for the remaining MBTI characters as their positioning images and animations are produced.
+- Consider replacing the SVG avatar on each upgraded character card with a crop from the positioning image once more character art is available.
+
 ## 2026-05-16: Player Studio And Creator Gallery
 
 Goal:
