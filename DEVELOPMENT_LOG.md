@@ -25,6 +25,11 @@ Next:
 - Add dossier media for the remaining MBTI characters as their positioning images and animations are produced.
 - Consider replacing the SVG avatar on each upgraded character card with a crop from the positioning image once more character art is available.
 
+Follow-up:
+- Made upgraded character cards fully clickable, not only the small dossier button.
+- Replaced INTJ and ISTJ card avatars with cropped images from the supplied positioning boards.
+- Added lightweight WebP avatar crops for faster card rendering.
+
 ## 2026-05-16: Player Studio And Creator Gallery
 
 Goal:

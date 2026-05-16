@@ -820,6 +820,7 @@ body::before{
   box-shadow:0 12px 28px rgba(29,29,31,.18);
 }
 .char-media-badge:hover{transform:translateY(-1px)}
+.char-card.has-media:hover .char-media-badge{background:linear-gradient(135deg,#7b2eff,#00d8ff)}
 .char-profile-modal{
   display:grid;
   grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);
@@ -1631,6 +1632,34 @@ body::before{
   width:124px;
   height:150px;
   filter:drop-shadow(0 22px 22px rgba(78,64,44,.18));
+}
+.char-card.has-media{cursor:pointer}
+.char-card.has-media .char-avatar{
+  min-height:242px;
+  padding:0;
+  background:#0b1020;
+}
+.char-card.has-media .char-avatar::after{
+  content:'点击查看角色资料';
+  position:absolute;
+  left:18px;
+  bottom:16px;
+  z-index:2;
+  border-radius:999px;
+  padding:7px 10px;
+  background:rgba(12,18,32,.72);
+  color:#fff;
+  font-size:12px;
+  font-weight:900;
+  backdrop-filter:blur(10px);
+}
+.char-card.has-media .char-avatar img{
+  width:100%;
+  height:242px;
+  object-fit:cover;
+  object-position:50% 22%;
+  display:block;
+  filter:saturate(1.08) contrast(1.05);
 }
 .char-info{
   position:relative;
@@ -3480,6 +3509,7 @@ const CHARACTERS=[
 const CHAR_MEDIA={
   INTJ:{
     image:'assets/characters/intj-position.png',
+    avatar:'assets/characters/intj-avatar.webp',
     video:'assets/characters/intj-promo.mp4',
     title:'INTJ 战略家',
     subtitle:'战术规划者 / 效率优化者',
@@ -3488,6 +3518,7 @@ const CHAR_MEDIA={
   },
   ISTJ:{
     image:'assets/characters/istj-position.png',
+    avatar:'assets/characters/istj-avatar.webp',
     video:'assets/characters/istj-promo.mp4',
     title:'ISTJ 检查员',
     subtitle:'质量控制者 / 秩序维护者',
@@ -4879,9 +4910,13 @@ function renderCharacters(){
     const trait=getCharTrait(c);
     const media=CHAR_MEDIA[c.mbti];
     const div=document.createElement('div');div.className='char-card';
+    if(media){
+      div.classList.add('has-media');
+      div.addEventListener('click',()=>openCharacterProfile(c.mbti));
+    }
     div.style.setProperty('--card-accent',c.colors.a);
     div.innerHTML=
-      '<div class="char-avatar">'+genCharSVG(c,80)+'</div>'+
+      '<div class="char-avatar">'+(media?'<img src="'+media.avatar+'" alt="'+escapeHTML(media.title)+'">':genCharSVG(c,80))+'</div>'+
       '<div class="char-info">'+
         '<div class="char-card-top">'+
           '<span class="char-rarity">★ '+charRarity(c)+' 收藏卡</span>'+
@@ -4904,7 +4939,7 @@ function renderCharacters(){
           '<span class="char-skill">🎭 '+escapeHTML(trait.role)+'</span>'+
           '<span class="char-skill">🎒 '+weaponLabel(c.weaponPref)+'</span>'+
         '</div>'+
-        (media?'<button class="char-media-badge" type="button" onclick="event.stopPropagation();openCharacterProfile('+JSON.stringify(c.mbti)+')">查看定位图 · 播放宣传动画</button>':'')+
+        (media?'<button class="char-media-badge" type="button">查看定位图 · 播放宣传动画</button>':'')+
       '</div>';
     g.appendChild(div);
   });
