@@ -2,6 +2,35 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-16: Player Studio And Creator Gallery
+
+Goal:
+- Make the next update bigger and more platform-like, not just a small visual tweak.
+- Give players a persistent local identity, a place to track their uploads, and a way to browse creator collections.
+
+Shipped:
+- Added a new `我的馆 / Studio` navigation tab on Chinese and English sites.
+- Added local player profile with creator name and local player ID.
+- Auto-fills upload creator and forum name from the saved player profile.
+- Records each submitted weapon into `myUploads` with local/pending/published status.
+- Added `我的上传记录 / My Upload Records` with thumbnail, type, time, brick count, AI power, and review status.
+- Made weapon creator names clickable on cards and detail modals.
+- Added creator public gallery so clicking a creator shows all approved weapons by that creator.
+- Synced the same Studio experience to `/en/`.
+
+Verification:
+- Parsed JavaScript in `index.html` and `en/index.html` with Node.
+- Ran `git diff --check`.
+- Opened local site on `http://127.0.0.1:8001/`.
+- Verified saving player name updates the Studio profile.
+- Verified clicking a weapon creator opens Studio and shows creator public works.
+- Verified English Studio tab opens on `http://127.0.0.1:8001/en/`.
+
+Next:
+- Add a real cloud account/login layer when strict cross-device identity and anti-abuse are needed.
+- Consider exposing rejected/pending cloud review status from Supabase through a safe RPC if full multi-device upload tracking becomes necessary.
+- Continue with a larger gameplay update: weapon collection bonuses, creator pages, and longer arena progression.
+
 ## 2026-05-14: MBTI Battle Personality Depth
 
 Goal:

@@ -718,6 +718,93 @@ body::before{
 }
 .modal-stat-val{color:var(--toy-blue)}
 .modal-stat-label{color:var(--muted)}
+.creator-link{
+  appearance:none;
+  border:0;
+  padding:0;
+  background:none;
+  color:#0071e3;
+  font:inherit;
+  font-weight:800;
+  cursor:pointer;
+}
+.creator-link:hover{text-decoration:underline}
+.studio-panel{max-width:1120px;margin:0 auto 34px;padding:18px 20px 28px}
+.studio-hero{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 260px;
+  gap:18px;
+  align-items:stretch;
+  padding:28px;
+  border:1px solid rgba(29,29,31,.08);
+  border-radius:26px;
+  background:radial-gradient(circle at 8% 18%,rgba(255,212,49,.24),transparent 13rem),radial-gradient(circle at 92% 14%,rgba(142,120,255,.18),transparent 14rem),rgba(255,255,255,.72);
+  box-shadow:0 22px 60px rgba(45,55,72,.1);
+  backdrop-filter:blur(18px);
+}
+.studio-kicker{color:#0071e3;font-size:12px;font-weight:900;letter-spacing:.12em!important}
+.studio-hero h2{margin:8px 0;color:var(--ink);font-size:clamp(28px,5vw,48px);line-height:1.04}
+.studio-hero p{max-width:620px;color:#6e6e73;font-size:15px;line-height:1.7}
+.studio-id-card,.studio-profile-card,.studio-stats,.studio-section{
+  border:1px solid rgba(29,29,31,.08);
+  border-radius:24px;
+  background:rgba(255,255,255,.74);
+  box-shadow:0 18px 48px rgba(45,55,72,.08);
+}
+.studio-id-card{display:flex;flex-direction:column;justify-content:center;gap:10px;padding:22px}
+.studio-id-card span,.studio-id-card em,.studio-help,.studio-section-sub,.author-gallery-meta{color:#86868b;font-size:13px;font-style:normal}
+.studio-id-card strong{color:var(--ink);font-size:26px}
+.studio-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.9fr);gap:18px;margin-top:18px}
+.studio-profile-card,.studio-stats,.studio-section{padding:22px}
+.studio-section{margin-top:18px}
+.studio-section-title{color:var(--ink);font-size:20px;font-weight:900}
+.studio-section-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:16px}
+.studio-form-row{display:grid;gap:8px;margin:16px 0 14px}
+.studio-form-row label{color:#6e6e73;font-size:12px;font-weight:900}
+.studio-form-row input,.author-tools input{
+  width:100%;
+  border:1px solid #dce4f0;
+  border-radius:14px;
+  background:#f7f9fd;
+  color:var(--ink);
+  padding:12px 14px;
+  font:inherit;
+  font-weight:800;
+}
+.studio-form-row input:focus,.author-tools input:focus{outline:none;border-color:#0071e3;box-shadow:0 0 0 4px rgba(0,113,227,.12)}
+.studio-action{
+  border:0;
+  border-radius:999px;
+  background:#1d1d1f;
+  color:#fff;
+  padding:12px 20px;
+  font-family:inherit;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 14px 34px rgba(29,29,31,.18);
+}
+.studio-action.compact{padding:10px 18px}
+.studio-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.studio-stat{min-height:112px;border-radius:20px;background:linear-gradient(145deg,#fff,#f2f7ff);padding:18px;display:flex;flex-direction:column;justify-content:center;gap:8px}
+.studio-stat span{color:#0071e3;font-size:34px;font-weight:900}
+.studio-stat b{color:#6e6e73;font-size:13px}
+.studio-list{display:grid;gap:10px}
+.studio-empty{padding:18px;border:1px dashed #cad4e2;border-radius:18px;color:#86868b;background:#f8fbff}
+.studio-upload-item{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px;border:1px solid #edf1f7;border-radius:18px;background:#fff}
+.studio-upload-thumb{width:56px;height:56px;object-fit:contain;border-radius:14px;background:#f4f7fb}
+.studio-upload-name{color:var(--ink);font-weight:900}
+.studio-upload-meta{color:#86868b;font-size:12px;margin-top:4px}
+.studio-status{white-space:nowrap;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:900}
+.studio-status.approved{background:#e6f8ef;color:#0b7d4f}
+.studio-status.pending{background:#fff4d6;color:#9c6500}
+.studio-status.local{background:#eef4ff;color:#0f5fb8}
+.author-tools{min-width:280px;display:flex;gap:8px}
+.author-gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:12px}
+.author-mini-card{border:1px solid #edf1f7;border-radius:18px;padding:12px;background:#fff;cursor:pointer;transition:.2s}
+.author-mini-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(45,55,72,.12)}
+.author-mini-card img{width:100%;height:120px;object-fit:contain;border-radius:14px;background:#f7f9fd}
+.author-mini-name{margin-top:10px;color:var(--ink);font-weight:900}
+.author-mini-meta{margin-top:4px;color:#86868b;font-size:12px}
 .arena{
   background:
     linear-gradient(rgba(8,12,22,.86),rgba(8,12,22,.92)),
@@ -751,6 +838,12 @@ body::before{
   .cat-banner img,.char-banner img{aspect-ratio:16/7}
   .grid-container{grid-template-columns:1fr}
   .char-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .studio-panel{padding-inline:10px}
+  .studio-hero,.studio-grid{grid-template-columns:1fr}
+  .studio-section-head{display:grid}
+  .author-tools{min-width:0;width:100%}
+  .studio-upload-item{grid-template-columns:48px minmax(0,1fr)}
+  .studio-status{justify-self:start}
 }
 @media(max-width:420px){
   .stat-item{flex-basis:100%}
@@ -1177,7 +1270,7 @@ body::before{
   }
   .nav-tabs{
     width:100%;
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:1fr 1fr 1fr;
   }
   .stat-item{
     flex:1 1 100%;
@@ -1193,6 +1286,12 @@ body::before{
   .cat-banner img,.char-banner img{
     aspect-ratio:16/8;
   }
+  .studio-panel{padding-inline:10px}
+  .studio-hero,.studio-grid{grid-template-columns:1fr}
+  .studio-section-head{display:grid}
+  .author-tools{min-width:0;width:100%}
+  .studio-upload-item{grid-template-columns:48px minmax(0,1fr)}
+  .studio-status{justify-self:start}
   .filter-bar{
     top:8px;
     max-width:none;
@@ -2935,6 +3034,7 @@ body::before{
     <div class="nav-tabs">
       <button class="nav-tab active" data-panel="weapons">⚔️ 武器库</button>
       <button class="nav-tab" data-panel="characters">👥 角色图鉴</button>
+      <button class="nav-tab" data-panel="studio">🏛️ 我的馆</button>
     </div>
   </div>
   <div class="stats-bar">
@@ -3125,6 +3225,64 @@ body::before{
   <div class="section-header"><h2>🧱 积木战士图鉴</h2><div class="divider"></div><div class="sub">16 种 MBTI 人格 · 16 位传奇战士</div></div>
   <div class="char-banner"><img src="assets/banner-characters-bricks.png" alt="战士档案"></div>
   <div class="char-grid" id="charGrid"></div>
+</div>
+
+<!-- STUDIO PANEL -->
+<div class="panel" id="panel-studio">
+  <section class="studio-panel">
+    <div class="studio-hero">
+      <div>
+        <div class="studio-kicker">PLAYER STUDIO</div>
+        <h2>我的积木收藏馆</h2>
+        <p>保存你的玩家身份，追踪上传审核状态，也可以点任意创建者查看他的公开武器。</p>
+      </div>
+      <div class="studio-id-card">
+        <span>玩家名</span>
+        <strong id="profileNameView">未设置</strong>
+        <em id="profileIdView">本机身份</em>
+      </div>
+    </div>
+    <div class="studio-grid">
+      <div class="studio-profile-card">
+        <div class="studio-section-title">身份设置</div>
+        <div class="studio-form-row">
+          <label for="playerNameInput">玩家名字</label>
+          <input id="playerNameInput" maxlength="16" placeholder="例如：沐沐">
+        </div>
+        <button class="studio-action" type="button" onclick="savePlayerProfile()">保存玩家名</button>
+        <div class="studio-help">保存后，上传武器和论坛发帖会自动使用这个名字。当前是本机身份，换设备需要重新填写。</div>
+      </div>
+      <div class="studio-stats">
+        <div class="studio-stat"><span id="studioUploadCount">0</span><b>我的上传</b></div>
+        <div class="studio-stat"><span id="studioApprovedCount">0</span><b>已公开</b></div>
+        <div class="studio-stat"><span id="studioPendingCount">0</span><b>待审核</b></div>
+        <div class="studio-stat"><span id="studioPublicCount">0</span><b>公开作品</b></div>
+      </div>
+    </div>
+    <div class="studio-section">
+      <div class="studio-section-head">
+        <div>
+          <div class="studio-section-title">我的上传记录</div>
+          <div class="studio-section-sub">这里记录本设备提交过的武器，审核通过后会自动标成已公开。</div>
+        </div>
+      </div>
+      <div class="studio-list" id="myUploadList"></div>
+    </div>
+    <div class="studio-section author-gallery">
+      <div class="studio-section-head">
+        <div>
+          <div class="studio-section-title">作者公开作品</div>
+          <div class="studio-section-sub">从武器卡片点击创建者，或在这里输入名字查看公开作品。</div>
+        </div>
+        <div class="author-tools">
+          <input id="authorSearch" maxlength="16" placeholder="输入创建者名字">
+          <button class="studio-action compact" type="button" onclick="openAuthorGallery(document.getElementById('authorSearch').value)">查看</button>
+        </div>
+      </div>
+      <div class="author-gallery-meta" id="authorGalleryMeta">还没有选择作者。</div>
+      <div class="author-gallery-grid" id="authorGalleryGrid"></div>
+    </div>
+  </section>
 </div>
 
 <!-- CHARACTER SELECTION OVERLAY -->
@@ -3433,13 +3591,14 @@ function genWeaponSVG(w){
 }
 
 // ===== NAVIGATION =====
+function switchPanel(panel){
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.toggle('active',t.dataset.panel===panel));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  const next=document.getElementById('panel-'+panel);
+  if(next)next.classList.add('active');
+}
 document.querySelectorAll('.nav-tab').forEach(tab=>{
-  tab.addEventListener('click',()=>{
-    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-    tab.classList.add('active');
-    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-    document.getElementById('panel-'+tab.dataset.panel).classList.add('active');
-  });
+  tab.addEventListener('click',()=>switchPanel(tab.dataset.panel));
 });
 
 // ===== DATA =====
@@ -3457,6 +3616,7 @@ const CUTOUT_MODES={
 function cutoutConfig(mode){return CUTOUT_MODES[mode]||CUTOUT_MODES.balanced}
 const CLOUD=window.MUMU_SUPABASE||{};
 let forumCloudReady=false;
+let selectedAuthor='';
 
 function cloudEnabled(){
   return !!(CLOUD&&CLOUD.enabled&&CLOUD.url&&CLOUD.anonKey);
@@ -3488,6 +3648,166 @@ function getBonusSlots(){
 
 function getUploadAllowance(){
   return cloudEnabled()?50+getBonusSlots():1;
+}
+
+function makePlayerId(){
+  return 'P'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,7).toUpperCase();
+}
+
+function ensurePlayerProfile(){
+  if(!DATA.profile||typeof DATA.profile!=='object')DATA.profile={};
+  if(!DATA.profile.id)DATA.profile.id=makePlayerId();
+  if(!DATA.profile.createdAt)DATA.profile.createdAt=Date.now();
+  if(typeof DATA.profile.name!=='string')DATA.profile.name='';
+  if(!Array.isArray(DATA.myUploads))DATA.myUploads=[];
+}
+
+function currentPlayerName(){
+  ensurePlayerProfile();
+  return (DATA.profile.name||'').trim();
+}
+
+function syncPlayerInputs(){
+  const name=currentPlayerName();
+  const playerInput=document.getElementById('playerNameInput');
+  const uploadCreator=document.getElementById('uploadCreator');
+  const forumName=document.getElementById('forumName');
+  if(playerInput&&!playerInput.value)playerInput.value=name;
+  if(uploadCreator&&!uploadCreator.value)uploadCreator.value=name;
+  if(forumName&&!forumName.value)forumName.value=name;
+}
+
+async function savePlayerProfile(){
+  ensurePlayerProfile();
+  const input=document.getElementById('playerNameInput');
+  const name=input?input.value.trim().slice(0,16):'';
+  DATA.profile.name=name;
+  await saveData();
+  const uploadCreator=document.getElementById('uploadCreator');
+  const forumName=document.getElementById('forumName');
+  if(uploadCreator)uploadCreator.value=name;
+  if(forumName)forumName.value=name;
+  selectedAuthor=name||selectedAuthor;
+  renderStudio();
+}
+
+function sameCreator(a,b){
+  return String(a||'').trim().toLowerCase()===String(b||'').trim().toLowerCase();
+}
+
+function jsAttr(value){
+  return JSON.stringify(String(value||'')).replace(/"/g,'&quot;').replace(/</g,'\\u003c');
+}
+
+function creatorLinkHTML(name,prefix){
+  const safe=String(name||'匿名创造者').slice(0,16);
+  return '<button class="creator-link" type="button" onclick="event.stopPropagation();openAuthorGallery('+jsAttr(safe)+')">'+escapeHTML(prefix||'创建者：')+escapeHTML(safe)+'</button>';
+}
+
+function isMyUploadApproved(record){
+  return WEAPONS.some(w=>String(w.i)===String(record.id)&&w.cloud);
+}
+
+function recordMyUpload(item,status){
+  ensurePlayerProfile();
+  const id=String(item.i);
+  const next={
+    id,
+    name:item.n,
+    type:item.t,
+    label:item.l||typeLabel(item.t),
+    creator:item.creator,
+    status:status||'pending',
+    createdAt:item.createdAt||Date.now(),
+    img:item.img,
+    pieceCount:item.pieceCount||0,
+    aiPower:item.aiPower||0,
+    cardRarity:item.cardRarity||'',
+    cardScore:item.cardScore||0
+  };
+  const oldIndex=DATA.myUploads.findIndex(x=>String(x.id)===id);
+  if(oldIndex>=0)DATA.myUploads.splice(oldIndex,1,next);
+  else DATA.myUploads.unshift(next);
+}
+
+function statusInfoForUpload(record){
+  if(isMyUploadApproved(record))return {key:'approved',label:'已公开'};
+  if(record.status==='local')return {key:'local',label:'本机'};
+  return {key:'pending',label:'待审核'};
+}
+
+function renderStudio(){
+  ensurePlayerProfile();
+  const profile=DATA.profile;
+  const name=profile.name||'未设置';
+  const profileName=document.getElementById('profileNameView');
+  const profileId=document.getElementById('profileIdView');
+  const playerInput=document.getElementById('playerNameInput');
+  if(profileName)profileName.textContent=name;
+  if(profileId)profileId.textContent=profile.id+' · '+formatTime(profile.createdAt);
+  if(playerInput&&!playerInput.value)playerInput.value=profile.name||'';
+  const mine=DATA.myUploads||[];
+  const approved=mine.filter(isMyUploadApproved).length;
+  const pending=mine.filter(x=>statusInfoForUpload(x).key==='pending').length;
+  const publicMine=profile.name?WEAPONS.filter(w=>sameCreator(w.creator,profile.name)).length:0;
+  const setText=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value};
+  setText('studioUploadCount',mine.length);
+  setText('studioApprovedCount',approved);
+  setText('studioPendingCount',pending);
+  setText('studioPublicCount',publicMine);
+  const list=document.getElementById('myUploadList');
+  if(list){
+    if(!mine.length){
+      list.innerHTML='<div class="studio-empty">还没有上传记录。先去武器库上传一张积木武器，审核状态会记录在这里。</div>';
+    }else{
+      list.innerHTML=mine.map(item=>{
+        const st=statusInfoForUpload(item);
+        return '<div class="studio-upload-item">'+
+          '<img class="studio-upload-thumb" src="'+escapeHTML(item.img||'')+'" alt="'+escapeHTML(item.name)+'">'+
+          '<div><div class="studio-upload-name">'+escapeHTML(item.name)+'</div>'+
+          '<div class="studio-upload-meta">'+escapeHTML(item.label||typeLabel(item.type))+' · '+formatTime(item.createdAt)+' · 🧱 '+escapeHTML(item.pieceCount||0)+' · 战力 '+escapeHTML(item.aiPower||0)+'</div></div>'+
+          '<span class="studio-status '+st.key+'">'+st.label+'</span>'+
+        '</div>';
+      }).join('');
+    }
+  }
+  renderAuthorGallery();
+}
+
+function openAuthorGallery(name){
+  selectedAuthor=String(name||'').trim().slice(0,16);
+  const input=document.getElementById('authorSearch');
+  if(input)input.value=selectedAuthor;
+  const modal=document.getElementById('modal');
+  if(modal)modal.classList.remove('active');
+  switchPanel('studio');
+  renderStudio();
+  const panel=document.getElementById('panel-studio');
+  if(panel)panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function renderAuthorGallery(){
+  const meta=document.getElementById('authorGalleryMeta');
+  const grid=document.getElementById('authorGalleryGrid');
+  if(!meta||!grid)return;
+  const author=selectedAuthor||currentPlayerName();
+  const input=document.getElementById('authorSearch');
+  if(input&&!input.value)input.value=author;
+  if(!author){
+    meta.textContent='还没有选择作者。';
+    grid.innerHTML='';
+    return;
+  }
+  const works=WEAPONS.filter(w=>sameCreator(w.creator,author));
+  meta.textContent=works.length?('正在查看：'+author+' · '+works.length+' 件公开武器'):('还没有找到 '+author+' 的公开武器。');
+  grid.innerHTML=works.map(w=>{
+    const rarity=weaponRarityInfo(w);
+    return '<article class="author-mini-card" onclick="openModal('+jsAttr(w.i)+')">'+
+      '<img src="'+escapeHTML(IMG[w.i]||'')+'" alt="'+escapeHTML(w.n)+'">'+
+      '<div class="author-mini-name">'+escapeHTML(w.n)+'</div>'+
+      '<div class="author-mini-meta">'+escapeHTML(w.l)+' · '+rarity.key+' · 战力 '+escapeHTML(w.aiPower||100)+'</div>'+
+    '</article>';
+  }).join('');
 }
 
 function dataUrlToBlob(dataUrl){
@@ -3588,11 +3908,13 @@ async function cloudErrorMessage(res,prefix){
 }
 
 async function loadData(){
-  try{DATA=JSON.parse(localStorage.getItem(LS_KEY))||{comments:{},votes:{},uploads:[],forum:[]}}catch(e){DATA={comments:{},votes:{},uploads:[],forum:[]}}
+  try{DATA=JSON.parse(localStorage.getItem(LS_KEY))||{comments:{},votes:{},uploads:[],forum:[],myUploads:[],profile:{}}}catch(e){DATA={comments:{},votes:{},uploads:[],forum:[],myUploads:[],profile:{}}}
   if(!DATA.comments)DATA.comments={};
   if(!DATA.votes)DATA.votes={};
   if(!Array.isArray(DATA.uploads))DATA.uploads=[];
   if(!Array.isArray(DATA.forum))DATA.forum=[];
+  if(!Array.isArray(DATA.myUploads))DATA.myUploads=[];
+  ensurePlayerProfile();
   if(cloudEnabled()){
     try{
       DATA.uploads=await loadCloudWeapons();
@@ -3609,6 +3931,7 @@ async function loadData(){
       console.warn(err);
     }
   }
+  syncPlayerInputs();
 }
 
 async function refreshPromotionBonus(){
@@ -3703,6 +4026,7 @@ function initUploader(){
     if(el)el.addEventListener('input',updateUploadCardPreview);
     if(el)el.addEventListener('change',updateUploadCardPreview);
   });
+  syncPlayerInputs();
   refreshUploadState();
 }
 
@@ -4187,7 +4511,7 @@ async function submitUploadedWeapon(){
   if(!pendingUpload||getUploadLimitReached())return;
   const status=document.getElementById('uploadStatus');
   const name=document.getElementById('uploadWeaponName').value.trim()||'未命名积木武器';
-  const creator=document.getElementById('uploadCreator').value.trim()||'匿名创造者';
+  const creator=(document.getElementById('uploadCreator').value.trim()||currentPlayerName()||'匿名创造者').slice(0,16);
   const t=document.getElementById('uploadType').value||pendingUpload.t;
   const skill=document.getElementById('uploadSkill').value.trim()||typeEmoji(t)+' 积木闪光连击';
   const desc=document.getElementById('uploadDesc').value.trim()||'由玩家上传的原创积木武器，已经加入收藏武器库。';
@@ -4196,8 +4520,8 @@ async function submitUploadedWeapon(){
   const analysis=pendingUpload.analysis||{pieceCount:20,aiPower:100,defense:t==='spear'?92:t==='sword'?88:82,crit:t==='gun'?.18:t==='sword'?.16:.12,tags:[]};
   const item={
     i:id,n:name.slice(0,20),t,l:typeLabel(t),d:desc.slice(0,90),
-    f:['玩家原创上传','自动识别：'+typeLabel(t),'AI战力：'+analysis.aiPower].concat(analysis.tags||[]).concat(['创建者：'+creator.slice(0,16)]),
-    s:skill.slice(0,22),fx:typeEmoji(t),creator:creator.slice(0,16),createdAt:Date.now(),shareProof:shareProof.slice(0,180),
+    f:['玩家原创上传','自动识别：'+typeLabel(t),'AI战力：'+analysis.aiPower].concat(analysis.tags||[]).concat(['创建者：'+creator]),
+    s:skill.slice(0,22),fx:typeEmoji(t),creator:creator,createdAt:Date.now(),shareProof:shareProof.slice(0,180),
     img:pendingUpload.img,
     def:{df:analysis.defense,cr:analysis.crit},
     pieceCount:analysis.pieceCount,
@@ -4210,8 +4534,11 @@ async function submitUploadedWeapon(){
       if(status)status.textContent='正在提交到云端审核队列...';
       finalItem=await saveUploadedWeaponToCloud(item);
       DATA.uploads.unshift(finalItem);
+      recordMyUpload(finalItem,'pending');
+      await saveData();
     }else{
       DATA.uploads=[item];
+      recordMyUpload(item,'local');
       await saveData();
     }
     markLocalUploadUsed();
@@ -4225,6 +4552,7 @@ async function submitUploadedWeapon(){
     renderWeapons();
     updateDashboard();
     updateLeaderboard();
+    renderStudio();
     refreshUploadState();
     if(status)status.textContent=cloudEnabled()?('已提交审核：'+finalItem.n+'。审核通过后会出现在公开武器库。'):('已加入本机武器库：'+finalItem.n);
   }catch(err){
@@ -4235,7 +4563,7 @@ async function submitUploadedWeapon(){
 async function postForumTopic(){
   if(!DATA)return;
   const status=document.getElementById('forumStatus');
-  const name=document.getElementById('forumName').value.trim()||'匿名玩家';
+  const name=document.getElementById('forumName').value.trim()||currentPlayerName()||'匿名玩家';
   const category=document.getElementById('forumCategory').value||'讨论';
   const title=document.getElementById('forumTitle').value.trim();
   const body=document.getElementById('forumBody').value.trim();
@@ -4283,7 +4611,7 @@ async function postForumReply(id){
   const topic=DATA.forum.find(p=>String(p.id)===String(id));
   if(!topic)return;
   if(!Array.isArray(topic.replies))topic.replies=[];
-  const author=document.getElementById('forumName').value.trim()||'匿名玩家';
+  const author=document.getElementById('forumName').value.trim()||currentPlayerName()||'匿名玩家';
   const reply={name:author.slice(0,16),text:text.slice(0,120),ts:Date.now()};
   if(topic.cloud&&cloudEnabled()){
     try{
@@ -4362,7 +4690,7 @@ function renderWeapons(){
       '<div class="card-info">'+
         '<div class="card-name-row"><span class="card-name">'+escapeHTML(w.n)+'</span><span class="type-badge '+(bc[w.t]||'')+'">'+escapeHTML(w.l)+'</span></div>'+
         '<div class="creator-line">🏷️ '+rarity.label+'</div>'+
-        (w.creator?'<div class="creator-line">🧑‍🎨 创建者：'+escapeHTML(w.creator)+'</div>':'')+
+        (w.creator?'<div class="creator-line">🧑‍🎨 '+creatorLinkHTML(w.creator,'创建者：')+'</div>':'')+
         ((w.pieceCount||w.aiPower)?'<div class="analysis-line">'+(w.pieceCount?'<span class="analysis-pill">🧱 '+escapeHTML(w.pieceCount)+' 颗</span>':'')+(w.aiPower?'<span class="analysis-pill">🤖 战力 '+escapeHTML(w.aiPower)+'</span>':'')+'</div>':'')+
         '<ul class="card-features">'+w.f.map(f=>'<li>'+escapeHTML(f)+'</li>').join('')+'</ul>'+
         '<div class="vote-section">'+
@@ -4486,7 +4814,7 @@ function renderCharacters(){
 
 // ===== WEAPON DETAIL MODAL =====
 function openModal(id){
-  const w=WEAPONS.find(x=>x.i===id);if(!w)return;
+  const w=WEAPONS.find(x=>String(x.i)===String(id));if(!w)return;
   const v=getVotes(w.i);const d=DEF[w.i]||{df:80,cr:0.08};
   const rarity=weaponRarityInfo(w);
   const analysis=w.analysis||{};
@@ -4511,7 +4839,7 @@ function openModal(id){
       '<div class="modal-cert">'+
         '<span>🏷️ '+rarity.label+'</span>'+
         '<span>评分 '+rarity.score+'</span>'+
-        (w.creator?'<span>🧑‍🎨 '+escapeHTML(w.creator)+'</span>':'')+
+        (w.creator?'<span>🧑‍🎨 '+creatorLinkHTML(w.creator,'')+'</span>':'')+
         (w.pieceCount?'<span>🧱 '+escapeHTML(w.pieceCount)+' 颗</span>':'')+
         (w.aiPower?'<span>🤖 战力 '+escapeHTML(w.aiPower)+'</span>':'')+
       '</div>'+
@@ -5015,6 +5343,7 @@ loadData().then(async()=>{
   renderWeapons();
   renderForum();
   renderCharacters();
+  renderStudio();
   updateDashboard();
   updateLeaderboard();
 });
