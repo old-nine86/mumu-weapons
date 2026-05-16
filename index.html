@@ -843,6 +843,15 @@ body::before{
   object-fit:contain;
   filter:none;
 }
+.char-profile-art.pending{
+  min-height:420px;
+  background:radial-gradient(circle at 50% 32%,rgba(255,255,255,.14),transparent 12rem),#0b1020;
+}
+.char-profile-art.pending svg{
+  width:190px;
+  height:230px;
+  filter:drop-shadow(0 24px 32px rgba(0,0,0,.36));
+}
 .char-profile-side{
   padding:28px;
   display:flex;
@@ -867,6 +876,19 @@ body::before{
   border-radius:18px;
   background:#05070d;
   object-fit:contain;
+}
+.char-profile-placeholder{
+  min-height:220px;
+  border:1px dashed rgba(255,255,255,.2);
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:#dbe5ff;
+  background:rgba(255,255,255,.06);
+  font-weight:900;
+  line-height:1.7;
 }
 .char-profile-tags{display:flex;flex-wrap:wrap;gap:8px}
 .char-profile-tags span{
@@ -1633,7 +1655,7 @@ body::before{
   height:150px;
   filter:drop-shadow(0 22px 22px rgba(78,64,44,.18));
 }
-.char-card.has-media{cursor:pointer}
+.char-card.has-dossier{cursor:pointer}
 .char-card.has-media .char-avatar{
   min-height:242px;
   padding:0;
@@ -1660,6 +1682,20 @@ body::before{
   object-position:50% 22%;
   display:block;
   filter:saturate(1.08) contrast(1.05);
+}
+.char-card.pending-media .char-avatar::after{
+  content:'资料制作中';
+  position:absolute;
+  left:18px;
+  bottom:16px;
+  z-index:2;
+  border-radius:999px;
+  padding:7px 10px;
+  background:rgba(255,255,255,.72);
+  color:#202124;
+  font-size:12px;
+  font-weight:900;
+  backdrop-filter:blur(10px);
 }
 .char-info{
   position:relative;
@@ -1894,6 +1930,13 @@ body::before{
 .sel-char-card svg{
   width:98px;
   height:112px;
+}
+.sel-char-card img{
+  width:98px;
+  height:112px;
+  object-fit:cover;
+  object-position:50% 22%;
+  border-radius:16px;
 }
 .sel-char-name{color:#202124}
 .sel-char-type{color:#2f8fe8}
@@ -4904,19 +4947,33 @@ const CHAR_TRAITS={
 function getCharTrait(c){
   return CHAR_TRAITS[c.id]||{label:'积木专精',desc:'稳定发挥',power:.04};
 }
+function getCharacterDossier(c){
+  const media=CHAR_MEDIA[c.mbti];
+  if(media)return Object.assign({pending:false},media);
+  return {
+    pending:true,
+    title:c.mbti+' '+c.name,
+    subtitle:c.mbtiName+' · '+(getCharTrait(c).role||'积木战士'),
+    quote:c.quotes&&c.quotes.win?c.quotes.win:'角色资料正在制作中。',
+    tags:['定位图制作中','宣传动画制作中','等待角色设定稿','当前使用积木头像占位']
+  };
+}
+function characterAvatarHTML(c,size){
+  const media=CHAR_MEDIA[c.mbti];
+  if(media&&media.avatar)return '<img src="'+media.avatar+'" alt="'+escapeHTML(media.title)+'">';
+  return genCharSVG(c,size);
+}
 function renderCharacters(){
   const g=document.getElementById('charGrid');g.innerHTML='';
   CHARACTERS.forEach(c=>{
     const trait=getCharTrait(c);
-    const media=CHAR_MEDIA[c.mbti];
+    const media=getCharacterDossier(c);
     const div=document.createElement('div');div.className='char-card';
-    if(media){
-      div.classList.add('has-media');
-      div.addEventListener('click',()=>openCharacterProfile(c.mbti));
-    }
+    div.classList.add('has-dossier',media.pending?'pending-media':'has-media');
+    div.addEventListener('click',()=>openCharacterProfile(c.mbti));
     div.style.setProperty('--card-accent',c.colors.a);
     div.innerHTML=
-      '<div class="char-avatar">'+(media?'<img src="'+media.avatar+'" alt="'+escapeHTML(media.title)+'">':genCharSVG(c,80))+'</div>'+
+      '<div class="char-avatar">'+characterAvatarHTML(c,80)+'</div>'+
       '<div class="char-info">'+
         '<div class="char-card-top">'+
           '<span class="char-rarity">★ '+charRarity(c)+' 收藏卡</span>'+
@@ -4939,7 +4996,7 @@ function renderCharacters(){
           '<span class="char-skill">🎭 '+escapeHTML(trait.role)+'</span>'+
           '<span class="char-skill">🎒 '+weaponLabel(c.weaponPref)+'</span>'+
         '</div>'+
-        (media?'<button class="char-media-badge" type="button">查看定位图 · 播放宣传动画</button>':'')+
+        '<button class="char-media-badge" type="button">'+(media.pending?'资料制作中 · 查看占位档案':'查看定位图 · 播放宣传动画')+'</button>'+
       '</div>';
     g.appendChild(div);
   });
@@ -4947,18 +5004,18 @@ function renderCharacters(){
 
 function openCharacterProfile(mbti){
   const c=CHARACTERS.find(x=>x.mbti===mbti);
-  const media=CHAR_MEDIA[mbti];
-  if(!c||!media)return;
+  if(!c)return;
+  const media=getCharacterDossier(c);
   const trait=getCharTrait(c);
   document.getElementById('modalContent').className='modal-content char-profile-modal';
   document.getElementById('modalContent').innerHTML=
-    '<div class="char-profile-art"><img src="'+media.image+'" alt="'+escapeHTML(media.title)+' 定位图"></div>'+
+    '<div class="char-profile-art '+(media.pending?'pending':'')+'">'+(media.pending?genCharSVG(c,160):'<img src="'+media.image+'" alt="'+escapeHTML(media.title)+' 定位图">')+'</div>'+
     '<div class="char-profile-side">'+
       '<div class="char-profile-kicker">CHARACTER DOSSIER</div>'+
       '<div class="char-profile-name">'+escapeHTML(media.title)+'</div>'+
       '<div class="char-profile-type">'+escapeHTML(media.subtitle)+' · '+escapeHTML(c.group)+' 阵营</div>'+
       '<div class="char-profile-quote">“'+escapeHTML(media.quote)+'”</div>'+
-      '<video class="char-profile-video" src="'+media.video+'" poster="'+media.image+'" controls autoplay muted loop playsinline></video>'+
+      (media.pending?'<div class="char-profile-placeholder">定位图和宣传动画正在制作中<br>当前先使用统一积木头像占位</div>':'<video class="char-profile-video" src="'+media.video+'" poster="'+media.image+'" controls autoplay muted loop playsinline></video>')+
       '<div class="char-profile-tags">'+
         '<span>人格技：'+escapeHTML(trait.label)+'</span>'+
         '<span>定位：'+escapeHTML(trait.role)+'</span>'+
@@ -5100,7 +5157,7 @@ function renderSelGrid(){
     const div=document.createElement('div');div.className='sel-char-card';
     if(selChar1&&selChar1.id===c.id)div.classList.add('picked','p1');
     if(selChar2&&selChar2.id===c.id)div.classList.add('picked','p2');
-    div.innerHTML=genCharSVG(c,60)+'<div class="sel-char-name">'+c.name+'</div><div class="sel-char-type">'+c.mbti+'</div>';
+    div.innerHTML=characterAvatarHTML(c,60)+'<div class="sel-char-name">'+c.name+'</div><div class="sel-char-type">'+c.mbti+'</div>';
     div.addEventListener('click',()=>pickChar(c,div));
     g.appendChild(div);
   });

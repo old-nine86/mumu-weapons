@@ -29,6 +29,9 @@ Follow-up:
 - Made upgraded character cards fully clickable, not only the small dossier button.
 - Replaced INTJ and ISTJ card avatars with cropped images from the supplied positioning boards.
 - Added lightweight WebP avatar crops for faster card rendering.
+- Upgraded to Character Dossier V2: all 16 characters now have clickable dossier slots.
+- Characters without supplied art show a `资料制作中 / Dossier in progress` placeholder instead of doing nothing.
+- Arena character selection now uses supplied avatar crops for upgraded characters.
 
 ## 2026-05-16: Player Studio And Creator Gallery
 
