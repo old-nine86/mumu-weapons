@@ -2,6 +2,34 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-17: Character Dossier V3 Arena Link
+
+Goal:
+- Make the upgraded character art useful inside gameplay, not only visible in the character card modal.
+- Show users clearly how many premium character dossiers are completed.
+
+Shipped:
+- Added a character dossier progress panel to the Chinese and English character galleries.
+- Added `Complete / In progress` status chips to every character card.
+- Rebuilt the arena fighter picker into a grid plus preview layout.
+- The picker preview now shows the selected fighter's avatar, MBTI role, quote, trait tags, stat bars, and a direct dossier button.
+- INTJ and ISTJ use their supplied avatar crops inside the arena picker preview; unfinished characters keep the unified placeholder flow.
+- Synced the upgrade to `/en/`.
+
+Verification:
+- Parsed JavaScript in `index.html` and `en/index.html` with Node.
+- Ran `git diff --check`.
+- Opened local site on `http://127.0.0.1:8001/`.
+- Verified Chinese character progress shows `2/16 已完成`.
+- Verified Chinese arena picker preview opens the INTJ full dossier.
+- Verified English character progress shows `2/16 completed`.
+- Verified English arena picker preview opens the INTJ full dossier.
+- Checked browser console for JavaScript errors.
+
+Next:
+- Add a VS intro screen before each battle that uses the two selected fighters' dossier art and promo animation snippets.
+- Continue replacing the remaining 14 character dossiers as new positioning boards and animations arrive.
+
 ## 2026-05-16: Character Dossier Media
 
 Goal:

@@ -1697,6 +1697,52 @@ body::before{
   font-weight:900;
   backdrop-filter:blur(10px);
 }
+.char-progress-panel{
+  max-width:720px;
+  margin:18px auto 24px;
+  padding:14px 16px;
+  border:1px solid rgba(255,255,255,.86);
+  border-radius:24px;
+  background:rgba(255,255,255,.72);
+  box-shadow:0 18px 50px rgba(78,64,44,.08);
+}
+.char-progress-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  color:#202124;
+  font-weight:1000;
+}
+.char-progress-top span:last-child{color:#2f8fe8}
+.char-progress-track{
+  height:10px;
+  margin-top:10px;
+  border-radius:999px;
+  background:rgba(78,64,44,.08);
+  overflow:hidden;
+}
+.char-progress-fill{
+  height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg,#7b2eff,#00d8ff,#ffd96a);
+}
+.char-media-state{
+  display:inline-flex;
+  align-items:center;
+  min-height:28px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#eef7ff;
+  color:#2f8fe8;
+  box-shadow:0 8px 18px rgba(78,64,44,.08);
+  font-size:11px;
+  font-weight:900;
+}
+.char-card.has-media .char-media-state{
+  background:linear-gradient(135deg,#7b2eff,#00d8ff);
+  color:#fff;
+}
 .char-info{
   position:relative;
   z-index:1;
@@ -1854,6 +1900,14 @@ body::before{
     grid-template-columns:1fr;
     padding-inline:12px;
   }
+  .sel-layout{
+    grid-template-columns:1fr;
+  }
+  .sel-preview{
+    position:relative;
+    top:auto;
+    min-height:auto;
+  }
 }
 
 /* ===== CUTE UNIFIED CHARACTERS + TOY ARENA ===== */
@@ -1910,9 +1964,17 @@ body::before{
 }
 .sel-pick .pick-label{color:#77726b}
 .sel-pick .pick-name{color:#202124}
+.sel-layout{
+  width:min(1180px,100%);
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 340px;
+  gap:18px;
+  align-items:start;
+}
 .sel-grid{
   grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
-  max-width:980px;
+  max-width:none;
 }
 .sel-char-card{
   min-height:184px;
@@ -1940,6 +2002,92 @@ body::before{
 }
 .sel-char-name{color:#202124}
 .sel-char-type{color:#2f8fe8}
+.sel-card-status{
+  margin-top:auto;
+  padding:5px 9px;
+  border-radius:999px;
+  background:rgba(47,143,232,.1);
+  color:#2f8fe8;
+  font-size:10px;
+  font-weight:900;
+}
+.sel-char-card.has-media .sel-card-status{
+  background:linear-gradient(135deg,#7b2eff,#00d8ff);
+  color:#fff;
+}
+.sel-preview{
+  position:sticky;
+  top:28px;
+  min-height:520px;
+  border:2px solid rgba(255,255,255,.86);
+  border-radius:34px;
+  padding:18px;
+  background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,248,237,.84));
+  box-shadow:0 24px 70px rgba(78,64,44,.12);
+  color:#202124;
+  overflow:hidden;
+}
+.sel-preview::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 20% 12%,rgba(255,183,200,.28),transparent 9rem),
+    radial-gradient(circle at 84% 8%,rgba(159,215,255,.32),transparent 10rem);
+  pointer-events:none;
+}
+.sel-preview>*{position:relative;z-index:1}
+.sel-preview-kicker{color:#2f8fe8;font-size:11px;font-weight:1000;letter-spacing:.08em}
+.sel-preview-hero{
+  margin:12px 0 14px;
+  min-height:170px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:26px;
+  background:radial-gradient(ellipse at 50% 88%,rgba(255,255,255,.98) 0 4.5rem,transparent 4.6rem),linear-gradient(135deg,#fff4e8,#eef9ff);
+  overflow:hidden;
+}
+.sel-preview-hero img{width:100%;height:210px;object-fit:cover;object-position:50% 18%;display:block}
+.sel-preview-hero svg{width:150px;height:170px;filter:drop-shadow(0 22px 22px rgba(78,64,44,.16))}
+.sel-preview-name{font-size:26px;font-weight:1000;color:#202124}
+.sel-preview-type{margin-top:4px;color:#2f8fe8;font-weight:1000}
+.sel-preview-quote{
+  margin-top:12px;
+  padding:12px;
+  border-radius:20px;
+  background:#fff;
+  color:#686158;
+  font-size:13px;
+  font-weight:850;
+  line-height:1.45;
+}
+.sel-preview-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.sel-preview-tags span{padding:7px 9px;border-radius:999px;background:rgba(47,143,232,.1);color:#255a82;font-size:11px;font-weight:900}
+.sel-preview-stats{display:grid;gap:8px;margin-top:14px}
+.sel-preview-stat{display:grid;grid-template-columns:56px 1fr 40px;align-items:center;gap:8px;color:#4d4842;font-size:12px;font-weight:900}
+.sel-preview-action{
+  width:100%;
+  margin-top:14px;
+  border:0;
+  border-radius:999px;
+  padding:12px 14px;
+  background:linear-gradient(135deg,#ff8a72,#ffd96a);
+  color:#202124;
+  font-weight:1000;
+  cursor:pointer;
+  box-shadow:0 14px 32px rgba(255,138,114,.2);
+}
+@media(max-width:900px){
+  .sel-layout{
+    grid-template-columns:1fr;
+  }
+  .sel-preview{
+    position:relative;
+    top:auto;
+    min-height:auto;
+  }
+}
 .arena{
   justify-content:flex-start;
   gap:14px;
@@ -3372,6 +3520,7 @@ body::before{
 <!-- CHARACTERS PANEL -->
 <div class="panel" id="panel-characters">
   <div class="section-header"><h2>🧱 积木战士图鉴</h2><div class="divider"></div><div class="sub">16 种 MBTI 人格 · 16 位传奇战士</div></div>
+  <div class="char-progress-panel" id="charProgressPanel"></div>
   <div class="char-banner"><img src="assets/banner-characters-bricks.png" alt="战士档案"></div>
   <div class="char-grid" id="charGrid"></div>
 </div>
@@ -3443,7 +3592,10 @@ body::before{
     <div style="font-size:28px;color:var(--gold);font-weight:900">VS</div>
     <div class="sel-pick" id="selPick2"><span class="pick-label">战士 ②</span><span class="pick-name" id="selName2">等待选择...</span></div>
   </div>
-  <div class="sel-grid" id="selGrid"></div>
+  <div class="sel-layout">
+    <div class="sel-grid" id="selGrid"></div>
+    <aside class="sel-preview" id="selPreview"></aside>
+  </div>
   <div style="text-align:center">
     <button class="battle-start-btn" id="battleStartBtn" onclick="startArenaBattle()">⚡ 开战！</button>
   </div>
@@ -4963,7 +5115,18 @@ function characterAvatarHTML(c,size){
   if(media&&media.avatar)return '<img src="'+media.avatar+'" alt="'+escapeHTML(media.title)+'">';
   return genCharSVG(c,size);
 }
+function renderCharacterProgress(){
+  const panel=document.getElementById('charProgressPanel');
+  if(!panel)return;
+  const completed=CHARACTERS.filter(c=>CHAR_MEDIA[c.mbti]).length;
+  const total=CHARACTERS.length;
+  const pct=Math.round(completed/total*100);
+  panel.innerHTML=
+    '<div class="char-progress-top"><span>角色资料制作进度</span><span>'+completed+'/'+total+' 已完成</span></div>'+
+    '<div class="char-progress-track"><div class="char-progress-fill" style="width:'+pct+'%"></div></div>';
+}
 function renderCharacters(){
+  renderCharacterProgress();
   const g=document.getElementById('charGrid');g.innerHTML='';
   CHARACTERS.forEach(c=>{
     const trait=getCharTrait(c);
@@ -4978,6 +5141,7 @@ function renderCharacters(){
         '<div class="char-card-top">'+
           '<span class="char-rarity">★ '+charRarity(c)+' 收藏卡</span>'+
           '<span class="char-group-badge">'+c.group+' 阵营</span>'+
+          '<span class="char-media-state">'+(media.pending?'制作中':'已完成')+'</span>'+
         '</div>'+
         '<div class="char-name">'+c.name+'</div>'+
         '<div class="char-type">'+c.mbti+' · '+c.mbtiName+'</div>'+
@@ -5133,10 +5297,11 @@ function updateLeaderboard(){
 }
 
 // ===== CHARACTER SELECTION =====
-let selChar1=null,selChar2=null;
+let selChar1=null,selChar2=null,selPreviewChar=null;
 
 function openSelection(){
   selChar1=null;selChar2=null;
+  selPreviewChar=CHARACTERS[1]||CHARACTERS[0];
   document.getElementById('selPick1').classList.remove('filled');
   document.getElementById('selPick2').classList.remove('filled');
   document.getElementById('selName1').textContent='等待选择...';
@@ -5145,6 +5310,7 @@ function openSelection(){
   document.getElementById('battleStartBtn').classList.remove('ready');
   document.getElementById('selectionOverlay').classList.add('active');
   renderSelGrid();
+  renderSelectionPreview(selPreviewChar);
 }
 
 function closeSelection(){
@@ -5154,16 +5320,50 @@ function closeSelection(){
 function renderSelGrid(){
   const g=document.getElementById('selGrid');g.innerHTML='';
   CHARACTERS.forEach(c=>{
+    const media=getCharacterDossier(c);
     const div=document.createElement('div');div.className='sel-char-card';
+    div.classList.add(media.pending?'pending-media':'has-media');
+    div.tabIndex=0;
     if(selChar1&&selChar1.id===c.id)div.classList.add('picked','p1');
     if(selChar2&&selChar2.id===c.id)div.classList.add('picked','p2');
-    div.innerHTML=characterAvatarHTML(c,60)+'<div class="sel-char-name">'+c.name+'</div><div class="sel-char-type">'+c.mbti+'</div>';
+    div.innerHTML=characterAvatarHTML(c,60)+'<div class="sel-char-name">'+c.name+'</div><div class="sel-char-type">'+c.mbti+'</div><div class="sel-card-status">'+(media.pending?'资料制作中':'定位图已接入')+'</div>';
+    div.addEventListener('mouseenter',()=>renderSelectionPreview(c));
+    div.addEventListener('focus',()=>renderSelectionPreview(c));
     div.addEventListener('click',()=>pickChar(c,div));
     g.appendChild(div);
   });
 }
 
+function renderSelectionPreview(c){
+  const box=document.getElementById('selPreview');
+  if(!box||!c)return;
+  selPreviewChar=c;
+  const media=getCharacterDossier(c);
+  const trait=getCharTrait(c);
+  const hero=media.pending?genCharSVG(c,150):'<img src="'+media.avatar+'" alt="'+escapeHTML(media.title)+'">';
+  box.innerHTML=
+    '<div class="sel-preview-kicker">'+(media.pending?'DOSSIER IN PROGRESS':'UPGRADED DOSSIER')+'</div>'+
+    '<div class="sel-preview-hero">'+hero+'</div>'+
+    '<div class="sel-preview-name">'+escapeHTML(c.name)+'</div>'+
+    '<div class="sel-preview-type">'+escapeHTML(c.mbti)+' · '+escapeHTML(c.mbtiName)+' · '+escapeHTML(trait.role)+'</div>'+
+    '<div class="sel-preview-quote">“'+escapeHTML(media.quote||c.quotes.win)+'”</div>'+
+    '<div class="sel-preview-tags">'+
+      '<span>'+escapeHTML(c.group)+' 阵营</span>'+
+      '<span>'+weaponLabel(c.weaponPref)+'</span>'+
+      '<span>'+escapeHTML(trait.label)+'</span>'+
+      '<span>'+escapeHTML(trait.style)+'</span>'+
+      '<span>'+(media.pending?'资料制作中':'定位图 + 动画')+'</span>'+
+    '</div>'+
+    '<div class="sel-preview-stats">'+
+      '<div class="sel-preview-stat"><b>攻击</b><div class="char-meter"><span style="width:'+c.stats.atk+'%"></span></div><em>'+c.stats.atk+'</em></div>'+
+      '<div class="sel-preview-stat"><b>防御</b><div class="char-meter"><span style="width:'+c.stats.def+'%"></span></div><em>'+c.stats.def+'</em></div>'+
+      '<div class="sel-preview-stat"><b>暴击</b><div class="char-meter"><span style="width:'+(c.stats.crit*100*3)+'%"></span></div><em>'+(c.stats.crit*100).toFixed(0)+'%</em></div>'+
+    '</div>'+
+    '<button class="sel-preview-action" type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">'+(media.pending?'查看占位档案':'查看完整角色资料')+'</button>';
+}
+
 function pickChar(c,el){
+  renderSelectionPreview(c);
   if(selChar1&&selChar1.id===c.id){selChar1=null;updateSelUI();renderSelGrid();return}
   if(selChar2&&selChar2.id===c.id){selChar2=null;updateSelUI();renderSelGrid();return}
   if(!selChar1){selChar1=c;document.getElementById('selPrompt').textContent='请选择第二位战士'}else if(!selChar2){selChar2=c;document.getElementById('selPrompt').textContent='战士已就位，准备开战！'}
