@@ -2,6 +2,33 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-17: Arena V4 And MBTI Weapon Match
+
+Goal:
+- Make the next gameplay update larger than a small visual patch.
+- Add a shareable personality-style mini game beyond arena battles.
+
+Shipped:
+- Added a new `配武器测试 / Weapon Match` navigation tab.
+- Built a 6-question MBTI weapon matching quiz.
+- Quiz results recommend a fighter, role, trait, and weapon, with actions to view the dossier or start a battle.
+- Added a VS intro before arena battles with both fighters' art/avatar, MBTI identity, trait, quote, countdown, and skip button.
+- Synced the feature to Chinese and English pages.
+
+Verification:
+- Parsed JavaScript in `index.html` and `en/index.html` with Node.
+- Ran `git diff --check`.
+- Opened local site on `http://127.0.0.1:8001/`.
+- Verified Chinese quiz result generation.
+- Verified Chinese quiz result can launch the VS intro and then enter the arena.
+- Verified English quiz result generation and VS intro path.
+- Fixed a missing `addBattleLog` helper found during arena smoke testing.
+- Checked the current local smoke-test URL for browser console errors.
+
+Next:
+- Add a richer victory settlement card with MVP skill, remaining durability, and buttons for rematch / switch fighters / view dossier.
+- Add share-card generation for quiz results so users can post their matched MBTI weapon type.
+
 ## 2026-05-17: Character Dossier V3 Arena Link
 
 Goal:
