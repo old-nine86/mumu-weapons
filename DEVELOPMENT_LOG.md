@@ -2,6 +2,27 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-17: Per-Weapon Showcase Cards
+
+Goal:
+- Stop weapon cards from reusing and cropping a shared background image.
+- Give every built-in weapon its own checked showcase image.
+
+Shipped:
+- Generated standalone 640x860 WebP showcase images for the 11 built-in weapons.
+- Added `assets/weapon-showcases/weapon-01.webp` through `weapon-11.webp`.
+- Changed Chinese and English weapon cards to render the standalone showcase image first.
+- Kept dynamic background composition only as a fallback for cloud uploads that do not yet have a configured showcase image.
+- Updated detail modals so built-in weapons also use the new standalone showcase window.
+
+Verification:
+- Reviewed the generated showcase contact sheet locally before wiring it into the UI.
+- Parsed JavaScript in `index.html` and `en/index.html` with Node.
+- Ran `git diff --check`.
+
+Next:
+- Add a backend/admin workflow to generate or upload a standalone showcase image for each approved cloud weapon.
+
 ## 2026-05-17: Promo Audio And Card Background Smoothing
 
 Goal:

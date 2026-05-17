@@ -2900,12 +2900,36 @@ body::before{
   background-repeat:no-repeat;
   isolation:isolate;
 }
+.weapon-card .card-showcase.card-bg-art.has-standalone{
+  padding:0;
+  display:block;
+  background:#fff7ec;
+}
 .weapon-card .card-showcase.card-bg-art::before{
   z-index:0;
   opacity:.24;
   background:
     radial-gradient(circle at 50% 42%,rgba(255,255,255,.42),transparent 46%),
     linear-gradient(180deg,rgba(255,253,248,.2),rgba(255,253,248,.42));
+}
+.weapon-card .card-showcase.card-bg-art.has-standalone::before{
+  display:none;
+}
+.weapon-showcase-full{
+  position:absolute!important;
+  inset:0;
+  z-index:1!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:cover!important;
+  filter:none!important;
+  transform:none!important;
+}
+.weapon-card:hover .card-showcase.card-bg-art.has-standalone .weapon-showcase-full{
+  filter:none!important;
+  transform:none!important;
 }
 .weapon-card .card-showcase.card-bg-art img{
   position:relative;
@@ -3845,6 +3869,19 @@ const bc={sword:'badge-sword',gun:'badge-gun',spear:'badge-spear'};
 const SHOWCASE_BY_NAME={
   'IMG 4355':'assets/showcase-img-4355.webp'
 };
+const WEAPON_SHOWCASES={
+  1:'assets/weapon-showcases/weapon-01.webp',
+  2:'assets/weapon-showcases/weapon-02.webp',
+  3:'assets/weapon-showcases/weapon-03.webp',
+  4:'assets/weapon-showcases/weapon-04.webp',
+  5:'assets/weapon-showcases/weapon-05.webp',
+  6:'assets/weapon-showcases/weapon-06.webp',
+  7:'assets/weapon-showcases/weapon-07.webp',
+  8:'assets/weapon-showcases/weapon-08.webp',
+  9:'assets/weapon-showcases/weapon-09.webp',
+  10:'assets/weapon-showcases/weapon-10.webp',
+  11:'assets/weapon-showcases/weapon-11.webp'
+};
 
 // ===== 16 MBTI CHARACTERS =====
 // Each has: id, name, mbti, mbtiName, group, colors (primary, secondary, accent), weaponPref, stats, quotes, svg generator
@@ -4473,6 +4510,9 @@ function weaponCardBackground(w,rarity){
   const power=Number(w.aiPower||(w.analysis&&w.analysis.aiPower)||0);
   const idx=Number.isFinite(typeIndex)?typeIndex:(power>=260?3:4);
   return CARD_BG_BASE+pool[idx];
+}
+function weaponShowcaseImage(w){
+  return (w&&w.showcaseUrl)||WEAPON_SHOWCASES[w&&w.i]||SHOWCASE_BY_NAME[w&&w.n]||'';
 }
 function formatTime(ts){
   const d=new Date(ts);
@@ -5188,16 +5228,18 @@ function renderWeapons(){
   WEAPONS.forEach(w=>{
     const rarity=weaponRarityInfo(w);
     const bg=weaponCardBackground(w,rarity);
+    const standalone=weaponShowcaseImage(w);
+    const bgStyle=standalone?'':' style="background-image:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.2)),url(\''+bg+'\')"';
     const d=document.createElement('div');d.className='weapon-card';d.dataset.type=w.t;d.dataset.rarity=rarity.key;
     d.onclick=event=>{event.stopPropagation();openModal(w.i)};
     const votes=getVotes(w.i);
     const safeId=JSON.stringify(String(w.i));
     d.innerHTML=
-      '<div class="card-showcase card-bg-art" style="background-image:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.2)),url(\''+bg+'\')">'+
+      '<div class="card-showcase card-bg-art '+(standalone?'has-standalone':'')+'"'+bgStyle+'>'+
+        (standalone?'<img class="weapon-showcase-full" src="'+escapeHTML(standalone)+'" alt="'+escapeHTML(w.n)+' 橱窗图" loading="lazy">':'')+
         '<div class="rarity-ribbon">'+rarity.key+'</div>'+
         '<div class="rarity-score">评分 '+rarity.score+'</div>'+
-        '<div class="skill-fx">'+w.fx+'</div>'+
-        '<img src="'+IMG[w.i]+'" alt="'+w.n+'" loading="lazy">'+
+        (standalone?'':'<div class="skill-fx">'+w.fx+'</div><img src="'+IMG[w.i]+'" alt="'+w.n+'" loading="lazy">')+
       '</div>'+
       '<div class="card-info">'+
         '<div class="card-name-row"><span class="card-name">'+escapeHTML(w.n)+'</span><span class="type-badge '+(bc[w.t]||'')+'">'+escapeHTML(w.l)+'</span></div>'+
@@ -5468,8 +5510,8 @@ function openModal(id){
     analysis.balance?'平衡 '+analysis.balance+'/10':(w.pieceCount?'积木数 '+w.pieceCount:'类型 '+w.l),
     analysis.colorCount?'颜色层次 '+analysis.colorCount:'战斗加成 +'+(v*8)
   ].map(x=>'<div class="modal-analysis">'+escapeHTML(x)+'</div>').join('');
-  const showcaseSrc=w.showcaseUrl||SHOWCASE_BY_NAME[w.n]||IMG[w.i];
-  const hasShowcase=!!(w.showcaseUrl||SHOWCASE_BY_NAME[w.n]);
+  const showcaseSrc=weaponShowcaseImage(w)||IMG[w.i];
+  const hasShowcase=!!weaponShowcaseImage(w);
   const heroStyle=hasShowcase?' style="background-image:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,253,248,.78)),url(\''+showcaseSrc+'\')"':'';
   document.getElementById('modalContent').className='modal-content';
   document.getElementById('modalContent').innerHTML=
