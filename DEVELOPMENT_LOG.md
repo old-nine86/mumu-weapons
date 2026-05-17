@@ -2,6 +2,26 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-17: AI-Generated Weapon Showcase V2
+
+Goal:
+- Replace the remaining weak weapon showcase backgrounds with newly generated card-specific display scenes.
+- Match each weapon to a cleaner background based on weapon type, mood, and card rarity.
+
+Shipped:
+- Generated a new `imagegen` contact sheet of 12 premium brick-toy display backgrounds.
+- Split the generated sheet into individual `assets/generated-card-bg/v2/card-bg-v2-xx.webp` background assets.
+- Rebuilt all 11 built-in weapon showcase cards on top of the new V2 backgrounds.
+- Preserved the existing `assets/weapon-showcases/weapon-01.webp` through `weapon-11.webp` filenames so the website picks up the upgraded cards without more code churn.
+- Added a local contact sheet at `assets/generated-card-bg/v2-showcase-contact.jpg` for visual review.
+
+Verification:
+- Visually reviewed the V2 showcase contact sheet.
+- Confirmed all rebuilt showcase cards are 640x860 WebP files.
+
+Next:
+- Use the same generated-background pipeline for approved cloud weapons when they receive a dedicated showcase image.
+
 ## 2026-05-17: Per-Weapon Showcase Cards
 
 Goal:
