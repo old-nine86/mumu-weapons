@@ -2,6 +2,31 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-17: Weapon Background And Cutout Stability
+
+Goal:
+- Fix weapon card backgrounds feeling mismatched or cropped like the wrong card version.
+- Make upload background removal preserve colorful brick pieces more reliably.
+
+Shipped:
+- Changed card background selection from score/name-length offsets to stable type-based mapping within each rarity tier.
+- Changed card background rendering from cover cropping to full portrait card scaling.
+- Retuned all upload cleanup modes to be less destructive.
+- Added explicit protection for red, yellow, blue, cyan, pink, brown/dark brick-like pixels before flood-fill background removal.
+- Reduced the chance that small separated weapon components are discarded as noise.
+- Synced the changes to Chinese and English pages.
+
+Verification:
+- Parsed JavaScript in `index.html` and `en/index.html` with Node.
+- Ran `git diff --check`.
+- Ran synthetic color-protection checks against wood/gray floor colors and common brick colors.
+- Opened local site on `http://127.0.0.1:8002/`.
+- Verified weapon cards render and the card background computed size is `100% 100%`.
+- Checked the local smoke-test URL for browser console errors.
+
+Next:
+- Test again with several real phone photos when fresh examples are available, especially pale yellow and light cyan bricks on wood floors.
+
 ## 2026-05-17: Arena V4 And MBTI Weapon Match
 
 Goal:
