@@ -2,6 +2,30 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-17: Promo Audio And Card Background Smoothing
+
+Goal:
+- Fix newly added character promo videos appearing silent.
+- Remove the washboard-like distortion from weapon card backgrounds.
+
+Shipped:
+- Removed forced `autoplay muted` playback from character dossier promo videos.
+- Changed promo videos to user-started playback with visible controls and a short audio hint.
+- Changed generated weapon card backgrounds from forced `100% 100%` stretching back to proportional `cover` rendering.
+- Kept the fixed 640/860 card frame and added a subtle soft-light overlay to reduce visible banding.
+- Synced the fixes to Chinese and English pages.
+
+Verification:
+- Parsed JavaScript in `index.html` and `en/index.html` with Node.
+- Ran `git diff --check`.
+- Opened local site on `http://127.0.0.1:8007/`.
+- Verified weapon cards render, keep a 640/860 aspect ratio, and compute `background-size: cover, cover`.
+- Verified character dossier videos compute `muted=false`, `autoplay=false`, `controls=true`, and `preload=metadata`.
+
+Next:
+- If a future uploaded MP4 file itself has no audio track, replace that source video with an exported version that includes audio.
+- Continue checking generated card backgrounds against real uploaded weapons before expanding the background pool.
+
 ## 2026-05-17: Weapon Background And Cutout Stability
 
 Goal:

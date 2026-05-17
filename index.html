@@ -877,6 +877,14 @@ body::before{
   background:#05070d;
   object-fit:contain;
 }
+.char-video-hint{
+  margin-top:-6px;
+  color:#dbe5ff;
+  font-size:12px;
+  font-weight:850;
+  line-height:1.5;
+  opacity:.9;
+}
 .char-profile-placeholder{
   min-height:220px;
   border:1px dashed rgba(255,255,255,.2);
@@ -1584,7 +1592,7 @@ body::before{
 }
 .card-showcase.card-bg-art{
   background-position:center;
-  background-size:100% 100%;
+  background-size:cover;
   background-repeat:no-repeat;
 }
 .section-header h2{
@@ -2887,13 +2895,17 @@ body::before{
   min-height:0;
   height:auto;
   padding:clamp(18px,4vw,34px);
-  background-size:100% 100%;
+  background-size:cover;
   background-position:center;
+  background-repeat:no-repeat;
   isolation:isolate;
 }
 .weapon-card .card-showcase.card-bg-art::before{
   z-index:0;
-  opacity:.16;
+  opacity:.24;
+  background:
+    radial-gradient(circle at 50% 42%,rgba(255,255,255,.42),transparent 46%),
+    linear-gradient(180deg,rgba(255,253,248,.2),rgba(255,253,248,.42));
 }
 .weapon-card .card-showcase.card-bg-art img{
   position:relative;
@@ -5357,7 +5369,7 @@ function openCharacterProfile(mbti){
       '<div class="char-profile-name">'+escapeHTML(media.title)+'</div>'+
       '<div class="char-profile-type">'+escapeHTML(media.subtitle)+' · '+escapeHTML(c.group)+' 阵营</div>'+
       '<div class="char-profile-quote">“'+escapeHTML(media.quote)+'”</div>'+
-      (media.pending?'<div class="char-profile-placeholder">定位图和宣传动画正在制作中<br>当前先使用统一积木头像占位</div>':'<video class="char-profile-video" src="'+media.video+'" poster="'+media.image+'" controls autoplay muted loop playsinline></video>')+
+      (media.pending?'<div class="char-profile-placeholder">定位图和宣传动画正在制作中<br>当前先使用统一积木头像占位</div>':'<video class="char-profile-video" src="'+media.video+'" poster="'+media.image+'" controls preload="metadata" playsinline></video><div class="char-video-hint">点播放按钮可以听到宣传动画声音</div>')+
       '<div class="char-profile-tags">'+
         '<span>人格技：'+escapeHTML(trait.label)+'</span>'+
         '<span>定位：'+escapeHTML(trait.role)+'</span>'+

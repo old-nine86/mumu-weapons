@@ -64,7 +64,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .section-header{text-align:center;padding:28px 20px 8px;position:relative;z-index:1}
 .card-showcase.card-bg-art{
   background-position:center;
-  background-size:100% 100%;
+  background-size:cover;
   background-repeat:no-repeat;
 }
 .section-header h2{font-size:clamp(20px,3vw,28px);font-weight:900;color:var(--white);letter-spacing:2px}
@@ -857,6 +857,7 @@ body::before{
 .char-profile-type{color:#b8c7ff;font-weight:800}
 .char-profile-quote{padding:16px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(255,255,255,.06);line-height:1.7}
 .char-profile-video{width:100%;aspect-ratio:9/16;max-height:420px;border-radius:18px;background:#05070d;object-fit:contain}
+.char-video-hint{margin-top:-6px;color:#dbe5ff;font-size:12px;font-weight:850;line-height:1.5;opacity:.9}
 .char-profile-placeholder{min-height:220px;border:1px dashed rgba(255,255,255,.2);border-radius:18px;display:flex;align-items:center;justify-content:center;text-align:center;color:#dbe5ff;background:rgba(255,255,255,.06);font-weight:900;line-height:1.7}
 .char-profile-tags{display:flex;flex-wrap:wrap;gap:8px}
 .char-profile-tags span{border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:8px 10px;background:rgba(255,255,255,.06);color:#dbe5ff;font-size:12px;font-weight:800}
@@ -2749,13 +2750,17 @@ body::before{
   min-height:0;
   height:auto;
   padding:clamp(18px,4vw,34px);
-  background-size:100% 100%;
+  background-size:cover;
   background-position:center;
+  background-repeat:no-repeat;
   isolation:isolate;
 }
 .weapon-card .card-showcase.card-bg-art::before{
   z-index:0;
-  opacity:.16;
+  opacity:.24;
+  background:
+    radial-gradient(circle at 50% 42%,rgba(255,255,255,.42),transparent 46%),
+    linear-gradient(180deg,rgba(255,253,248,.2),rgba(255,253,248,.42));
 }
 .weapon-card .card-showcase.card-bg-art img{
   position:relative;
@@ -5219,7 +5224,7 @@ function openCharacterProfile(mbti){
       '<div class="char-profile-name">'+escapeHTML(media.title)+'</div>'+
       '<div class="char-profile-type">'+escapeHTML(media.subtitle)+' · '+escapeHTML(c.group)+' faction</div>'+
       '<div class="char-profile-quote">“'+escapeHTML(media.quote)+'”</div>'+
-      (media.pending?'<div class="char-profile-placeholder">Dossier image and promo animation are in production<br>Using the unified brick avatar for now</div>':'<video class="char-profile-video" src="'+media.video+'" poster="'+media.image+'" controls autoplay muted loop playsinline></video>')+
+      (media.pending?'<div class="char-profile-placeholder">Dossier image and promo animation are in production<br>Using the unified brick avatar for now</div>':'<video class="char-profile-video" src="'+media.video+'" poster="'+media.image+'" controls preload="metadata" playsinline></video><div class="char-video-hint">Press play to hear the promo audio.</div>')+
       '<div class="char-profile-tags">'+
         '<span>Trait: '+escapeHTML(trait.label)+'</span>'+
         '<span>Role: '+escapeHTML(trait.role)+'</span>'+
