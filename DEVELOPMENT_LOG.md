@@ -2,6 +2,28 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-18: Smart Cutout Tool V2
+
+Goal:
+- Stop uploaded weapon photos from losing colored brick pieces during background removal.
+- Add a reusable local cutout program so the workflow can be tested outside the browser.
+
+Shipped:
+- Changed the default upload cleanup mode from `Standard` to `Smart tool`.
+- Rebuilt the browser cutout algorithm with median border sampling, chroma comparison, edge checks, and explicit brick-color protection.
+- Made component cleanup more permissive so separated weapon pieces are kept instead of being treated as noise.
+- Added `scripts/cutout_tool.py`, a local Pillow/OpenCV-capable background remover for batch testing real photos.
+- Synced the upload cutout changes to Chinese and English pages.
+
+Verification:
+- Parsed JavaScript in `index.html` and `en/index.html` with Node.
+- Ran `git diff --check`.
+- Installed and tested optional OpenCV support locally.
+- Ran the new cutout tool against sample brick weapon photos in `promotion/source-images/`.
+
+Next:
+- For best public upload quality, move image cleanup to a server-side job that can run the OpenCV tool after each Supabase upload and save the cleaned image back to storage.
+
 ## 2026-05-17: AI-Generated Weapon Showcase V2
 
 Goal:
