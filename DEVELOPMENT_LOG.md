@@ -2,6 +2,25 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-18: Manual Cutout Editor
+
+Goal:
+- Provide a reliable solution when automatic background removal still leaves floor texture or removes weapon pieces.
+
+Shipped:
+- Added an in-browser manual cutout editor after upload preview.
+- Added erase and restore brush tools so users can remove leftover background or recover missing brick pieces.
+- Added brush size control, reset, and apply actions.
+- The upload payload now uses the manually edited transparent weapon image after `Apply edit`.
+- Synced the editor to Chinese and English pages.
+
+Verification:
+- Parsed JavaScript in `index.html` and `en/index.html` with Node.
+- Ran `git diff --check`.
+
+Next:
+- Move automatic background removal to a server-side cleanup job while keeping the manual editor as the final fallback.
+
 ## 2026-05-18: Smart Cutout Tool V2
 
 Goal:

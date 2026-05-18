@@ -2736,6 +2736,73 @@ body::before{
   border-color:#202124;
   box-shadow:0 10px 24px rgba(32,33,36,.16);
 }
+.cutout-editor{
+  width:100%;
+  display:none;
+  gap:10px;
+  padding:12px;
+  border:1px solid rgba(78,64,44,.1);
+  border-radius:22px;
+  background:#fffdf8;
+}
+.cutout-editor.active{display:grid}
+.cutout-editor-stage{
+  width:100%;
+  min-height:260px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:18px;
+  overflow:hidden;
+  background:
+    linear-gradient(45deg,#eef2f7 25%,transparent 25% 75%,#eef2f7 75%),
+    linear-gradient(45deg,#eef2f7 25%,transparent 25% 75%,#eef2f7 75%);
+  background-color:#fff;
+  background-position:0 0,10px 10px;
+  background-size:20px 20px;
+  touch-action:none;
+}
+.cutout-editor canvas{
+  max-width:100%;
+  max-height:360px;
+  object-fit:contain;
+  cursor:crosshair;
+  filter:drop-shadow(0 18px 22px rgba(78,64,44,.18));
+}
+.cutout-editor-toolbar{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:8px;
+  align-items:center;
+}
+.cutout-editor-toolbar button{
+  border:1px solid rgba(78,64,44,.1);
+  border-radius:999px;
+  background:#fff;
+  padding:8px 11px;
+  font:inherit;
+  font-size:11px;
+  font-weight:950;
+  color:#5f584f;
+  cursor:pointer;
+}
+.cutout-editor-toolbar button.active{
+  background:#0071e3;
+  color:#fff;
+  border-color:#0071e3;
+}
+.cutout-editor-toolbar input[type="range"]{
+  width:120px;
+  accent-color:#0071e3;
+}
+.cutout-editor-hint{
+  text-align:center;
+  color:#8b8175;
+  font-size:11px;
+  font-weight:850;
+  line-height:1.5;
+}
 .upload-form{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -3564,6 +3631,19 @@ body::before{
             <button type="button" data-cutout-mode="clean" onclick="setCutoutMode('clean',this)">更干净</button>
             <button type="button" data-cutout-mode="strong" onclick="setCutoutMode('strong',this)">强力</button>
           </div>
+          <div class="cutout-editor" id="cutoutEditor">
+            <div class="upload-preview-label">手动精修抠图</div>
+            <div class="cutout-editor-stage"><canvas id="cutoutCanvas" aria-label="手动精修画布"></canvas></div>
+            <div class="cutout-editor-toolbar">
+              <button type="button" data-edit-tool="erase" class="active" onclick="setCutoutEditTool('erase',this)">擦掉背景</button>
+              <button type="button" data-edit-tool="restore" onclick="setCutoutEditTool('restore',this)">恢复武器</button>
+              <span class="upload-preview-label">画笔</span>
+              <input type="range" id="cutoutBrushSize" min="8" max="90" value="32" oninput="setCutoutBrushSize(this.value)">
+              <button type="button" onclick="applyCutoutEditor()">应用精修</button>
+              <button type="button" onclick="resetCutoutEditor()">重置</button>
+            </div>
+            <div class="cutout-editor-hint">自动抠图不完美时，用“擦掉背景”清残留，用“恢复武器”补回被误删的积木，再点应用精修。</div>
+          </div>
         </div>
       </label>
       <div class="upload-form">
@@ -4133,6 +4213,7 @@ const UPLOAD_COUNT_KEY='mumu_uploaded_weapon_count';
 const PROMO_TOKEN_KEY='mumu_promo_client_token';
 const PROMO_BONUS_KEY='mumu_promo_bonus_slots';
 let pendingUpload=null,currentUploadFile=null,currentCutoutMode='smart';
+let cutoutEditorState={tool:'erase',brush:32,original:null,edited:null,drawing:false};
 const CUTOUT_MODES={
   smart:{threshold:.72,floor:.74,shadow:.7,alpha:8,component:.0012,edge:.38,label:'智能工具'},
   soft:{threshold:.68,floor:.72,shadow:.68,alpha:8,component:.0015,edge:.42,label:'保留更多'},
@@ -4952,6 +5033,116 @@ function trimTransparentCanvas(source){
   return out;
 }
 
+function cloneCanvas(source){
+  const out=document.createElement('canvas');
+  out.width=source.width;out.height=source.height;
+  out.getContext('2d').drawImage(source,0,0);
+  return out;
+}
+
+function loadDataUrlImage(src){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.onload=()=>resolve(img);
+    img.onerror=()=>reject(new Error('图片载入失败'));
+    img.src=src;
+  });
+}
+
+function initCutoutEditor(originalDataUrl,cutDataUrl){
+  const wrap=document.getElementById('cutoutEditor');
+  const canvas=document.getElementById('cutoutCanvas');
+  if(!wrap||!canvas)return;
+  wrap.classList.add('active');
+  Promise.all([loadDataUrlImage(originalDataUrl),loadDataUrlImage(cutDataUrl)]).then(([original,cut])=>{
+    const max=900,scale=Math.min(1,max/Math.max(original.width,original.height));
+    canvas.width=Math.max(1,Math.round(original.width*scale));
+    canvas.height=Math.max(1,Math.round(original.height*scale));
+    const originalCanvas=document.createElement('canvas');
+    originalCanvas.width=canvas.width;originalCanvas.height=canvas.height;
+    originalCanvas.getContext('2d').drawImage(original,0,0,canvas.width,canvas.height);
+    const edited=document.createElement('canvas');
+    edited.width=canvas.width;edited.height=canvas.height;
+    edited.getContext('2d').drawImage(cut,0,0,canvas.width,canvas.height);
+    cutoutEditorState.original=originalCanvas;
+    cutoutEditorState.edited=edited;
+    cutoutEditorState.tool='erase';
+    document.querySelectorAll('[data-edit-tool]').forEach(btn=>btn.classList.toggle('active',btn.dataset.editTool==='erase'));
+    renderCutoutEditor();
+  }).catch(()=>{});
+  if(!canvas.dataset.bound){
+    canvas.dataset.bound='1';
+    ['pointerdown','pointermove'].forEach(type=>canvas.addEventListener(type,paintCutoutEditor));
+    ['pointerup','pointerleave','pointercancel'].forEach(type=>canvas.addEventListener(type,()=>{cutoutEditorState.drawing=false}));
+  }
+}
+
+function renderCutoutEditor(){
+  const canvas=document.getElementById('cutoutCanvas');
+  if(!canvas||!cutoutEditorState.edited)return;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(cutoutEditorState.edited,0,0);
+}
+
+function setCutoutEditTool(tool,btn){
+  cutoutEditorState.tool=tool;
+  document.querySelectorAll('[data-edit-tool]').forEach(b=>b.classList.toggle('active',b===btn));
+}
+
+function setCutoutBrushSize(value){
+  cutoutEditorState.brush=Math.max(8,Math.min(90,Number(value)||32));
+}
+
+function paintCutoutEditor(event){
+  const canvas=document.getElementById('cutoutCanvas');
+  const edited=cutoutEditorState.edited;
+  const original=cutoutEditorState.original;
+  if(!canvas||!edited||!original)return;
+  if(event.type==='pointerdown'){
+    cutoutEditorState.drawing=true;
+    canvas.setPointerCapture&&canvas.setPointerCapture(event.pointerId);
+  }
+  if(!cutoutEditorState.drawing)return;
+  event.preventDefault();
+  const rect=canvas.getBoundingClientRect();
+  const x=(event.clientX-rect.left)*canvas.width/rect.width;
+  const y=(event.clientY-rect.top)*canvas.height/rect.height;
+  const r=cutoutEditorState.brush;
+  const ctx=edited.getContext('2d');
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(x,y,r,0,Math.PI*2);
+  ctx.clip();
+  if(cutoutEditorState.tool==='restore'){
+    ctx.drawImage(original,0,0);
+  }else{
+    ctx.globalCompositeOperation='destination-out';
+    ctx.fillStyle='rgba(0,0,0,1)';
+    ctx.beginPath();
+    ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fill();
+  }
+  ctx.restore();
+  renderCutoutEditor();
+}
+
+function applyCutoutEditor(){
+  if(!cutoutEditorState.edited||!pendingUpload)return;
+  const trimmed=trimTransparentCanvas(cutoutEditorState.edited);
+  pendingUpload.img=trimmed.toDataURL('image/webp',.9);
+  const img=document.getElementById('uploadPreviewImg');
+  if(img)img.src=pendingUpload.img;
+  updateUploadCardPreview();
+  const status=document.getElementById('uploadStatus');
+  if(status)status.textContent='已应用手动精修。现在上传会使用这张干净图。';
+}
+
+function resetCutoutEditor(){
+  if(!cutoutEditorState.edited||!currentUploadFile)return;
+  processUploadFile(currentUploadFile,false);
+}
+
 function compressImage(file,mode='balanced'){
   return new Promise((resolve,reject)=>{
     const reader=new FileReader();
@@ -4968,8 +5159,10 @@ function compressImage(file,mode='balanced'){
         ctx.clearRect(0,0,canvas.width,canvas.height);
         ctx.drawImage(img,0,0,canvas.width,canvas.height);
         const originalDataUrl=canvas.toDataURL('image/webp',.82);
-        const cut=trimTransparentCanvas(cleanWeaponCutout(canvas,mode));
-        resolve({dataUrl:cut.toDataURL('image/webp',.86),originalDataUrl,width:img.width,height:img.height,cutWidth:cut.width,cutHeight:cut.height,canvas:cut});
+        const work=cloneCanvas(canvas);
+        const cutFull=cleanWeaponCutout(work,mode);
+        const cut=trimTransparentCanvas(cloneCanvas(cutFull));
+        resolve({dataUrl:cut.toDataURL('image/webp',.86),originalDataUrl,editorCutDataUrl:cutFull.toDataURL('image/webp',.86),width:img.width,height:img.height,cutWidth:cut.width,cutHeight:cut.height,canvas:cut});
       };
       img.src=reader.result;
     };
@@ -5093,6 +5286,7 @@ async function processUploadFile(file,fillDefaults){
     document.getElementById('uploadPreview').style.display='flex';
     document.getElementById('uploadOriginalImg').src=packed.originalDataUrl||packed.dataUrl;
     document.getElementById('uploadPreviewImg').src=packed.dataUrl;
+    initCutoutEditor(packed.originalDataUrl||packed.dataUrl,packed.editorCutDataUrl||packed.dataUrl);
     document.getElementById('uploadRecognition').textContent='识别为 '+typeEmoji(t)+' '+typeLabel(t)+' · 置信度 '+analysis.confidence+'% · 约 '+analysis.pieceCount+' 颗 · 战力 '+analysis.aiPower;
     document.getElementById('uploadType').value=t;
     const cleanName=file.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').trim();
