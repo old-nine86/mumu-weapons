@@ -2,6 +2,50 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-19: Character Dossier Batch And Battle Share Cards
+
+Goal:
+- Ship a larger update that advances upload quality, admin refinement, character art, and gameplay shareability together.
+
+Shipped:
+- Generated and added four new premium brick-character dossier boards and avatar crops: ENTJ, INTP, ENTP, and INFJ.
+- Wired the four new characters into the Chinese character gallery, character profile modal, arena picker, and VS intro.
+- Added image-only dossier support so characters can have a premium positioning board before their promo animation is ready.
+- Updated cloud upload payloads to keep both the original uploaded photo and the refined cutout image in Supabase Storage metadata.
+- Added a richer arena victory settlement card with MVP moment, stage, remaining durability, weapon, and action buttons.
+- Added an in-browser battle share-card generator for posting match results to short-video/social platforms.
+
+Verification:
+- Parsed JavaScript in `index.html` and `admin.html` with Node.
+- Ran `git diff --check` on the changed files.
+
+Next:
+- Sync the same character and share-card update to `/en/` after the local English page file stops timing out on read.
+- Run the Supabase `supabase-admin-image-refinement.sql` upgrade on production and test one full upload -> admin refine -> approve -> public display cycle.
+
+## 2026-05-18: Admin Image Refinement Pipeline
+
+Goal:
+- Let approved reviewers clean or replace uploaded weapon subject images after submission, while preserving the original upload.
+- Prepare the static GitHub Pages admin workflow for a future server-side image cleanup job.
+
+Shipped:
+- Added an admin-side weapon image refinement panel to pending and approved weapon cards.
+- Added original/current image comparison previews in the admin page.
+- Added browser-side automatic cutout for admin refinement.
+- Added manual replacement upload for transparent PNG/WebP or regular photos.
+- Added a new Supabase RPC, `admin_replace_weapon_image`, to replace `image_url` and store `original_image_url` / `refined_image_url` in `analysis`.
+- Added `supabase-admin-image-refinement.sql` as a small copy-paste migration for the live database.
+
+Verification:
+- Parsed JavaScript in `index.html`, `en/index.html`, and `admin.html` with Node.
+- Ran `git diff --check` on the changed project files.
+- Started a local static server on `http://127.0.0.1:8010/`.
+- Verified the local admin page serves the new refinement controls and the standalone Supabase SQL upgrade serves correctly.
+
+Next:
+- Run the Supabase SQL upgrade on production, then test one pending upload through auto refinement, approval, and public display.
+
 ## 2026-05-18: Manual Cutout Editor
 
 Goal:

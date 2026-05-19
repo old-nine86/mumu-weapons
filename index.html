@@ -2443,6 +2443,23 @@ body::before{
 .arena-result{
   color:#202124;
 }
+.battle-summary-card{
+  max-width:760px;
+  margin:0 auto;
+  padding:18px;
+  border-radius:28px;
+  background:rgba(255,255,255,.84);
+  box-shadow:0 20px 52px rgba(78,64,44,.16);
+  border:1px solid rgba(255,255,255,.9);
+}
+.battle-summary-title{font-size:26px;font-weight:1000;margin-bottom:6px}
+.battle-summary-meta{color:#77726b;font-size:13px;font-weight:850;margin-bottom:12px}
+.battle-summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.battle-summary-stat{padding:10px;border-radius:16px;background:#fff7e8;font-weight:950}
+.battle-summary-stat span{display:block;color:#8a8178;font-size:11px;margin-top:3px}
+.battle-share-preview{display:none;margin-top:12px}
+.battle-share-preview.active{display:block}
+.battle-share-preview img{width:min(100%,360px);border-radius:24px;box-shadow:0 18px 44px rgba(78,64,44,.2)}
 .arena-controls{
   position:relative;
   z-index:2;
@@ -3986,6 +4003,14 @@ const CHARACTERS=[
 ];
 
 const CHAR_MEDIA={
+  ENTJ:{
+    image:'assets/characters/entj-position.png',
+    avatar:'assets/characters/entj-avatar.webp',
+    title:'ENTJ 指挥官',
+    subtitle:'战场统帅 / 进攻指挥者',
+    quote:'我不是在等待胜利，我是在安排胜利发生。',
+    tags:['烈焰统帅剑','红金指挥甲','高压推进','混乱 / 拖延 / 低效率']
+  },
   INTJ:{
     image:'assets/characters/intj-position.png',
     avatar:'assets/characters/intj-avatar.webp',
@@ -3994,6 +4019,30 @@ const CHAR_MEDIA={
     subtitle:'战术规划者 / 效率优化者',
     quote:'我不是在解决问题，我只是在优化世界的代码。',
     tags:['量子策略之刃','能量眼镜','紫黑色系','低效 / 混乱 / 无意义社交']
+  },
+  INTP:{
+    image:'assets/characters/intp-position.png',
+    avatar:'assets/characters/intp-avatar.webp',
+    title:'INTP 逻辑学家',
+    subtitle:'结构解析者 / 实验发明者',
+    quote:'只要给我足够的零件，我可以把规则本身重新组装。',
+    tags:['模块发明炮','蓝青护目镜','逻辑超频','盲目行动 / 没有数据 / 重复劳动']
+  },
+  ENTP:{
+    image:'assets/characters/entp-position.png',
+    avatar:'assets/characters/entp-avatar.webp',
+    title:'ENTP 辩论家',
+    subtitle:'诡雷策士 / 创意破局者',
+    quote:'如果规则太无聊，那就证明它需要一次爆炸式升级。',
+    tags:['闪电诡雷杖','紫橙实验甲','灵感爆破','无趣 / 死板 / 禁止尝试']
+  },
+  INFJ:{
+    image:'assets/characters/infj-position.png',
+    avatar:'assets/characters/infj-avatar.webp',
+    title:'INFJ 提倡者',
+    subtitle:'星月守护者 / 命运预言者',
+    quote:'我看见的不只是胜负，还有每个人应该抵达的位置。',
+    tags:['星月水晶杖','薄荷紫守护甲','预知结界','冷漠 / 失衡 / 背离初心']
   },
   ISTJ:{
     image:'assets/characters/istj-position.png',
@@ -5186,6 +5235,28 @@ async function saveUploadedWeaponToCloud(item){
   });
   if(!uploadRes.ok)throw new Error(await cloudErrorMessage(uploadRes,'图片上传到云端失败'));
   const imageUrl=cloudBase()+'/storage/v1/object/public/'+encodeURIComponent(bucket)+'/'+encodeURIComponent(imagePath);
+  let originalImageUrl='';
+  if(item.originalImg){
+    const originalPath='original-weapon-'+item.i+'.webp';
+    const originalBlob=await dataUrlToBlob(item.originalImg);
+    const originalRes=await fetch(cloudBase()+'/storage/v1/object/'+encodeURIComponent(bucket)+'/'+encodeURIComponent(originalPath),{
+      method:'POST',
+      headers:cloudHeaders({
+        'Content-Type':'image/webp',
+        'x-upsert':'false'
+      }),
+      body:originalBlob
+    });
+    if(originalRes.ok){
+      originalImageUrl=cloudBase()+'/storage/v1/object/public/'+encodeURIComponent(bucket)+'/'+encodeURIComponent(originalPath);
+    }
+  }
+  const analysis=Object.assign({},item.analysis||{},{
+    original_image_url:originalImageUrl||imageUrl,
+    refined_image_url:imageUrl,
+    refined_by:'browser-upload-cutout',
+    refined_at:new Date().toISOString()
+  });
   const row={
     id:String(item.i),
     name:item.n,
@@ -5201,7 +5272,7 @@ async function saveUploadedWeaponToCloud(item){
     crit:item.def.cr,
     piece_count:item.pieceCount||0,
     ai_power:item.aiPower||100,
-    analysis:item.analysis||{},
+    analysis,
     status:'pending',
     share_proof:item.shareProof||''
   };
@@ -5281,7 +5352,7 @@ async function processUploadFile(file,fillDefaults){
     const t=profile.type;
     const analysis=analyzeBrickWeapon(packed.canvas,t,profile);
     analysis.cutoutMode=currentCutoutMode;
-    pendingUpload={fileName:file.name,img:packed.dataUrl,t,analysis};
+    pendingUpload={fileName:file.name,img:packed.dataUrl,originalImg:packed.originalDataUrl||packed.dataUrl,t,analysis};
     document.getElementById('uploadEmpty').style.display='none';
     document.getElementById('uploadPreview').style.display='flex';
     document.getElementById('uploadOriginalImg').src=packed.originalDataUrl||packed.dataUrl;
@@ -5318,6 +5389,7 @@ async function submitUploadedWeapon(){
     f:['玩家原创上传','自动识别：'+typeLabel(t),'AI战力：'+analysis.aiPower].concat(analysis.tags||[]).concat(['创建者：'+creator]),
     s:skill.slice(0,22),fx:typeEmoji(t),creator:creator,createdAt:Date.now(),shareProof:shareProof.slice(0,180),
     img:pendingUpload.img,
+    originalImg:pendingUpload.originalImg,
     def:{df:analysis.defense,cr:analysis.crit},
     pieceCount:analysis.pieceCount,
     aiPower:analysis.aiPower,
@@ -5654,7 +5726,7 @@ function openCharacterProfile(mbti){
       '<div class="char-profile-name">'+escapeHTML(media.title)+'</div>'+
       '<div class="char-profile-type">'+escapeHTML(media.subtitle)+' · '+escapeHTML(c.group)+' 阵营</div>'+
       '<div class="char-profile-quote">“'+escapeHTML(media.quote)+'”</div>'+
-      (media.pending?'<div class="char-profile-placeholder">定位图和宣传动画正在制作中<br>当前先使用统一积木头像占位</div>':'<video class="char-profile-video" src="'+media.video+'" poster="'+media.image+'" controls preload="metadata" playsinline></video><div class="char-video-hint">点播放按钮可以听到宣传动画声音</div>')+
+      (media.pending?'<div class="char-profile-placeholder">定位图和宣传动画正在制作中<br>当前先使用统一积木头像占位</div>':(media.video?'<video class="char-profile-video" src="'+media.video+'" poster="'+media.image+'" controls preload="metadata" playsinline></video><div class="char-video-hint">点播放按钮可以听到宣传动画声音</div>':'<div class="char-profile-placeholder ready">定位图已接入<br>宣传动画待补充，当前先展示高级角色设定图</div>'))+
       '<div class="char-profile-tags">'+
         '<span>人格技：'+escapeHTML(trait.label)+'</span>'+
         '<span>定位：'+escapeHTML(trait.role)+'</span>'+
@@ -6281,12 +6353,92 @@ function finishBattle(){
   const wc=side===1?s.c1:s.c2;
   const wn=side===1?s.p1:s.p2;
   const left=Math.round(side===1?s.h1:s.h2);
-  document.getElementById('aresult').innerHTML='🏆 '+wc.name+' 赢下玩具擂台！<br><span style="font-size:13px;color:#77726b">“'+wc.quotes.win+'” · 使用 '+wn.name+' · '+s.round+' 回合 · 剩余耐久 '+left+'</span>';
+  const hpRate=Math.max(0,Math.round((side===1?s.h1/s.hp1:s.h2/s.hp2)*100));
+  const mvp=(s.log&&s.log.find(x=>/大招|暴击|人格技|触发/.test(x)))||('用「'+wn.skill+'」稳定压制全场');
+  s.result={winnerSide:side,winner:wc,weapon:wn,left,hpRate,mvp,round:s.round,stage:s.stage};
+  document.getElementById('aresult').innerHTML=
+    '<div class="battle-summary-card">'+
+      '<div class="battle-summary-title">🏆 '+escapeHTML(wc.name)+' 赢下玩具擂台！</div>'+
+      '<div class="battle-summary-meta">“'+escapeHTML(wc.quotes.win)+'” · '+escapeHTML(s.stage.emoji+' '+s.stage.name)+' · '+s.round+' 回合</div>'+
+      '<div class="battle-summary-grid">'+
+        '<div class="battle-summary-stat">'+escapeHTML(wn.name)+'<span>获胜武器</span></div>'+
+        '<div class="battle-summary-stat">'+left+'<span>剩余耐久</span></div>'+
+        '<div class="battle-summary-stat">'+hpRate+'%<span>保存率</span></div>'+
+        '<div class="battle-summary-stat">'+escapeHTML(getCharTrait(wc).label)+'<span>MVP人格技</span></div>'+
+      '</div>'+
+      '<div class="battle-summary-meta">高光：'+escapeHTML(mvp.replace(/<[^>]*>/g,''))+'</div>'+
+      '<div class="quiz-actions"><button class="battle-start-btn ready" type="button" onclick="openCharacterProfile(\''+wc.mbti+'\')">查看冠军资料</button><button class="battle-start-btn ready" type="button" onclick="renderBattleShareCard()">生成分享卡</button><button class="battle-start-btn ready" type="button" onclick="openSelection()">换人挑战</button></div>'+
+      '<div class="battle-share-preview" id="battleSharePreview"></div>'+
+    '</div>';
   document.getElementById('againBtn').style.display='inline-block';
   document.getElementById('pauseBtn').style.display='none';
   document.getElementById('speedBtn').style.display='none';
   document.getElementById('f1').classList.remove('active-turn');
   document.getElementById('f2').classList.remove('active-turn');
+}
+
+async function imageForCanvas(src){
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.crossOrigin='anonymous';
+    img.onload=()=>resolve(img);
+    img.onerror=()=>resolve(null);
+    img.src=src;
+  });
+}
+
+function roundRectPath(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+
+async function renderBattleShareCard(){
+  const s=battleState&&battleState.result;
+  if(!s)return;
+  const canvas=document.createElement('canvas');
+  canvas.width=1080;canvas.height=1440;
+  const ctx=canvas.getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,1080,1440);
+  grad.addColorStop(0,'#fff7e8');grad.addColorStop(.45,'#e7f6ff');grad.addColorStop(1,'#ffe8ef');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,1080,1440);
+  ctx.fillStyle='rgba(255,255,255,.68)';
+  for(let y=90;y<1380;y+=128)for(let x=70;x<1030;x+=150){
+    roundRectPath(ctx,x,y,70,42,12);ctx.fill();
+  }
+  roundRectPath(ctx,80,92,920,1256,44);
+  ctx.fillStyle='rgba(255,255,255,.86)';ctx.fill();
+  ctx.strokeStyle='rgba(32,33,36,.1)';ctx.lineWidth=4;ctx.stroke();
+  ctx.fillStyle='#202124';ctx.font='900 54px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText('沐沐积木武器库',130,180);
+  ctx.font='1000 92px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText(s.winner.name+' 胜利',130,300);
+  ctx.fillStyle='#5f6368';ctx.font='800 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText(s.winner.mbti+' · '+s.winner.mbtiName+' · '+s.stage.name,130,356);
+  const media=getCharacterDossier(s.winner);
+  const img=await imageForCanvas((media&&!media.pending&&media.avatar)||'');
+  if(img){roundRectPath(ctx,690,182,230,270,34);ctx.save();ctx.clip();ctx.drawImage(img,690,182,230,270);ctx.restore();}
+  ctx.fillStyle='#fff7e8';
+  [['获胜武器',s.weapon.name],['战斗回合',s.round+' 回合'],['剩余耐久',s.left+' / '+s.hpRate+'%'],['人格技',getCharTrait(s.winner).label]].forEach((row,i)=>{
+    const y=500+i*140;
+    roundRectPath(ctx,130,y,820,104,28);ctx.fill();
+    ctx.fillStyle='#8a8178';ctx.font='800 28px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';ctx.fillText(row[0],166,y+40);
+    ctx.fillStyle='#202124';ctx.font='950 38px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';ctx.fillText(String(row[1]).slice(0,22),166,y+82);
+    ctx.fillStyle='#fff7e8';
+  });
+  ctx.fillStyle='#202124';ctx.font='900 36px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText('“'+s.winner.quotes.win+'”',130,1125);
+  ctx.fillStyle='#5f6368';ctx.font='800 28px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText('来网站上传你的积木武器，配 MBTI 角色开战',130,1190);
+  ctx.fillStyle='#2f8fe8';ctx.font='900 30px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText('old-nine86.github.io/mumu-weapons',130,1250);
+  const url=canvas.toDataURL('image/png');
+  const box=document.getElementById('battleSharePreview');
+  if(box){box.classList.add('active');box.innerHTML='<img src="'+url+'" alt="战斗分享卡"><div class="battle-summary-meta">长按图片可保存，发到抖音/快手/小红书。</div>';}
 }
 
 function toggleBattlePause(){
@@ -6339,6 +6491,7 @@ function logBattleEnhanced(atk,def,dmg,isCrit,isSpecial,atkChar,defChar,round,co
   const main=document.getElementById('alogMain');
   const list=document.getElementById('alogList');
   main.innerHTML=t+suffix;
+  if(battleState&&Array.isArray(battleState.log))battleState.log.unshift('第 '+round+' 回合：'+atkChar.name+' 对 '+defChar.name+' 造成 '+dmg+' 点伤害'+(isSpecial?'，发动大招':'')+(isCrit?'，暴击':''));
   if(list){
     const item=document.createElement('li');
     item.innerHTML='第 '+round+' 回合：'+atkChar.name+' 对 '+defChar.name+' 造成 '+dmg+' 点伤害'+(isSpecial?'，发动大招':'')+(isCrit?'，暴击':'');
