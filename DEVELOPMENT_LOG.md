@@ -2,6 +2,24 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-19: Character Comic Stories
+
+Goal:
+- Give every MBTI character a story moment on their character page instead of only a static dossier.
+
+Shipped:
+- Added a four-panel comic story section to every character profile modal.
+- Wrote unique comic mini-stories for all 16 MBTI characters, matching their personality, weapon preference, and combat trait.
+- Styled the comic panels as clean collectible-toy story cards so they load quickly without adding more heavy images.
+
+Verification:
+- Parsed JavaScript in `index.html` and `admin.html` with Node.
+- Ran `git diff --check`.
+- Confirmed the local static page serves the comic-story code and story UI strings.
+
+Next:
+- Later, replace selected comic panels with generated illustrated comic pages if a character becomes a promotion focus.
+
 ## 2026-05-19: Character Dossier Batch And Battle Share Cards
 
 Goal:

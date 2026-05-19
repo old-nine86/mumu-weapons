@@ -908,11 +908,73 @@ body::before{
   font-size:12px;
   font-weight:800;
 }
+.char-comic{
+  grid-column:1/-1;
+  margin-top:16px;
+  padding:16px;
+  border-radius:24px;
+  background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.12);
+}
+.char-comic-title{
+  color:#fff;
+  font-size:22px;
+  font-weight:1000;
+  margin-bottom:12px;
+}
+.char-comic-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+.comic-panel{
+  min-height:164px;
+  padding:12px;
+  border-radius:18px;
+  background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(245,248,255,.88));
+  color:#202124;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 16px 36px rgba(0,0,0,.16);
+}
+.comic-panel::after{
+  content:'';
+  position:absolute;
+  right:-18px;
+  bottom:-18px;
+  width:86px;
+  height:86px;
+  border-radius:22px;
+  background:
+    radial-gradient(circle at 24px 24px,rgba(255,255,255,.9) 0 7px,transparent 7.5px),
+    radial-gradient(circle at 62px 24px,rgba(255,255,255,.9) 0 7px,transparent 7.5px),
+    radial-gradient(circle at 24px 62px,rgba(255,255,255,.9) 0 7px,transparent 7.5px),
+    radial-gradient(circle at 62px 62px,rgba(255,255,255,.9) 0 7px,transparent 7.5px),
+    var(--comic-accent,#9fd7ff);
+  opacity:.42;
+  transform:rotate(-10deg);
+}
+.comic-num{color:#2f8fe8;font-size:12px;font-weight:1000;letter-spacing:.08em}
+.comic-scene{font-size:15px;font-weight:1000;margin-top:8px;line-height:1.25}
+.comic-line{
+  position:relative;
+  z-index:1;
+  margin-top:10px;
+  padding:10px;
+  border-radius:14px;
+  background:#fff7e8;
+  color:#5a5147;
+  font-size:13px;
+  font-weight:850;
+  line-height:1.45;
+}
 @media(max-width:860px){
   .char-profile-modal{grid-template-columns:1fr;max-width:620px}
   .char-profile-art{min-height:auto}
   .char-profile-art img{height:auto}
+  .char-comic-grid{grid-template-columns:1fr 1fr}
 }
+@media(max-width:520px){.char-comic-grid{grid-template-columns:1fr}}
 .arena{
   background:
     linear-gradient(rgba(8,12,22,.86),rgba(8,12,22,.92)),
@@ -4135,6 +4197,41 @@ const CHAR_MEDIA={
   }
 };
 
+const CHAR_COMICS={
+  ENTJ:['总攻令','红金指挥台上，炎之统帅把所有武器排成箭头。','“三秒后推进。不是差不多，是刚刚好。”','火焰剑落下，积木兵团像齿轮一样咔哒合上。'],
+  INTJ:['影子里的计划','暗影军师把战场地图翻到背面，那里已经写满答案。','“你以为我在沉默，其实我在结束比赛。”','紫色光刃只挥一次，陷阱全部同时点亮。'],
+  INTP:['逻辑零件雨','机械奇才拆开自己的武器，又多装了三个看不懂的模块。','“别急，这个失败结果非常有价值。”','下一秒，模块炮用完美角度弹飞了所有敌人。'],
+  ENTP:['诡雷辩论赛','诡雷策士在擂台中央摆下两个按钮：安全和更有趣。','“我支持第二个。反方意见无效。”','橙紫闪电炸开，连裁判席都鼓起掌来。'],
+  ENFJ:['辉光集合号','辉光导师站到最前面，把胆小的小人一个个拉到光里。','“你们不是配角，你们是这一局的关键。”','大家的武器一起发亮，组成一把巨大的希望剑。'],
+  INFJ:['月影预言书','月影先知在云朵高台上看见三条未来。','“选择温柔，不代表选择软弱。”','水晶杖轻点地面，最危险的攻击偏离了一格。'],
+  INFP:['不会倒下的梦','光之咏者捧着裂开的城堡旗帜，慢慢站起来。','“梦想碎了也没关系，积木可以重新拼。”','金色长矛发出柔光，把废墟拼成新的桥。'],
+  ENFP:['星火乱入','星火游侠本来要按计划走，却看见一条更亮的彩虹轨道。','“计划很好，但这个看起来更好玩！”','他一边大笑一边开火，意外打出全场最佳路线。'],
+  ISTJ:['检查清单','检查员把护目镜推正，逐项检查剑刃、盾牌和地砖。','“规则不是麻烦，是让胜利不出错。”','最后一项打勾时，对手的攻击刚好撞上铁壁。'],
+  ISFJ:['盾后的光','坚盾卫士发现队友的腿部零件松了，立刻挡在前面。','“别怕，先把自己修好。”','圣光圆盾撑起半透明护罩，整队重新站稳。'],
+  ESTJ:['效率交付日','钢铁督军把混乱的武器堆分成三排，贴上编号。','“问题不是太多，是流程还不够清楚。”','第三轮结束前，重炮按时完成压制任务。'],
+  ESFJ:['暖心补给站','暖心护使在战场边开了一个小小补给角。','“先喝水，再打架。没人可以带着委屈上场。”','玫瑰金长枪一扫，大家的耐久都亮了起来。'],
+  ISTP:['沉默拆解','孤狼猎手没有参加战前会议，只蹲在角落听机关声。','“这里，松了。”','他只拧动一颗零件，敌方巨炮自己散成了积木雨。'],
+  ISFP:['绯焰一舞','绯焰艺者拒绝直线冲锋，绕着舞台画出火焰弧线。','“赢也要赢得漂亮。”','剑光像丝带一样回旋，最后一击刚好落在鼓点上。'],
+  ESTP:['雷霆先冲','雷霆先锋听完规则的前半句，就已经冲出去了。','“后半句路上再说！”','黄色闪电穿过擂台，机会被他硬生生撞开。'],
+  ESFP:['全场灯光','烈阳舞者发现观众席太安静，于是把剑举过头顶。','“这不是普通战斗，这是压轴表演！”','橙金光芒炸开，全场跟着节奏喊出他的名字。']
+};
+
+function characterComicHTML(c){
+  const story=CHAR_COMICS[c.mbti]||['积木小剧场','战士踏上玩具擂台。','“这一局，我会拼出自己的答案。”','积木光芒亮起，新的故事开始了。'];
+  const panels=[
+    ['01',story[1],story[2]],
+    ['02','专属武器启动：'+charSkillName(c),c.quotes.atk&&c.quotes.atk[0]?c.quotes.atk[0]:c.quotes.win],
+    ['03','人格技触发：'+getCharTrait(c).label,getCharTrait(c).desc+'，战局开始改变。'],
+    ['04',story[3],c.quotes.win]
+  ];
+  return '<div class="char-comic" style="--comic-accent:'+escapeHTML(c.colors.a)+'">'+
+    '<div class="char-comic-title">漫画小剧场 · '+escapeHTML(story[0])+'</div>'+
+    '<div class="char-comic-grid">'+panels.map(p=>
+      '<div class="comic-panel"><div class="comic-num">PANEL '+p[0]+'</div><div class="comic-scene">'+escapeHTML(p[1])+'</div><div class="comic-line">“'+escapeHTML(p[2])+'”</div></div>'
+    ).join('')+'</div>'+
+  '</div>';
+}
+
 // ===== SVG CHARACTER GENERATOR =====
 function charPersonaParts(c){
   const parts={
@@ -5813,7 +5910,8 @@ function openCharacterProfile(mbti){
         '<span>偏好：'+weaponLabel(c.weaponPref)+'</span>'+
         media.tags.map(tag=>'<span>'+escapeHTML(tag)+'</span>').join('')+
       '</div>'+
-    '</div>';
+    '</div>'+
+    characterComicHTML(c);
   document.getElementById('modal').classList.add('active');
 }
 
