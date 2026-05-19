@@ -23,6 +23,10 @@ Next:
 - Sync the same character and share-card update to `/en/` after the local English page file stops timing out on read.
 - Run the Supabase `supabase-admin-image-refinement.sql` upgrade on production and test one full upload -> admin refine -> approve -> public display cycle.
 
+Follow-up:
+- Generated and added the remaining 10 premium dossier boards and avatar crops: ENFJ, INFP, ENFP, ISFJ, ESTJ, ESFJ, ISTP, ISFP, ESTP, and ESFP.
+- The Chinese site now has premium dossier images for all 16 MBTI characters.
+
 ## 2026-05-18: Admin Image Refinement Pipeline
 
 Goal:
