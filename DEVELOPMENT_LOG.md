@@ -2,6 +2,25 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-20: Full Image2 Comic Batch With Chinese Subtitles
+
+Goal:
+- Finish image2 comic pages for all MBTI characters.
+- Make the comic readable by adding stable Chinese dialogue on top of the generated comic images.
+
+Shipped:
+- Generated and added image2 four-panel comic pages for the remaining 12 MBTI characters.
+- Connected all 16 MBTI characters to full comic page images.
+- Added web-rendered Chinese subtitle/dialogue overlays on each image2 comic, so the story text is reliable and legible.
+
+Verification:
+- Checked generated assets exist in `assets/comics`.
+- Parsed scripts in `index.html` and `admin.html`.
+- Checked diff formatting.
+
+Next:
+- Review the 16 comic images visually in-browser and replace any weaker image with a regenerated version.
+
 ## 2026-05-20: Image2 Comic Pages Pilot
 
 Goal:

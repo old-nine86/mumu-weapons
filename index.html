@@ -1083,6 +1083,39 @@ body::before{
   background:linear-gradient(90deg,rgba(255,255,255,.12),rgba(255,255,255,.04));
 }
 .comic-image-label span:last-child{color:#dbe5ff;font-size:12px}
+.comic-page-wrap{
+  position:relative;
+  background:#10131d;
+}
+.comic-subtitle-grid{
+  pointer-events:none;
+  position:absolute;
+  inset:0;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  grid-template-rows:1fr 1fr;
+  gap:1.2%;
+  padding:1.1%;
+}
+.comic-subtitle{
+  align-self:end;
+  margin:0 5% 5%;
+  padding:9px 10px;
+  border-radius:14px;
+  background:rgba(255,255,255,.93);
+  color:#202124;
+  font-size:clamp(10px,1.55vw,18px);
+  font-weight:1000;
+  line-height:1.28;
+  box-shadow:0 10px 26px rgba(0,0,0,.24);
+  border:2px solid rgba(32,33,36,.12);
+}
+.comic-subtitle b{
+  display:block;
+  color:var(--comic-accent,#2f8fe8);
+  font-size:.78em;
+  margin-bottom:2px;
+}
 .char-comic-actions{
   display:flex;
   flex-wrap:wrap;
@@ -4371,73 +4404,73 @@ const CHAR_COMICS={
     {beat:'反转',scene:'按钮没有爆炸，只是让地板弹出一百个会唱歌的小机关。',action:'场面离谱但合法',line:'你看，严格来说这是表演。',fx:'🎤'},
     {beat:'结局',scene:'对手忙着堵耳朵，诡雷策士已经绕到背后拿走胜利旗。',action:'掌声顺手拿下',line:'赢很重要，但好玩更重要。',fx:'🏁'}
   ]},
-  ENFJ:{title:'主角集合号',moral:'ENFJ 会把团灭局讲成每个人都想再试一次的开场。',panels:[
+  ENFJ:{title:'主角集合号',image:'assets/comics/enfj-comic-page.png',moral:'ENFJ 会把团灭局讲成每个人都想再试一次的开场。',panels:[
     {beat:'起因',scene:'辉光导师发现队友都躲在盾后，没人敢冲第一步。',action:'士气跌到地板',line:'你们不是配角，你们是这一局的关键。',fx:'🌟'},
     {beat:'冲突',scene:'敌方嘲笑他们“只会喊口号”，整队差点散开。',action:'嘲讽来袭',line:'口号没用，但相信彼此有用。',fx:'📣'},
     {beat:'反转',scene:'他把光杖举高，每个队友的武器都亮出不同颜色。',action:'全员点亮',line:'看见了吗？这是你们自己的光。',fx:'💛'},
     {beat:'结局',scene:'大家合成一把巨大的希望剑，连胆小的零件也站到前排。',action:'合体终结技',line:'这一局，我们一起赢。',fx:'⚔️'}
   ]},
-  INFJ:{title:'温柔的预言',moral:'INFJ 的温柔不是退让，是知道哪一步能避免最坏结局。',panels:[
+  INFJ:{title:'温柔的预言',image:'assets/comics/infj-comic-page.png',moral:'INFJ 的温柔不是退让，是知道哪一步能避免最坏结局。',panels:[
     {beat:'起因',scene:'月影先知在云朵高台上看见三条未来，两条都很吵。',action:'未来分叉',line:'选择温柔，不代表选择软弱。',fx:'🌙'},
     {beat:'冲突',scene:'队友想硬冲，敌人正等他们撞进陷阱。',action:'陷阱一格之差',line:'停一下，你们的勇敢需要换个方向。',fx:'🔮'},
     {beat:'反转',scene:'水晶杖轻点地面，整座桥向左移动了一格。',action:'命运微调',line:'有时候，一格就够了。',fx:'💎'},
     {beat:'结局',scene:'最危险的攻击擦肩而过，对手以为自己打偏了。',action:'安静胜利',line:'不是你打偏，是我把故事改短了。',fx:'📖'}
   ]},
-  INFP:{title:'碎掉也能重拼',moral:'INFP 不怕梦想裂开，因为他们相信裂缝也能拼出光。',panels:[
+  INFP:{title:'碎掉也能重拼',image:'assets/comics/infp-comic-page.png',moral:'INFP 不怕梦想裂开，因为他们相信裂缝也能拼出光。',panels:[
     {beat:'起因',scene:'光之咏者守着裂开的城堡旗帜，大家都说该放弃。',action:'旗帜裂成两半',line:'梦想碎了也没关系，积木可以重新拼。',fx:'🌈'},
     {beat:'冲突',scene:'敌人踩碎桥面，笑他们连路都没有了。',action:'退路消失',line:'路没有了，那就拼一条新的。',fx:'🧱'},
     {beat:'反转',scene:'金色长矛发出柔光，废墟一块块升起变成彩虹桥。',action:'废墟重组',line:'每一块碎片都记得自己想去哪里。',fx:'✨'},
     {beat:'结局',scene:'队友从桥上冲过，旗帜被拼成更亮的新徽章。',action:'新徽章诞生',line:'看，坏掉不是结尾，是升级材料。',fx:'🏰'}
   ]},
-  ENFP:{title:'彩虹偏航',moral:'ENFP 的意外路线有时候不是跑偏，是发现了隐藏关。',panels:[
+  ENFP:{title:'彩虹偏航',image:'assets/comics/enfp-comic-page.png',moral:'ENFP 的意外路线有时候不是跑偏，是发现了隐藏关。',panels:[
     {beat:'起因',scene:'星火游侠拿到作战路线 A，却看见旁边有条发光彩虹轨道。',action:'路线 A 被冷落',line:'计划很好，但这个看起来更好玩！',fx:'🌈'},
     {beat:'冲突',scene:'队友追不上他，敌人也追不上他，连镜头都差点追不上。',action:'全员眩晕',line:'别担心，我迷路得很有方向感。',fx:'🚀'},
     {beat:'反转',scene:'彩虹轨道绕到敌方后门，正好避开所有陷阱。',action:'误打误撞开后门',line:'看吧，快乐也是一种导航。',fx:'🗺️'},
     {beat:'结局',scene:'他一边大笑一边开火，意外打出全场最佳路线。',action:'最佳路线诞生',line:'下次还按计划，不过先看看有没有彩虹。',fx:'🎉'}
   ]},
-  ISTJ:{title:'第十三项，打',moral:'ISTJ 的浪漫是把每个风险都检查到没机会捣乱。',panels:[
+  ISTJ:{title:'第十三项，打',image:'assets/comics/istj-comic-page.png',moral:'ISTJ 的浪漫是把每个风险都检查到没机会捣乱。',panels:[
     {beat:'起因',scene:'检查员推正护目镜，给剑刃、盾牌和地砖逐项打勾。',action:'清单第 1 项',line:'规则不是麻烦，是让胜利不出错。',fx:'✅'},
     {beat:'冲突',scene:'敌人不耐烦冲来，嘲笑他还没开始战斗。',action:'敌人提前冲刺',line:'不急，你已经进入第十二项。',fx:'📋'},
     {beat:'反转',scene:'他勾下最后一项，提前校准的铁壁刚好升起。',action:'铁壁准点上线',line:'第十三项，打。',fx:'🛡️'},
     {beat:'结局',scene:'敌方攻击撞上铁壁弹回去，检查员在报告上写“流程有效”。',action:'报告通过',line:'稳定不是慢，是不会白忙。',fx:'🏅'}
   ]},
-  ISFJ:{title:'盾后的光',moral:'ISFJ 的守护不是躲在后面，是让大家有勇气往前。',panels:[
+  ISFJ:{title:'盾后的光',image:'assets/comics/isfj-comic-page.png',moral:'ISFJ 的守护不是躲在后面，是让大家有勇气往前。',panels:[
     {beat:'起因',scene:'坚盾卫士发现队友腿部零件松了，马上挡在最前面。',action:'小队掉零件',line:'别怕，先把自己修好。',fx:'🩹'},
     {beat:'冲突',scene:'敌方火力压过来，队友担心她一个人扛不住。',action:'火力压顶',line:'我不是一个人在挡，我在给你们争时间。',fx:'🛡️'},
     {beat:'反转',scene:'圣光圆盾展开半透明护罩，受伤的零件自动咔哒归位。',action:'安全屋展开',line:'好了，现在轮到你们发光。',fx:'💚'},
     {beat:'结局',scene:'整队重新站稳，从护罩后一起反击。',action:'全队满格回归',line:'守护不是结束战斗，是让战斗继续。',fx:'🌤️'}
   ]},
-  ESTJ:{title:'战场交付日',moral:'ESTJ 会把混乱现场管理成能按时验收的胜利。',panels:[
+  ESTJ:{title:'战场交付日',image:'assets/comics/estj-comic-page.png',moral:'ESTJ 会把混乱现场管理成能按时验收的胜利。',panels:[
     {beat:'起因',scene:'钢铁督军看到武器堆、弹药箱和队友全混在一起。',action:'现场没有流程',line:'问题不是太多，是流程还不够清楚。',fx:'📦'},
     {beat:'冲突',scene:'敌人趁乱推进，大家互相找不到自己的装备。',action:'装备大堵车',line:'所有人按颜色分组，三秒后交付火力。',fx:'📣'},
     {beat:'反转',scene:'编号贴一贴，路线画一画，重炮和盾牌突然像流水线一样顺。',action:'流程启动',line:'混乱也可以排班。',fx:'⚙️'},
     {beat:'结局',scene:'第三轮结束前，重炮准时完成压制任务。',action:'提前验收',line:'本项目胜利，已交付。',fx:'🏗️'}
   ]},
-  ESFJ:{title:'暖心补给站',moral:'ESFJ 知道，队伍最强的状态通常从一句“先喝水”开始。',panels:[
+  ESFJ:{title:'暖心补给站',image:'assets/comics/esfj-comic-page.png',moral:'ESFJ 知道，队伍最强的状态通常从一句“先喝水”开始。',panels:[
     {beat:'起因',scene:'暖心护使发现大家一边吵架一边掉耐久。',action:'队伍情绪红灯',line:'先喝水，再打架。没人可以带着委屈上场。',fx:'☕'},
     {beat:'冲突',scene:'敌人趁他们聊天冲来，补给角被打翻一半。',action:'点心危机',line:'可以打我，不可以打翻补给。',fx:'💢'},
     {beat:'反转',scene:'玫瑰金长枪一扫，散落的补给变成恢复光环。',action:'甜点变技能',line:'关心人，也可以很有攻击力。',fx:'💗'},
     {beat:'结局',scene:'队友满血回归，对手被邀请赛后一起吃饼干。',action:'全场被照顾',line:'赢了要庆祝，输了也先坐下吃点。',fx:'🍪'}
   ]},
-  ISTP:{title:'只拧一颗螺丝',moral:'ISTP 不需要长篇解释，他们会让结果自己说话。',panels:[
+  ISTP:{title:'只拧一颗螺丝',image:'assets/comics/istp-comic-page.png',moral:'ISTP 不需要长篇解释，他们会让结果自己说话。',panels:[
     {beat:'起因',scene:'孤狼猎手蹲在角落听机关声，战前会议已经讲到第三页。',action:'会议自动静音',line:'这里，松了。',fx:'🔩'},
     {beat:'冲突',scene:'敌方巨炮启动，所有人都在找弱点。',action:'巨炮预热',line:'不用找，声音已经告诉我了。',fx:'🎯'},
     {beat:'反转',scene:'他伸手拧动一颗不起眼的零件，巨炮开始反向抖动。',action:'关键一拧',line:'好了。',fx:'🛠️'},
     {beat:'结局',scene:'巨炮散成积木雨，队友还没来得及鼓掌。',action:'安静收工',line:'能用一颗螺丝解决，就别写十页方案。',fx:'🌧️'}
   ]},
-  ISFP:{title:'赢得漂亮',moral:'ISFP 的攻击不是绕远路，是给胜利加上自己的签名。',panels:[
+  ISFP:{title:'赢得漂亮',image:'assets/comics/isfp-comic-page.png',moral:'ISFP 的攻击不是绕远路，是给胜利加上自己的签名。',panels:[
     {beat:'起因',scene:'绯焰艺者看着直线冲锋路线，轻轻摇头。',action:'路线不够美',line:'赢也要赢得漂亮。',fx:'🎨'},
     {beat:'冲突',scene:'敌人封住正面，只留下几条窄窄的舞台缝隙。',action:'舞台变窄',line:'窄一点刚好，线条更清楚。',fx:'🩰'},
     {beat:'反转',scene:'她绕着积木柱画出火焰弧线，剑光像丝带回旋。',action:'火焰弧线',line:'看好了，攻击也可以有构图。',fx:'🔥'},
     {beat:'结局',scene:'最后一击刚好落在鼓点上，敌人倒下得很有节奏。',action:'谢幕一击',line:'谢谢观看，下一场我换个配色。',fx:'🌹'}
   ]},
-  ESTP:{title:'后半句路上再说',moral:'ESTP 的机会不是等来的，是先冲过去再把路撞出来。',panels:[
+  ESTP:{title:'后半句路上再说',image:'assets/comics/estp-comic-page.png',moral:'ESTP 的机会不是等来的，是先冲过去再把路撞出来。',panels:[
     {beat:'起因',scene:'雷霆先锋听完规则的前半句，脚已经踩上加速板。',action:'说明书还没读完',line:'后半句路上再说！',fx:'⚡'},
     {beat:'冲突',scene:'前面是断桥，旁边是陷阱，后面是队友的尖叫。',action:'危险三连',line:'完美，至少不无聊。',fx:'💥'},
     {beat:'反转',scene:'他把雷霆爆冲枪当跳板，直接从断桥上方飞过去。',action:'空中换路线',line:'机会不是门，是我撞出来的洞。',fx:'🚀'},
     {beat:'结局',scene:'落地时刚好踩中胜利按钮，连他自己都愣了一下。',action:'顺便赢了',line:'看吧，我说有路。',fx:'🏁'}
   ]},
-  ESFP:{title:'全场灯光',moral:'ESFP 的战斗会赢，因为他们先让全场相信这是一场大秀。',panels:[
+  ESFP:{title:'全场灯光',image:'assets/comics/esfp-comic-page.png',moral:'ESFP 的战斗会赢，因为他们先让全场相信这是一场大秀。',panels:[
     {beat:'起因',scene:'烈阳舞者发现观众席太安静，于是自己打开聚光灯。',action:'聚光灯启动',line:'这不是普通战斗，这是压轴表演！',fx:'🎬'},
     {beat:'冲突',scene:'敌人用沉默结界压住节奏，音乐和掌声全没了。',action:'全场静音',line:'没关系，我自己发光。',fx:'🔇'},
     {beat:'反转',scene:'烈阳演出剑划出橙金节拍，地面砖块跟着跳起来。',action:'节奏反击',line:'跟不上节奏的人，会被节奏打败。',fx:'🎵'},
@@ -4488,10 +4521,13 @@ function characterComicHTML(c){
   const story=getCharacterComicStory(c);
   const media=getCharacterDossier(c);
   const avatar=media.avatar||media.image||'';
+  const subtitleHTML=story.panels.map((p,i)=>
+    '<div class="comic-subtitle"><b>'+escapeHTML(p.beat||('第'+(i+1)+'格'))+'</b>'+escapeHTML(p.line||p.action||p.scene||c.quotes.win)+'</div>'
+  ).join('');
   return '<div class="char-comic" id="charComicStory" style="--comic-accent:'+escapeHTML(c.colors.a)+'">'+
     '<div class="char-comic-title">漫画小剧场 · '+escapeHTML(story.title)+'</div>'+
-    '<div class="char-comic-sub">这不是角色说明，是一段四格剧情：起因、冲突、反转、结局都连在一起。有 image2 正片的角色会优先展示完整漫画图。</div>'+
-    (story.image?'<div class="comic-image-feature"><div class="comic-image-label"><span>image2 漫画正片</span><span>完整四格故事图</span></div><img src="'+escapeHTML(story.image)+'" alt="'+escapeHTML(c.name)+' image2 四格漫画" loading="lazy"></div>':'')+
+    '<div class="char-comic-sub">这不是角色说明，是一段四格剧情：起因、冲突、反转、结局都连在一起。漫画图上已加中文对白字幕。</div>'+
+    (story.image?'<div class="comic-image-feature"><div class="comic-image-label"><span>image2 漫画正片</span><span>完整四格故事图 + 中文对白</span></div><div class="comic-page-wrap"><img src="'+escapeHTML(story.image)+'" alt="'+escapeHTML(c.name)+' image2 四格漫画" loading="lazy"><div class="comic-subtitle-grid">'+subtitleHTML+'</div></div></div>':'')+
     '<div class="char-comic-grid">'+story.panels.map((p,i)=>
       '<div class="comic-panel">'+
         '<div class="comic-stage">'+
