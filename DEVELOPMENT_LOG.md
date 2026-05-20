@@ -2,6 +2,24 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-20: Visual Character Comic Stories
+
+Goal:
+- Turn the character comic section from text-only notes into real four-panel visual stories.
+- Give every MBTI character a logical mini story with setup, conflict, twist, and ending.
+
+Shipped:
+- Rebuilt `CHAR_COMICS` into structured story data for all 16 MBTI characters.
+- Added visual comic panel rendering with character art, scene labels, action badges, effect marks, dialogue, and story wrap-up.
+- Updated character share-card generation to use the new story arcs instead of old plain text arrays.
+
+Verification:
+- Parsed scripts in `index.html` and `admin.html`.
+- Checked diff formatting.
+
+Next:
+- Add richer generated comic images for selected main characters if stronger poster-quality storytelling is needed.
+
 ## 2026-05-20: Funny Character Comic Share Cards
 
 Goal:
