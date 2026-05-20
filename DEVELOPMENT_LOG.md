@@ -2,6 +2,25 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-20: Funny Character Comic Share Cards
+
+Goal:
+- Turn character comic stories into shareable funny images for social posting.
+
+Shipped:
+- Added funny MBTI meme lines for all 16 characters.
+- Added `生成搞笑漫画分享图` button inside each character comic section.
+- Built an in-browser vertical share-card generator combining character avatar, MBTI identity, four comic panels, meme copy, personality skill, and site link.
+- Added preview output under the character page so users can long-press/save the generated image.
+
+Verification:
+- Parsed JavaScript in `index.html` and `admin.html` with Node.
+- Ran `git diff --check`.
+- Confirmed the local static page serves the funny comic share-card code and button text.
+
+Next:
+- Add a QR code or platform-specific short link to the generated share card once the final promotion entry is chosen.
+
 ## 2026-05-19: Character Comic Stories
 
 Goal:

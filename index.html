@@ -968,6 +968,40 @@ body::before{
   font-weight:850;
   line-height:1.45;
 }
+.char-comic-actions{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:10px;
+  margin:14px 0 0;
+}
+.char-share-btn{
+  border:0;
+  border-radius:999px;
+  padding:12px 16px;
+  background:linear-gradient(135deg,#ffd96a,#ff8a72);
+  color:#202124;
+  font-family:inherit;
+  font-weight:1000;
+  cursor:pointer;
+  box-shadow:0 14px 34px rgba(255,138,114,.22);
+}
+.char-share-preview{
+  display:none;
+  margin-top:14px;
+}
+.char-share-preview.active{display:block}
+.char-share-preview img{
+  width:min(100%,360px);
+  border-radius:24px;
+  box-shadow:0 18px 44px rgba(0,0,0,.28);
+}
+.char-share-hint{
+  margin-top:8px;
+  color:#dbe5ff;
+  font-size:12px;
+  font-weight:850;
+}
 @media(max-width:860px){
   .char-profile-modal{grid-template-columns:1fr;max-width:620px}
   .char-profile-art{min-height:auto}
@@ -4216,6 +4250,25 @@ const CHAR_COMICS={
   ESFP:['全场灯光','烈阳舞者发现观众席太安静，于是把剑举过头顶。','“这不是普通战斗，这是压轴表演！”','橙金光芒炸开，全场跟着节奏喊出他的名字。']
 };
 
+const CHAR_MEMES={
+  ENTJ:['队友：我还没准备好','ENTJ：我已经替你准备好了','今日人设：会议开到一半顺手赢了'],
+  INTJ:['别人打架靠热血','INTJ靠 Excel 预言','今日人设：冷脸，但脑内已经排练 48 种结局'],
+  INTP:['说明书：请勿拆开','INTP：这句话很有研究价值','今日人设：武器还没命名，功能已经超纲'],
+  ENTP:['规则写着不能炸','ENTP：那我辩论一下“炸”的定义','今日人设：赢不赢另说，场面必须离谱'],
+  ENFJ:['全队士气-10','ENFJ开麦：你们都是主角','今日人设：把团灭局讲成励志片'],
+  INFJ:['别人看敌人位置','INFJ看命运走位','今日人设：温柔地把你预判到怀疑人生'],
+  INFP:['武器裂了','INFP：它只是进入了成长线','今日人设：边修城堡边修大家的心'],
+  ENFP:['计划路线：A','ENFP实际路线：彩虹、烟花、顺便赢','今日人设：快乐得像系统漏洞'],
+  ISTJ:['开战前先检查 12 项','敌人：你到底打不打','ISTJ：第 13 项，打。'],
+  ISFJ:['队友掉血','ISFJ秒变移动安全屋','今日人设：你负责输出，我负责让你别碎'],
+  ESTJ:['混乱现场','ESTJ：先分组，再编号，最后开炮','今日人设：把战场管理成项目交付'],
+  ESFJ:['大家吵架','ESFJ：先吃点东西再说','今日人设：用爱和补给包统治战局'],
+  ISTP:['别人喊口号','ISTP拧一颗螺丝','今日人设：话少，但敌方装备突然散架'],
+  ISFP:['普通攻击','ISFP：不够好看，重来','今日人设：伤害可以少，姿势必须美'],
+  ESTP:['危险提示：请勿冲刺','ESTP：这不就是邀请函吗','今日人设：先冲了，解释在冷却中'],
+  ESFP:['聚光灯没开','ESFP：那我自己发光','今日人设：打赢只是顺便，谢幕才是重点']
+};
+
 function characterComicHTML(c){
   const story=CHAR_COMICS[c.mbti]||['积木小剧场','战士踏上玩具擂台。','“这一局，我会拼出自己的答案。”','积木光芒亮起，新的故事开始了。'];
   const panels=[
@@ -4229,7 +4282,108 @@ function characterComicHTML(c){
     '<div class="char-comic-grid">'+panels.map(p=>
       '<div class="comic-panel"><div class="comic-num">PANEL '+p[0]+'</div><div class="comic-scene">'+escapeHTML(p[1])+'</div><div class="comic-line">“'+escapeHTML(p[2])+'”</div></div>'
     ).join('')+'</div>'+
+    '<div class="char-comic-actions"><button class="char-share-btn" type="button" onclick="renderCharacterShareCard(\''+c.mbti+'\')">生成搞笑漫画分享图</button><div class="char-share-hint">适合发短视频封面、朋友圈和小红书。</div></div>'+
+    '<div class="char-share-preview" id="charSharePreview"></div>'+
   '</div>';
+}
+
+function wrapCanvasText(ctx,text,x,y,maxWidth,lineHeight,maxLines){
+  const words=String(text||'').split('');
+  let line='',lines=[];
+  for(const ch of words){
+    const test=line+ch;
+    if(ctx.measureText(test).width>maxWidth&&line){
+      lines.push(line);
+      line=ch;
+      if(lines.length>=maxLines-1)break;
+    }else{
+      line=test;
+    }
+  }
+  if(line)lines.push(line);
+  lines=lines.slice(0,maxLines);
+  lines.forEach((l,i)=>ctx.fillText(l,x,y+i*lineHeight));
+  return y+lines.length*lineHeight;
+}
+
+async function renderCharacterShareCard(mbti){
+  const c=CHARACTERS.find(x=>x.mbti===mbti);
+  if(!c)return;
+  const media=getCharacterDossier(c);
+  const story=CHAR_COMICS[c.mbti]||['积木小剧场','战士踏上玩具擂台。','“这一局，我会拼出自己的答案。”','积木光芒亮起，新的故事开始了。'];
+  const meme=CHAR_MEMES[c.mbti]||['今天也很会拼','人格技正在加载','今日人设：积木战士上线'];
+  const panels=[
+    ['01',story[1],story[2]],
+    ['02',meme[0],meme[1]],
+    ['03','人格技：'+getCharTrait(c).label,getCharTrait(c).desc+'，对手开始重新理解人生。'],
+    ['04',story[3],meme[2]]
+  ];
+  const canvas=document.createElement('canvas');
+  canvas.width=1080;canvas.height=1680;
+  const ctx=canvas.getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,1080,1680);
+  grad.addColorStop(0,'#fff7e8');grad.addColorStop(.42,'#e7f6ff');grad.addColorStop(1,'#ffe8ef');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,1080,1680);
+  ctx.fillStyle=c.colors.a;
+  ctx.globalAlpha=.16;
+  for(let y=80;y<1600;y+=150)for(let x=64;x<1010;x+=168){
+    roundRectPath(ctx,x,y,74,46,12);ctx.fill();
+  }
+  ctx.globalAlpha=1;
+  roundRectPath(ctx,70,70,940,1540,46);
+  ctx.fillStyle='rgba(255,255,255,.9)';ctx.fill();
+  ctx.strokeStyle='rgba(32,33,36,.1)';ctx.lineWidth=4;ctx.stroke();
+  ctx.fillStyle='#202124';
+  ctx.font='1000 54px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText('MBTI 积木人格漫画',120,155);
+  ctx.font='1000 86px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText(c.mbti+' · '+c.name,120,260);
+  ctx.fillStyle='#5f6368';
+  ctx.font='850 32px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText(c.mbtiName+' · '+getCharTrait(c).role+' · '+weaponLabel(c.weaponPref).replace(/[🗡️🔫🔱]/g,''),120,318);
+  const avatar=await imageForCanvas(media.avatar||media.image||'');
+  if(avatar){
+    roundRectPath(ctx,720,125,210,250,36);
+    ctx.save();ctx.clip();ctx.drawImage(avatar,720,125,210,250);ctx.restore();
+  }
+  ctx.fillStyle=c.colors.a;
+  roundRectPath(ctx,120,360,810,82,26);ctx.fill();
+  ctx.fillStyle='#fff';
+  ctx.font='950 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  wrapCanvasText(ctx,meme[2],154,412,740,38,1);
+  const panelW=390,panelH=270,startX=120,startY=490,gap=60;
+  panels.forEach((p,i)=>{
+    const x=startX+(i%2)*(panelW+gap);
+    const y=startY+Math.floor(i/2)*(panelH+gap);
+    roundRectPath(ctx,x,y,panelW,panelH,30);
+    ctx.fillStyle=i%2?'#eef9ff':'#fff7e8';ctx.fill();
+    ctx.strokeStyle='rgba(32,33,36,.08)';ctx.lineWidth=3;ctx.stroke();
+    ctx.fillStyle=c.colors.a;ctx.font='1000 24px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+    ctx.fillText('PANEL '+p[0],x+28,y+45);
+    ctx.fillStyle='#202124';ctx.font='1000 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+    let nextY=wrapCanvasText(ctx,p[1],x+28,y+94,panelW-56,40,2);
+    ctx.fillStyle='#5a5147';ctx.font='850 27px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+    wrapCanvasText(ctx,'“'+p[2]+'”',x+28,nextY+28,panelW-56,34,3);
+  });
+  ctx.fillStyle='#202124';
+  ctx.font='950 40px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText('人格技：'+getCharTrait(c).label,120,1250);
+  ctx.fillStyle='#5f6368';
+  ctx.font='850 30px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  wrapCanvasText(ctx,media.quote,120,1305,820,38,2);
+  ctx.fillStyle='#2f8fe8';
+  ctx.font='900 32px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText('来沐沐积木武器库，上传武器配角色开战',120,1450);
+  ctx.fillStyle='#202124';
+  ctx.font='850 28px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText('old-nine86.github.io/mumu-weapons',120,1500);
+  const url=canvas.toDataURL('image/png');
+  const box=document.getElementById('charSharePreview');
+  if(box){
+    box.classList.add('active');
+    box.innerHTML='<img src="'+url+'" alt="'+escapeHTML(c.name)+'漫画分享图"><div class="char-share-hint">长按图片保存。可以当短视频封面，也可以直接发朋友圈。</div>';
+    box.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
 }
 
 // ===== SVG CHARACTER GENERATOR =====
