@@ -2,6 +2,24 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-20: Comic Viewing And Character Preview Cleanup
+
+Goal:
+- Make the image2 comic pages easier to view completely on the web.
+- Simplify character card previews so they look like clean front/avatar portraits.
+
+Shipped:
+- Removed the comic image height cap and centered each long comic page in a readable column.
+- Kept Chinese subtitle overlays aligned to the actual comic image width.
+- Changed character cards from large cropped dossier covers to compact avatar portraits with a clean toy display background.
+
+Verification:
+- Parsed scripts in `index.html` and `admin.html`.
+- Checked diff formatting.
+
+Next:
+- Visually review mobile and desktop card density after more user feedback.
+
 ## 2026-05-20: Full Image2 Comic Batch With Chinese Subtitles
 
 Goal:
