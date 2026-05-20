@@ -1056,6 +1056,33 @@ body::before{
   font-weight:850;
   line-height:1.45;
 }
+.comic-image-feature{
+  margin:0 0 14px;
+  border-radius:24px;
+  overflow:hidden;
+  background:#10131d;
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 20px 48px rgba(0,0,0,.28);
+}
+.comic-image-feature img{
+  display:block;
+  width:100%;
+  max-height:820px;
+  object-fit:contain;
+  background:#10131d;
+}
+.comic-image-label{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 14px;
+  color:#fff;
+  font-size:13px;
+  font-weight:950;
+  background:linear-gradient(90deg,rgba(255,255,255,.12),rgba(255,255,255,.04));
+}
+.comic-image-label span:last-child{color:#dbe5ff;font-size:12px}
 .char-comic-actions{
   display:flex;
   flex-wrap:wrap;
@@ -4320,25 +4347,25 @@ const CHAR_MEDIA={
 };
 
 const CHAR_COMICS={
-  ENTJ:{title:'总攻令',moral:'真正的统帅不是嗓门大，是把混乱拼成队形。',panels:[
+  ENTJ:{title:'总攻令',image:'assets/comics/entj-comic-page.png',moral:'真正的统帅不是嗓门大，是把混乱拼成队形。',panels:[
     {beat:'起因',scene:'糖果擂台突然塌了一角，队友抱着武器各跑各的。',action:'全场乱成积木汤',line:'别慌，先把乱七八糟变成队形。',fx:'🔥'},
     {beat:'冲突',scene:'敌方巨炮瞄准最脆的角落，倒计时只剩三秒。',action:'三秒倒计时',line:'三秒够了，我平时开会只用两秒。',fx:'⏱️'},
     {beat:'反转',scene:'炎之统帅把剑插进地面，所有武器自动排成箭头。',action:'箭头阵展开',line:'现在，按我画的箭头赢。',fx:'⚔️'},
     {beat:'结局',scene:'巨炮被阵型反推回去，队友发现自己刚好站在最佳位置。',action:'全队合拍收工',line:'胜利属于强者，也属于听指挥的人。',fx:'🏆'}
   ]},
-  INTJ:{title:'暗影第七步',moral:'INTJ 的厉害不是神秘，是提前把失败路线都删掉。',panels:[
+  INTJ:{title:'暗影第七步',image:'assets/comics/intj-comic-page.png',moral:'INTJ 的厉害不是神秘，是提前把失败路线都删掉。',panels:[
     {beat:'起因',scene:'暗影军师看着空白地图，别人以为他在发呆。',action:'沉默加载中',line:'我不是不说话，我在等你走进第七步。',fx:'🧠'},
     {beat:'冲突',scene:'对手派出三路突袭，还嘲笑他的路线太保守。',action:'三路包夹',line:'你们走得很热闹，但都走错了。',fx:'🕶️'},
     {beat:'反转',scene:'紫色光刃轻轻一转，地砖下的隐藏机关连续亮起。',action:'陷阱同屏启动',line:'计划不是预测未来，是让未来只剩一种。',fx:'💜'},
     {beat:'结局',scene:'敌方停在终点前一格，才发现奖杯早被他移走。',action:'奖杯已转移',line:'谢谢配合，我的测试完成了。',fx:'♟️'}
   ]},
-  INTP:{title:'失败结果很有用',moral:'INTP 的胜利通常从一句“等一下我拆开看看”开始。',panels:[
+  INTP:{title:'失败结果很有用',image:'assets/comics/intp-comic-page.png',moral:'INTP 的胜利通常从一句“等一下我拆开看看”开始。',panels:[
     {beat:'起因',scene:'机械奇才刚上场，武器就冒出三颗不该冒的蓝色零件。',action:'武器自己打嗝',line:'有意思，它坏得很有结构。',fx:'🔧'},
     {beat:'冲突',scene:'队友急着开战，他却把武器拆成一桌零件。',action:'现场变实验室',line:'别急，这个失败结果非常有价值。',fx:'🧩'},
     {beat:'反转',scene:'他把多余零件装成反弹模块，敌人的炮弹开始自己排队回家。',action:'弹道反向',line:'理论上可行，实际上也挺可行。',fx:'📐'},
     {beat:'结局',scene:'裁判问武器叫什么，他低头又加了一个临时功能。',action:'名字还没想好',line:'先叫它版本 0.7，别问为什么。',fx:'✨'}
   ]},
-  ENTP:{title:'反方也被我说服',moral:'ENTP 的战术是让对手输之前先怀疑规则。',panels:[
+  ENTP:{title:'反方也被我说服',image:'assets/comics/entp-comic-page.png',moral:'ENTP 的战术是让对手输之前先怀疑规则。',panels:[
     {beat:'起因',scene:'诡雷策士在擂台中央摆下两个按钮：安全和更有趣。',action:'二选一陷阱',line:'我投第二个，反方意见先憋着。',fx:'💣'},
     {beat:'冲突',scene:'对手大喊“规则禁止爆炸”，他立刻举手申请辩论。',action:'暂停开庭',line:'请定义一下什么叫爆炸。',fx:'⚡'},
     {beat:'反转',scene:'按钮没有爆炸，只是让地板弹出一百个会唱歌的小机关。',action:'场面离谱但合法',line:'你看，严格来说这是表演。',fx:'🎤'},
@@ -4451,6 +4478,7 @@ function getCharacterComicStory(c){
   const story=CHAR_COMICS[c.mbti]||fallback;
   return {
     title:story.title||fallback.title,
+    image:story.image||'',
     moral:story.moral||fallback.moral,
     panels:(story.panels&&story.panels.length?story.panels:fallback.panels).slice(0,4)
   };
@@ -4462,7 +4490,8 @@ function characterComicHTML(c){
   const avatar=media.avatar||media.image||'';
   return '<div class="char-comic" id="charComicStory" style="--comic-accent:'+escapeHTML(c.colors.a)+'">'+
     '<div class="char-comic-title">漫画小剧场 · '+escapeHTML(story.title)+'</div>'+
-    '<div class="char-comic-sub">这不是角色说明，是一段四格剧情：起因、冲突、反转、结局都连在一起。</div>'+
+    '<div class="char-comic-sub">这不是角色说明，是一段四格剧情：起因、冲突、反转、结局都连在一起。有 image2 正片的角色会优先展示完整漫画图。</div>'+
+    (story.image?'<div class="comic-image-feature"><div class="comic-image-label"><span>image2 漫画正片</span><span>完整四格故事图</span></div><img src="'+escapeHTML(story.image)+'" alt="'+escapeHTML(c.name)+' image2 四格漫画" loading="lazy"></div>':'')+
     '<div class="char-comic-grid">'+story.panels.map((p,i)=>
       '<div class="comic-panel">'+
         '<div class="comic-stage">'+

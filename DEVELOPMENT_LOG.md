@@ -2,6 +2,23 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-20: Image2 Comic Pages Pilot
+
+Goal:
+- Replace the text-only comic feel with real image2 generated comic artwork.
+
+Shipped:
+- Generated and added full four-panel comic page images for ENTJ, INTJ, INTP, and ENTP.
+- Connected comic images into character profile modals as the primary "image2 漫画正片" above the story breakdown.
+- Kept structured story panels underneath as readable backup and share-card source.
+
+Verification:
+- Visually checked generated comic assets before wiring them into the site.
+- Parsed scripts and checked formatting before publishing.
+
+Next:
+- Generate image2 comic pages for the remaining 12 MBTI characters in batches.
+
 ## 2026-05-20: Visual Character Comic Stories
 
 Goal:
