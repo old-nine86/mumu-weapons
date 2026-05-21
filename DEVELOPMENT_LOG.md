@@ -2,6 +2,24 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-21: Weapon Showcase Modal 2.0
+
+Goal:
+- Move away from upload-tool work and make weapon details feel like a premium collectible display window.
+
+Shipped:
+- Added recommended MBTI character matching to weapon detail modals.
+- Added collectible weapon ID, richer analysis rows, and character synergy copy.
+- Added modal actions for sharing the showcase, jumping to the character/battle area, and a purchase-link placeholder.
+- Added share text generation using Web Share API or clipboard fallback.
+
+Verification:
+- Parsed scripts in `index.html` and `admin.html`.
+- Checked diff formatting.
+
+Next:
+- Add real affiliate/purchase URLs and creator support payment links when assets are ready.
+
 ## 2026-05-21: Upload Quality Guidance
 
 Goal:

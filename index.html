@@ -3829,12 +3829,63 @@ body::before{
   font-size:12px;
   font-weight:900;
 }
+.modal-match-card{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-top:4px;
+  padding:12px;
+  border-radius:22px;
+  background:linear-gradient(135deg,#fff7e8,#eef8ff);
+  border:1px solid rgba(78,64,44,.08);
+}
+.modal-match-avatar{
+  flex:0 0 58px;
+  width:58px;
+  height:58px;
+  border-radius:20px;
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+  background:#fff;
+  box-shadow:0 12px 26px rgba(78,64,44,.12);
+}
+.modal-match-avatar img{width:100%;height:100%;object-fit:cover}
+.modal-match-avatar svg{width:48px;height:56px}
+.modal-match-title{color:#202124;font-size:13px;font-weight:1000}
+.modal-match-sub{color:#6c6258;font-size:12px;font-weight:850;line-height:1.45;margin-top:3px}
+.modal-action-row{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+  margin-top:10px;
+}
+.modal-action-btn{
+  border:0;
+  border-radius:999px;
+  min-height:42px;
+  padding:10px 12px;
+  font:inherit;
+  font-size:12px;
+  font-weight:1000;
+  color:#202124;
+  background:linear-gradient(135deg,#9fd7ff,#8ee6c6);
+  cursor:pointer;
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.modal-action-btn.secondary{background:linear-gradient(135deg,#ffd96a,#ffb7c8)}
+.modal-action-btn.disabled{background:#f2f0ec;color:#8b8680;cursor:not-allowed}
 @media(max-width:820px){
   .modal-content{grid-template-columns:1fr;max-width:560px}
   .modal-img-wrap{min-height:340px}
   .modal-img-wrap.has-showcase img{max-height:300px}
   .modal-name{font-size:24px}
   .modal-feature-grid,.modal-analysis-grid{grid-template-columns:1fr 1fr}
+  .modal-action-row{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -6493,6 +6544,23 @@ document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList.c
 function weaponLabel(type){
   return type==='sword'?'🗡️ 剑刃':type==='gun'?'🔫 枪械':'🔱 长柄';
 }
+function recommendedCharactersForWeapon(w){
+  const exact=CHARACTERS.filter(c=>c.weaponPref===w.t);
+  const ranked=exact.sort((a,b)=>(b.stats.atk+b.stats.def+b.stats.crit*100)-(a.stats.atk+a.stats.def+a.stats.crit*100));
+  return ranked.slice(0,3);
+}
+function weaponShareText(w,rarity){
+  return '我在沐沐积木武器库发现了「'+w.n+'」'+rarity.key+' 收藏武器，战力 '+(w.aiPower||100)+'。来看看你的 MBTI 角色适合哪把武器： https://old-nine86.github.io/mumu-weapons/';
+}
+async function shareWeaponShowcase(id){
+  const w=WEAPONS.find(x=>String(x.i)===String(id));if(!w)return;
+  const text=weaponShareText(w,weaponRarityInfo(w));
+  try{
+    if(navigator.share){await navigator.share({title:w.n,text,url:'https://old-nine86.github.io/mumu-weapons/'});}
+    else if(navigator.clipboard){await navigator.clipboard.writeText(text);alert('分享文案已复制');}
+    else{prompt('复制分享文案',text);}
+  }catch(err){}
+}
 function charRarity(c){
   if(c.stats.atk>=90||c.stats.def>=95)return 'SSR';
   if(c.stats.crit>=0.22)return 'SR';
@@ -6699,11 +6767,22 @@ function openModal(id){
   const rarity=weaponRarityInfo(w);
   const analysis=w.analysis||{};
   const featureGrid=(w.f||[]).slice(0,6).map(f=>'<div class="modal-feature">'+escapeHTML(f)+'</div>').join('');
+  const matches=recommendedCharactersForWeapon(w);
+  const topChar=matches[0];
+  const topTrait=topChar?getCharTrait(topChar):null;
+  const matchAvatar=topChar?characterAvatarHTML(topChar,58):'';
+  const matchCard=topChar?'<div class="modal-match-card" onclick="event.stopPropagation();openCharacterProfile(\''+topChar.mbti+'\')">'+
+    '<div class="modal-match-avatar">'+matchAvatar+'</div>'+
+    '<div><div class="modal-match-title">最佳搭配：'+escapeHTML(topChar.name)+' · '+escapeHTML(topChar.mbti)+'</div>'+
+    '<div class="modal-match-sub">'+escapeHTML(topChar.mbtiName)+' / '+escapeHTML(topTrait.role)+'，偏好 '+weaponLabel(topChar.weaponPref)+'，能把「'+escapeHTML(w.s||'积木连击')+'」打成 '+escapeHTML(topTrait.style)+'。</div></div>'+
+  '</div>':'';
   const analysisGrid=[
     analysis.confidence?'识别置信度 '+analysis.confidence+'%':'收藏评分 '+rarity.score,
     analysis.complexity?'复杂度 '+analysis.complexity+'/10':'等级 '+rarity.key,
     analysis.balance?'平衡 '+analysis.balance+'/10':(w.pieceCount?'积木数 '+w.pieceCount:'类型 '+w.l),
-    analysis.colorCount?'颜色层次 '+analysis.colorCount:'战斗加成 +'+(v*8)
+    analysis.colorCount?'颜色层次 '+analysis.colorCount:'战斗加成 +'+(v*8),
+    topChar?'推荐角色 '+topChar.mbti:'推荐角色 待匹配',
+    '收藏编号 #MW-'+String(w.i).replace(/\D/g,'').padStart(3,'0')
   ].map(x=>'<div class="modal-analysis">'+escapeHTML(x)+'</div>').join('');
   const showcaseSrc=weaponShowcaseImage(w)||IMG[w.i];
   const hasShowcase=!!weaponShowcaseImage(w);
@@ -6728,6 +6807,7 @@ function openModal(id){
       '<div class="modal-desc">'+escapeHTML(w.d)+'</div>'+
       '<div class="modal-feature-grid">'+featureGrid+'</div>'+
       '<div class="modal-analysis-grid">'+analysisGrid+'</div>'+
+      matchCard+
       '<div class="modal-stats">'+
         '<div class="modal-stat"><div class="modal-stat-val">🗡️ '+((w.aiPower||100)+v*8)+'</div><div class="modal-stat-label">战力</div></div>'+
         '<div class="modal-stat"><div class="modal-stat-val">🛡️ '+d.df+'</div><div class="modal-stat-label">防御值</div></div>'+
@@ -6738,6 +6818,11 @@ function openModal(id){
         '<div class="vote-btn'+(hasVoted(w.i)?' voted':'')+'" onclick="event.stopPropagation();voteWeapon('+JSON.stringify(String(w.i))+',this)">'+(hasVoted(w.i)?'❤️':'🤍')+'</div>'+
         '<span class="vote-count" id="mvc'+w.i+'">'+v+'</span>'+
         '<span class="vote-label">投票 (+'+v*8+'战力)</span>'+
+      '</div>'+
+      '<div class="modal-action-row">'+
+        '<button class="modal-action-btn" type="button" onclick="shareWeaponShowcase('+JSON.stringify(String(w.i))+')">分享橱窗</button>'+
+        '<a class="modal-action-btn secondary" href="#characters" onclick="closeModal();switchPanel(\'characters\');return false">带去角色战场</a>'+
+        '<a class="modal-action-btn disabled" href="#" onclick="return false">购买链接待添加</a>'+
       '</div>'+
     '</div>';
   document.getElementById('modal').classList.add('active');
