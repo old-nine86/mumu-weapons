@@ -3074,6 +3074,13 @@ body::before{
   font-weight:850;
   line-height:1.5;
 }
+.cutout-point-count{
+  min-width:64px;
+  text-align:center;
+  color:#1e78c8;
+  font-size:11px;
+  font-weight:1000;
+}
 .upload-form{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -3908,12 +3915,17 @@ body::before{
             <div class="cutout-editor-toolbar">
               <button type="button" data-edit-tool="erase" class="active" onclick="setCutoutEditTool('erase',this)">擦掉背景</button>
               <button type="button" data-edit-tool="restore" onclick="setCutoutEditTool('restore',this)">恢复武器</button>
+              <button type="button" data-edit-tool="outline" onclick="setCutoutEditTool('outline',this)">圈选武器</button>
               <span class="upload-preview-label">画笔</span>
               <input type="range" id="cutoutBrushSize" min="8" max="90" value="32" oninput="setCutoutBrushSize(this.value)">
+              <span class="cutout-point-count" id="cutoutPointCount">0 点</span>
+              <button type="button" onclick="applyCutoutOutline()">闭合保留</button>
+              <button type="button" onclick="undoCutoutPoint()">撤销点</button>
+              <button type="button" onclick="autoExpandCutoutEdge()">智能扩边</button>
               <button type="button" onclick="applyCutoutEditor()">应用精修</button>
               <button type="button" onclick="resetCutoutEditor()">重置</button>
             </div>
-            <div class="cutout-editor-hint">自动抠图不完美时，用“擦掉背景”清残留，用“恢复武器”补回被误删的积木，再点应用精修。</div>
+            <div class="cutout-editor-hint">推荐：点“圈选武器”，沿武器外围连续点一圈，再点“闭合保留”，系统会按画笔大小外扩保留范围。边缘缺一点时点“智能扩边”。</div>
           </div>
         </div>
       </label>
@@ -4861,7 +4873,7 @@ const UPLOAD_COUNT_KEY='mumu_uploaded_weapon_count';
 const PROMO_TOKEN_KEY='mumu_promo_client_token';
 const PROMO_BONUS_KEY='mumu_promo_bonus_slots';
 let pendingUpload=null,currentUploadFile=null,currentCutoutMode='smart';
-let cutoutEditorState={tool:'erase',brush:32,original:null,edited:null,drawing:false};
+let cutoutEditorState={tool:'erase',brush:32,original:null,edited:null,drawing:false,points:[]};
 const CUTOUT_MODES={
   smart:{threshold:.72,floor:.74,shadow:.7,alpha:8,component:.0012,edge:.38,label:'智能工具'},
   soft:{threshold:.68,floor:.72,shadow:.68,alpha:8,component:.0015,edge:.42,label:'保留更多'},
@@ -5715,12 +5727,14 @@ function initCutoutEditor(originalDataUrl,cutDataUrl){
     cutoutEditorState.original=originalCanvas;
     cutoutEditorState.edited=edited;
     cutoutEditorState.tool='erase';
+    cutoutEditorState.points=[];
     document.querySelectorAll('[data-edit-tool]').forEach(btn=>btn.classList.toggle('active',btn.dataset.editTool==='erase'));
     renderCutoutEditor();
   }).catch(()=>{});
   if(!canvas.dataset.bound){
     canvas.dataset.bound='1';
     ['pointerdown','pointermove'].forEach(type=>canvas.addEventListener(type,paintCutoutEditor));
+    canvas.addEventListener('dblclick',event=>{event.preventDefault();applyCutoutOutline()});
     ['pointerup','pointerleave','pointercancel'].forEach(type=>canvas.addEventListener(type,()=>{cutoutEditorState.drawing=false}));
   }
 }
@@ -5731,15 +5745,67 @@ function renderCutoutEditor(){
   const ctx=canvas.getContext('2d');
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.drawImage(cutoutEditorState.edited,0,0);
+  renderCutoutOutlineOverlay(ctx,canvas);
+  updateCutoutPointCount();
 }
 
 function setCutoutEditTool(tool,btn){
   cutoutEditorState.tool=tool;
   document.querySelectorAll('[data-edit-tool]').forEach(b=>b.classList.toggle('active',b===btn));
+  renderCutoutEditor();
 }
 
 function setCutoutBrushSize(value){
   cutoutEditorState.brush=Math.max(8,Math.min(90,Number(value)||32));
+  renderCutoutEditor();
+}
+
+function updateCutoutPointCount(){
+  const box=document.getElementById('cutoutPointCount');
+  if(box)box.textContent=(cutoutEditorState.points||[]).length+' 点';
+}
+
+function renderCutoutOutlineOverlay(ctx,canvas){
+  const points=cutoutEditorState.points||[];
+  if(!points.length)return;
+  ctx.save();
+  ctx.lineWidth=3;
+  ctx.lineJoin='round';
+  ctx.lineCap='round';
+  ctx.strokeStyle='#0071e3';
+  ctx.fillStyle='rgba(0,113,227,.12)';
+  ctx.beginPath();
+  points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
+  if(points.length>2){
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.stroke();
+  points.forEach((p,i)=>{
+    ctx.beginPath();
+    ctx.fillStyle=i===0?'#ff8a72':'#fff';
+    ctx.strokeStyle='#0071e3';
+    ctx.lineWidth=3;
+    ctx.arc(p.x,p.y,7,0,Math.PI*2);
+    ctx.fill();
+    ctx.stroke();
+  });
+  ctx.restore();
+}
+
+function canvasPointFromEvent(canvas,event){
+  const rect=canvas.getBoundingClientRect();
+  return {
+    x:(event.clientX-rect.left)*canvas.width/rect.width,
+    y:(event.clientY-rect.top)*canvas.height/rect.height
+  };
+}
+
+function undoCutoutPoint(){
+  if(cutoutEditorState.points&&cutoutEditorState.points.length){
+    cutoutEditorState.points.pop();
+    renderCutoutEditor();
+  }
 }
 
 function paintCutoutEditor(event){
@@ -5747,6 +5813,13 @@ function paintCutoutEditor(event){
   const edited=cutoutEditorState.edited;
   const original=cutoutEditorState.original;
   if(!canvas||!edited||!original)return;
+  if(cutoutEditorState.tool==='outline'){
+    if(event.type!=='pointerdown')return;
+    event.preventDefault();
+    cutoutEditorState.points.push(canvasPointFromEvent(canvas,event));
+    renderCutoutEditor();
+    return;
+  }
   if(event.type==='pointerdown'){
     cutoutEditorState.drawing=true;
     canvas.setPointerCapture&&canvas.setPointerCapture(event.pointerId);
@@ -5754,8 +5827,9 @@ function paintCutoutEditor(event){
   if(!cutoutEditorState.drawing)return;
   event.preventDefault();
   const rect=canvas.getBoundingClientRect();
-  const x=(event.clientX-rect.left)*canvas.width/rect.width;
-  const y=(event.clientY-rect.top)*canvas.height/rect.height;
+  const point=canvasPointFromEvent(canvas,event);
+  const x=point.x;
+  const y=point.y;
   const r=cutoutEditorState.brush;
   const ctx=edited.getContext('2d');
   ctx.save();
@@ -5773,6 +5847,74 @@ function paintCutoutEditor(event){
   }
   ctx.restore();
   renderCutoutEditor();
+}
+
+function applyCutoutOutline(){
+  const edited=cutoutEditorState.edited;
+  const original=cutoutEditorState.original;
+  const points=cutoutEditorState.points||[];
+  if(!edited||!original||points.length<3){
+    const status=document.getElementById('uploadStatus');
+    if(status)status.textContent='圈选至少需要 3 个点。沿武器外圈点一圈后再闭合保留。';
+    return;
+  }
+  const mask=document.createElement('canvas');
+  mask.width=edited.width;mask.height=edited.height;
+  const m=mask.getContext('2d');
+  m.fillStyle='#fff';
+  m.strokeStyle='#fff';
+  m.lineJoin='round';
+  m.lineCap='round';
+  m.lineWidth=Math.max(8,cutoutEditorState.brush*1.8);
+  m.beginPath();
+  points.forEach((p,i)=>i?m.lineTo(p.x,p.y):m.moveTo(p.x,p.y));
+  m.closePath();
+  m.fill();
+  m.stroke();
+  const next=document.createElement('canvas');
+  next.width=edited.width;next.height=edited.height;
+  const n=next.getContext('2d');
+  n.drawImage(original,0,0);
+  n.globalCompositeOperation='destination-in';
+  n.drawImage(mask,0,0);
+  cutoutEditorState.edited=next;
+  cutoutEditorState.points=[];
+  renderCutoutEditor();
+  const status=document.getElementById('uploadStatus');
+  if(status)status.textContent='已按圈选范围保留武器，并自动向外扩了一点。满意后点“应用精修”。';
+}
+
+function autoExpandCutoutEdge(){
+  const edited=cutoutEditorState.edited;
+  const original=cutoutEditorState.original;
+  if(!edited||!original)return;
+  const radius=Math.max(2,Math.round(cutoutEditorState.brush/5));
+  const mask=document.createElement('canvas');
+  mask.width=edited.width;mask.height=edited.height;
+  const m=mask.getContext('2d');
+  m.drawImage(edited,0,0);
+  m.globalCompositeOperation='source-in';
+  m.fillStyle='#fff';
+  m.fillRect(0,0,mask.width,mask.height);
+  const expanded=document.createElement('canvas');
+  expanded.width=edited.width;expanded.height=edited.height;
+  const ex=expanded.getContext('2d');
+  for(let a=0;a<Math.PI*2;a+=Math.PI/8){
+    ex.drawImage(mask,Math.cos(a)*radius,Math.sin(a)*radius);
+  }
+  ex.drawImage(mask,0,0);
+  const next=document.createElement('canvas');
+  next.width=edited.width;next.height=edited.height;
+  const n=next.getContext('2d');
+  n.drawImage(original,0,0);
+  n.globalCompositeOperation='destination-in';
+  n.drawImage(expanded,0,0);
+  n.globalCompositeOperation='source-over';
+  n.drawImage(edited,0,0);
+  cutoutEditorState.edited=next;
+  renderCutoutEditor();
+  const status=document.getElementById('uploadStatus');
+  if(status)status.textContent='已智能扩边，从原图补回武器边缘。可以多点几次，但别过度。';
 }
 
 function applyCutoutEditor(){

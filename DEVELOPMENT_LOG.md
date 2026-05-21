@@ -2,6 +2,25 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-21: Polygon Cutout Editor
+
+Goal:
+- Make manual cutout easier than brush-only editing, especially for long brick weapons.
+
+Shipped:
+- Added a `圈选武器` tool to the upload cutout editor.
+- Users can tap/click points around the weapon outline, then use `闭合保留` to keep the polygon area.
+- The polygon keep operation expands outward based on the brush size, making it easier to include weapon edges.
+- Added `撤销点`, point counter, and visible outline preview.
+- Added `智能扩边` to automatically restore a small edge band from the original photo around the current cutout.
+
+Verification:
+- Parsed scripts in `index.html` and `admin.html`.
+- Checked diff formatting.
+
+Next:
+- Add an optional server-side cutout job for fully automatic cleanup after upload.
+
 ## 2026-05-20: Comic Viewing And Character Preview Cleanup
 
 Goal:
