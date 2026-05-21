@@ -2,6 +2,23 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-21: Upload Quality Guidance
+
+Goal:
+- Make upload cleanup easier to judge before submission.
+
+Shipped:
+- Added upload quality chips under the recognition result.
+- The upload flow now comments on recognition confidence, weapon size in the frame, subject centering, and edge spacing.
+- The guidance tells users when to confirm the type, re-shoot, leave more margin, or use one-click smart keep.
+
+Verification:
+- Parsed scripts in `index.html` and `admin.html`.
+- Checked diff formatting.
+
+Next:
+- Add a zoomed edge inspector if users still cannot tell whether small brick pieces were removed.
+
 ## 2026-05-21: One-Click Smart Cutout Keep
 
 Goal:
