@@ -2,6 +2,22 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-21: Project Workspace Packaging
+
+Goal:
+- Make the project easier to continue later and easier for another agent to understand.
+
+Shipped:
+- Added `README.md` as the main project entry file.
+- Added `PROJECT_WORKSPACE.md` to explain where future work should happen, what to read first, and how to keep files organized.
+- Clarified that all code, assets, promotion files, plans, and logs should stay in the `mumu-weapons` project folder.
+
+Verification:
+- Confirmed the repository folder contains `.git`, source files, assets, project plan, and development log.
+
+Next:
+- Continue product updates from this workspace and keep the project logs current.
+
 ## 2026-05-21: Weapon Showcase Modal 2.0
 
 Goal:
