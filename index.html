@@ -3919,13 +3919,14 @@ body::before{
               <span class="upload-preview-label">画笔</span>
               <input type="range" id="cutoutBrushSize" min="8" max="90" value="32" oninput="setCutoutBrushSize(this.value)">
               <span class="cutout-point-count" id="cutoutPointCount">0 点</span>
+              <button type="button" onclick="autoTraceCutoutOutline()">自动圈选</button>
               <button type="button" onclick="applyCutoutOutline()">闭合保留</button>
               <button type="button" onclick="undoCutoutPoint()">撤销点</button>
               <button type="button" onclick="autoExpandCutoutEdge()">智能扩边</button>
               <button type="button" onclick="applyCutoutEditor()">应用精修</button>
               <button type="button" onclick="resetCutoutEditor()">重置</button>
             </div>
-            <div class="cutout-editor-hint">推荐：点“圈选武器”，沿武器外围连续点一圈，再点“闭合保留”，系统会按画笔大小外扩保留范围。边缘缺一点时点“智能扩边”。</div>
+            <div class="cutout-editor-hint">推荐：先点“自动圈选”，如果蓝线包住武器就点“闭合保留”；不准时再用“圈选武器”沿外围补点。边缘缺一点时点“智能扩边”。</div>
           </div>
         </div>
       </label>
@@ -5806,6 +5807,63 @@ function undoCutoutPoint(){
     cutoutEditorState.points.pop();
     renderCutoutEditor();
   }
+}
+
+function autoTraceCutoutOutline(){
+  const canvas=document.getElementById('cutoutCanvas');
+  const edited=cutoutEditorState.edited;
+  if(!canvas||!edited)return;
+  const ctx=edited.getContext('2d',{willReadFrequently:true});
+  const w=edited.width,h=edited.height;
+  const data=ctx.getImageData(0,0,w,h).data;
+  let minX=w,minY=h,maxX=0,maxY=0,count=0;
+  const bins=32;
+  const top=Array.from({length:bins},()=>h);
+  const bottom=Array.from({length:bins},()=>0);
+  const left=Array.from({length:bins},()=>w);
+  const right=Array.from({length:bins},()=>0);
+  for(let y=0;y<h;y++){
+    for(let x=0;x<w;x++){
+      const a=data[(y*w+x)*4+3];
+      if(a<24)continue;
+      count++;
+      if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y;
+      const bx=Math.max(0,Math.min(bins-1,Math.floor(x/w*bins)));
+      const by=Math.max(0,Math.min(bins-1,Math.floor(y/h*bins)));
+      if(y<top[bx])top[bx]=y;
+      if(y>bottom[bx])bottom[bx]=y;
+      if(x<left[by])left[by]=x;
+      if(x>right[by])right[by]=x;
+    }
+  }
+  const status=document.getElementById('uploadStatus');
+  if(count<20){
+    if(status)status.textContent='自动圈选没有找到明显武器，请先换“保留更多”重新抠图，或手动圈选。';
+    return;
+  }
+  const pad=Math.max(10,cutoutEditorState.brush*.7);
+  minX=Math.max(0,minX-pad);minY=Math.max(0,minY-pad);
+  maxX=Math.min(w,maxX+pad);maxY=Math.min(h,maxY+pad);
+  const pts=[];
+  for(let i=0;i<bins;i+=3){
+    if(top[i]<h)pts.push({x:Math.max(minX,Math.min(maxX,(i+.5)/bins*w)),y:Math.max(minY,top[i]-pad)});
+  }
+  for(let i=0;i<bins;i+=3){
+    if(right[i]>0)pts.push({x:Math.min(maxX,right[i]+pad),y:Math.max(minY,Math.min(maxY,(i+.5)/bins*h))});
+  }
+  for(let i=bins-1;i>=0;i-=3){
+    if(bottom[i]>0)pts.push({x:Math.max(minX,Math.min(maxX,(i+.5)/bins*w)),y:Math.min(maxY,bottom[i]+pad)});
+  }
+  for(let i=bins-1;i>=0;i-=3){
+    if(left[i]<w)pts.push({x:Math.max(minX,left[i]-pad),y:Math.max(minY,Math.min(maxY,(i+.5)/bins*h))});
+  }
+  cutoutEditorState.points=pts.length>=3?pts:[
+    {x:minX,y:minY},{x:maxX,y:minY},{x:maxX,y:maxY},{x:minX,y:maxY}
+  ];
+  cutoutEditorState.tool='outline';
+  document.querySelectorAll('[data-edit-tool]').forEach(btn=>btn.classList.toggle('active',btn.dataset.editTool==='outline'));
+  renderCutoutEditor();
+  if(status)status.textContent='已自动圈出武器范围。蓝线合适就点“闭合保留”；不合适可以撤销点或手动补点。';
 }
 
 function paintCutoutEditor(event){

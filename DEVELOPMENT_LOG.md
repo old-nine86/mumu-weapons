@@ -2,6 +2,23 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-21: Auto Outline Cutout Helper
+
+Goal:
+- Reduce manual work in the polygon cutout editor.
+
+Shipped:
+- Added `自动圈选` to trace the current cutout subject and generate outline points automatically.
+- The helper samples the visible weapon silhouette from top, right, bottom, and left edges, then expands the outline by the brush size.
+- Users can accept the outline with `闭合保留` or adjust it with manual polygon points.
+
+Verification:
+- Parsed scripts in `index.html` and `admin.html`.
+- Checked diff formatting.
+
+Next:
+- Test with more real weapon photos and tune the outline sampling density if needed.
+
 ## 2026-05-21: Polygon Cutout Editor
 
 Goal:
