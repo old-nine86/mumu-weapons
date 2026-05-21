@@ -3919,6 +3919,7 @@ body::before{
               <span class="upload-preview-label">画笔</span>
               <input type="range" id="cutoutBrushSize" min="8" max="90" value="32" oninput="setCutoutBrushSize(this.value)">
               <span class="cutout-point-count" id="cutoutPointCount">0 点</span>
+              <button type="button" onclick="oneClickSmartKeep()">一键智能保留</button>
               <button type="button" onclick="autoTraceCutoutOutline()">自动圈选</button>
               <button type="button" onclick="applyCutoutOutline()">闭合保留</button>
               <button type="button" onclick="undoCutoutPoint()">撤销点</button>
@@ -3926,7 +3927,7 @@ body::before{
               <button type="button" onclick="applyCutoutEditor()">应用精修</button>
               <button type="button" onclick="resetCutoutEditor()">重置</button>
             </div>
-            <div class="cutout-editor-hint">推荐：先点“自动圈选”，如果蓝线包住武器就点“闭合保留”；不准时再用“圈选武器”沿外围补点。边缘缺一点时点“智能扩边”。</div>
+            <div class="cutout-editor-hint">推荐：先点“一键智能保留”。不满意再点“重置”，用“自动圈选 / 圈选武器”微调，最后点“应用精修”。</div>
           </div>
         </div>
       </label>
@@ -5809,10 +5810,11 @@ function undoCutoutPoint(){
   }
 }
 
-function autoTraceCutoutOutline(){
+function autoTraceCutoutOutline(options){
+  options=options||{};
   const canvas=document.getElementById('cutoutCanvas');
   const edited=cutoutEditorState.edited;
-  if(!canvas||!edited)return;
+  if(!canvas||!edited)return false;
   const ctx=edited.getContext('2d',{willReadFrequently:true});
   const w=edited.width,h=edited.height;
   const data=ctx.getImageData(0,0,w,h).data;
@@ -5839,7 +5841,7 @@ function autoTraceCutoutOutline(){
   const status=document.getElementById('uploadStatus');
   if(count<20){
     if(status)status.textContent='自动圈选没有找到明显武器，请先换“保留更多”重新抠图，或手动圈选。';
-    return;
+    return false;
   }
   const pad=Math.max(10,cutoutEditorState.brush*.7);
   minX=Math.max(0,minX-pad);minY=Math.max(0,minY-pad);
@@ -5863,7 +5865,8 @@ function autoTraceCutoutOutline(){
   cutoutEditorState.tool='outline';
   document.querySelectorAll('[data-edit-tool]').forEach(btn=>btn.classList.toggle('active',btn.dataset.editTool==='outline'));
   renderCutoutEditor();
-  if(status)status.textContent='已自动圈出武器范围。蓝线合适就点“闭合保留”；不合适可以撤销点或手动补点。';
+  if(!options.silent&&status)status.textContent='已自动圈出武器范围。蓝线合适就点“闭合保留”；不合适可以撤销点或手动补点。';
+  return true;
 }
 
 function paintCutoutEditor(event){
@@ -5907,7 +5910,8 @@ function paintCutoutEditor(event){
   renderCutoutEditor();
 }
 
-function applyCutoutOutline(){
+function applyCutoutOutline(options){
+  options=options||{};
   const edited=cutoutEditorState.edited;
   const original=cutoutEditorState.original;
   const points=cutoutEditorState.points||[];
@@ -5939,13 +5943,15 @@ function applyCutoutOutline(){
   cutoutEditorState.points=[];
   renderCutoutEditor();
   const status=document.getElementById('uploadStatus');
-  if(status)status.textContent='已按圈选范围保留武器，并自动向外扩了一点。满意后点“应用精修”。';
+  if(!options.silent&&status)status.textContent='已按圈选范围保留武器，并自动向外扩了一点。满意后点“应用精修”。';
+  return true;
 }
 
-function autoExpandCutoutEdge(){
+function autoExpandCutoutEdge(options){
+  options=options||{};
   const edited=cutoutEditorState.edited;
   const original=cutoutEditorState.original;
-  if(!edited||!original)return;
+  if(!edited||!original)return false;
   const radius=Math.max(2,Math.round(cutoutEditorState.brush/5));
   const mask=document.createElement('canvas');
   mask.width=edited.width;mask.height=edited.height;
@@ -5972,7 +5978,21 @@ function autoExpandCutoutEdge(){
   cutoutEditorState.edited=next;
   renderCutoutEditor();
   const status=document.getElementById('uploadStatus');
-  if(status)status.textContent='已智能扩边，从原图补回武器边缘。可以多点几次，但别过度。';
+  if(!options.silent&&status)status.textContent='已智能扩边，从原图补回武器边缘。可以多点几次，但别过度。';
+  return true;
+}
+
+function oneClickSmartKeep(){
+  const status=document.getElementById('uploadStatus');
+  const ok=autoTraceCutoutOutline({silent:true});
+  if(!ok){
+    if(status)status.textContent='一键智能保留失败：没识别到清晰主体。可以先选“保留更多”重新处理，或手动圈选。';
+    return;
+  }
+  if(!applyCutoutOutline({silent:true}))return;
+  autoExpandCutoutEdge({silent:true});
+  autoExpandCutoutEdge({silent:true});
+  if(status)status.textContent='已一键智能保留并补回边缘。满意后点“应用精修”，不满意点“重置”再手动圈选。';
 }
 
 function applyCutoutEditor(){

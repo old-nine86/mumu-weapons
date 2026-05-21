@@ -2,6 +2,23 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-21: One-Click Smart Cutout Keep
+
+Goal:
+- Make the new polygon cutout workflow usable without manual point editing for most uploads.
+
+Shipped:
+- Added `一键智能保留` to the upload cutout editor.
+- The one-click action runs automatic outline tracing, polygon keep, and two smart edge expansions in sequence.
+- Existing manual controls remain available for correction after reset.
+
+Verification:
+- Parsed scripts in `index.html` and `admin.html`.
+- Checked diff formatting.
+
+Next:
+- Test the one-click workflow against real user weapon photos and tune edge expansion if it keeps too much floor.
+
 ## 2026-05-21: Auto Outline Cutout Helper
 
 Goal:
