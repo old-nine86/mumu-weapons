@@ -2,6 +2,23 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-22: Quiz Promotion Loop
+
+Goal:
+- Connect the MBTI weapon match quiz directly to short-video promotion and reward proof submission.
+
+Shipped:
+- Added a promotion material kit to quiz results with ready-to-post title/body copy and pinned-comment text.
+- Added result actions for copying the promotion caption, copying the pinned comment, and sending the quiz result into the promotion center.
+- Added a promotion-center shortcut that can prefill proof text from the latest quiz result.
+
+Verification:
+- Parsed scripts in `index.html`.
+- Checked diff formatting.
+
+Next:
+- Add the same result-to-growth loop for battle result share cards and uploaded weapon cards.
+
 ## 2026-05-22: Promotion Task Center
 
 Goal:

@@ -2450,6 +2450,23 @@ body::before{
 .quiz-share-preview{display:none;margin-top:14px}
 .quiz-share-preview.active{display:block}
 .quiz-share-preview img{width:min(100%,360px);border-radius:24px;box-shadow:0 18px 44px rgba(78,64,44,.2)}
+.quiz-promo-kit{
+  margin-top:14px;
+  padding:14px;
+  border-radius:22px;
+  background:#fffdf8;
+  border:2px solid rgba(78,64,44,.08);
+}
+.quiz-promo-title{color:#202124;font-size:15px;font-weight:1000;margin-bottom:8px}
+.quiz-promo-copy{
+  color:#536071;
+  font-size:13px;
+  font-weight:850;
+  line-height:1.6;
+  white-space:pre-wrap;
+}
+.quiz-promo-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.quiz-promo-actions .growth-chip{min-height:36px}
 .vs-intro{
   position:fixed;
   inset:0;
@@ -6591,6 +6608,7 @@ function renderGrowthCenter(){
         '<div class="growth-actions">'+
           '<button class="growth-chip secondary" type="button" onclick="copyGrowthTask('+idx+')">复制文案</button>'+
           '<button class="growth-chip" type="button" onclick="switchPanel(\'quiz\')">做测试素材</button>'+
+          (task.title==='配武器测试'?'<button class="growth-chip secondary" type="button" onclick="sendQuizResultToGrowth()">带入我的测试结果</button>':'')+
           '<button class="growth-chip" type="button" onclick="openSelection()">录战斗素材</button>'+
         '</div>'+
       '</article>'
@@ -7162,8 +7180,9 @@ function calculateQuizResult(){
       '<div class="quiz-result-name">'+escapeHTML(c.name)+' · '+escapeHTML(c.mbti)+'</div>'+
       '<div class="quiz-result-meta">'+escapeHTML(c.mbtiName)+' · '+escapeHTML(trait.role)+' · '+escapeHTML(trait.label)+'</div>'+
       '<div class="quiz-result-weapon">推荐武器：<b>'+escapeHTML(weapon.n)+'</b><br>理由：你的选择偏向 '+weaponLabel(c.weaponPref||preferred)+'，适合用「'+escapeHTML(weapon.s)+'」打出 '+escapeHTML(trait.style)+' 的战斗节奏。</div>'+
-      '<div class="quiz-actions"><button class="battle-start-btn ready" type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">查看角色资料</button><button class="battle-start-btn ready" type="button" onclick="quickBattleFromQuiz(\''+c.mbti+'\')">用他开一局</button><button class="battle-start-btn ready" type="button" onclick="renderQuizShareCard()">生成分享卡</button></div>'+
+      '<div class="quiz-actions"><button class="battle-start-btn ready" type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">查看角色资料</button><button class="battle-start-btn ready" type="button" onclick="quickBattleFromQuiz(\''+c.mbti+'\')">用他开一局</button><button class="battle-start-btn ready" type="button" onclick="renderQuizShareCard()">生成分享卡</button><button class="battle-start-btn ready" type="button" onclick="copyQuizPromoCaption()">复制发布文案</button><button class="battle-start-btn ready" type="button" onclick="sendQuizResultToGrowth()">去推广中心</button></div>'+
       '<div class="quiz-share-preview" id="quizSharePreview"></div>'+
+      '<div class="quiz-promo-kit" id="quizPromoKit">'+renderQuizPromoKitHTML(lastQuizResult)+'</div>'+
     '</div>';
 }
 
@@ -7177,6 +7196,78 @@ function resetQuiz(){
   renderQuiz();
   const result=document.getElementById('quizResult');
   if(result){result.classList.remove('active');result.innerHTML=''}
+}
+
+function quizPromoCaption(result){
+  const r=result||lastQuizResult;
+  if(!r||!r.character)return '';
+  const c=r.character;
+  const weapon=r.weapon||WEAPONS[0];
+  const trait=r.trait||getCharTrait(c);
+  const title='我测出了我的积木武器人格：'+c.mbti+' '+c.name;
+  const body=[
+    title,
+    '',
+    '系统给我配的是「'+weapon.n+'」，战斗风格是：'+trait.style+'。',
+    '我感觉这个结果有点准，也有点离谱。',
+    '',
+    '你也可以来测一下自己的 MBTI 积木战士，还能上传自己的积木武器开战。',
+    '入口：old-nine86.github.io/mumu-weapons',
+    '',
+    '#积木 #乐高积木 #MBTI #网页小游戏 #自制网站 #小游戏 #玩具分享'
+  ];
+  return body.join('\n');
+}
+
+function quizPinnedComment(result){
+  const r=result||lastQuizResult;
+  if(!r||!r.character)return '评论你的 MBTI，我帮你配一把积木武器。';
+  return '我测到的是 '+r.character.mbti+' · '+r.character.name+'。评论你的 MBTI，我看看你适合哪把积木武器。';
+}
+
+function quizProofText(result){
+  const r=result||lastQuizResult;
+  if(!r||!r.character)return '已发布配武器测试视频。平台：';
+  return '已发布配武器测试视频：'+r.character.mbti+' '+r.character.name+' / 推荐武器 '+((r.weapon&&r.weapon.n)||'积木武器')+'。平台：';
+}
+
+function renderQuizPromoKitHTML(result){
+  const r=result||lastQuizResult;
+  if(!r||!r.character)return '';
+  const caption=quizPromoCaption(r);
+  const comment=quizPinnedComment(r);
+  return '<div class="quiz-promo-title">📣 可直接发布的推广素材包</div>'+
+    '<div class="quiz-promo-copy">'+escapeHTML(caption+'\n\n置顶评论：'+comment)+'</div>'+
+    '<div class="quiz-promo-actions">'+
+      '<button class="growth-chip secondary" type="button" onclick="copyQuizPromoCaption()">复制标题/简介</button>'+
+      '<button class="growth-chip" type="button" onclick="copyQuizPinnedComment()">复制置顶评论</button>'+
+      '<button class="growth-chip" type="button" onclick="sendQuizResultToGrowth()">提交发布证明</button>'+
+    '</div>';
+}
+
+async function copyQuizPromoCaption(){
+  const text=quizPromoCaption();
+  if(!text){calculateQuizResult();return;}
+  await copyGrowthText(text);
+}
+
+async function copyQuizPinnedComment(){
+  await copyGrowthText(quizPinnedComment());
+}
+
+function sendQuizResultToGrowth(){
+  if(!lastQuizResult)calculateQuizResult();
+  switchPanel('growth');
+  renderGrowthCenter();
+  const input=document.getElementById('growthProofInput');
+  if(input){
+    input.value=quizProofText();
+    input.focus();
+  }
+  const status=document.getElementById('growthStatus');
+  if(status)status.textContent='配武器测试素材已带过来。发布后补上平台和链接/截图说明，再提交审核。';
+  const panel=document.getElementById('panel-growth');
+  if(panel)panel.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 async function renderQuizShareCard(){
