@@ -1119,6 +1119,34 @@ body::before{
   font-size:.78em;
   margin-bottom:2px;
 }
+.comic-gallery{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:18px;
+  max-width:1400px;
+  margin:0 auto;
+  padding:20px;
+}
+.comic-gallery-card{
+  border:1px solid rgba(78,64,44,.1);
+  border-radius:24px;
+  background:#fff;
+  overflow:hidden;
+  box-shadow:0 18px 44px rgba(78,64,44,.1);
+}
+.comic-gallery-card img{
+  width:100%;
+  aspect-ratio:3/4;
+  object-fit:cover;
+  object-position:50% 0;
+  display:block;
+  background:#eef4ff;
+}
+.comic-gallery-info{padding:14px}
+.comic-gallery-title{color:#202124;font-size:18px;font-weight:1000}
+.comic-gallery-meta{color:#2f8fe8;font-size:12px;font-weight:1000;margin-top:4px}
+.comic-gallery-copy{color:#686158;font-size:13px;font-weight:800;line-height:1.45;margin-top:8px}
+.comic-gallery-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .char-comic-actions{
   display:flex;
   flex-wrap:wrap;
@@ -2419,6 +2447,9 @@ body::before{
 .quiz-result-name{font-size:30px;font-weight:1000;color:#202124}
 .quiz-result-meta{color:#2f8fe8;font-weight:1000;margin-top:4px}
 .quiz-result-weapon{margin-top:12px;padding:12px;border-radius:18px;background:#fff7e8;color:#5a5147;font-weight:900}
+.quiz-share-preview{display:none;margin-top:14px}
+.quiz-share-preview.active{display:block}
+.quiz-share-preview img{width:min(100%,360px);border-radius:24px;box-shadow:0 18px 44px rgba(78,64,44,.2)}
 .vs-intro{
   position:fixed;
   inset:0;
@@ -3428,6 +3459,151 @@ body::before{
   font-weight:800;
   line-height:1.55;
 }
+.master-plan{
+  max-width:1180px;
+  margin:0 auto 34px;
+  padding:20px;
+}
+.plan-board{
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:18px;
+  align-items:stretch;
+}
+.plan-hero,.plan-card{
+  border:2px solid rgba(255,255,255,.84);
+  border-radius:30px;
+  background:rgba(255,255,255,.76);
+  box-shadow:0 22px 70px rgba(78,64,44,.09);
+}
+.plan-hero{
+  padding:24px;
+  background:
+    radial-gradient(circle at 10% 10%,rgba(255,217,106,.3),transparent 15rem),
+    radial-gradient(circle at 90% 16%,rgba(159,215,255,.34),transparent 16rem),
+    #fffdf8;
+}
+.plan-kicker{color:#2f8fe8;font-size:12px;font-weight:1000;letter-spacing:.08em}
+.plan-title{color:#202124;font-size:clamp(30px,5vw,56px);font-weight:1000;line-height:1.05;margin-top:10px}
+.plan-copy{color:#686158;font-size:15px;font-weight:850;line-height:1.7;margin-top:14px}
+.plan-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.plan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.plan-card{padding:16px}
+.plan-card-icon{width:54px;height:54px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,#eef8ff,#fff4d8);font-size:28px}
+.plan-card-title{color:#202124;font-size:18px;font-weight:1000;margin-top:12px}
+.plan-card-copy{color:#77726b;font-size:13px;font-weight:800;line-height:1.5;margin-top:6px}
+.plan-card .commerce-link{margin-top:12px}
+.growth-center{
+  max-width:1180px;
+  margin:0 auto 34px;
+  padding:20px;
+}
+.growth-hero,.growth-card,.growth-submit{
+  border:2px solid rgba(255,255,255,.84);
+  border-radius:30px;
+  background:rgba(255,255,255,.78);
+  box-shadow:0 22px 70px rgba(78,64,44,.09);
+}
+.growth-hero{
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);
+  gap:18px;
+  padding:24px;
+  background:
+    radial-gradient(circle at 8% 10%,rgba(255,183,200,.3),transparent 16rem),
+    radial-gradient(circle at 82% 10%,rgba(142,230,198,.34),transparent 16rem),
+    #fffdf8;
+}
+.growth-kicker{color:#2f8fe8;font-size:12px;font-weight:1000;letter-spacing:.08em}
+.growth-title{color:#202124;font-size:clamp(28px,5vw,52px);font-weight:1000;line-height:1.06;margin-top:10px}
+.growth-copy{color:#686158;font-size:15px;font-weight:850;line-height:1.7;margin-top:14px}
+.growth-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+.growth-stat{padding:12px;border-radius:22px;background:#fff;color:#202124;font-weight:1000;text-align:center;border:2px solid rgba(78,64,44,.08)}
+.growth-stat span{display:block;color:#2f8fe8;font-size:22px}
+.growth-qr-card{
+  padding:18px;
+  border-radius:26px;
+  background:linear-gradient(135deg,#eef8ff,#fff7e8);
+  border:2px solid rgba(78,64,44,.08);
+  display:grid;
+  align-content:center;
+  gap:12px;
+}
+.growth-qr{
+  min-height:210px;
+  border-radius:22px;
+  background:#fff;
+  display:grid;
+  place-items:center;
+  padding:14px;
+  color:#77726b;
+  font-weight:900;
+  text-align:center;
+  box-shadow:inset 0 0 0 2px rgba(78,64,44,.06);
+}
+.growth-qr img{max-width:100%;max-height:220px;border-radius:16px;object-fit:contain}
+.growth-url{
+  padding:10px 12px;
+  border-radius:16px;
+  background:#fff;
+  color:#202124;
+  font-size:12px;
+  font-weight:900;
+  word-break:break-all;
+}
+.growth-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}
+.growth-card{padding:16px}
+.growth-card-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.growth-day{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#eef8ff;color:#1e78c8;font-size:12px;font-weight:1000}
+.growth-card-title{color:#202124;font-size:20px;font-weight:1000;margin-top:12px}
+.growth-card-copy{color:#686158;font-size:13px;font-weight:850;line-height:1.55;margin-top:8px}
+.growth-script{
+  margin-top:12px;
+  padding:12px;
+  border-radius:18px;
+  background:#fffdf8;
+  border:2px solid rgba(78,64,44,.08);
+  color:#536071;
+  font-size:13px;
+  font-weight:850;
+  line-height:1.6;
+  white-space:pre-wrap;
+}
+.growth-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.growth-chip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:34px;
+  padding:8px 12px;
+  border:0;
+  border-radius:999px;
+  background:linear-gradient(135deg,#8ee6c6,#9fd7ff);
+  color:#202124;
+  font-family:inherit;
+  font-size:12px;
+  font-weight:1000;
+  cursor:pointer;
+}
+.growth-chip.secondary{background:linear-gradient(135deg,#ffd96a,#ffb7c8)}
+.growth-submit{margin-top:16px;padding:18px}
+.growth-submit-grid{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end}
+.growth-submit label{display:block;color:#202124;font-size:13px;font-weight:1000;margin-bottom:8px}
+.growth-submit textarea{
+  width:100%;
+  min-height:96px;
+  resize:vertical;
+  border:2px solid rgba(78,64,44,.1);
+  border-radius:20px;
+  background:#fff;
+  padding:12px 14px;
+  color:#202124;
+  font-family:inherit;
+  font-weight:850;
+  outline:none;
+}
+.growth-submit textarea:focus{border-color:#8ee6c6;box-shadow:0 0 0 4px rgba(142,230,198,.18)}
+.growth-status{color:#6f737a;font-size:13px;font-weight:850;margin-top:10px;min-height:20px}
 .forum-panel{
   margin:22px 0 26px;
   padding:20px;
@@ -3602,6 +3778,9 @@ body::before{
 }
 @media(max-width:768px){
   .commerce-row{grid-template-columns:1fr}
+  .plan-board,.plan-grid{grid-template-columns:1fr}
+  .growth-hero,.growth-grid,.growth-submit-grid{grid-template-columns:1fr}
+  .growth-stats{grid-template-columns:1fr}
   .product-list{grid-template-columns:1fr}
   .forum-head{flex-direction:column}
   .forum-composer{grid-template-columns:1fr}
@@ -3910,7 +4089,10 @@ body::before{
     <div class="nav-tabs">
       <button class="nav-tab active" data-panel="weapons">⚔️ 武器库</button>
       <button class="nav-tab" data-panel="characters">👥 角色图鉴</button>
+      <button class="nav-tab" data-panel="comics">📖 漫画馆</button>
       <button class="nav-tab" data-panel="quiz">🧭 配武器测试</button>
+      <button class="nav-tab" data-panel="growth">📣 推广中心</button>
+      <button class="nav-tab" data-panel="plan">🚀 总计划</button>
       <button class="nav-tab" data-panel="studio">🏛️ 我的馆</button>
     </div>
   </div>
@@ -4127,6 +4309,12 @@ body::before{
   <div class="char-grid" id="charGrid"></div>
 </div>
 
+<!-- COMICS PANEL -->
+<div class="panel" id="panel-comics">
+  <div class="section-header"><h2>📖 MBTI 漫画馆</h2><div class="divider"></div><div class="sub">16 张 image2 四格漫画 · 点击可进入角色完整小剧场</div></div>
+  <div class="comic-gallery" id="comicGallery"></div>
+</div>
+
 <!-- QUIZ PANEL -->
 <div class="panel" id="panel-quiz">
   <section class="quiz-panel">
@@ -4144,6 +4332,91 @@ body::before{
       <button class="battle-start-btn" type="button" onclick="resetQuiz()">重新测试</button>
     </div>
     <div class="quiz-result" id="quizResult"></div>
+  </section>
+</div>
+
+<!-- MASTER PLAN PANEL -->
+<div class="panel" id="panel-plan">
+  <div class="section-header"><h2>🚀 沐沐积木宇宙总计划</h2><div class="divider"></div><div class="sub">从上传作品到漫画传播，再到战场、支援和未来 AR 对战</div></div>
+  <section class="master-plan">
+    <div class="plan-board">
+      <div class="plan-hero">
+        <div class="plan-kicker">MUMU BRICK UNIVERSE</div>
+        <div class="plan-title">先把好玩的东西做完整，再让更多人参与进来。</div>
+        <div class="plan-copy">当前主线是：玩家上传积木武器，系统变成收藏卡；角色图鉴和漫画馆负责讲故事；配武器测试和战斗分享卡负责传播；商业化入口支持继续更新素材、角色和玩法。</div>
+        <div class="plan-actions">
+          <button class="battle-start-btn ready" type="button" onclick="switchPanel('weapons');document.getElementById('uploadStation')&&document.getElementById('uploadStation').scrollIntoView({behavior:'smooth',block:'start'})">上传武器</button>
+          <button class="battle-start-btn ready" type="button" onclick="switchPanel('comics')">看漫画馆</button>
+          <button class="battle-start-btn ready" type="button" onclick="openSelection()">进入战场</button>
+        </div>
+      </div>
+      <div class="plan-grid">
+        <article class="plan-card">
+          <div class="plan-card-icon">🧱</div>
+          <div class="plan-card-title">作品入口</div>
+          <div class="plan-card-copy">上传真实积木武器，生成稀有度、战力、技能和收藏卡预览。</div>
+          <button class="commerce-link" type="button" onclick="switchPanel('weapons')">去武器库</button>
+        </article>
+        <article class="plan-card">
+          <div class="plan-card-icon">📖</div>
+          <div class="plan-card-title">角色故事</div>
+          <div class="plan-card-copy">16 位 MBTI 积木战士拥有定位图、漫画正片和搞笑分享图。</div>
+          <button class="commerce-link" type="button" onclick="switchPanel('comics')">去漫画馆</button>
+        </article>
+        <article class="plan-card">
+          <div class="plan-card-icon">🧭</div>
+          <div class="plan-card-title">传播玩法</div>
+          <div class="plan-card-copy">配武器测试生成结果卡，适合短视频封面、朋友圈和小红书分享。</div>
+          <button class="commerce-link" type="button" onclick="switchPanel('growth')">去推广中心</button>
+        </article>
+        <article class="plan-card">
+          <div class="plan-card-icon">💛</div>
+          <div class="plan-card-title">持续更新</div>
+          <div class="plan-card-copy">购买推荐和作者支援入口会承接后续素材、服务器和推广成本。</div>
+          <button class="commerce-link" type="button" onclick="switchPanel('weapons');document.querySelector('.commerce-row')&&document.querySelector('.commerce-row').scrollIntoView({behavior:'smooth',block:'start'})">去支援区</button>
+        </article>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- GROWTH PANEL -->
+<div class="panel" id="panel-growth">
+  <div class="section-header"><h2>📣 推广任务中心</h2><div class="divider"></div><div class="sub">0 元自然流推广 · 发作品、引导试玩、提交证明换上传名额</div></div>
+  <section class="growth-center">
+    <div class="growth-hero">
+      <div>
+        <div class="growth-kicker">DOUYIN / KUAISHOU GROWTH LOOP</div>
+        <div class="growth-title">把好玩的功能拍出去，让玩家带着武器回来。</div>
+        <div class="growth-copy">每次发布抖音、快手、小红书或 B 站内容后，把链接、账号名或截图说明提交到这里。站长后台审核通过后，当前设备会获得 +10 个上传名额。</div>
+        <div class="growth-stats">
+          <div class="growth-stat"><span>7</span>天首轮内容</div>
+          <div class="growth-stat"><span>+10</span>每条审核奖励</div>
+          <div class="growth-stat"><span>50</span>基础上传名额</div>
+        </div>
+        <div class="plan-actions">
+          <button class="battle-start-btn ready" type="button" onclick="switchPanel('quiz')">先做配武器测试</button>
+          <button class="battle-start-btn ready" type="button" onclick="openSelection()">录一段战斗</button>
+          <button class="battle-start-btn ready" type="button" onclick="switchPanel('weapons');document.getElementById('uploadStation')&&document.getElementById('uploadStation').scrollIntoView({behavior:'smooth',block:'start'})">上传作品</button>
+        </div>
+      </div>
+      <aside class="growth-qr-card">
+        <div class="growth-qr" id="growthQrBox">二维码图会优先读取 promotion/site-qr.png。没有图片时，直接展示网站入口。</div>
+        <div class="growth-url" id="growthSiteUrl">https://old-nine86.github.io/mumu-weapons/</div>
+        <button class="growth-chip secondary" type="button" onclick="copyGrowthText('https://old-nine86.github.io/mumu-weapons/')">复制网站入口</button>
+      </aside>
+    </div>
+    <div class="growth-grid" id="growthTaskGrid"></div>
+    <div class="growth-submit">
+      <div class="growth-submit-grid">
+        <div>
+          <label for="growthProofInput">提交推广证明</label>
+          <textarea id="growthProofInput" maxlength="180" placeholder="粘贴视频链接、写平台账号，或说明你已发到哪里。例：快手 1551538348 已发布第一条总览视频。"></textarea>
+        </div>
+        <button class="upload-submit" type="button" onclick="submitGrowthProof()">提交审核换名额</button>
+      </div>
+      <div class="growth-status" id="growthStatus">审核通过后，刷新页面会增加上传名额。</div>
+    </div>
   </section>
 </div>
 
@@ -6250,6 +6523,136 @@ async function submitPromotionProof(){
   }
 }
 
+const GROWTH_TASKS=[
+  {
+    day:'DAY 1',
+    title:'网站总览一镜到底',
+    hook:'我做了一个可以上传积木武器、还能选 MBTI 角色开战的网站。',
+    script:'开头 3 秒：直接展示武器库和战斗画面。\n中段：点开武器橱窗、角色图鉴、漫画馆、配武器测试。\n结尾：搜索“沐沐积木武器库”，来论坛给我提意见。',
+    proof:'已发布第 1 条：网站总览一镜到底。平台：'
+  },
+  {
+    day:'DAY 2',
+    title:'上传武器挑战',
+    hook:'你拍一张积木武器，它会自动变成收藏卡。',
+    script:'开头 3 秒：展示上传前后对比。\n中段：上传图片、识别类型、生成 SSR/SR/R 卡。\n结尾：评论区发你想看的武器，我做进网站。',
+    proof:'已发布第 2 条：上传武器挑战。平台：'
+  },
+  {
+    day:'DAY 3',
+    title:'MBTI 积木人格',
+    hook:'16 种 MBTI 如果变成积木战士，会是什么样？',
+    script:'开头 3 秒：快速闪过 4 个最帅角色。\n中段：展示 INTJ、ISTJ、ENFP、ENTP 等角色技能差异。\n结尾：评论你的 MBTI，我帮你配武器。',
+    proof:'已发布第 3 条：MBTI 积木人格。平台：'
+  },
+  {
+    day:'DAY 4',
+    title:'战场随机对决',
+    hook:'今天让两个积木人格打一架，看谁更离谱。',
+    script:'开头 3 秒：VS 入场和大招画面。\n中段：选两个角色，播放完整战斗关键回合。\n结尾：下一场你们评论区点名。',
+    proof:'已发布第 4 条：战场随机对决。平台：'
+  },
+  {
+    day:'DAY 5',
+    title:'配武器测试',
+    hook:'测一下你的专属积木武器人格。',
+    script:'开头 3 秒：展示测试结果分享卡。\n中段：回答 6 个问题，生成角色、武器和战斗风格。\n结尾：把结果发评论区，我看看准不准。',
+    proof:'已发布第 5 条：配武器测试。平台：'
+  },
+  {
+    day:'DAY 6',
+    title:'玩家论坛征集',
+    hook:'这个网站还没做完，我想让网友一起决定下一步。',
+    script:'开头 3 秒：展示论坛建议区。\n中段：发布一个新武器/新角色想法。\n结尾：最有趣的评论会做成网站更新。',
+    proof:'已发布第 6 条：玩家论坛征集。平台：'
+  },
+  {
+    day:'DAY 7',
+    title:'网友点菜挑战',
+    hook:'评论区说一个武器，我把它做成积木战士装备。',
+    script:'开头 3 秒：展示最夸张的武器卡。\n中段：把网友评论变成下一期选题。\n结尾：点赞最高的先做。',
+    proof:'已发布第 7 条：网友点菜挑战。平台：'
+  }
+];
+
+function growthCaption(task){
+  return task.hook+'\n\n'+task.script+'\n\n#积木 #乐高积木 #网页小游戏 #MBTI #自制网站 #小游戏 #玩具分享';
+}
+
+function renderGrowthCenter(){
+  const grid=document.getElementById('growthTaskGrid');
+  if(grid){
+    grid.innerHTML=GROWTH_TASKS.map((task,idx)=>
+      '<article class="growth-card">'+
+        '<div class="growth-card-head"><span class="growth-day">'+escapeHTML(task.day)+'</span><button class="growth-chip" type="button" onclick="fillGrowthProof('+idx+')">填证明</button></div>'+
+        '<div class="growth-card-title">'+escapeHTML(task.title)+'</div>'+
+        '<div class="growth-card-copy">'+escapeHTML(task.hook)+'</div>'+
+        '<div class="growth-script">'+escapeHTML(task.script)+'</div>'+
+        '<div class="growth-actions">'+
+          '<button class="growth-chip secondary" type="button" onclick="copyGrowthTask('+idx+')">复制文案</button>'+
+          '<button class="growth-chip" type="button" onclick="switchPanel(\'quiz\')">做测试素材</button>'+
+          '<button class="growth-chip" type="button" onclick="openSelection()">录战斗素材</button>'+
+        '</div>'+
+      '</article>'
+    ).join('');
+  }
+  const qr=document.getElementById('growthQrBox');
+  if(qr&&!qr.dataset.checked){
+    qr.dataset.checked='1';
+    const img=new Image();
+    img.onload=()=>{qr.innerHTML='<img src="promotion/site-qr.png" alt="沐沐积木武器库二维码">';};
+    img.onerror=()=>{qr.textContent='二维码暂未放入项目。可先复制网站入口，或把二维码图片保存为 promotion/site-qr.png。';};
+    img.src='promotion/site-qr.png?x=2';
+  }
+}
+
+async function copyGrowthText(text){
+  const status=document.getElementById('growthStatus');
+  try{
+    if(navigator.clipboard)await navigator.clipboard.writeText(text);
+    else prompt('复制内容',text);
+    if(status)status.textContent='已复制，可以直接粘贴到视频标题、简介或评论区。';
+  }catch(err){
+    prompt('复制内容',text);
+  }
+}
+
+function copyGrowthTask(index){
+  const task=GROWTH_TASKS[index];
+  if(task)copyGrowthText(growthCaption(task));
+}
+
+function fillGrowthProof(index){
+  const task=GROWTH_TASKS[index];
+  const input=document.getElementById('growthProofInput');
+  if(input&&task){
+    input.value=task.proof;
+    input.focus();
+  }
+  const status=document.getElementById('growthStatus');
+  if(status)status.textContent='补上平台名和视频链接/截图说明，然后提交审核。';
+}
+
+async function submitGrowthProof(){
+  const input=document.getElementById('growthProofInput');
+  const uploadProof=document.getElementById('uploadShareProof');
+  const uploadStatus=document.getElementById('uploadStatus');
+  const status=document.getElementById('growthStatus');
+  const text=(input&&input.value.trim())||'';
+  if(!text){
+    if(status)status.textContent='先填写视频链接、平台账号或截图说明。';
+    return;
+  }
+  if(uploadProof)uploadProof.value=text;
+  if(uploadStatus)uploadStatus.textContent='';
+  if(status)status.textContent='正在提交推广证明...';
+  await submitPromotionProof();
+  if(status){
+    const msg=uploadStatus&&uploadStatus.textContent?uploadStatus.textContent:'推广证明已提交。';
+    status.textContent=msg;
+  }
+}
+
 async function handleUploadFile(e){
   const file=e.target.files&&e.target.files[0];
   if(!file)return;
@@ -6659,6 +7062,26 @@ function renderCharacters(){
   });
 }
 
+function renderComicGallery(){
+  const g=document.getElementById('comicGallery');
+  if(!g)return;
+  g.innerHTML=CHARACTERS.map(c=>{
+    const story=getCharacterComicStory(c);
+    const meme=(CHAR_MEMES[c.mbti]&&CHAR_MEMES[c.mbti][2])||story.moral;
+    return '<div class="comic-gallery-card">'+
+      '<img src="'+escapeHTML(story.image||'')+'" alt="'+escapeHTML(c.name)+' 四格漫画" loading="lazy">'+
+      '<div class="comic-gallery-info">'+
+        '<div class="comic-gallery-title">'+escapeHTML(c.name)+' · '+escapeHTML(story.title)+'</div>'+
+        '<div class="comic-gallery-meta">'+escapeHTML(c.mbti)+' · '+escapeHTML(c.mbtiName)+'</div>'+
+        '<div class="comic-gallery-copy">'+escapeHTML(meme)+'</div>'+
+        '<div class="comic-gallery-actions">'+
+          '<button class="char-share-btn" type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">看完整小剧场</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
 function openCharacterProfile(mbti){
   const c=CHARACTERS.find(x=>x.mbti===mbti);
   if(!c)return;
@@ -6695,6 +7118,7 @@ const QUIZ_QUESTIONS=[
   {q:'你希望别人怎么形容你的作品？',a:[['高级、可靠、像真正装备','S','T','gun'],['可爱、有灵魂、很会讲故事','N','F','spear']]}
 ];
 let quizAnswers=[];
+let lastQuizResult=null;
 
 function renderQuiz(){
   const show=document.getElementById('quizShowcase');
@@ -6728,6 +7152,7 @@ function calculateQuizResult(){
   const media=getCharacterDossier(c);
   const trait=getCharTrait(c);
   const art=media.pending?genCharSVG(c,180):'<img src="'+media.avatar+'" alt="'+escapeHTML(media.title)+'">';
+  lastQuizResult={character:c,weapon,trait,preferred,answers:[...quizAnswers],scores};
   const result=document.getElementById('quizResult');
   result.classList.add('active');
   result.innerHTML=
@@ -6737,7 +7162,8 @@ function calculateQuizResult(){
       '<div class="quiz-result-name">'+escapeHTML(c.name)+' · '+escapeHTML(c.mbti)+'</div>'+
       '<div class="quiz-result-meta">'+escapeHTML(c.mbtiName)+' · '+escapeHTML(trait.role)+' · '+escapeHTML(trait.label)+'</div>'+
       '<div class="quiz-result-weapon">推荐武器：<b>'+escapeHTML(weapon.n)+'</b><br>理由：你的选择偏向 '+weaponLabel(c.weaponPref||preferred)+'，适合用「'+escapeHTML(weapon.s)+'」打出 '+escapeHTML(trait.style)+' 的战斗节奏。</div>'+
-      '<div class="quiz-actions"><button class="battle-start-btn ready" type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">查看角色资料</button><button class="battle-start-btn ready" type="button" onclick="quickBattleFromQuiz(\''+c.mbti+'\')">用他开一局</button></div>'+
+      '<div class="quiz-actions"><button class="battle-start-btn ready" type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">查看角色资料</button><button class="battle-start-btn ready" type="button" onclick="quickBattleFromQuiz(\''+c.mbti+'\')">用他开一局</button><button class="battle-start-btn ready" type="button" onclick="renderQuizShareCard()">生成分享卡</button></div>'+
+      '<div class="quiz-share-preview" id="quizSharePreview"></div>'+
     '</div>';
 }
 
@@ -6747,9 +7173,64 @@ function preferredQuizWeapon(scores){
 
 function resetQuiz(){
   quizAnswers=[];
+  lastQuizResult=null;
   renderQuiz();
   const result=document.getElementById('quizResult');
   if(result){result.classList.remove('active');result.innerHTML=''}
+}
+
+async function renderQuizShareCard(){
+  const r=lastQuizResult;
+  if(!r||!r.character)return;
+  const c=r.character;
+  const weapon=r.weapon||WEAPONS[0];
+  const trait=r.trait||getCharTrait(c);
+  const media=getCharacterDossier(c);
+  const canvas=document.createElement('canvas');
+  canvas.width=1080;canvas.height=1440;
+  const ctx=canvas.getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,1080,1440);
+  grad.addColorStop(0,'#fff8ed');grad.addColorStop(.5,'#eaf7ff');grad.addColorStop(1,'#ffe9f0');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,1080,1440);
+  ctx.fillStyle='rgba(255,255,255,.62)';
+  for(let y=86;y<1390;y+=126)for(let x=76;x<1030;x+=152){
+    roundRectPath(ctx,x,y,78,46,12);ctx.fill();
+  }
+  roundRectPath(ctx,76,86,928,1266,44);
+  ctx.fillStyle='rgba(255,255,255,.88)';ctx.fill();
+  ctx.strokeStyle='rgba(32,33,36,.1)';ctx.lineWidth=4;ctx.stroke();
+  ctx.fillStyle='#2f8fe8';ctx.font='900 30px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText('MBTI WEAPON MATCH',130,158);
+  ctx.fillStyle='#202124';ctx.font='1000 76px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText('我的积木武器人格',130,250);
+  ctx.font='1000 72px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText(c.name,130,340);
+  ctx.fillStyle='#5f6368';ctx.font='850 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText(c.mbti+' · '+c.mbtiName+' · '+trait.role,130,398);
+  const img=await imageForCanvas((media&&!media.pending&&media.avatar)||'');
+  if(img){roundRectPath(ctx,690,188,230,276,36);ctx.save();ctx.clip();ctx.drawImage(img,690,188,230,276);ctx.restore();}
+  const rows=[
+    ['推荐武器',weapon.n],
+    ['人格标签',trait.label],
+    ['战斗节奏',trait.style],
+    ['适配理由','偏向 '+weaponLabel(c.weaponPref||r.preferred)+'，适合用「'+weapon.s+'」打开局面']
+  ];
+  rows.forEach((row,i)=>{
+    const y=520+i*150;
+    roundRectPath(ctx,130,y,820,112,28);ctx.fillStyle=i%2?'#eef9ff':'#fff7e8';ctx.fill();
+    ctx.fillStyle='#8a8178';ctx.font='800 28px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';ctx.fillText(row[0],166,y+42);
+    ctx.fillStyle='#202124';ctx.font='950 38px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+    wrapCanvasText(ctx,String(row[1]),166,y+86,730,42,2);
+  });
+  ctx.fillStyle='#202124';ctx.font='900 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  wrapCanvasText(ctx,'“'+c.quotes.win+'”',130,1156,820,48,2);
+  ctx.fillStyle='#5f6368';ctx.font='800 28px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText('来测你的 MBTI 积木战士，再上传自己的武器开战',130,1242);
+  ctx.fillStyle='#2f8fe8';ctx.font='900 30px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+  ctx.fillText('old-nine86.github.io/mumu-weapons',130,1300);
+  const url=canvas.toDataURL('image/png');
+  const box=document.getElementById('quizSharePreview');
+  if(box){box.classList.add('active');box.innerHTML='<img src="'+url+'" alt="配武器测试分享卡"><div class="battle-summary-meta">长按图片保存，适合发抖音/快手/小红书。</div>';}
 }
 
 function quickBattleFromQuiz(mbti){
@@ -7479,6 +7960,8 @@ loadData().then(async()=>{
   renderWeapons();
   renderForum();
   renderCharacters();
+  renderComicGallery();
+  renderGrowthCenter();
   renderQuiz();
   renderStudio();
   updateDashboard();

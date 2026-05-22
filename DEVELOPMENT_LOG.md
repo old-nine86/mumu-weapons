@@ -2,6 +2,77 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-22: Promotion Task Center
+
+Goal:
+- Turn the promotion loop from a small upload textarea into a visible product workflow.
+
+Shipped:
+- Added a `推广中心` navigation tab to the Chinese site.
+- Added a seven-day Douyin/Kuaishou content task board with hooks, recording structure, and reusable captions.
+- Added one-click copy for video captions and a proof form that reuses the existing promotion-review backend.
+- Added a QR/site-entry panel that can automatically show `promotion/site-qr.png` when a working QR asset is provided.
+
+Verification:
+- Parsed scripts in `index.html`.
+- Checked diff formatting.
+
+Next:
+- Add a real, scannable QR image at `promotion/site-qr.png` and sync the promotion center to `/en/` if needed.
+
+## 2026-05-22: Master Plan Hub
+
+Goal:
+- Start the project master plan as a visible product hub instead of leaving it only in documentation.
+
+Shipped:
+- Added a `总计划` navigation tab to the Chinese site.
+- Added a master-plan hub connecting the main product loops: upload weapon, comic gallery, weapon match quiz, arena battle, and support/commercialization entry.
+- Added quick actions from the hub to the upload station, comic gallery, quiz, battlefield, and support area.
+
+Verification:
+- Parsed scripts in `index.html`.
+- Checked diff formatting.
+- Confirmed the local static server returns the new master-plan markup.
+
+Next:
+- Replace placeholder support/purchase links with real creator support QR images and affiliate/product URLs when ready.
+
+## 2026-05-22: Comic Gallery Entry
+
+Goal:
+- Make the generated MBTI comic pages easy to find from the main navigation.
+
+Shipped:
+- Added a `漫画馆` nav tab to the Chinese site.
+- Added a comic gallery panel showing all 16 generated image2 four-panel comic pages from `assets/comics/`.
+- Each comic card links into the matching character profile so users can read the full comic story, subtitles, and share-card tools.
+
+Verification:
+- Parsed scripts in `index.html`.
+- Checked diff formatting.
+- Smoke-tested the local Chinese site in the in-app browser.
+
+Next:
+- Sync the comic gallery to `/en/` once the English page can be read and edited reliably.
+
+## 2026-05-21: Quiz Result Share Card
+
+Goal:
+- Continue the promotion loop by making the MBTI weapon match quiz produce a shareable result image.
+
+Shipped:
+- Added a `生成分享卡` action to the Chinese `配武器测试` result panel.
+- Built an in-browser vertical PNG generator for quiz results with matched character, MBTI identity, recommended weapon, personality tag, battle style, quote, and site link.
+- Added an inline preview under the quiz result so users can long-press/save the generated image for Douyin, Kuaishou, Xiaohongshu, or chat sharing.
+
+Verification:
+- Parsed scripts in `index.html`.
+- Smoke-tested the local Chinese quiz flow in the in-app browser.
+
+Next:
+- Sync the same quiz share-card flow to `/en/` after the local English page file stops timing out on direct reads.
+
 ## 2026-05-21: Project Workspace Packaging
 
 Goal:

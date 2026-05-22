@@ -73,6 +73,7 @@ The site should feel like a polished toy product experience: soft, cute, high qu
 - Created QR code and video materials.
 - Prepared day-one/day-two short-video scripts and assets.
 - Tested publishing workflow for Kuaishou and Douyin.
+- Added an in-site promotion task center with seven-day content scripts, copyable captions, and promotion proof submission.
 
 ## Near-Term Roadmap
 
@@ -108,7 +109,7 @@ Goal: make 16 MBTI characters more distinct in personality, visuals, and battle 
 Goal: turn site usage into natural promotion.
 
 - Add follow/share prompts for Douyin and Kuaishou.
-- Make promotion proof easier to submit.
+- Keep improving promotion proof submission and reward clarity.
 - Make approved promotion rewards clearer.
 - Track basic metrics manually: visits, uploads, forum posts, comments, and video performance.
 
