@@ -2,6 +2,24 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-23: Weapon Promotion Loop
+
+Goal:
+- Make every weapon showcase usable as a short-video content prompt.
+
+Shipped:
+- Added a weapon promotion material kit inside each weapon showcase modal.
+- Added ready-to-copy weapon video caption and pinned-comment text.
+- Added actions to send the selected weapon into the promotion center proof form.
+- Added a promotion-center shortcut for the upload-weapon task to bring in the currently opened weapon.
+
+Verification:
+- Parsed scripts in `index.html`.
+- Checked diff formatting.
+
+Next:
+- Add real product/purchase links and creator support assets, then connect them to weapon showcase CTAs.
+
 ## 2026-05-23: Battle Promotion Loop
 
 Goal:
