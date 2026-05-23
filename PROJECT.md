@@ -74,6 +74,7 @@ The site should feel like a polished toy product experience: soft, cute, high qu
 - Prepared day-one/day-two short-video scripts and assets.
 - Tested publishing workflow for Kuaishou and Douyin.
 - Added an in-site promotion task center with seven-day content scripts, copyable captions, and promotion proof submission.
+- Connected quiz results and battle results to the promotion center with ready-to-post captions and proof templates.
 
 ## Near-Term Roadmap
 

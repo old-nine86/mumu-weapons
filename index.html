@@ -2762,6 +2762,23 @@ body::before{
 .battle-share-preview{display:none;margin-top:12px}
 .battle-share-preview.active{display:block}
 .battle-share-preview img{width:min(100%,360px);border-radius:24px;box-shadow:0 18px 44px rgba(78,64,44,.2)}
+.battle-promo-kit{
+  margin-top:12px;
+  padding:14px;
+  border-radius:22px;
+  background:#fffdf8;
+  border:2px solid rgba(78,64,44,.08);
+  text-align:left;
+}
+.battle-promo-title{color:#202124;font-size:15px;font-weight:1000;margin-bottom:8px}
+.battle-promo-copy{
+  color:#536071;
+  font-size:13px;
+  font-weight:850;
+  line-height:1.6;
+  white-space:pre-wrap;
+}
+.battle-promo-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .arena-controls{
   position:relative;
   z-index:2;
@@ -6609,6 +6626,7 @@ function renderGrowthCenter(){
           '<button class="growth-chip secondary" type="button" onclick="copyGrowthTask('+idx+')">复制文案</button>'+
           '<button class="growth-chip" type="button" onclick="switchPanel(\'quiz\')">做测试素材</button>'+
           (task.title==='配武器测试'?'<button class="growth-chip secondary" type="button" onclick="sendQuizResultToGrowth()">带入我的测试结果</button>':'')+
+          (task.title==='战场随机对决'?'<button class="growth-chip secondary" type="button" onclick="sendBattleResultToGrowth()">带入最近战斗</button>':'')+
           '<button class="growth-chip" type="button" onclick="openSelection()">录战斗素材</button>'+
         '</div>'+
       '</article>'
@@ -7904,8 +7922,9 @@ function finishBattle(){
         '<div class="battle-summary-stat">'+escapeHTML(getCharTrait(wc).label)+'<span>MVP人格技</span></div>'+
       '</div>'+
       '<div class="battle-summary-meta">高光：'+escapeHTML(mvp.replace(/<[^>]*>/g,''))+'</div>'+
-      '<div class="quiz-actions"><button class="battle-start-btn ready" type="button" onclick="openCharacterProfile(\''+wc.mbti+'\')">查看冠军资料</button><button class="battle-start-btn ready" type="button" onclick="renderBattleShareCard()">生成分享卡</button><button class="battle-start-btn ready" type="button" onclick="openSelection()">换人挑战</button></div>'+
+      '<div class="quiz-actions"><button class="battle-start-btn ready" type="button" onclick="openCharacterProfile(\''+wc.mbti+'\')">查看冠军资料</button><button class="battle-start-btn ready" type="button" onclick="renderBattleShareCard()">生成分享卡</button><button class="battle-start-btn ready" type="button" onclick="copyBattlePromoCaption()">复制发布文案</button><button class="battle-start-btn ready" type="button" onclick="sendBattleResultToGrowth()">去推广中心</button><button class="battle-start-btn ready" type="button" onclick="openSelection()">换人挑战</button></div>'+
       '<div class="battle-share-preview" id="battleSharePreview"></div>'+
+      '<div class="battle-promo-kit" id="battlePromoKit">'+renderBattlePromoKitHTML(s.result)+'</div>'+
     '</div>';
   document.getElementById('againBtn').style.display='inline-block';
   document.getElementById('pauseBtn').style.display='none';
@@ -7976,6 +7995,80 @@ async function renderBattleShareCard(){
   const url=canvas.toDataURL('image/png');
   const box=document.getElementById('battleSharePreview');
   if(box){box.classList.add('active');box.innerHTML='<img src="'+url+'" alt="战斗分享卡"><div class="battle-summary-meta">长按图片可保存，发到抖音/快手/小红书。</div>';}
+}
+
+function battlePromoCaption(result){
+  const s=result||(battleState&&battleState.result);
+  if(!s||!s.winner)return '';
+  const trait=getCharTrait(s.winner);
+  return [
+    '两个 MBTI 积木战士打了一架，结果 '+s.winner.mbti+' '+s.winner.name+' 赢了',
+    '',
+    '战场：'+s.stage.emoji+' '+s.stage.name,
+    '获胜武器：'+s.weapon.name,
+    '打了 '+s.round+' 回合，剩余耐久 '+s.left+'，人格技是「'+trait.label+'」。',
+    '高光：'+String(s.mvp||'最后一击太稳了').replace(/<[^>]*>/g,''),
+    '',
+    '你想看哪两个 MBTI 角色打一架？评论区点名，我下一场安排。',
+    '入口：old-nine86.github.io/mumu-weapons',
+    '',
+    '#积木 #乐高积木 #MBTI #网页小游戏 #自制网站 #小游戏 #玩具分享'
+  ].join('\n');
+}
+
+function battlePinnedComment(result){
+  const s=result||(battleState&&battleState.result);
+  if(!s||!s.winner)return '评论两个 MBTI，我让他们在积木战场打一架。';
+  return '本场冠军：'+s.winner.mbti+' '+s.winner.name+'。评论两个 MBTI，下一场安排他们开战。';
+}
+
+function battleProofText(result){
+  const s=result||(battleState&&battleState.result);
+  if(!s||!s.winner)return '已发布战场随机对决视频。平台：';
+  return '已发布战场随机对决视频：'+s.winner.mbti+' '+s.winner.name+' 使用 '+s.weapon.name+' 获胜。平台：';
+}
+
+function renderBattlePromoKitHTML(result){
+  const s=result||(battleState&&battleState.result);
+  if(!s||!s.winner)return '';
+  return '<div class="battle-promo-title">📣 这场战斗的发布素材包</div>'+
+    '<div class="battle-promo-copy">'+escapeHTML(battlePromoCaption(s)+'\n\n置顶评论：'+battlePinnedComment(s))+'</div>'+
+    '<div class="battle-promo-actions">'+
+      '<button class="growth-chip secondary" type="button" onclick="copyBattlePromoCaption()">复制标题/简介</button>'+
+      '<button class="growth-chip" type="button" onclick="copyBattlePinnedComment()">复制置顶评论</button>'+
+      '<button class="growth-chip" type="button" onclick="sendBattleResultToGrowth()">提交发布证明</button>'+
+    '</div>';
+}
+
+async function copyBattlePromoCaption(){
+  const text=battlePromoCaption();
+  if(!text){openSelection();return;}
+  await copyGrowthText(text);
+}
+
+async function copyBattlePinnedComment(){
+  await copyGrowthText(battlePinnedComment());
+}
+
+function sendBattleResultToGrowth(){
+  if(!(battleState&&battleState.result)){
+    openSelection();
+    alert('先完成一场战斗，再把结果带入推广证明。');
+    return;
+  }
+  const arena=document.getElementById('arena');
+  if(arena)arena.classList.remove('active');
+  switchPanel('growth');
+  renderGrowthCenter();
+  const input=document.getElementById('growthProofInput');
+  if(input){
+    input.value=battleProofText();
+    input.focus();
+  }
+  const status=document.getElementById('growthStatus');
+  if(status)status.textContent='战斗结果已带过来。发布后补上平台和链接/截图说明，再提交审核。';
+  const panel=document.getElementById('panel-growth');
+  if(panel)panel.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function toggleBattlePause(){
