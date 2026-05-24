@@ -14,6 +14,7 @@ h1{margin:0;font-size:clamp(28px,4vw,48px);letter-spacing:0}
 .panel{background:rgba(255,255,255,.86);border:1px solid rgba(31,41,51,.1);box-shadow:0 22px 55px rgba(31,41,51,.1);border-radius:24px;padding:18px;backdrop-filter:blur(18px)}
 .login{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:18px}
 .ai-login{display:grid;grid-template-columns:1.05fr 1.1fr .85fr auto;gap:10px;margin-top:10px}
+.bulk-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0 4px}
 input,textarea,select{width:100%;border:1px solid rgba(31,41,51,.14);border-radius:14px;padding:13px 14px;font:inherit;background:white;outline:none}
 textarea{min-height:78px;resize:vertical}
 .edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
@@ -65,7 +66,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .image-pair img{width:100%;aspect-ratio:4/3;object-fit:contain;background:linear-gradient(45deg,#f1f5f9 25%,transparent 25%),linear-gradient(-45deg,#f1f5f9 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#f1f5f9 75%),linear-gradient(-45deg,transparent 75%,#f1f5f9 75%);background-size:18px 18px;background-position:0 0,0 9px,9px -9px,-9px 0;border-radius:10px}
 .empty{padding:34px;text-align:center;color:#667085;font-weight:900}
 a{color:#0b69d1}
-@media(max-width:780px){.top,.admin-hero{display:block}.login,.ai-login{grid-template-columns:1fr}.wrap{padding:18px 12px 40px}.refine-tools .row,.ai-workbench .row,.ai-workbench .actions,.admin-steps{grid-template-columns:1fr}.image-pair,.ai-assets{grid-template-columns:1fr}.grid{grid-template-columns:1fr}}
+@media(max-width:780px){.top,.admin-hero{display:block}.login,.ai-login,.bulk-tools{grid-template-columns:1fr}.wrap{padding:18px 12px 40px}.refine-tools .row,.ai-workbench .row,.ai-workbench .actions,.admin-steps{grid-template-columns:1fr}.image-pair,.ai-assets{grid-template-columns:1fr}.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -99,6 +100,13 @@ a{color:#0b69d1}
         </select>
         <button class="secondary" onclick="saveOpenAIKey()">保存设置</button>
       </div>
+      <div class="bulk-tools">
+        <button class="good" onclick="bulkCompleteWeapons('all',this)">一键补全全部已加载</button>
+        <button class="secondary" onclick="bulkCompleteWeapons('pending',this)">只补待审核</button>
+        <button class="secondary" onclick="bulkCompleteWeapons('approved',this)">只补已通过</button>
+        <button class="secondary" onclick="loadAll()">刷新后台数据</button>
+      </div>
+      <div class="line">批量补全会自动补中文/英文资料、等级数值、透明主体、卡片背景和手持展示图；默认使用本地自动流程，不消耗 API。</div>
       <div class="status" id="status">请输入审核口令。无 API 时选择“本地自动”，也能生成文字、属性、背景和展示图。</div>
     </div>
     <div class="panel">
@@ -219,7 +227,7 @@ function aiWorkbench(item){
       </div>
       <div class="actions">
         <button class="secondary" onclick="aiAnalyzeOnly('${escapeHTML(item.id)}',this)">只生成描述属性</button>
-        <button class="good" onclick="aiRefineFull('${escapeHTML(item.id)}',this)">一键 AI 全流程</button>
+        <button class="good" data-batch-refine-button onclick="aiRefineFull('${escapeHTML(item.id)}',this)">一键 AI 全流程</button>
       </div>
       <div class="ai-card-status" data-ai-status>等待运行。本地自动模式会直接生成文字、属性、背景和展示图。</div>
     </div>`;
@@ -306,6 +314,57 @@ function collectWeaponFields(card){
   const fields={};
   card.querySelectorAll('[data-field]').forEach(input=>fields[input.dataset.field]=input.value.trim());
   return fields;
+}
+function weakAdminText(value){
+  const text=String(value||'').trim();
+  if(!text)return true;
+  return /^(AI|玩家|Player|IMG|image|我的|未命名|Brick Combo|AI Brick Weapon|An AI-refined|Generated with local fallback)/i.test(text);
+}
+function cardNeedsCompletion(card){
+  const fields=collectWeaponFields(card);
+  const requiredText=['name','label','skill','description','name_en','label_en','skill_en','description_en'];
+  if(requiredText.some(name=>weakAdminText(fields[name])))return true;
+  if(!fields.showcase_url)return true;
+  if(!Number(fields.piece_count)||!Number(fields.ai_power)||!fields.card_rarity||!Number(fields.card_score))return true;
+  const root=card.querySelector('[data-ai-root]');
+  const bg=root&&root.querySelector('[data-ai-bg]');
+  const handheld=root&&root.querySelector('[data-ai-handheld]');
+  const cutout=root&&root.querySelector('[data-ai-cutout]');
+  const emptyAsset=img=>!img||!img.getAttribute('src')||/undefined|null$/i.test(img.getAttribute('src'));
+  return emptyAsset(bg)||emptyAsset(handheld)||emptyAsset(cutout);
+}
+async function bulkCompleteWeapons(scope,btn){
+  if(!key()){status('先输入审核口令。');return}
+  const selector=scope==='pending'?'#weaponGrid .card':scope==='approved'?'#approvedGrid .card':'#weaponGrid .card,#approvedGrid .card';
+  const cards=[...document.querySelectorAll(selector)];
+  if(!cards.length){status('当前页面没有可补全的武器，请先点“进入审核”或刷新后台数据。');return}
+  const targets=cards.filter(cardNeedsCompletion);
+  if(!targets.length){status('当前已加载武器资料和图片都比较完整，不需要批量补。');return}
+  const providerSelect=document.getElementById('aiProvider');
+  const previousProvider=providerSelect&&providerSelect.value;
+  if(providerSelect)providerSelect.value='local';
+  btn.disabled=true;
+  status('开始批量补全 '+targets.length+' 件武器。默认本地自动，不消耗 API。');
+  let ok=0,fail=0;
+  for(let i=0;i<targets.length;i++){
+    const card=targets[i];
+    const id=card.dataset.id;
+    const name=(card.querySelector('[data-field="name"]')&&card.querySelector('[data-field="name"]').value)||id;
+    const runBtn=card.querySelector('[data-batch-refine-button]')||card.querySelector('.ai-workbench .good')||btn;
+    status('批量补全 '+(i+1)+'/'+targets.length+'：'+name);
+    try{
+      await aiRefineFull(id,runBtn);
+      ok++;
+    }catch(err){
+      console.error(err);
+      fail++;
+      setAIStatus(card,'批量补全失败：'+((err&&err.message)||'未知错误'));
+    }
+    await new Promise(resolve=>setTimeout(resolve,350));
+  }
+  if(providerSelect&&previousProvider)providerSelect.value=previousProvider;
+  btn.disabled=false;
+  status('批量补全完成：成功 '+ok+' 件，失败 '+fail+' 件。请刷新后台和公开站检查效果。');
 }
 function renderWeapons(rows){
   const grid=document.getElementById('weaponGrid');

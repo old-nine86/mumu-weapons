@@ -950,3 +950,9 @@ Verification:
 
 Next:
 - Continue improving upload quality, showcase window, character depth, and promotion loop.
+
+## 2026-05-24 - 后台批量资料补全工具
+
+- 后台新增批量补全入口，可对当前已加载的待审核/已通过武器自动补中文、英文、等级、数值、主体图、卡片背景和手持展示图。
+- 批量流程默认切到本地自动模式，不消耗 OpenAI/Gemini/OpenRouter API。
+- 批量补全会跳过资料和图片已经完整的武器。
