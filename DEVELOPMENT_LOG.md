@@ -2,6 +2,28 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-24: Full Project Health Check
+
+Goal:
+- Re-check previous work before starting the next major plan phase.
+
+Checked:
+- Parsed scripts in `index.html`, `admin.html`, and `en/index.html`.
+- Checked static asset references and duplicate IDs.
+- Checked key GitHub Pages URLs and core image assets.
+- Confirmed the promotion QR image exists and is served online.
+- Confirmed the quiz, battle, weapon, and promotion-center code is present online.
+
+Fixed:
+- Removed a stale zero-byte `.git/index.lock` file that was causing local Git status/check commands to hang.
+
+Known gaps:
+- The English site has not yet been synced with the newer Chinese `漫画馆`, `总计划`, and `推广中心` loops.
+- Purchase links and creator support entries are still placeholders until real links/QR assets are provided.
+
+Next:
+- Start the commercialization/configuration phase: make support QR codes and product links manageable from the project/admin flow.
+
 ## 2026-05-23: Weapon Promotion Loop
 
 Goal:
