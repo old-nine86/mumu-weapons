@@ -6,29 +6,30 @@
 <title>沐沐积木武器库 · 审核台</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f7f4ec;color:#1f2933}
-.wrap{max-width:1180px;margin:0 auto;padding:28px 18px 56px}
-.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:22px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 10% 0,#ffe7ef 0 16rem,transparent 34rem),radial-gradient(circle at 86% 8%,#d9f0ff 0 18rem,transparent 36rem),linear-gradient(180deg,#fffaf2,#eef7ff 52%,#fff8fb);color:#1f2933}
+.wrap{max-width:1280px;margin:0 auto;padding:30px 18px 64px}
+.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:22px;padding:18px 4px}
 h1{margin:0;font-size:clamp(28px,4vw,48px);letter-spacing:0}
 .sub{margin-top:8px;color:#667085;font-weight:700}
-.panel{background:rgba(255,255,255,.82);border:1px solid rgba(31,41,51,.1);box-shadow:0 18px 50px rgba(31,41,51,.08);border-radius:20px;padding:18px}
+.panel{background:rgba(255,255,255,.86);border:1px solid rgba(31,41,51,.1);box-shadow:0 22px 55px rgba(31,41,51,.1);border-radius:24px;padding:18px;backdrop-filter:blur(18px)}
 .login{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:18px}
-.ai-login{display:grid;grid-template-columns:1.1fr .9fr auto;gap:10px;margin-top:10px}
+.ai-login{display:grid;grid-template-columns:1.05fr 1.1fr .85fr auto;gap:10px;margin-top:10px}
 input,textarea,select{width:100%;border:1px solid rgba(31,41,51,.14);border-radius:14px;padding:13px 14px;font:inherit;background:white;outline:none}
 textarea{min-height:78px;resize:vertical}
 .edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
 .edit-grid label{display:flex;flex-direction:column;gap:5px;color:#667085;font-size:12px;font-weight:900}
 .edit-grid input,.edit-grid select{padding:10px 11px;border-radius:12px;font-size:14px;font-weight:850}
-button{border:0;border-radius:14px;padding:13px 16px;font:inherit;font-weight:900;cursor:pointer;background:#1f2933;color:white}
+button{border:0;border-radius:14px;padding:13px 16px;font:inherit;font-weight:900;cursor:pointer;background:#1f2933;color:white;box-shadow:0 12px 24px rgba(31,41,51,.12)}
 button.secondary{background:#edf2f7;color:#1f2933}
 button.good{background:#17a36b}
 button.bad{background:#e5484d}
 button:disabled{opacity:.45;cursor:not-allowed}
 .status{color:#667085;font-weight:800;margin:12px 0 0}
-.section-title{font-size:24px;font-weight:950;margin:24px 0 12px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.section-title{font-size:24px;font-weight:950;margin:28px 0 12px;display:flex;align-items:center;gap:10px}
+.section-title::before{content:"";width:12px;height:28px;border-radius:999px;background:linear-gradient(180deg,#ff8a72,#ffd96a,#8ee6c6,#9fd7ff)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px}
 .card{overflow:hidden}
-.image{background:#fff;border-radius:18px;aspect-ratio:4/3;display:grid;place-items:center;border:1px solid rgba(31,41,51,.08);overflow:hidden}
+.image{background:linear-gradient(135deg,#fff,#f7fbff);border-radius:20px;aspect-ratio:4/3;display:grid;place-items:center;border:1px solid rgba(31,41,51,.08);overflow:hidden}
 .image img{max-width:100%;max-height:100%;object-fit:contain}
 .meta{padding:14px 2px 0}
 .name{font-size:22px;font-weight:950;margin-bottom:6px}
@@ -39,11 +40,11 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .actions.three{grid-template-columns:1fr 1fr 1fr}
 .showcase-tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px;align-items:center}
 .showcase-tools input{padding:10px;border-radius:12px}
-.refine-tools{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px;padding:12px;border:1px solid rgba(31,41,51,.09);border-radius:16px;background:#fffaf0}
+.refine-tools{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px;padding:12px;border:1px solid rgba(255,166,77,.22);border-radius:18px;background:linear-gradient(135deg,#fffaf0,#fff)}
 .refine-tools .row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center}
 .refine-tools input{padding:10px;border-radius:12px}
 .refine-note{color:#8a5b1d;font-size:12px;font-weight:850;line-height:1.55}
-.ai-workbench{display:grid;gap:10px;margin-top:12px;padding:12px;border:1px solid rgba(95,73,255,.18);border-radius:16px;background:linear-gradient(135deg,#f6f3ff,#fff8ee)}
+.ai-workbench{display:grid;gap:12px;margin-top:12px;padding:14px;border:1px solid rgba(95,73,255,.18);border-radius:20px;background:linear-gradient(135deg,#f6f3ff,#fff8ee);box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
 .ai-workbench .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .ai-workbench .actions{grid-template-columns:1fr 1fr}
 .ai-title{font-weight:950;color:#39257d}
@@ -52,14 +53,19 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .ai-assets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .ai-assets figure{margin:0;padding:7px;border:1px solid rgba(95,73,255,.12);border-radius:13px;background:white}
 .ai-assets figcaption{font-size:11px;color:#655a7c;font-weight:900;margin-bottom:5px}
-.ai-assets img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px;background:#f4f0ff}
+.ai-assets img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;background:#f4f0ff}
+.admin-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;align-items:stretch}
+.admin-hero .panel{min-height:100%}
+.admin-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.admin-step{background:rgba(255,255,255,.75);border:1px solid rgba(31,41,51,.08);border-radius:16px;padding:12px;font-weight:900;color:#4d5663}
+.admin-step b{display:block;color:#1f2933;font-size:18px;margin-bottom:3px}
 .image-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
 .image-pair figure{margin:0;padding:8px;border:1px solid rgba(31,41,51,.08);border-radius:14px;background:#fff}
 .image-pair figcaption{font-size:12px;color:#667085;font-weight:900;margin-bottom:6px}
 .image-pair img{width:100%;aspect-ratio:4/3;object-fit:contain;background:linear-gradient(45deg,#f1f5f9 25%,transparent 25%),linear-gradient(-45deg,#f1f5f9 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#f1f5f9 75%),linear-gradient(-45deg,transparent 75%,#f1f5f9 75%);background-size:18px 18px;background-position:0 0,0 9px,9px -9px,-9px 0;border-radius:10px}
 .empty{padding:34px;text-align:center;color:#667085;font-weight:900}
 a{color:#0b69d1}
-@media(max-width:640px){.top{display:block}.login,.ai-login{grid-template-columns:1fr}.wrap{padding:18px 12px 40px}.refine-tools .row,.ai-workbench .row,.ai-workbench .actions{grid-template-columns:1fr}.image-pair,.ai-assets{grid-template-columns:1fr}}
+@media(max-width:780px){.top,.admin-hero{display:block}.login,.ai-login{grid-template-columns:1fr}.wrap{padding:18px 12px 40px}.refine-tools .row,.ai-workbench .row,.ai-workbench .actions,.admin-steps{grid-template-columns:1fr}.image-pair,.ai-assets{grid-template-columns:1fr}.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -72,26 +78,38 @@ a{color:#0b69d1}
     <a href="./">返回武器库</a>
   </div>
 
-  <div class="panel">
-    <div class="login">
-      <input id="reviewKey" type="password" placeholder="输入审核口令">
-      <button onclick="loadAll()">进入审核</button>
+  <div class="admin-hero">
+    <div class="panel">
+      <div class="login">
+        <input id="reviewKey" type="password" placeholder="输入审核口令">
+        <button onclick="loadAll()">进入审核</button>
+      </div>
+      <div class="ai-login">
+        <select id="aiProvider">
+          <option value="local">本地自动：无 API 也能跑</option>
+          <option value="openrouter">OpenRouter 免费模型：自动换模型</option>
+          <option value="gemini">Google Gemini：识别+图片生成</option>
+          <option value="openai">OpenAI：全流程</option>
+        </select>
+        <input id="aiKey" type="password" placeholder="AI API Key，可不填">
+        <select id="aiQuality">
+          <option value="medium">图片质量：medium</option>
+          <option value="low">图片质量：low，省钱</option>
+          <option value="high">图片质量：high，更精细</option>
+        </select>
+        <button class="secondary" onclick="saveOpenAIKey()">保存设置</button>
+      </div>
+      <div class="status" id="status">请输入审核口令。无 API 时选择“本地自动”，也能生成文字、属性、背景和展示图。</div>
     </div>
-    <div class="ai-login">
-      <select id="aiProvider">
-        <option value="openai">OpenAI：全流程</option>
-        <option value="gemini">Google Gemini：先支持识别+本地抠图</option>
-        <option value="openrouter">OpenRouter 免费模型：自动换模型</option>
-      </select>
-      <input id="aiKey" type="password" placeholder="AI API Key，只保存在本机浏览器">
-      <select id="aiQuality">
-        <option value="medium">AI 图片质量：medium</option>
-        <option value="low">AI 图片质量：low，省钱</option>
-        <option value="high">AI 图片质量：high，更精细</option>
-      </select>
-      <button class="secondary" onclick="saveOpenAIKey()">保存 AI 设置</button>
+    <div class="panel">
+      <div class="name">自动精修流程</div>
+      <div class="admin-steps">
+        <div class="admin-step"><b>1</b>识别属性</div>
+        <div class="admin-step"><b>2</b>清理主体</div>
+        <div class="admin-step"><b>3</b>生成橱窗</div>
+      </div>
+      <div class="line">推荐：先用“本地自动”稳定出图，再手动微调名称和数值。</div>
     </div>
-    <div class="status" id="status">请输入审核口令。</div>
   </div>
 
   <div class="section-title">待审核武器</div>
@@ -116,7 +134,7 @@ function headers(){return{apikey:CLOUD.anonKey,Authorization:'Bearer '+CLOUD.ano
 function escapeHTML(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function status(text){document.getElementById('status').textContent=text}
 function key(){return document.getElementById('reviewKey').value.trim()}
-function aiProvider(){return document.getElementById('aiProvider').value||localStorage.getItem(AI_PROVIDER_STORAGE)||'openai'}
+function aiProvider(){return document.getElementById('aiProvider').value||localStorage.getItem(AI_PROVIDER_STORAGE)||'local'}
 function aiKey(){return document.getElementById('aiKey').value.trim()||localStorage.getItem(AI_KEY_STORAGE)||localStorage.getItem(OPENAI_KEY_STORAGE)||''}
 function openAIKey(){return aiKey()}
 function openAIQuality(){return document.getElementById('aiQuality').value||localStorage.getItem(OPENAI_QUALITY_STORAGE)||'medium'}
@@ -135,7 +153,7 @@ function saveOpenAIKey(){
 }
 function restoreOpenAISettings(){
   const k=localStorage.getItem(AI_KEY_STORAGE)||localStorage.getItem(OPENAI_KEY_STORAGE)||'';
-  const provider=localStorage.getItem(AI_PROVIDER_STORAGE)||'openai';
+  const provider=localStorage.getItem(AI_PROVIDER_STORAGE)||'local';
   const q=localStorage.getItem(OPENAI_QUALITY_STORAGE)||'medium';
   const keyInput=document.getElementById('aiKey');
   const providerInput=document.getElementById('aiProvider');
@@ -179,7 +197,7 @@ function aiWorkbench(item){
   return `
     <div class="ai-workbench" data-ai-root>
       <div class="ai-title">AI 精修工作台</div>
-      <div class="ai-note">一键执行：识别武器信息、透明抠图、生成专属卡片背景、生成乐高角色手持展示图。结果会先填进表单，你还能手动修改后再通过。</div>
+      <div class="ai-note">一键执行：生成武器信息、清理主体、生成专属卡片背景、生成积木角色展示图。无 API 时会自动使用本地稳定流程。</div>
       <div class="ai-assets">
         <figure><figcaption>透明主体</figcaption><img data-ai-cutout src="${escapeHTML(cut)}" alt="AI 透明主体"></figure>
         <figure><figcaption>卡片背景</figcaption><img data-ai-bg src="${escapeHTML(bg)}" alt="AI 卡片背景"></figure>
@@ -203,7 +221,7 @@ function aiWorkbench(item){
         <button class="secondary" onclick="aiAnalyzeOnly('${escapeHTML(item.id)}',this)">只生成描述属性</button>
         <button class="good" onclick="aiRefineFull('${escapeHTML(item.id)}',this)">一键 AI 全流程</button>
       </div>
-      <div class="ai-card-status" data-ai-status>等待运行。Google Key 目前会走“识别属性 + 本地抠图”，OpenAI Key 才能生成背景和手持展示图。</div>
+      <div class="ai-card-status" data-ai-status>等待运行。本地自动模式会直接生成文字、属性、背景和展示图。</div>
     </div>`;
 }
 function refineTools(item){
@@ -833,6 +851,7 @@ async function openRouterResponseJSON(prompt,imageUrl){
 }
 async function aiResponseJSON(prompt,imageUrl){
   const provider=aiProvider();
+  if(provider==='local')return localWeaponFallbackJSON(imageUrl,'local automatic mode');
   if(provider==='gemini')return geminiResponseJSON(prompt,imageUrl);
   if(provider==='openrouter')return openRouterResponseJSON(prompt,imageUrl);
   return openAIResponseJSON(prompt,imageUrl);
@@ -1019,7 +1038,7 @@ async function fallbackCardBackground(ai){
   const ctx=canvas.getContext('2d');
   const grad=ctx.createLinearGradient(0,0,640,860);
   grad.addColorStop(0,'#fffdf8');grad.addColorStop(.38,a);grad.addColorStop(1,b);
-  ctx.fillStyle=grad;ctx.fillRect(0,0,1024,1536);
+  ctx.fillStyle=grad;ctx.fillRect(0,0,640,860);
   ctx.fillStyle='rgba(255,255,255,.45)';
   for(let y=44;y<840;y+=78)for(let x=44;x<620;x+=78){
     ctx.beginPath();ctx.arc(x,y,13,0,Math.PI*2);ctx.fill();
@@ -1052,19 +1071,21 @@ async function fallbackHandheldShowcase(ai,weaponBlob){
   const bgBitmap=await createImageBitmap(bg);
   ctx.drawImage(bgBitmap,0,0,640,860);
   const [a,b,c,d]=fallbackPalette(ai);
-  ctx.fillStyle='rgba(255,255,255,.62)';roundRect(ctx,76,180,488,520,34);ctx.fill();
-  ctx.fillStyle=a;roundRect(ctx,246,260,148,148,28);ctx.fill();
-  ctx.strokeStyle=d;ctx.lineWidth=6;ctx.stroke();
-  ctx.fillStyle='#1f2933';ctx.beginPath();ctx.arc(292,316,10,0,Math.PI*2);ctx.arc(348,316,10,0,Math.PI*2);ctx.fill();
-  ctx.strokeStyle='#1f2933';ctx.lineWidth=5;ctx.beginPath();ctx.arc(320,348,25,.15*Math.PI,.85*Math.PI);ctx.stroke();
-  ctx.fillStyle=b;roundRect(ctx,218,430,204,168,25);ctx.fill();
-  ctx.strokeStyle=d;ctx.lineWidth=5;ctx.stroke();
-  ctx.fillStyle=c;roundRect(ctx,182,422,62,40,18);ctx.fill();roundRect(ctx,396,422,62,40,18);ctx.fill();
-  ctx.fillStyle=d;roundRect(ctx,254,588,54,40,13);ctx.fill();roundRect(ctx,332,588,54,40,13);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.5)';roundRect(ctx,66,175,508,500,34);ctx.fill();
+  ctx.save();ctx.globalAlpha=.9;
+  ctx.fillStyle=a;roundRect(ctx,76,514,92,92,20);ctx.fill();
+  ctx.strokeStyle=d;ctx.lineWidth=4;ctx.stroke();
+  ctx.fillStyle='#1f2933';ctx.beginPath();ctx.arc(106,550,6,0,Math.PI*2);ctx.arc(139,550,6,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='#1f2933';ctx.lineWidth=3;ctx.beginPath();ctx.arc(122,570,15,.15*Math.PI,.85*Math.PI);ctx.stroke();
+  ctx.fillStyle=b;roundRect(ctx,56,610,132,86,18);ctx.fill();ctx.strokeStyle=d;ctx.stroke();
+  ctx.restore();
   const weaponBitmap=await createImageBitmap(weaponBlob);
-  const scale=Math.min(560/weaponBitmap.width,310/weaponBitmap.height);
+  const scale=Math.min(600/weaponBitmap.width,430/weaponBitmap.height);
   const ww=weaponBitmap.width*scale,hh=weaponBitmap.height*scale;
-  ctx.save();ctx.translate(320,515);ctx.rotate(-0.1);ctx.drawImage(weaponBitmap,-ww/2,-hh/2,ww,hh);ctx.restore();
+  ctx.save();
+  ctx.shadowColor='rgba(31,41,51,.22)';ctx.shadowBlur=28;ctx.shadowOffsetY=22;
+  ctx.translate(340,420);ctx.rotate(-0.08);ctx.drawImage(weaponBitmap,-ww/2,-hh/2,ww,hh);
+  ctx.restore();
   ctx.fillStyle='rgba(31,41,51,.86)';ctx.font='900 30px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.textAlign='center';
   ctx.fillText(String(ai.name_zh||ai.name||'积木武器').slice(0,16),320,746);
   ctx.font='800 18px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.fillText('PLAYER BRICK SHOWCASE',320,778);
@@ -1104,8 +1125,8 @@ async function aiRefineFull(id,btn){
     const provider=aiProvider();
     const ai=await aiResponseJSON(aiPromptForWeapon(),source);
     const fields=fillWeaponFieldsFromAI(card,ai);
-    const localImageProvider=provider==='gemini'||provider==='openrouter';
-    setAIStatus(card,localImageProvider?(provider==='openrouter'?'OpenRouter 免费模型 2/4：识别完成，使用本地算法抠图。':'Google 全流程 2/4：使用本地算法抠图并保存主体。'):'AI 全流程 2/4：生成透明武器主体...');
+    const localImageProvider=provider==='gemini'||provider==='openrouter'||provider==='local';
+    setAIStatus(card,localImageProvider?(provider==='local'?'本地自动 2/4：清理主体并放大构图。':provider==='openrouter'?'OpenRouter 免费模型 2/4：识别完成，使用本地算法抠图。':'Google 全流程 2/4：使用本地算法抠图并保存主体。'):'AI 全流程 2/4：生成透明武器主体...');
     const originalBlob=await urlToBlob(source);
     const cutoutBlob=localImageProvider
       ? await canvasToBlob(normalizeWeaponCutoutCanvas(adminCutoutCanvas(await imageUrlToCanvas(source))),'image/webp',.92)
@@ -1114,19 +1135,19 @@ async function aiRefineFull(id,btn){
     await replaceMainImage(id,cutoutUrl,source,btn);
     if(root&&root.querySelector('[data-ai-cutout]'))root.querySelector('[data-ai-cutout]').src=cutoutUrl;
     if(localImageProvider){
-      setAIStatus(card,provider==='openrouter'?('OpenRouter 3/4：已用 '+escapeHTML(ai.openrouter_model_used||'免费模型')+' 识别，本地生成专属卡片背景...'):'Google 全流程 3/4：生成专属卡片背景...');
-      const bgResult=provider==='openrouter'
+      setAIStatus(card,provider==='local'?'本地自动 3/4：生成统一橱窗背景...':provider==='openrouter'?('OpenRouter 3/4：已用 '+escapeHTML(ai.openrouter_model_used||'免费模型')+' 识别，本地生成专属卡片背景...'):'Google 全流程 3/4：生成专属卡片背景...');
+      const bgResult=provider==='openrouter'||provider==='local'
         ? {blob:await fallbackCardBackground(ai),fallback:true,error:'OpenRouter free models do not generate images'}
         : await safeGeminiImageGenerate(backgroundPrompt(ai,style),{},()=>fallbackCardBackground(ai));
       const bgBlob=bgResult.blob;
-      const bgUrl=await uploadImageBlob(bgBlob,id,provider==='openrouter'?'openrouter-card-bg':'gemini-card-bg');
+      const bgUrl=await uploadImageBlob(bgBlob,id,provider==='local'?'local-card-bg':provider==='openrouter'?'openrouter-card-bg':'gemini-card-bg');
       if(root&&root.querySelector('[data-ai-bg]'))root.querySelector('[data-ai-bg]').src=bgUrl;
-      setAIStatus(card,provider==='openrouter'?'OpenRouter 免费模型 4/4：本地合成角色手持展示图...':(bgResult.fallback?'Google 图片额度不足，已用本地高级卡片背景兜底。继续生成展示图...':'Google 全流程 4/4：生成角色手持展示图...'));
-      const handResult=provider==='openrouter'
+      setAIStatus(card,provider==='local'?'本地自动 4/4：合成大武器展示图...':provider==='openrouter'?'OpenRouter 免费模型 4/4：本地合成角色手持展示图...':(bgResult.fallback?'Google 图片额度不足，已用本地高级卡片背景兜底。继续生成展示图...':'Google 全流程 4/4：生成角色手持展示图...'));
+      const handResult=provider==='openrouter'||provider==='local'
         ? {blob:await fallbackHandheldShowcase(ai,cutoutBlob),fallback:true,error:'OpenRouter free models do not generate images'}
         : await safeGeminiImageGenerate(handheldPrompt(ai,style,character),{imageBlob:cutoutBlob},()=>fallbackHandheldShowcase(ai,cutoutBlob));
       const handBlob=handResult.blob;
-      const handUrl=await uploadImageBlob(handBlob,id,provider==='openrouter'?'openrouter-handheld':'gemini-handheld');
+      const handUrl=await uploadImageBlob(handBlob,id,provider==='local'?'local-handheld':provider==='openrouter'?'openrouter-handheld':'gemini-handheld');
       const showcaseInput=card.querySelector('[data-field="showcase_url"]');
       if(showcaseInput)showcaseInput.value=handUrl;
       if(root&&root.querySelector('[data-ai-handheld]'))root.querySelector('[data-ai-handheld]').src=handUrl;
@@ -1144,7 +1165,7 @@ async function aiRefineFull(id,btn){
         setAIStatus(card,'Google 图片已生成；但 AI 元数据保存失败。展示图地址已填入表单，可手动保存。');
         return;
       }
-      setAIStatus(card,provider==='openrouter'?'OpenRouter 流程完成：免费模型识别成功，背景和手持展示图已用本地高级生成器保存。':((bgResult.fallback||handResult.fallback)?'流程完成：Google 识别成功，图片额度不足的部分已用本地高级背景/展示图兜底并保存。':'Google 全流程完成：属性、主体图、卡片背景、角色手持展示图都已保存。'));
+      setAIStatus(card,provider==='local'?'本地自动流程完成：文字、属性、主体图、统一橱窗背景和大武器展示图都已保存。':provider==='openrouter'?'OpenRouter 流程完成：免费模型识别成功，背景和手持展示图已用本地高级生成器保存。':((bgResult.fallback||handResult.fallback)?'流程完成：Google 识别成功，图片额度不足的部分已用本地高级背景/展示图兜底并保存。':'Google 全流程完成：属性、主体图、卡片背景、角色手持展示图都已保存。'));
       return;
     }
     setAIStatus(card,'AI 全流程 3/4：生成专属卡片背景...');
