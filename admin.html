@@ -125,6 +125,7 @@ function saveOpenAIKey(){
   const q=document.getElementById('aiQuality').value||'medium';
   if(k)localStorage.setItem(AI_KEY_STORAGE,k);
   localStorage.setItem(AI_PROVIDER_STORAGE,provider);
+  if(provider==='openrouter')localStorage.removeItem(OPENROUTER_MODELS_STORAGE);
   localStorage.setItem(OPENAI_QUALITY_STORAGE,q);
   status(k?'AI 设置已保存在本机浏览器。当前服务：'+provider:'已保存图片质量；API Key 为空时不会调用 AI。');
 }
@@ -681,7 +682,11 @@ function isFreeOpenRouterModel(model){
 function supportsOpenRouterImage(model){
   const arch=model.architecture||{};
   const input=arch.input_modalities||arch.inputModalities||[];
-  return Array.isArray(input)&&input.includes('image');
+  const output=arch.output_modalities||arch.outputModalities||[];
+  const id=String(model.id||'').toLowerCase();
+  const name=String(model.name||'').toLowerCase();
+  const blocked=id.includes('lyria')||name.includes('lyria')||id.includes('audio')||id.includes('music');
+  return !blocked&&Array.isArray(input)&&input.includes('image')&&Array.isArray(output)&&output.includes('text');
 }
 function preferredOpenRouterModelOrder(id){
   id=String(id||'');
@@ -696,7 +701,10 @@ async function loadOpenRouterFreeVisionModels(apiKey){
   if(cached){
     try{
       const parsed=JSON.parse(cached);
-      if(Date.now()-parsed.at<1000*60*60*6&&Array.isArray(parsed.models)&&parsed.models.length)return parsed.models;
+      if(Date.now()-parsed.at<1000*60*60*6&&Array.isArray(parsed.models)&&parsed.models.length){
+        const cleaned=parsed.models.filter(id=>!String(id).toLowerCase().includes('lyria'));
+        if(cleaned.length)return cleaned;
+      }
     }catch(e){}
   }
   try{
