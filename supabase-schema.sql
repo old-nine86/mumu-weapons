@@ -607,6 +607,8 @@ $$;
 
 grant execute on function public.admin_update_weapon_ai_assets(text, text, text, text, text, jsonb) to anon, authenticated;
 
+notify pgrst, 'reload schema';
+
 drop policy if exists "Public can submit promotion proof" on public.promotion_submissions;
 create policy "Public can submit promotion proof"
 on public.promotion_submissions for insert

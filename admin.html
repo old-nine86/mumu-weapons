@@ -881,12 +881,24 @@ async function aiRefineFull(id,btn){
   }
 }
 async function replaceMainImage(id,nextUrl,originalUrl,btn){
-  await rpc('admin_replace_weapon_image',{
-    input_review_key:key(),
-    weapon_id:id,
-    new_image_url:nextUrl,
-    original_image_url:originalUrl||''
-  });
+  try{
+    await rpc('admin_replace_weapon_image',{
+      input_review_key:key(),
+      weapon_id:id,
+      new_image_url:nextUrl,
+      original_image_url:originalUrl||''
+    });
+  }catch(err){
+    if(!String((err&&err.message)||'').includes('admin_replace_weapon_image'))throw err;
+    await rpc('admin_update_weapon_ai_assets',{
+      input_review_key:key(),
+      weapon_id:id,
+      refined_image_url:nextUrl,
+      card_background_url:'',
+      handheld_showcase_url:'',
+      ai_metadata:{fallback:'admin_update_weapon_ai_assets',original_image_url:originalUrl||''}
+    });
+  }
   const card=btn.closest('.card');
   const current=card.querySelector('[data-current-image]');
   const hero=card.querySelector('.image img');
