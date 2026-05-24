@@ -120,6 +120,7 @@ Goal: turn site usage into natural promotion.
 
 - Use a vision AI model to inspect uploaded weapon photos.
 - Generate weapon type, weapon name suggestions, brick count, battle stats, rarity, and description.
+- In the admin review flow, use AI to remove backgrounds, generate card backgrounds, and create LEGO-style character handheld showcase images before approval.
 - Improve fraud/spam detection.
 
 ### AR Brick Battles

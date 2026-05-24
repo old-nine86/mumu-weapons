@@ -13,6 +13,7 @@ h1{margin:0;font-size:clamp(28px,4vw,48px);letter-spacing:0}
 .sub{margin-top:8px;color:#667085;font-weight:700}
 .panel{background:rgba(255,255,255,.82);border:1px solid rgba(31,41,51,.1);box-shadow:0 18px 50px rgba(31,41,51,.08);border-radius:20px;padding:18px}
 .login{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:18px}
+.ai-login{display:grid;grid-template-columns:1.1fr .9fr auto;gap:10px;margin-top:10px}
 input,textarea,select{width:100%;border:1px solid rgba(31,41,51,.14);border-radius:14px;padding:13px 14px;font:inherit;background:white;outline:none}
 textarea{min-height:78px;resize:vertical}
 .edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
@@ -42,13 +43,22 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .refine-tools .row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center}
 .refine-tools input{padding:10px;border-radius:12px}
 .refine-note{color:#8a5b1d;font-size:12px;font-weight:850;line-height:1.55}
+.ai-workbench{display:grid;gap:10px;margin-top:12px;padding:12px;border:1px solid rgba(95,73,255,.18);border-radius:16px;background:linear-gradient(135deg,#f6f3ff,#fff8ee)}
+.ai-workbench .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ai-workbench .actions{grid-template-columns:1fr 1fr}
+.ai-title{font-weight:950;color:#39257d}
+.ai-note{color:#655a7c;font-size:12px;font-weight:850;line-height:1.55}
+.ai-assets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ai-assets figure{margin:0;padding:7px;border:1px solid rgba(95,73,255,.12);border-radius:13px;background:white}
+.ai-assets figcaption{font-size:11px;color:#655a7c;font-weight:900;margin-bottom:5px}
+.ai-assets img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px;background:#f4f0ff}
 .image-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
 .image-pair figure{margin:0;padding:8px;border:1px solid rgba(31,41,51,.08);border-radius:14px;background:#fff}
 .image-pair figcaption{font-size:12px;color:#667085;font-weight:900;margin-bottom:6px}
 .image-pair img{width:100%;aspect-ratio:4/3;object-fit:contain;background:linear-gradient(45deg,#f1f5f9 25%,transparent 25%),linear-gradient(-45deg,#f1f5f9 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#f1f5f9 75%),linear-gradient(-45deg,transparent 75%,#f1f5f9 75%);background-size:18px 18px;background-position:0 0,0 9px,9px -9px,-9px 0;border-radius:10px}
 .empty{padding:34px;text-align:center;color:#667085;font-weight:900}
 a{color:#0b69d1}
-@media(max-width:640px){.top{display:block}.login{grid-template-columns:1fr}.wrap{padding:18px 12px 40px}.refine-tools .row{grid-template-columns:1fr}.image-pair{grid-template-columns:1fr}}
+@media(max-width:640px){.top{display:block}.login,.ai-login{grid-template-columns:1fr}.wrap{padding:18px 12px 40px}.refine-tools .row,.ai-workbench .row,.ai-workbench .actions{grid-template-columns:1fr}.image-pair,.ai-assets{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -66,6 +76,15 @@ a{color:#0b69d1}
       <input id="reviewKey" type="password" placeholder="输入审核口令">
       <button onclick="loadAll()">进入审核</button>
     </div>
+    <div class="ai-login">
+      <input id="openaiKey" type="password" placeholder="OpenAI API Key，只保存在本机浏览器">
+      <select id="aiQuality">
+        <option value="medium">AI 图片质量：medium</option>
+        <option value="low">AI 图片质量：low，省钱</option>
+        <option value="high">AI 图片质量：high，更精细</option>
+      </select>
+      <button class="secondary" onclick="saveOpenAIKey()">保存 AI 设置</button>
+    </div>
     <div class="status" id="status">请输入审核口令。</div>
   </div>
 
@@ -80,11 +99,31 @@ a{color:#0b69d1}
 <script src="supabase-config.js?v=3"></script>
 <script>
 const CLOUD=window.MUMU_SUPABASE||{};
+const OPENAI_KEY_STORAGE='mumu_admin_openai_key';
+const OPENAI_QUALITY_STORAGE='mumu_admin_openai_quality';
 function cloudBase(){return String(CLOUD.url||'').replace(/\/+$/,'')}
 function headers(){return{apikey:CLOUD.anonKey,Authorization:'Bearer '+CLOUD.anonKey,'Content-Type':'application/json'}}
 function escapeHTML(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function status(text){document.getElementById('status').textContent=text}
 function key(){return document.getElementById('reviewKey').value.trim()}
+function openAIKey(){return document.getElementById('openaiKey').value.trim()||localStorage.getItem(OPENAI_KEY_STORAGE)||''}
+function openAIQuality(){return document.getElementById('aiQuality').value||localStorage.getItem(OPENAI_QUALITY_STORAGE)||'medium'}
+function saveOpenAIKey(){
+  const k=document.getElementById('openaiKey').value.trim();
+  const q=document.getElementById('aiQuality').value||'medium';
+  if(k)localStorage.setItem(OPENAI_KEY_STORAGE,k);
+  localStorage.setItem(OPENAI_QUALITY_STORAGE,q);
+  status(k?'AI 设置已保存在本机浏览器。':'已保存图片质量；API Key 为空时不会调用 AI。');
+}
+function restoreOpenAISettings(){
+  const k=localStorage.getItem(OPENAI_KEY_STORAGE)||'';
+  const q=localStorage.getItem(OPENAI_QUALITY_STORAGE)||'medium';
+  const keyInput=document.getElementById('openaiKey');
+  const quality=document.getElementById('aiQuality');
+  if(keyInput&&k)keyInput.value=k;
+  if(quality)quality.value=q;
+}
+restoreOpenAISettings();
 async function rpc(name,body){
   const res=await fetch(cloudBase()+'/rest/v1/rpc/'+name,{method:'POST',headers:headers(),body:JSON.stringify(body)});
   if(!res.ok){
@@ -106,6 +145,44 @@ function originalImageUrl(item){
 function refinedImageUrl(item){
   const analysis=itemAnalysis(item);
   return analysis.refined_image_url||analysis.admin_refined_image_url||item.image_url||'';
+}
+function aiAssetUrl(item,key){
+  const analysis=itemAnalysis(item);
+  const assets=analysis.ai_assets&&typeof analysis.ai_assets==='object'?analysis.ai_assets:{};
+  return assets[key]||analysis[key]||'';
+}
+function aiWorkbench(item){
+  const bg=aiAssetUrl(item,'card_background_url');
+  const hand=aiAssetUrl(item,'handheld_showcase_url')||item.showcase_url||'';
+  const cut=refinedImageUrl(item);
+  return `
+    <div class="ai-workbench" data-ai-root>
+      <div class="ai-title">AI 精修工作台</div>
+      <div class="ai-note">一键执行：识别武器信息、透明抠图、生成专属卡片背景、生成乐高角色手持展示图。结果会先填进表单，你还能手动修改后再通过。</div>
+      <div class="ai-assets">
+        <figure><figcaption>透明主体</figcaption><img data-ai-cutout src="${escapeHTML(cut)}" alt="AI 透明主体"></figure>
+        <figure><figcaption>卡片背景</figcaption><img data-ai-bg src="${escapeHTML(bg)}" alt="AI 卡片背景"></figure>
+        <figure><figcaption>手持展示</figcaption><img data-ai-handheld src="${escapeHTML(hand)}" alt="AI 手持展示"></figure>
+      </div>
+      <div class="row">
+        <select data-ai-style>
+          <option value="cute-premium">可爱高级积木</option>
+          <option value="ssr-legend">SSR 传说闪卡</option>
+          <option value="toy-studio">玩具摄影棚</option>
+        </select>
+        <select data-ai-character>
+          <option value="auto">自动匹配 MBTI 角色</option>
+          <option value="INTJ">INTJ 战略家</option>
+          <option value="ISTJ">ISTJ 检查员</option>
+          <option value="ENTP">ENTP 辩论家</option>
+          <option value="ENFP">ENFP 竞选者</option>
+        </select>
+      </div>
+      <div class="actions">
+        <button class="secondary" onclick="aiAnalyzeOnly('${escapeHTML(item.id)}',this)">只生成描述属性</button>
+        <button class="good" onclick="aiRefineFull('${escapeHTML(item.id)}',this)">一键 AI 全流程</button>
+      </div>
+    </div>`;
 }
 function refineTools(item){
   const original=originalImageUrl(item);
@@ -208,6 +285,7 @@ function renderWeapons(rows){
         <div class="line">推广证明：${escapeHTML(item.share_proof||'无')}</div>
         <div class="line"><a href="${escapeHTML(item.image_url)}" target="_blank" rel="noopener">新窗口看原图</a></div>
         ${refineTools(item)}
+        ${aiWorkbench(item)}
         ${weaponEditor(item)}
         <div class="showcase-tools">
           <input type="file" accept="image/*" data-showcase-file>
@@ -274,6 +352,7 @@ function renderApproved(rows){
         </div>
         <div class="line"><a href="${escapeHTML(item.image_url)}" target="_blank" rel="noopener">原武器图</a>${item.showcase_url?' · <a href="'+escapeHTML(item.showcase_url)+'" target="_blank" rel="noopener">展示图</a>':' · 未配展示图'}</div>
         ${refineTools(item)}
+        ${aiWorkbench(item)}
         ${weaponEditor(item)}
         <div class="showcase-tools">
           <input type="file" accept="image/*" data-showcase-file>
@@ -486,14 +565,246 @@ async function fileToWebpBlob(file){
   return await canvasToBlob(adminCutoutCanvas(canvas),'image/webp',.92);
 }
 async function uploadImageBlob(blob,id,prefix){
-  const path=prefix+'-'+id+'-'+Date.now()+'.webp';
+  const mime=blob.type||'image/webp';
+  const ext=mime.includes('png')?'png':mime.includes('jpeg')?'jpg':'webp';
+  const path=prefix+'-'+id+'-'+Date.now()+'.'+ext;
   const res=await fetch(cloudBase()+'/storage/v1/object/'+encodeURIComponent(CLOUD.imageBucket||'mumu-weapon-images')+'/'+encodeURIComponent(path),{
     method:'POST',
-    headers:{apikey:CLOUD.anonKey,Authorization:'Bearer '+CLOUD.anonKey,'Content-Type':'image/webp'},
+    headers:{apikey:CLOUD.anonKey,Authorization:'Bearer '+CLOUD.anonKey,'Content-Type':mime},
     body:blob
   });
   if(!res.ok)throw new Error('图片上传失败：'+res.status);
   return cloudBase()+'/storage/v1/object/public/'+encodeURIComponent(CLOUD.imageBucket||'mumu-weapon-images')+'/'+encodeURIComponent(path);
+}
+async function urlToBlob(url){
+  const res=await fetch(url,{mode:'cors',cache:'no-store'});
+  if(!res.ok)throw new Error('图片读取失败：'+res.status);
+  return res.blob();
+}
+function b64ToBlob(b64,mime='image/png'){
+  const bin=atob(b64);
+  const bytes=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+  return new Blob([bytes],{type:mime});
+}
+function extractOpenAIText(data){
+  if(data.output_text)return data.output_text;
+  const out=[];
+  (data.output||[]).forEach(item=>{
+    (item.content||[]).forEach(part=>{
+      if(part.text)out.push(part.text);
+      if(part.type==='output_text'&&part.text)out.push(part.text);
+    });
+  });
+  return out.join('\n').trim();
+}
+function parseJSONLoose(text){
+  const raw=String(text||'').trim();
+  try{return JSON.parse(raw)}catch(e){}
+  const match=raw.match(/\{[\s\S]*\}/);
+  if(match){try{return JSON.parse(match[0])}catch(e){}}
+  throw new Error('AI 没有返回可解析的 JSON。');
+}
+async function openAIResponseJSON(prompt,imageUrl){
+  const apiKey=openAIKey();
+  if(!apiKey)throw new Error('先在顶部填写并保存 OpenAI API Key。');
+  const res=await fetch('https://api.openai.com/v1/responses',{
+    method:'POST',
+    headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'gpt-5-mini',
+      input:[{
+        role:'user',
+        content:[
+          {type:'input_text',text:prompt},
+          {type:'input_image',image_url:imageUrl}
+        ]
+      }],
+      text:{format:{type:'json_object'}},
+      max_output_tokens:900
+    })
+  });
+  if(!res.ok)throw new Error('OpenAI 识别失败：'+res.status+' '+await res.text());
+  return parseJSONLoose(extractOpenAIText(await res.json()));
+}
+async function openAIImageEdit(imageBlob,prompt,options={}){
+  const apiKey=openAIKey();
+  if(!apiKey)throw new Error('先在顶部填写并保存 OpenAI API Key。');
+  const file=new File([imageBlob],options.fileName||'weapon.png',{type:imageBlob.type||'image/png'});
+  const body=new FormData();
+  body.append('model','gpt-image-1.5');
+  body.append('image',file);
+  body.append('prompt',prompt);
+  body.append('size',options.size||'1024x1024');
+  body.append('quality',openAIQuality());
+  if(options.background)body.append('background',options.background);
+  if(options.output_format)body.append('output_format',options.output_format);
+  const res=await fetch('https://api.openai.com/v1/images/edits',{method:'POST',headers:{Authorization:'Bearer '+apiKey},body});
+  if(!res.ok)throw new Error('OpenAI 图片编辑失败：'+res.status+' '+await res.text());
+  const data=await res.json();
+  const b64=data.data&&data.data[0]&&data.data[0].b64_json;
+  if(!b64)throw new Error('OpenAI 没有返回图片数据。');
+  return b64ToBlob(b64,options.output_format==='webp'?'image/webp':'image/png');
+}
+async function openAIImageGenerate(prompt,options={}){
+  const apiKey=openAIKey();
+  if(!apiKey)throw new Error('先在顶部填写并保存 OpenAI API Key。');
+  const res=await fetch('https://api.openai.com/v1/images/generations',{
+    method:'POST',
+    headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'gpt-image-1.5',
+      prompt,
+      size:options.size||'1024x1536',
+      quality:openAIQuality(),
+      output_format:options.output_format||'webp'
+    })
+  });
+  if(!res.ok)throw new Error('OpenAI 生成图片失败：'+res.status+' '+await res.text());
+  const data=await res.json();
+  const b64=data.data&&data.data[0]&&data.data[0].b64_json;
+  if(!b64)throw new Error('OpenAI 没有返回图片数据。');
+  return b64ToBlob(b64,options.output_format==='png'?'image/png':'image/webp');
+}
+function typeFromAI(t){
+  t=String(t||'').toLowerCase();
+  if(t.includes('gun')||t.includes('枪')||t.includes('炮')||t.includes('弩'))return 'gun';
+  if(t.includes('spear')||t.includes('长')||t.includes('矛')||t.includes('戟')||t.includes('杖'))return 'spear';
+  return 'sword';
+}
+function rarityFromAI(r,power,pieces){
+  r=String(r||'').toUpperCase();
+  if(['UR','SSR','SR','R','N'].includes(r))return r==='UR'?'SSR':r;
+  const score=Number(power||0)+Number(pieces||0)*.6;
+  return score>320?'SSR':score>230?'SR':score>150?'R':'N';
+}
+function fillWeaponFieldsFromAI(card,ai){
+  const t=typeFromAI(ai.type);
+  const rarity=rarityFromAI(ai.rarity,ai.ai_power,ai.piece_count);
+  const fields={
+    name:String(ai.name_zh||ai.name||'AI积木武器').slice(0,20),
+    type:t,
+    label:String(ai.label_zh||typeLabel(t)).slice(0,20),
+    skill:String(ai.skill_zh||'积木高光连击').slice(0,28),
+    description:String(ai.description_zh||'AI 根据图片识别出的原创积木武器。').slice(0,120),
+    name_en:String(ai.name_en||'AI Brick Weapon').slice(0,40),
+    label_en:String(ai.label_en||({sword:'Blade',gun:'Blaster',spear:'Polearm'}[t])).slice(0,28),
+    skill_en:String(ai.skill_en||'Brick Combo').slice(0,40),
+    description_en:String(ai.description_en||'An AI-refined original brick weapon.').slice(0,180),
+    piece_count:Math.max(0,Math.min(300,Number(ai.piece_count||0))),
+    ai_power:Math.max(1,Math.min(500,Number(ai.ai_power||100))),
+    defense:Math.max(1,Math.min(300,Number(ai.defense||82))),
+    crit:Math.max(0,Math.min(1,Number(ai.crit||0.12))),
+    card_rarity:rarity,
+    card_score:Math.max(0,Math.min(999,Number(ai.card_score||ai.ai_power||0)))
+  };
+  Object.entries(fields).forEach(([name,value])=>{
+    const el=card.querySelector('[data-field="'+name+'"]');
+    if(el)el.value=value;
+  });
+  return fields;
+}
+function aiPromptForWeapon(){
+  return `你是沐沐积木武器库的玩具策划和武器数值设计师。请观察图片里的积木武器，只返回严格 JSON，不要 markdown。
+字段：
+name_zh 中文武器名，20字内；
+name_en 英文名；
+type 只能是 sword/gun/spear；
+label_zh 中文分类名；
+label_en 英文分类；
+rarity 只能 N/R/SR/SSR/UR；
+piece_count 估算积木颗数 1-300；
+ai_power 战斗力 1-500；
+card_score 收藏评分 1-999；
+attack 1-300；
+defense 1-300；
+speed 1-100；
+stability 1-100；
+crit 0.05-0.40；
+complexity 1-10；
+balance 1-10；
+color_count 1-12；
+recommended_mbti 推荐一个 MBTI；
+skill_zh 中文技能名，28字内；
+skill_en 英文技能名；
+description_zh 有趣但高级的中文描述，120字内；
+description_en 英文描述，180字符内；
+tags 三到六个中文标签数组。
+判断重点：积木数量、结构完整度、武器轮廓、颜色层次、是否适合近战或远程。`;
+}
+function backgroundPrompt(ai,style){
+  const rarity=rarityFromAI(ai.rarity,ai.ai_power,ai.piece_count);
+  const mood=style==='ssr-legend'?'premium collectible foil card, luminous rim, rare toy display':style==='toy-studio'?'clean toy photography studio, soft product pedestal':'cute premium brick toy display';
+  return `Create a vertical 3:4 collectible card background for a brick toy weapon. Style: ${mood}. Weapon type: ${typeFromAI(ai.type)}. Rarity: ${rarity}. Use soft cream, pastel blue, gentle gold, playful brick studs, polished product lighting. No text, no logos, no weapon, no people. Leave clear center space for a transparent weapon cutout. High-end cute toy website aesthetic.`;
+}
+function handheldPrompt(ai,style,character){
+  const mbti=character&&character!=='auto'?character:(ai.recommended_mbti||'INTJ');
+  return `Create a vertical premium toy showcase illustration: a cute LEGO-compatible chibi brick character holding the uploaded brick weapon, matching the weapon silhouette and colors as much as possible. Character personality: ${mbti}. Weapon name: ${ai.name_zh||ai.name_en||'brick weapon'}. Type: ${typeFromAI(ai.type)}. Style: cute high-end collectible toy, glossy plastic, soft cream toy display stage, pastel lighting, clear full body character, weapon visible, no readable text, no brand logo.`;
+}
+async function aiAnalyzeOnly(id,btn){
+  const card=btn.closest('.card');
+  const source=(card.querySelector('.refine-tools')&&card.querySelector('.refine-tools').dataset.originalImage)||(card.querySelector('.image img')&&card.querySelector('.image img').src);
+  if(!source){status('没有找到可识别的原图。');return}
+  btn.disabled=true;
+  status('AI 正在识别武器信息...');
+  try{
+    const ai=await openAIResponseJSON(aiPromptForWeapon(),source);
+    fillWeaponFieldsFromAI(card,ai);
+    await saveWeapon(id,btn,true);
+    status('AI 描述和属性已填入并保存。你可以继续修改，或点一键 AI 全流程生成图片。');
+  }catch(err){
+    status((err&&err.message)||'AI 识别失败。');
+  }finally{
+    btn.disabled=false;
+  }
+}
+async function aiRefineFull(id,btn){
+  const card=btn.closest('.card');
+  const root=card.querySelector('[data-ai-root]');
+  const style=(root&&root.querySelector('[data-ai-style]').value)||'cute-premium';
+  const character=(root&&root.querySelector('[data-ai-character]').value)||'auto';
+  const source=(card.querySelector('.refine-tools')&&card.querySelector('.refine-tools').dataset.originalImage)||(card.querySelector('.image img')&&card.querySelector('.image img').src);
+  if(!source){status('没有找到可处理的原图。');return}
+  btn.disabled=true;
+  status('AI 全流程 1/4：识别武器信息...');
+  try{
+    const ai=await openAIResponseJSON(aiPromptForWeapon(),source);
+    const fields=fillWeaponFieldsFromAI(card,ai);
+    status('AI 全流程 2/4：生成透明武器主体...');
+    const originalBlob=await urlToBlob(source);
+    const cutoutBlob=await openAIImageEdit(originalBlob,'Remove the background from this brick toy weapon photo. Keep the entire weapon complete, including small separated colorful LEGO-style bricks, studs, handles, barrels, blade tips, shadows on the weapon surface, and all colored pieces. Output only the weapon on a transparent background. Do not simplify, crop, redraw, or remove colored bricks. Preserve the original toy shape and colors.',{background:'transparent',output_format:'png',size:'1024x1024',fileName:'brick-weapon.png'});
+    const cutoutUrl=await uploadImageBlob(cutoutBlob,id,'ai-cutout');
+    await replaceMainImage(id,cutoutUrl,source,btn);
+    if(root&&root.querySelector('[data-ai-cutout]'))root.querySelector('[data-ai-cutout]').src=cutoutUrl;
+    status('AI 全流程 3/4：生成专属卡片背景...');
+    const bgBlob=await openAIImageGenerate(backgroundPrompt(ai,style),{size:'1024x1536',output_format:'webp'});
+    const bgUrl=await uploadImageBlob(bgBlob,id,'ai-card-bg');
+    if(root&&root.querySelector('[data-ai-bg]'))root.querySelector('[data-ai-bg]').src=bgUrl;
+    status('AI 全流程 4/4：生成角色手持展示图...');
+    const handBlob=await openAIImageEdit(cutoutBlob,handheldPrompt(ai,style,character),{size:'1024x1536',output_format:'webp',fileName:'weapon-cutout.png'});
+    const handUrl=await uploadImageBlob(handBlob,id,'ai-handheld');
+    const showcaseInput=card.querySelector('[data-field="showcase_url"]');
+    if(showcaseInput)showcaseInput.value=handUrl;
+    if(root&&root.querySelector('[data-ai-handheld]'))root.querySelector('[data-ai-handheld]').src=handUrl;
+    await saveWeapon(id,btn,true);
+    try{
+      await rpc('admin_update_weapon_ai_assets',{
+        input_review_key:key(),
+        weapon_id:id,
+        refined_image_url:cutoutUrl,
+        card_background_url:bgUrl,
+        handheld_showcase_url:handUrl,
+        ai_metadata:Object.assign({},ai,{admin_ai_style:style,admin_ai_character:character,filled_fields:fields})
+      });
+      status('AI 全流程完成：主体、背景、手持展示图、属性都已保存。审核通过后公开站会显示新版展示图。');
+    }catch(metaErr){
+      status('AI 图片和表单已保存；但 AI 元数据保存失败。请运行新版 supabase-schema.sql 后再试一次保存元数据。');
+    }
+  }catch(err){
+    status((err&&err.message)||'AI 全流程失败。若提示函数不存在，请先运行新版 supabase-schema.sql。');
+  }finally{
+    btn.disabled=false;
+  }
 }
 async function replaceMainImage(id,nextUrl,originalUrl,btn){
   await rpc('admin_replace_weapon_image',{

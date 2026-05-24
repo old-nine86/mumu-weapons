@@ -80,8 +80,6 @@ with check (status = 'pending');
 
 grant usage on schema public to anon, authenticated;
 grant select, insert on public.weapons to anon, authenticated;
-grant insert on public.promotion_submissions to anon, authenticated;
-grant select on public.upload_quota_rules to anon, authenticated;
 
 create table if not exists public.upload_quota_rules (
   id text primary key default 'default',
@@ -99,6 +97,8 @@ set free_per_ip = excluded.free_per_ip,
     bonus_per_approved_promotion = excluded.bonus_per_approved_promotion,
     updated_at = now();
 
+grant select on public.upload_quota_rules to anon, authenticated;
+
 create table if not exists public.promotion_submissions (
   id uuid primary key default gen_random_uuid(),
   client_token text not null default gen_random_uuid()::text,
@@ -115,6 +115,8 @@ alter table public.promotion_submissions add column if not exists client_token t
 alter table public.promotion_submissions enable row level security;
 create unique index if not exists promotion_submissions_client_token_idx
 on public.promotion_submissions (client_token);
+
+grant insert on public.promotion_submissions to anon, authenticated;
 
 create table if not exists public.admin_settings (
   id text primary key,
@@ -541,6 +543,69 @@ end;
 $$;
 
 grant execute on function public.admin_replace_weapon_image(text, text, text, text) to anon, authenticated;
+
+drop function if exists public.admin_update_weapon_ai_assets(text, text, text, text, text, jsonb);
+create or replace function public.admin_update_weapon_ai_assets(
+  input_review_key text,
+  weapon_id text,
+  refined_image_url text default '',
+  card_background_url text default '',
+  handheld_showcase_url text default '',
+  ai_metadata jsonb default '{}'::jsonb
+)
+returns table (
+  id text,
+  image_url text,
+  showcase_url text,
+  analysis jsonb,
+  status text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  current_original text;
+  assets jsonb;
+begin
+  if not exists (
+    select 1 from public.admin_settings
+    where admin_settings.id = 'default'
+      and admin_settings.review_key = input_review_key
+  ) then
+    raise exception 'invalid review key';
+  end if;
+
+  select coalesce(w.analysis->>'original_image_url', w.image_url)
+  into current_original
+  from public.weapons w
+  where w.id = weapon_id;
+
+  assets := jsonb_build_object(
+    'card_background_url', coalesce(card_background_url, ''),
+    'handheld_showcase_url', coalesce(handheld_showcase_url, ''),
+    'generated_at', now()
+  );
+
+  return query
+  update public.weapons w
+  set image_url = case when coalesce(refined_image_url, '') <> '' then refined_image_url else w.image_url end,
+      showcase_url = case when coalesce(handheld_showcase_url, '') <> '' then handheld_showcase_url else w.showcase_url end,
+      analysis = coalesce(w.analysis, '{}'::jsonb)
+        || jsonb_build_object(
+          'original_image_url', coalesce(current_original, w.image_url),
+          'refined_image_url', case when coalesce(refined_image_url, '') <> '' then refined_image_url else coalesce(w.analysis->>'refined_image_url', w.image_url) end,
+          'ai_assets', assets,
+          'ai_metadata', coalesce(ai_metadata, '{}'::jsonb),
+          'refined_by', 'openai-admin-workbench-v1',
+          'refined_at', now()
+        )
+  where w.id = weapon_id
+  returning w.id, w.image_url, w.showcase_url, w.analysis, w.status;
+end;
+$$;
+
+grant execute on function public.admin_update_weapon_ai_assets(text, text, text, text, text, jsonb) to anon, authenticated;
 
 drop policy if exists "Public can submit promotion proof" on public.promotion_submissions;
 create policy "Public can submit promotion proof"

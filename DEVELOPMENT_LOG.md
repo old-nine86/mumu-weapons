@@ -2,6 +2,26 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-24: Admin AI Refinement Workbench
+
+Goal:
+- Move the hard upload cleanup work into the admin review flow, where one reviewer can run AI refinement before approving a player weapon.
+
+Shipped:
+- Added an OpenAI API key field to `admin.html`; the key is stored only in the local admin browser, not in the public config file.
+- Added an `AI 精修工作台` to pending and approved weapon cards.
+- Added `只生成描述属性` to inspect the uploaded weapon image and fill weapon name, type, rarity, brick count, battle stats, skill, descriptions, and recommended MBTI metadata.
+- Added `一键 AI 全流程` to run recognition, transparent cutout, card-background generation, and LEGO-style character handheld showcase generation.
+- The full workflow uploads generated assets to Supabase Storage, replaces the public weapon subject image, sets the handheld image as the showcase image, and saves AI asset metadata.
+- Added the `admin_update_weapon_ai_assets` Supabase RPC to preserve refined image URL, card background URL, handheld showcase URL, and AI metadata in `weapons.analysis`.
+- Connected Chinese and English weapon detail windows to use AI-generated card backgrounds when present.
+
+Verification:
+- Parsed scripts in `index.html`, `admin.html`, and `en/index.html`.
+
+Next:
+- Run the updated `supabase-schema.sql` in production Supabase, then test one pending upload through `一键 AI 全流程` before approving it.
+
 ## 2026-05-24: Full Project Health Check
 
 Goal:

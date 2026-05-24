@@ -5645,6 +5645,9 @@ const CARD_BACKGROUNDS={
   N:['card-bg-16-n.webp','card-bg-17-n.webp','card-bg-18-n.webp','card-bg-19-n.webp','card-bg-20-n.webp']
 };
 function weaponCardBackground(w,rarity){
+  const aiAssets=w&&w.analysis&&w.analysis.ai_assets&&typeof w.analysis.ai_assets==='object'?w.analysis.ai_assets:{};
+  const aiBg=aiAssets.card_background_url||(w&&w.analysis&&w.analysis.card_background_url)||'';
+  if(aiBg)return aiBg;
   const pool=CARD_BACKGROUNDS[rarity.key]||CARD_BACKGROUNDS.N;
   const typeIndex={sword:0,gun:1,spear:2}[w.t];
   const power=Number(w.aiPower||(w.analysis&&w.analysis.aiPower)||0);
@@ -7476,7 +7479,9 @@ function openModal(id){
   ].map(x=>'<div class="modal-analysis">'+escapeHTML(x)+'</div>').join('');
   const showcaseSrc=weaponShowcaseImage(w)||IMG[w.i];
   const hasShowcase=!!weaponShowcaseImage(w);
-  const heroStyle=hasShowcase?' style="background-image:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,253,248,.78)),url(\''+showcaseSrc+'\')"':'';
+  const aiAssets=analysis.ai_assets&&typeof analysis.ai_assets==='object'?analysis.ai_assets:{};
+  const heroBg=aiAssets.card_background_url||analysis.card_background_url||showcaseSrc;
+  const heroStyle=hasShowcase?' style="background-image:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,253,248,.78)),url(\''+heroBg+'\')"':'';
   document.getElementById('modalContent').className='modal-content';
   document.getElementById('modalContent').innerHTML=
     '<div class="modal-img-wrap '+(hasShowcase?'has-showcase':'')+'"'+heroStyle+'>'+

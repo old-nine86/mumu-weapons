@@ -50,7 +50,12 @@ window.MUMU_SUPABASE = {
 
 1. 打开 `https://old-nine86.github.io/mumu-weapons/admin.html`。
 2. 输入 Supabase 里设置的审核口令。
-3. 直接看图片，点击“通过”或“拒绝”。
+3. 如果要用 AI 精修，在顶部填 OpenAI API Key 并保存。这个 key 只保存在当前浏览器，不写进 GitHub。
+4. 在待审核武器里点击“只生成描述属性”或“一键 AI 全流程”。
+5. 一键 AI 全流程会自动生成透明主体图、卡片背景、角色手持展示图，并保存到 Supabase Storage。
+6. 检查 AI 填好的名字、创建者、描述、属性和展示图，确认后点击“通过”或“拒绝”。
+
+重要：第一次使用 AI 全流程前，需要运行最新版 `supabase-schema.sql`，里面包含 `admin_update_weapon_ai_assets` 函数。
 
 备用方式是 Supabase 后台：
 
