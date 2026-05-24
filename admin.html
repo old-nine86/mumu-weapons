@@ -81,6 +81,7 @@ a{color:#0b69d1}
       <select id="aiProvider">
         <option value="openai">OpenAI：全流程</option>
         <option value="gemini">Google Gemini：先支持识别+本地抠图</option>
+        <option value="openrouter">OpenRouter 免费模型：识别+本地生成</option>
       </select>
       <input id="aiKey" type="password" placeholder="AI API Key，只保存在本机浏览器">
       <select id="aiQuality">
@@ -658,8 +659,64 @@ async function geminiResponseJSON(prompt,imageUrl){
   const text=(((data.candidates||[])[0]||{}).content||{}).parts?.map(p=>p.text||'').join('')||'';
   return parseJSONLoose(text);
 }
+function extractOpenRouterText(data){
+  const msg=((data.choices||[])[0]||{}).message||{};
+  if(typeof msg.content==='string')return msg.content;
+  if(Array.isArray(msg.content))return msg.content.map(p=>p.text||'').join('\n');
+  return '';
+}
+async function openRouterResponseJSON(prompt,imageUrl){
+  const apiKey=aiKey();
+  if(!apiKey)throw new Error('先在顶部填写并保存 OpenRouter API Key。');
+  const dataUrl=await blobToDataURL(await urlToBlob(imageUrl));
+  const models=[
+    'openrouter/free',
+    'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free',
+    'nvidia/nemotron-nano-12b-v2-vl:free',
+    'google/gemma-4-31b-it:free',
+    'google/gemma-4-26b-a4b-it:free'
+  ];
+  let lastError='';
+  for(const model of models){
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),18000);
+    try{
+      const res=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+        method:'POST',
+        signal:controller.signal,
+        headers:{
+          Authorization:'Bearer '+apiKey,
+          'Content-Type':'application/json',
+          'HTTP-Referer':'https://old-nine86.github.io/mumu-weapons/',
+          'X-Title':'Mumu Brick Weapons'
+        },
+        body:JSON.stringify({
+          model,
+          messages:[{role:'user',content:[
+            {type:'text',text:prompt+'\n\nReturn JSON only. No markdown.'},
+            {type:'image_url',image_url:{url:dataUrl}}
+          ]}],
+          response_format:{type:'json_object'},
+          max_tokens:900,
+          temperature:.25
+        })
+      });
+      clearTimeout(timeout);
+      const raw=await res.text();
+      if(!res.ok){lastError=model+' '+res.status+' '+raw.slice(0,220);continue}
+      return parseJSONLoose(extractOpenRouterText(JSON.parse(raw)));
+    }catch(err){
+      clearTimeout(timeout);
+      lastError=model+' '+((err&&err.name)==='AbortError'?'timeout':((err&&err.message)||'failed'));
+    }
+  }
+  throw new Error('OpenRouter 免费模型暂时不可用：'+lastError);
+}
 async function aiResponseJSON(prompt,imageUrl){
-  return aiProvider()==='gemini'?geminiResponseJSON(prompt,imageUrl):openAIResponseJSON(prompt,imageUrl);
+  const provider=aiProvider();
+  if(provider==='gemini')return geminiResponseJSON(prompt,imageUrl);
+  if(provider==='openrouter')return openRouterResponseJSON(prompt,imageUrl);
+  return openAIResponseJSON(prompt,imageUrl);
 }
 async function openAIResponseJSON(prompt,imageUrl){
   const apiKey=openAIKey();
@@ -923,24 +980,29 @@ async function aiRefineFull(id,btn){
     const provider=aiProvider();
     const ai=await aiResponseJSON(aiPromptForWeapon(),source);
     const fields=fillWeaponFieldsFromAI(card,ai);
-    setAIStatus(card,provider==='gemini'?'Google 全流程 2/4：使用本地算法抠图并保存主体。':'AI 全流程 2/4：生成透明武器主体...');
+    const localImageProvider=provider==='gemini'||provider==='openrouter';
+    setAIStatus(card,localImageProvider?(provider==='openrouter'?'OpenRouter 免费模型 2/4：识别完成，使用本地算法抠图。':'Google 全流程 2/4：使用本地算法抠图并保存主体。'):'AI 全流程 2/4：生成透明武器主体...');
     const originalBlob=await urlToBlob(source);
-    const cutoutBlob=provider==='gemini'
+    const cutoutBlob=localImageProvider
       ? await canvasToBlob(adminCutoutCanvas(await imageUrlToCanvas(source)),'image/webp',.92)
       : await openAIImageEdit(originalBlob,'Remove the background from this brick toy weapon photo. Keep the entire weapon complete, including small separated colorful LEGO-style bricks, studs, handles, barrels, blade tips, shadows on the weapon surface, and all colored pieces. Output only the weapon on a transparent background. Do not simplify, crop, redraw, or remove colored bricks. Preserve the original toy shape and colors.',{background:'transparent',output_format:'png',size:'1024x1024',fileName:'brick-weapon.png'});
     const cutoutUrl=await uploadImageBlob(cutoutBlob,id,'ai-cutout');
     await replaceMainImage(id,cutoutUrl,source,btn);
     if(root&&root.querySelector('[data-ai-cutout]'))root.querySelector('[data-ai-cutout]').src=cutoutUrl;
-    if(provider==='gemini'){
-      setAIStatus(card,'Google 全流程 3/4：生成专属卡片背景...');
-      const bgResult=await safeGeminiImageGenerate(backgroundPrompt(ai,style),{},()=>fallbackCardBackground(ai));
+    if(localImageProvider){
+      setAIStatus(card,provider==='openrouter'?'OpenRouter 免费模型 3/4：本地生成专属卡片背景...':'Google 全流程 3/4：生成专属卡片背景...');
+      const bgResult=provider==='openrouter'
+        ? {blob:await fallbackCardBackground(ai),fallback:true,error:'OpenRouter free models do not generate images'}
+        : await safeGeminiImageGenerate(backgroundPrompt(ai,style),{},()=>fallbackCardBackground(ai));
       const bgBlob=bgResult.blob;
-      const bgUrl=await uploadImageBlob(bgBlob,id,'gemini-card-bg');
+      const bgUrl=await uploadImageBlob(bgBlob,id,provider==='openrouter'?'openrouter-card-bg':'gemini-card-bg');
       if(root&&root.querySelector('[data-ai-bg]'))root.querySelector('[data-ai-bg]').src=bgUrl;
-      setAIStatus(card,bgResult.fallback?'Google 图片额度不足，已用本地高级卡片背景兜底。继续生成展示图...':'Google 全流程 4/4：生成角色手持展示图...');
-      const handResult=await safeGeminiImageGenerate(handheldPrompt(ai,style,character),{imageBlob:cutoutBlob},()=>fallbackHandheldShowcase(ai,cutoutBlob));
+      setAIStatus(card,provider==='openrouter'?'OpenRouter 免费模型 4/4：本地合成角色手持展示图...':(bgResult.fallback?'Google 图片额度不足，已用本地高级卡片背景兜底。继续生成展示图...':'Google 全流程 4/4：生成角色手持展示图...'));
+      const handResult=provider==='openrouter'
+        ? {blob:await fallbackHandheldShowcase(ai,cutoutBlob),fallback:true,error:'OpenRouter free models do not generate images'}
+        : await safeGeminiImageGenerate(handheldPrompt(ai,style,character),{imageBlob:cutoutBlob},()=>fallbackHandheldShowcase(ai,cutoutBlob));
       const handBlob=handResult.blob;
-      const handUrl=await uploadImageBlob(handBlob,id,'gemini-handheld');
+      const handUrl=await uploadImageBlob(handBlob,id,provider==='openrouter'?'openrouter-handheld':'gemini-handheld');
       const showcaseInput=card.querySelector('[data-field="showcase_url"]');
       if(showcaseInput)showcaseInput.value=handUrl;
       if(root&&root.querySelector('[data-ai-handheld]'))root.querySelector('[data-ai-handheld]').src=handUrl;
@@ -952,13 +1014,13 @@ async function aiRefineFull(id,btn){
           refined_image_url:cutoutUrl,
           card_background_url:bgUrl,
           handheld_showcase_url:handUrl,
-          ai_metadata:Object.assign({},ai,{admin_ai_provider:'gemini',filled_fields:fields,background_fallback:bgResult.fallback,handheld_fallback:handResult.fallback,background_error:bgResult.error,handheld_error:handResult.error})
+          ai_metadata:Object.assign({},ai,{admin_ai_provider:provider,filled_fields:fields,background_fallback:bgResult.fallback,handheld_fallback:handResult.fallback,background_error:bgResult.error,handheld_error:handResult.error})
         });
       }catch(metaErr){
         setAIStatus(card,'Google 图片已生成；但 AI 元数据保存失败。展示图地址已填入表单，可手动保存。');
         return;
       }
-      setAIStatus(card,(bgResult.fallback||handResult.fallback)?'流程完成：Google 识别成功，图片额度不足的部分已用本地高级背景/展示图兜底并保存。':'Google 全流程完成：属性、主体图、卡片背景、角色手持展示图都已保存。');
+      setAIStatus(card,provider==='openrouter'?'OpenRouter 流程完成：免费模型识别成功，背景和手持展示图已用本地高级生成器保存。':((bgResult.fallback||handResult.fallback)?'流程完成：Google 识别成功，图片额度不足的部分已用本地高级背景/展示图兜底并保存。':'Google 全流程完成：属性、主体图、卡片背景、角色手持展示图都已保存。'));
       return;
     }
     setAIStatus(card,'AI 全流程 3/4：生成专属卡片背景...');
