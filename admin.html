@@ -722,6 +722,32 @@ async function openAIImageGenerate(prompt,options={}){
   if(!b64)throw new Error('OpenAI 没有返回图片数据。');
   return b64ToBlob(b64,options.output_format==='png'?'image/png':'image/webp');
 }
+function geminiImageParts(data){
+  const parts=(((data.candidates||[])[0]||{}).content||{}).parts||[];
+  return parts.filter(part=>part.inlineData||part.inline_data);
+}
+async function geminiImageGenerate(prompt,options={}){
+  const apiKey=aiKey();
+  if(!apiKey)throw new Error('先在顶部填写并保存 Google Gemini API Key。');
+  const parts=[{text:prompt}];
+  if(options.imageBlob){
+    const dataUrl=await blobToDataURL(options.imageBlob);
+    parts.push({inlineData:{mimeType:mimeFromBlob(options.imageBlob),data:(dataUrl.split(',')[1]||'')}});
+  }
+  const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key='+encodeURIComponent(apiKey),{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      contents:[{parts}],
+      generationConfig:{responseModalities:['TEXT','IMAGE']}
+    })
+  });
+  if(!res.ok)throw new Error('Google Gemini 图片生成失败：'+res.status+' '+await res.text());
+  const imagePart=geminiImageParts(await res.json())[0];
+  const inline=imagePart&&(imagePart.inlineData||imagePart.inline_data);
+  if(!inline||!inline.data)throw new Error('Google Gemini 没有返回图片。可能是模型/地区/额度暂不支持图片生成。');
+  return b64ToBlob(inline.data,inline.mimeType||inline.mime_type||'image/png');
+}
 function typeFromAI(t){
   t=String(t||'').toLowerCase();
   if(t.includes('gun')||t.includes('枪')||t.includes('炮')||t.includes('弩'))return 'gun';
@@ -827,7 +853,7 @@ async function aiRefineFull(id,btn){
     const provider=aiProvider();
     const ai=await aiResponseJSON(aiPromptForWeapon(),source);
     const fields=fillWeaponFieldsFromAI(card,ai);
-    setAIStatus(card,provider==='gemini'?'Google 模式 2/2：使用本地算法抠图并保存。Google 背景/手持图稍后单独接。':'AI 全流程 2/4：生成透明武器主体...');
+    setAIStatus(card,provider==='gemini'?'Google 全流程 2/4：使用本地算法抠图并保存主体。':'AI 全流程 2/4：生成透明武器主体...');
     const originalBlob=await urlToBlob(source);
     const cutoutBlob=provider==='gemini'
       ? await canvasToBlob(adminCutoutCanvas(await imageUrlToCanvas(source)),'image/webp',.92)
@@ -836,18 +862,31 @@ async function aiRefineFull(id,btn){
     await replaceMainImage(id,cutoutUrl,source,btn);
     if(root&&root.querySelector('[data-ai-cutout]'))root.querySelector('[data-ai-cutout]').src=cutoutUrl;
     if(provider==='gemini'){
+      setAIStatus(card,'Google 全流程 3/4：生成专属卡片背景...');
+      const bgBlob=await geminiImageGenerate(backgroundPrompt(ai,style),{});
+      const bgUrl=await uploadImageBlob(bgBlob,id,'gemini-card-bg');
+      if(root&&root.querySelector('[data-ai-bg]'))root.querySelector('[data-ai-bg]').src=bgUrl;
+      setAIStatus(card,'Google 全流程 4/4：生成角色手持展示图...');
+      const handBlob=await geminiImageGenerate(handheldPrompt(ai,style,character),{imageBlob:cutoutBlob});
+      const handUrl=await uploadImageBlob(handBlob,id,'gemini-handheld');
+      const showcaseInput=card.querySelector('[data-field="showcase_url"]');
+      if(showcaseInput)showcaseInput.value=handUrl;
+      if(root&&root.querySelector('[data-ai-handheld]'))root.querySelector('[data-ai-handheld]').src=handUrl;
       await saveWeapon(id,btn,true);
       try{
         await rpc('admin_update_weapon_ai_assets',{
           input_review_key:key(),
           weapon_id:id,
           refined_image_url:cutoutUrl,
-          card_background_url:'',
-          handheld_showcase_url:'',
+          card_background_url:bgUrl,
+          handheld_showcase_url:handUrl,
           ai_metadata:Object.assign({},ai,{admin_ai_provider:'gemini',filled_fields:fields})
         });
-      }catch(metaErr){}
-      setAIStatus(card,'Google 模式已完成：属性已生成，主体图已用本地算法抠图并保存。背景和角色手持图需要 OpenAI 或后续接 Google 图片接口。');
+      }catch(metaErr){
+        setAIStatus(card,'Google 图片已生成；但 AI 元数据保存失败。展示图地址已填入表单，可手动保存。');
+        return;
+      }
+      setAIStatus(card,'Google 全流程完成：属性、主体图、卡片背景、角色手持展示图都已保存。');
       return;
     }
     setAIStatus(card,'AI 全流程 3/4：生成专属卡片背景...');
