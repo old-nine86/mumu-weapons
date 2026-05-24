@@ -3165,6 +3165,10 @@ body::before{
   font-size:11px;
   font-weight:1000;
 }
+.cutout-controls,
+.cutout-editor{
+  display:none!important;
+}
 .upload-form{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -4191,11 +4195,11 @@ body::before{
               <img id="uploadOriginalImg" alt="原图预览">
             </div>
             <div class="upload-preview-tile">
-              <div class="upload-preview-label">扣背景后</div>
-              <img id="uploadPreviewImg" alt="扣背景预览">
+              <div class="upload-preview-label">后台精修前</div>
+              <img id="uploadPreviewImg" alt="提交审核图预览">
             </div>
             <div class="upload-card-preview">
-              <div class="upload-preview-label">最终收藏卡预览</div>
+              <div class="upload-preview-label">审核后收藏卡预览</div>
               <div class="upload-card-preview-inner" id="uploadCardPreview">
                 <div class="upload-card-rarity">SSR</div>
                 <img id="uploadCardImg" alt="收藏卡预览">
@@ -6508,8 +6512,9 @@ async function saveUploadedWeaponToCloud(item){
   const analysis=Object.assign({},item.analysis||{},{
     original_image_url:originalImageUrl||imageUrl,
     refined_image_url:imageUrl,
-    refined_by:'browser-upload-cutout',
-    refined_at:new Date().toISOString()
+    refined_by:'user-original-admin-refinement-pending',
+    refined_at:'',
+    admin_refinement_required:true
   });
   const row={
     id:String(item.i),
@@ -6731,20 +6736,20 @@ async function processUploadFile(file,fillDefaults){
   if(getUploadLimitReached()){refreshUploadState();return}
   if(!file.type.startsWith('image/')){if(status)status.textContent='请选择图片文件。';return}
   if(file.size>8*1024*1024){if(status)status.textContent='图片太大了，请选择 8MB 以内的图片。';return}
-  const modeInfo=cutoutConfig(currentCutoutMode);
-  if(status)status.textContent='正在用“'+modeInfo.label+'”模式识别图片并扣除背景...';
+  if(status)status.textContent='正在识别图片。用户只提交原图，后台会统一精修抠图、配背景和展示图...';
   try{
-    const packed=await compressImage(file,currentCutoutMode);
+    const packed=await compressImage(file,'soft');
     const profile=recognizeWeaponProfile(file,packed.width,packed.height,packed.canvas);
     const t=profile.type;
     const analysis=analyzeBrickWeapon(packed.canvas,t,profile);
-    analysis.cutoutMode=currentCutoutMode;
-    pendingUpload={fileName:file.name,img:packed.dataUrl,originalImg:packed.originalDataUrl||packed.dataUrl,t,analysis};
+    const originalPreview=packed.originalDataUrl||packed.dataUrl;
+    analysis.cutoutMode='admin_refinement_pending';
+    analysis.adminRefinementRequired=true;
+    pendingUpload={fileName:file.name,img:originalPreview,originalImg:originalPreview,t,analysis};
     document.getElementById('uploadEmpty').style.display='none';
     document.getElementById('uploadPreview').style.display='flex';
-    document.getElementById('uploadOriginalImg').src=packed.originalDataUrl||packed.dataUrl;
-    document.getElementById('uploadPreviewImg').src=packed.dataUrl;
-    initCutoutEditor(packed.originalDataUrl||packed.dataUrl,packed.editorCutDataUrl||packed.dataUrl);
+    document.getElementById('uploadOriginalImg').src=originalPreview;
+    document.getElementById('uploadPreviewImg').src=originalPreview;
     document.getElementById('uploadRecognition').textContent='识别为 '+typeEmoji(t)+' '+typeLabel(t)+' · 置信度 '+analysis.confidence+'% · 约 '+analysis.pieceCount+' 颗 · 战力 '+analysis.aiPower;
     renderUploadQuality(profile,analysis,packed);
     document.getElementById('uploadType').value=t;
@@ -6753,7 +6758,7 @@ async function processUploadFile(file,fillDefaults){
     if(fillDefaults&&!document.getElementById('uploadSkill').value.trim())document.getElementById('uploadSkill').value=typeEmoji(t)+' 积木闪光连击';
     if(fillDefaults&&!document.getElementById('uploadDesc').value.trim())document.getElementById('uploadDesc').value='由玩家上传的原创积木武器，已经加入收藏武器库。';
     updateUploadCardPreview();
-    if(status)status.textContent=(cloudEnabled()?'识别完成，点击按钮后会提交审核。':'识别完成，当前会保存到这台设备。')+' 当前扣背景：'+modeInfo.label+'。AI 估算：约 '+analysis.pieceCount+' 颗积木，战力 '+analysis.aiPower+'，识别置信度 '+analysis.confidence+'%。';
+    if(status)status.textContent=(cloudEnabled()?'识别完成，点击按钮后会提交审核。':'识别完成，当前会保存到这台设备。')+' 现在提交的是原图；后台会负责抠图、卡面、背景和展示图精修。AI 估算：约 '+analysis.pieceCount+' 颗积木，战力 '+analysis.aiPower+'，识别置信度 '+analysis.confidence+'%。';
   }catch(err){
     pendingUpload=null;
     if(status)status.textContent=err.message||'图片处理失败，请换一张试试。';
