@@ -554,6 +554,16 @@ function adminCutoutCanvas(canvas){
   ctx.putImageData(img,0,0);
   return trimTransparentCanvas(canvas);
 }
+function normalizeWeaponCutoutCanvas(source,targetW=980,targetH=620){
+  const trimmed=trimTransparentCanvas(source);
+  const out=document.createElement('canvas');
+  out.width=targetW;out.height=targetH;
+  const ctx=out.getContext('2d');
+  const scale=Math.min(targetW*.96/trimmed.width,targetH*.82/trimmed.height);
+  const dw=trimmed.width*scale,dh=trimmed.height*scale;
+  ctx.drawImage(trimmed,(targetW-dw)/2,(targetH-dh)/2,dw,dh);
+  return out;
+}
 function trimTransparentCanvas(source){
   const ctx=source.getContext('2d',{willReadFrequently:true});
   const w=source.width,h=source.height;
@@ -1005,21 +1015,26 @@ async function fallbackCardBackground(ai){
   const [a,b,c,d]=fallbackPalette(ai);
   const rarity=rarityFromAI(ai.rarity,ai.ai_power,ai.piece_count);
   const canvas=document.createElement('canvas');
-  canvas.width=1024;canvas.height=1536;
+  canvas.width=640;canvas.height=860;
   const ctx=canvas.getContext('2d');
-  const grad=ctx.createLinearGradient(0,0,1024,1536);
-  grad.addColorStop(0,a);grad.addColorStop(.42,b);grad.addColorStop(1,c);
+  const grad=ctx.createLinearGradient(0,0,640,860);
+  grad.addColorStop(0,'#fffdf8');grad.addColorStop(.38,a);grad.addColorStop(1,b);
   ctx.fillStyle=grad;ctx.fillRect(0,0,1024,1536);
-  ctx.fillStyle='rgba(255,255,255,.58)';
-  for(let y=70;y<1500;y+=128)for(let x=70;x<980;x+=128){
-    ctx.beginPath();ctx.arc(x,y,24,0,Math.PI*2);ctx.fill();
-    ctx.strokeStyle='rgba(31,41,51,.08)';ctx.lineWidth=5;ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,.45)';
+  for(let y=44;y<840;y+=78)for(let x=44;x<620;x+=78){
+    ctx.beginPath();ctx.arc(x,y,13,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='rgba(31,41,51,.07)';ctx.lineWidth=3;ctx.stroke();
   }
-  ctx.fillStyle='rgba(255,255,255,.72)';
-  roundRect(ctx,92,142,840,1250,58);ctx.fill();
-  ctx.strokeStyle=d;ctx.lineWidth=10;ctx.stroke();
-  ctx.fillStyle=d;ctx.font='900 82px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.fillText(rarity,112,250);
-  ctx.fillStyle='rgba(31,41,51,.16)';ctx.font='800 38px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.fillText(typeLabel(typeFromAI(ai.type))+' CARD',112,310);
+  const glow=ctx.createRadialGradient(320,392,30,320,392,360);
+  glow.addColorStop(0,'rgba(255,255,255,.96)');glow.addColorStop(.45,'rgba(255,255,255,.66)');glow.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=glow;ctx.fillRect(0,0,640,860);
+  ctx.fillStyle='rgba(255,255,255,.7)';
+  roundRect(ctx,42,68,556,704,34);ctx.fill();
+  ctx.strokeStyle=d;ctx.lineWidth=6;ctx.stroke();
+  ctx.fillStyle=d;ctx.font='900 52px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.fillText(rarity,64,138);
+  ctx.fillStyle='rgba(31,41,51,.2)';ctx.font='800 24px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.fillText(typeLabel(typeFromAI(ai.type))+' SHOWCASE',64,174);
+  ctx.fillStyle='rgba(255,255,255,.75)';roundRect(ctx,118,650,404,62,26);ctx.fill();
+  ctx.fillStyle='rgba(31,41,51,.34)';ctx.font='800 22px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.textAlign='center';ctx.fillText('MUMU BRICK WEAPON',320,690);ctx.textAlign='left';
   return canvasToBlob(canvas,'image/webp',.92);
 }
 function roundRect(ctx,x,y,w,h,r){
@@ -1031,28 +1046,28 @@ function roundRect(ctx,x,y,w,h,r){
 }
 async function fallbackHandheldShowcase(ai,weaponBlob){
   const canvas=document.createElement('canvas');
-  canvas.width=1024;canvas.height=1536;
+  canvas.width=640;canvas.height=860;
   const ctx=canvas.getContext('2d');
   const bg=await fallbackCardBackground(ai);
   const bgBitmap=await createImageBitmap(bg);
-  ctx.drawImage(bgBitmap,0,0,1024,1536);
+  ctx.drawImage(bgBitmap,0,0,640,860);
   const [a,b,c,d]=fallbackPalette(ai);
-  ctx.fillStyle='rgba(255,255,255,.72)';roundRect(ctx,185,348,654,845,54);ctx.fill();
-  ctx.fillStyle=a;roundRect(ctx,400,470,224,224,42);ctx.fill();
-  ctx.strokeStyle=d;ctx.lineWidth=9;ctx.stroke();
-  ctx.fillStyle='#1f2933';ctx.beginPath();ctx.arc(470,555,16,0,Math.PI*2);ctx.arc(555,555,16,0,Math.PI*2);ctx.fill();
-  ctx.strokeStyle='#1f2933';ctx.lineWidth=8;ctx.beginPath();ctx.arc(512,602,42,.15*Math.PI,.85*Math.PI);ctx.stroke();
-  ctx.fillStyle=b;roundRect(ctx,360,720,304,260,38);ctx.fill();
-  ctx.strokeStyle=d;ctx.lineWidth=8;ctx.stroke();
-  ctx.fillStyle=c;roundRect(ctx,318,704,86,56,22);ctx.fill();roundRect(ctx,620,704,86,56,22);ctx.fill();
-  ctx.fillStyle=d;roundRect(ctx,410,962,78,56,18);ctx.fill();roundRect(ctx,536,962,78,56,18);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.62)';roundRect(ctx,76,180,488,520,34);ctx.fill();
+  ctx.fillStyle=a;roundRect(ctx,246,260,148,148,28);ctx.fill();
+  ctx.strokeStyle=d;ctx.lineWidth=6;ctx.stroke();
+  ctx.fillStyle='#1f2933';ctx.beginPath();ctx.arc(292,316,10,0,Math.PI*2);ctx.arc(348,316,10,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='#1f2933';ctx.lineWidth=5;ctx.beginPath();ctx.arc(320,348,25,.15*Math.PI,.85*Math.PI);ctx.stroke();
+  ctx.fillStyle=b;roundRect(ctx,218,430,204,168,25);ctx.fill();
+  ctx.strokeStyle=d;ctx.lineWidth=5;ctx.stroke();
+  ctx.fillStyle=c;roundRect(ctx,182,422,62,40,18);ctx.fill();roundRect(ctx,396,422,62,40,18);ctx.fill();
+  ctx.fillStyle=d;roundRect(ctx,254,588,54,40,13);ctx.fill();roundRect(ctx,332,588,54,40,13);ctx.fill();
   const weaponBitmap=await createImageBitmap(weaponBlob);
-  const scale=Math.min(620/weaponBitmap.width,360/weaponBitmap.height);
+  const scale=Math.min(560/weaponBitmap.width,310/weaponBitmap.height);
   const ww=weaponBitmap.width*scale,hh=weaponBitmap.height*scale;
-  ctx.save();ctx.translate(512,760);ctx.rotate(-0.18);ctx.drawImage(weaponBitmap,-ww/2,-hh/2,ww,hh);ctx.restore();
-  ctx.fillStyle='rgba(31,41,51,.82)';ctx.font='900 46px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.textAlign='center';
-  ctx.fillText(String(ai.name_zh||ai.name||'积木武器').slice(0,16),512,1294);
-  ctx.font='800 30px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.fillText('AI FALLBACK SHOWCASE',512,1344);
+  ctx.save();ctx.translate(320,515);ctx.rotate(-0.1);ctx.drawImage(weaponBitmap,-ww/2,-hh/2,ww,hh);ctx.restore();
+  ctx.fillStyle='rgba(31,41,51,.86)';ctx.font='900 30px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.textAlign='center';
+  ctx.fillText(String(ai.name_zh||ai.name||'积木武器').slice(0,16),320,746);
+  ctx.font='800 18px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.fillText('PLAYER BRICK SHOWCASE',320,778);
   return canvasToBlob(canvas,'image/webp',.92);
 }
 async function safeGeminiImageGenerate(prompt,options,onFallback){
@@ -1093,7 +1108,7 @@ async function aiRefineFull(id,btn){
     setAIStatus(card,localImageProvider?(provider==='openrouter'?'OpenRouter 免费模型 2/4：识别完成，使用本地算法抠图。':'Google 全流程 2/4：使用本地算法抠图并保存主体。'):'AI 全流程 2/4：生成透明武器主体...');
     const originalBlob=await urlToBlob(source);
     const cutoutBlob=localImageProvider
-      ? await canvasToBlob(adminCutoutCanvas(await imageUrlToCanvas(source)),'image/webp',.92)
+      ? await canvasToBlob(normalizeWeaponCutoutCanvas(adminCutoutCanvas(await imageUrlToCanvas(source))),'image/webp',.92)
       : await openAIImageEdit(originalBlob,'Remove the background from this brick toy weapon photo. Keep the entire weapon complete, including small separated colorful LEGO-style bricks, studs, handles, barrels, blade tips, shadows on the weapon surface, and all colored pieces. Output only the weapon on a transparent background. Do not simplify, crop, redraw, or remove colored bricks. Preserve the original toy shape and colors.',{background:'transparent',output_format:'png',size:'1024x1024',fileName:'brick-weapon.png'});
     const cutoutUrl=await uploadImageBlob(cutoutBlob,id,'ai-cutout');
     await replaceMainImage(id,cutoutUrl,source,btn);
