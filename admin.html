@@ -48,6 +48,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .ai-workbench .actions{grid-template-columns:1fr 1fr}
 .ai-title{font-weight:950;color:#39257d}
 .ai-note{color:#655a7c;font-size:12px;font-weight:850;line-height:1.55}
+.ai-card-status{padding:9px 10px;border-radius:12px;background:rgba(57,37,125,.08);color:#39257d;font-size:12px;font-weight:900;line-height:1.45}
 .ai-assets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .ai-assets figure{margin:0;padding:7px;border:1px solid rgba(95,73,255,.12);border-radius:13px;background:white}
 .ai-assets figcaption{font-size:11px;color:#655a7c;font-weight:900;margin-bottom:5px}
@@ -77,7 +78,11 @@ a{color:#0b69d1}
       <button onclick="loadAll()">进入审核</button>
     </div>
     <div class="ai-login">
-      <input id="openaiKey" type="password" placeholder="OpenAI API Key，只保存在本机浏览器">
+      <select id="aiProvider">
+        <option value="openai">OpenAI：全流程</option>
+        <option value="gemini">Google Gemini：先支持识别+本地抠图</option>
+      </select>
+      <input id="aiKey" type="password" placeholder="AI API Key，只保存在本机浏览器">
       <select id="aiQuality">
         <option value="medium">AI 图片质量：medium</option>
         <option value="low">AI 图片质量：low，省钱</option>
@@ -99,6 +104,8 @@ a{color:#0b69d1}
 <script src="supabase-config.js?v=3"></script>
 <script>
 const CLOUD=window.MUMU_SUPABASE||{};
+const AI_KEY_STORAGE='mumu_admin_ai_key';
+const AI_PROVIDER_STORAGE='mumu_admin_ai_provider';
 const OPENAI_KEY_STORAGE='mumu_admin_openai_key';
 const OPENAI_QUALITY_STORAGE='mumu_admin_openai_quality';
 function cloudBase(){return String(CLOUD.url||'').replace(/\/+$/,'')}
@@ -106,21 +113,28 @@ function headers(){return{apikey:CLOUD.anonKey,Authorization:'Bearer '+CLOUD.ano
 function escapeHTML(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function status(text){document.getElementById('status').textContent=text}
 function key(){return document.getElementById('reviewKey').value.trim()}
-function openAIKey(){return document.getElementById('openaiKey').value.trim()||localStorage.getItem(OPENAI_KEY_STORAGE)||''}
+function aiProvider(){return document.getElementById('aiProvider').value||localStorage.getItem(AI_PROVIDER_STORAGE)||'openai'}
+function aiKey(){return document.getElementById('aiKey').value.trim()||localStorage.getItem(AI_KEY_STORAGE)||localStorage.getItem(OPENAI_KEY_STORAGE)||''}
+function openAIKey(){return aiKey()}
 function openAIQuality(){return document.getElementById('aiQuality').value||localStorage.getItem(OPENAI_QUALITY_STORAGE)||'medium'}
 function saveOpenAIKey(){
-  const k=document.getElementById('openaiKey').value.trim();
+  const k=document.getElementById('aiKey').value.trim();
+  const provider=aiProvider();
   const q=document.getElementById('aiQuality').value||'medium';
-  if(k)localStorage.setItem(OPENAI_KEY_STORAGE,k);
+  if(k)localStorage.setItem(AI_KEY_STORAGE,k);
+  localStorage.setItem(AI_PROVIDER_STORAGE,provider);
   localStorage.setItem(OPENAI_QUALITY_STORAGE,q);
-  status(k?'AI 设置已保存在本机浏览器。':'已保存图片质量；API Key 为空时不会调用 AI。');
+  status(k?'AI 设置已保存在本机浏览器。当前服务：'+provider:'已保存图片质量；API Key 为空时不会调用 AI。');
 }
 function restoreOpenAISettings(){
-  const k=localStorage.getItem(OPENAI_KEY_STORAGE)||'';
+  const k=localStorage.getItem(AI_KEY_STORAGE)||localStorage.getItem(OPENAI_KEY_STORAGE)||'';
+  const provider=localStorage.getItem(AI_PROVIDER_STORAGE)||'openai';
   const q=localStorage.getItem(OPENAI_QUALITY_STORAGE)||'medium';
-  const keyInput=document.getElementById('openaiKey');
+  const keyInput=document.getElementById('aiKey');
+  const providerInput=document.getElementById('aiProvider');
   const quality=document.getElementById('aiQuality');
   if(keyInput&&k)keyInput.value=k;
+  if(providerInput)providerInput.value=provider;
   if(quality)quality.value=q;
 }
 restoreOpenAISettings();
@@ -182,6 +196,7 @@ function aiWorkbench(item){
         <button class="secondary" onclick="aiAnalyzeOnly('${escapeHTML(item.id)}',this)">只生成描述属性</button>
         <button class="good" onclick="aiRefineFull('${escapeHTML(item.id)}',this)">一键 AI 全流程</button>
       </div>
+      <div class="ai-card-status" data-ai-status>等待运行。Google Key 目前会走“识别属性 + 本地抠图”，OpenAI Key 才能生成背景和手持展示图。</div>
     </div>`;
 }
 function refineTools(item){
@@ -605,6 +620,47 @@ function parseJSONLoose(text){
   if(match){try{return JSON.parse(match[0])}catch(e){}}
   throw new Error('AI 没有返回可解析的 JSON。');
 }
+function setAIStatus(card,text){
+  status(text);
+  const box=card&&card.querySelector('[data-ai-status]');
+  if(box)box.textContent=text;
+}
+function mimeFromBlob(blob){
+  return blob.type||'image/jpeg';
+}
+function blobToDataURL(blob){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(String(reader.result||''));
+    reader.onerror=()=>reject(new Error('图片读取失败'));
+    reader.readAsDataURL(blob);
+  });
+}
+async function geminiResponseJSON(prompt,imageUrl){
+  const apiKey=aiKey();
+  if(!apiKey)throw new Error('先在顶部填写并保存 Google Gemini API Key。');
+  const blob=await urlToBlob(imageUrl);
+  const dataUrl=await blobToDataURL(blob);
+  const base64=dataUrl.split(',')[1]||'';
+  const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+encodeURIComponent(apiKey),{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      contents:[{parts:[
+        {text:prompt+'\n\n只输出 JSON，不要 markdown。'},
+        {inlineData:{mimeType:mimeFromBlob(blob),data:base64}}
+      ]}],
+      generationConfig:{responseMimeType:'application/json',temperature:.25}
+    })
+  });
+  if(!res.ok)throw new Error('Google Gemini 识别失败：'+res.status+' '+await res.text());
+  const data=await res.json();
+  const text=(((data.candidates||[])[0]||{}).content||{}).parts?.map(p=>p.text||'').join('')||'';
+  return parseJSONLoose(text);
+}
+async function aiResponseJSON(prompt,imageUrl){
+  return aiProvider()==='gemini'?geminiResponseJSON(prompt,imageUrl):openAIResponseJSON(prompt,imageUrl);
+}
 async function openAIResponseJSON(prompt,imageUrl){
   const apiKey=openAIKey();
   if(!apiKey)throw new Error('先在顶部填写并保存 OpenAI API Key。');
@@ -744,16 +800,16 @@ function handheldPrompt(ai,style,character){
 async function aiAnalyzeOnly(id,btn){
   const card=btn.closest('.card');
   const source=(card.querySelector('.refine-tools')&&card.querySelector('.refine-tools').dataset.originalImage)||(card.querySelector('.image img')&&card.querySelector('.image img').src);
-  if(!source){status('没有找到可识别的原图。');return}
+  if(!source){setAIStatus(card,'没有找到可识别的原图。');return}
   btn.disabled=true;
-  status('AI 正在识别武器信息...');
+  setAIStatus(card,'AI 正在识别武器信息...');
   try{
-    const ai=await openAIResponseJSON(aiPromptForWeapon(),source);
+    const ai=await aiResponseJSON(aiPromptForWeapon(),source);
     fillWeaponFieldsFromAI(card,ai);
     await saveWeapon(id,btn,true);
-    status('AI 描述和属性已填入并保存。你可以继续修改，或点一键 AI 全流程生成图片。');
+    setAIStatus(card,'AI 描述和属性已填入并保存。你可以继续修改，或点一键 AI 全流程。');
   }catch(err){
-    status((err&&err.message)||'AI 识别失败。');
+    setAIStatus(card,(err&&err.message)||'AI 识别失败。');
   }finally{
     btn.disabled=false;
   }
@@ -764,23 +820,41 @@ async function aiRefineFull(id,btn){
   const style=(root&&root.querySelector('[data-ai-style]').value)||'cute-premium';
   const character=(root&&root.querySelector('[data-ai-character]').value)||'auto';
   const source=(card.querySelector('.refine-tools')&&card.querySelector('.refine-tools').dataset.originalImage)||(card.querySelector('.image img')&&card.querySelector('.image img').src);
-  if(!source){status('没有找到可处理的原图。');return}
+  if(!source){setAIStatus(card,'没有找到可处理的原图。');return}
   btn.disabled=true;
-  status('AI 全流程 1/4：识别武器信息...');
+  setAIStatus(card,'AI 全流程 1/4：识别武器信息...');
   try{
-    const ai=await openAIResponseJSON(aiPromptForWeapon(),source);
+    const provider=aiProvider();
+    const ai=await aiResponseJSON(aiPromptForWeapon(),source);
     const fields=fillWeaponFieldsFromAI(card,ai);
-    status('AI 全流程 2/4：生成透明武器主体...');
+    setAIStatus(card,provider==='gemini'?'Google 模式 2/2：使用本地算法抠图并保存。Google 背景/手持图稍后单独接。':'AI 全流程 2/4：生成透明武器主体...');
     const originalBlob=await urlToBlob(source);
-    const cutoutBlob=await openAIImageEdit(originalBlob,'Remove the background from this brick toy weapon photo. Keep the entire weapon complete, including small separated colorful LEGO-style bricks, studs, handles, barrels, blade tips, shadows on the weapon surface, and all colored pieces. Output only the weapon on a transparent background. Do not simplify, crop, redraw, or remove colored bricks. Preserve the original toy shape and colors.',{background:'transparent',output_format:'png',size:'1024x1024',fileName:'brick-weapon.png'});
+    const cutoutBlob=provider==='gemini'
+      ? await canvasToBlob(adminCutoutCanvas(await imageUrlToCanvas(source)),'image/webp',.92)
+      : await openAIImageEdit(originalBlob,'Remove the background from this brick toy weapon photo. Keep the entire weapon complete, including small separated colorful LEGO-style bricks, studs, handles, barrels, blade tips, shadows on the weapon surface, and all colored pieces. Output only the weapon on a transparent background. Do not simplify, crop, redraw, or remove colored bricks. Preserve the original toy shape and colors.',{background:'transparent',output_format:'png',size:'1024x1024',fileName:'brick-weapon.png'});
     const cutoutUrl=await uploadImageBlob(cutoutBlob,id,'ai-cutout');
     await replaceMainImage(id,cutoutUrl,source,btn);
     if(root&&root.querySelector('[data-ai-cutout]'))root.querySelector('[data-ai-cutout]').src=cutoutUrl;
-    status('AI 全流程 3/4：生成专属卡片背景...');
+    if(provider==='gemini'){
+      await saveWeapon(id,btn,true);
+      try{
+        await rpc('admin_update_weapon_ai_assets',{
+          input_review_key:key(),
+          weapon_id:id,
+          refined_image_url:cutoutUrl,
+          card_background_url:'',
+          handheld_showcase_url:'',
+          ai_metadata:Object.assign({},ai,{admin_ai_provider:'gemini',filled_fields:fields})
+        });
+      }catch(metaErr){}
+      setAIStatus(card,'Google 模式已完成：属性已生成，主体图已用本地算法抠图并保存。背景和角色手持图需要 OpenAI 或后续接 Google 图片接口。');
+      return;
+    }
+    setAIStatus(card,'AI 全流程 3/4：生成专属卡片背景...');
     const bgBlob=await openAIImageGenerate(backgroundPrompt(ai,style),{size:'1024x1536',output_format:'webp'});
     const bgUrl=await uploadImageBlob(bgBlob,id,'ai-card-bg');
     if(root&&root.querySelector('[data-ai-bg]'))root.querySelector('[data-ai-bg]').src=bgUrl;
-    status('AI 全流程 4/4：生成角色手持展示图...');
+    setAIStatus(card,'AI 全流程 4/4：生成角色手持展示图...');
     const handBlob=await openAIImageEdit(cutoutBlob,handheldPrompt(ai,style,character),{size:'1024x1536',output_format:'webp',fileName:'weapon-cutout.png'});
     const handUrl=await uploadImageBlob(handBlob,id,'ai-handheld');
     const showcaseInput=card.querySelector('[data-field="showcase_url"]');
@@ -796,12 +870,12 @@ async function aiRefineFull(id,btn){
         handheld_showcase_url:handUrl,
         ai_metadata:Object.assign({},ai,{admin_ai_style:style,admin_ai_character:character,filled_fields:fields})
       });
-      status('AI 全流程完成：主体、背景、手持展示图、属性都已保存。审核通过后公开站会显示新版展示图。');
+      setAIStatus(card,'AI 全流程完成：主体、背景、手持展示图、属性都已保存。审核通过后公开站会显示新版展示图。');
     }catch(metaErr){
-      status('AI 图片和表单已保存；但 AI 元数据保存失败。请运行新版 supabase-schema.sql 后再试一次保存元数据。');
+      setAIStatus(card,'AI 图片和表单已保存；但 AI 元数据保存失败。请运行新版 supabase-schema.sql 后再试一次保存元数据。');
     }
   }catch(err){
-    status((err&&err.message)||'AI 全流程失败。若提示函数不存在，请先运行新版 supabase-schema.sql。');
+    setAIStatus(card,(err&&err.message)||'AI 全流程失败。若提示函数不存在，请先运行新版 supabase-schema.sql。');
   }finally{
     btn.disabled=false;
   }
