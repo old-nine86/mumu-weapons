@@ -823,6 +823,76 @@ function handheldPrompt(ai,style,character){
   const mbti=character&&character!=='auto'?character:(ai.recommended_mbti||'INTJ');
   return `Create a vertical premium toy showcase illustration: a cute LEGO-compatible chibi brick character holding the uploaded brick weapon, matching the weapon silhouette and colors as much as possible. Character personality: ${mbti}. Weapon name: ${ai.name_zh||ai.name_en||'brick weapon'}. Type: ${typeFromAI(ai.type)}. Style: cute high-end collectible toy, glossy plastic, soft cream toy display stage, pastel lighting, clear full body character, weapon visible, no readable text, no brand logo.`;
 }
+function fallbackPalette(ai){
+  const rarity=rarityFromAI(ai.rarity,ai.ai_power,ai.piece_count);
+  const type=typeFromAI(ai.type);
+  const palettes={
+    SSR:['#fff7d7','#b58cff','#ffc857','#76e4f7'],
+    SR:['#eef7ff','#74b9ff','#ffd6e8','#a7f3d0'],
+    R:['#fff4ec','#ffb86b','#8ec5ff','#fff0a8'],
+    N:['#f8fafc','#cbd5e1','#e0f2fe','#fef3c7']
+  };
+  const p=palettes[rarity]||palettes.N;
+  return type==='gun'?[p[1],p[0],p[3],p[2]]:type==='spear'?[p[3],p[0],p[2],p[1]]:p;
+}
+async function fallbackCardBackground(ai){
+  const [a,b,c,d]=fallbackPalette(ai);
+  const rarity=rarityFromAI(ai.rarity,ai.ai_power,ai.piece_count);
+  const canvas=document.createElement('canvas');
+  canvas.width=1024;canvas.height=1536;
+  const ctx=canvas.getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,1024,1536);
+  grad.addColorStop(0,a);grad.addColorStop(.42,b);grad.addColorStop(1,c);
+  ctx.fillStyle=grad;ctx.fillRect(0,0,1024,1536);
+  ctx.fillStyle='rgba(255,255,255,.58)';
+  for(let y=70;y<1500;y+=128)for(let x=70;x<980;x+=128){
+    ctx.beginPath();ctx.arc(x,y,24,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='rgba(31,41,51,.08)';ctx.lineWidth=5;ctx.stroke();
+  }
+  ctx.fillStyle='rgba(255,255,255,.72)';
+  roundRect(ctx,92,142,840,1250,58);ctx.fill();
+  ctx.strokeStyle=d;ctx.lineWidth=10;ctx.stroke();
+  ctx.fillStyle=d;ctx.font='900 82px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.fillText(rarity,112,250);
+  ctx.fillStyle='rgba(31,41,51,.16)';ctx.font='800 38px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.fillText(typeLabel(typeFromAI(ai.type))+' CARD',112,310);
+  return canvasToBlob(canvas,'image/webp',.92);
+}
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+}
+async function fallbackHandheldShowcase(ai,weaponBlob){
+  const canvas=document.createElement('canvas');
+  canvas.width=1024;canvas.height=1536;
+  const ctx=canvas.getContext('2d');
+  const bg=await fallbackCardBackground(ai);
+  const bgBitmap=await createImageBitmap(bg);
+  ctx.drawImage(bgBitmap,0,0,1024,1536);
+  const [a,b,c,d]=fallbackPalette(ai);
+  ctx.fillStyle='rgba(255,255,255,.72)';roundRect(ctx,185,348,654,845,54);ctx.fill();
+  ctx.fillStyle=a;roundRect(ctx,400,470,224,224,42);ctx.fill();
+  ctx.strokeStyle=d;ctx.lineWidth=9;ctx.stroke();
+  ctx.fillStyle='#1f2933';ctx.beginPath();ctx.arc(470,555,16,0,Math.PI*2);ctx.arc(555,555,16,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='#1f2933';ctx.lineWidth=8;ctx.beginPath();ctx.arc(512,602,42,.15*Math.PI,.85*Math.PI);ctx.stroke();
+  ctx.fillStyle=b;roundRect(ctx,360,720,304,260,38);ctx.fill();
+  ctx.strokeStyle=d;ctx.lineWidth=8;ctx.stroke();
+  ctx.fillStyle=c;roundRect(ctx,318,704,86,56,22);ctx.fill();roundRect(ctx,620,704,86,56,22);ctx.fill();
+  ctx.fillStyle=d;roundRect(ctx,410,962,78,56,18);ctx.fill();roundRect(ctx,536,962,78,56,18);ctx.fill();
+  const weaponBitmap=await createImageBitmap(weaponBlob);
+  const scale=Math.min(620/weaponBitmap.width,360/weaponBitmap.height);
+  const ww=weaponBitmap.width*scale,hh=weaponBitmap.height*scale;
+  ctx.save();ctx.translate(512,760);ctx.rotate(-0.18);ctx.drawImage(weaponBitmap,-ww/2,-hh/2,ww,hh);ctx.restore();
+  ctx.fillStyle='rgba(31,41,51,.82)';ctx.font='900 46px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.textAlign='center';
+  ctx.fillText(String(ai.name_zh||ai.name||'积木武器').slice(0,16),512,1294);
+  ctx.font='800 30px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.fillText('AI FALLBACK SHOWCASE',512,1344);
+  return canvasToBlob(canvas,'image/webp',.92);
+}
+async function safeGeminiImageGenerate(prompt,options,onFallback){
+  try{return {blob:await geminiImageGenerate(prompt,options),fallback:false,error:''}}
+  catch(err){return {blob:await onFallback(err),fallback:true,error:(err&&err.message)||'Gemini image generation failed'}}
+}
 async function aiAnalyzeOnly(id,btn){
   const card=btn.closest('.card');
   const source=(card.querySelector('.refine-tools')&&card.querySelector('.refine-tools').dataset.originalImage)||(card.querySelector('.image img')&&card.querySelector('.image img').src);
@@ -863,11 +933,13 @@ async function aiRefineFull(id,btn){
     if(root&&root.querySelector('[data-ai-cutout]'))root.querySelector('[data-ai-cutout]').src=cutoutUrl;
     if(provider==='gemini'){
       setAIStatus(card,'Google 全流程 3/4：生成专属卡片背景...');
-      const bgBlob=await geminiImageGenerate(backgroundPrompt(ai,style),{});
+      const bgResult=await safeGeminiImageGenerate(backgroundPrompt(ai,style),{},()=>fallbackCardBackground(ai));
+      const bgBlob=bgResult.blob;
       const bgUrl=await uploadImageBlob(bgBlob,id,'gemini-card-bg');
       if(root&&root.querySelector('[data-ai-bg]'))root.querySelector('[data-ai-bg]').src=bgUrl;
-      setAIStatus(card,'Google 全流程 4/4：生成角色手持展示图...');
-      const handBlob=await geminiImageGenerate(handheldPrompt(ai,style,character),{imageBlob:cutoutBlob});
+      setAIStatus(card,bgResult.fallback?'Google 图片额度不足，已用本地高级卡片背景兜底。继续生成展示图...':'Google 全流程 4/4：生成角色手持展示图...');
+      const handResult=await safeGeminiImageGenerate(handheldPrompt(ai,style,character),{imageBlob:cutoutBlob},()=>fallbackHandheldShowcase(ai,cutoutBlob));
+      const handBlob=handResult.blob;
       const handUrl=await uploadImageBlob(handBlob,id,'gemini-handheld');
       const showcaseInput=card.querySelector('[data-field="showcase_url"]');
       if(showcaseInput)showcaseInput.value=handUrl;
@@ -880,13 +952,13 @@ async function aiRefineFull(id,btn){
           refined_image_url:cutoutUrl,
           card_background_url:bgUrl,
           handheld_showcase_url:handUrl,
-          ai_metadata:Object.assign({},ai,{admin_ai_provider:'gemini',filled_fields:fields})
+          ai_metadata:Object.assign({},ai,{admin_ai_provider:'gemini',filled_fields:fields,background_fallback:bgResult.fallback,handheld_fallback:handResult.fallback,background_error:bgResult.error,handheld_error:handResult.error})
         });
       }catch(metaErr){
         setAIStatus(card,'Google 图片已生成；但 AI 元数据保存失败。展示图地址已填入表单，可手动保存。');
         return;
       }
-      setAIStatus(card,'Google 全流程完成：属性、主体图、卡片背景、角色手持展示图都已保存。');
+      setAIStatus(card,(bgResult.fallback||handResult.fallback)?'流程完成：Google 识别成功，图片额度不足的部分已用本地高级背景/展示图兜底并保存。':'Google 全流程完成：属性、主体图、卡片背景、角色手持展示图都已保存。');
       return;
     }
     setAIStatus(card,'AI 全流程 3/4：生成专属卡片背景...');
