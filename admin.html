@@ -110,6 +110,7 @@ const AI_PROVIDER_STORAGE='mumu_admin_ai_provider';
 const OPENROUTER_MODELS_STORAGE='mumu_admin_openrouter_free_vision_models';
 const OPENAI_KEY_STORAGE='mumu_admin_openai_key';
 const OPENAI_QUALITY_STORAGE='mumu_admin_openai_quality';
+const OPENROUTER_BAD_MODELS_STORAGE='mumu_admin_openrouter_bad_models';
 function cloudBase(){return String(CLOUD.url||'').replace(/\/+$/,'')}
 function headers(){return{apikey:CLOUD.anonKey,Authorization:'Bearer '+CLOUD.anonKey,'Content-Type':'application/json'}}
 function escapeHTML(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
@@ -125,7 +126,10 @@ function saveOpenAIKey(){
   const q=document.getElementById('aiQuality').value||'medium';
   if(k)localStorage.setItem(AI_KEY_STORAGE,k);
   localStorage.setItem(AI_PROVIDER_STORAGE,provider);
-  if(provider==='openrouter')localStorage.removeItem(OPENROUTER_MODELS_STORAGE);
+  if(provider==='openrouter'){
+    localStorage.removeItem(OPENROUTER_MODELS_STORAGE);
+    localStorage.removeItem(OPENROUTER_BAD_MODELS_STORAGE);
+  }
   localStorage.setItem(OPENAI_QUALITY_STORAGE,q);
   status(k?'AI 设置已保存在本机浏览器。当前服务：'+provider:'已保存图片质量；API Key 为空时不会调用 AI。');
 }
@@ -685,8 +689,16 @@ function supportsOpenRouterImage(model){
   const output=arch.output_modalities||arch.outputModalities||[];
   const id=String(model.id||'').toLowerCase();
   const name=String(model.name||'').toLowerCase();
-  const blocked=id.includes('lyria')||name.includes('lyria')||id.includes('audio')||id.includes('music');
+  const blocked=id.includes('lyria')||name.includes('lyria')||id.includes('audio')||id.includes('music')||id.includes('google/gemma');
   return !blocked&&Array.isArray(input)&&input.includes('image')&&Array.isArray(output)&&output.includes('text');
+}
+function openRouterBadModels(){
+  try{return JSON.parse(localStorage.getItem(OPENROUTER_BAD_MODELS_STORAGE)||'[]')}catch(e){return[]}
+}
+function markOpenRouterBadModel(model,reason){
+  const bad=openRouterBadModels().filter(x=>x&&x.model!==model);
+  bad.push({model,reason:String(reason||'failed').slice(0,160),at:Date.now()});
+  localStorage.setItem(OPENROUTER_BAD_MODELS_STORAGE,JSON.stringify(bad.slice(-20)));
 }
 function preferredOpenRouterModelOrder(id){
   id=String(id||'');
@@ -702,7 +714,11 @@ async function loadOpenRouterFreeVisionModels(apiKey){
     try{
       const parsed=JSON.parse(cached);
       if(Date.now()-parsed.at<1000*60*60*6&&Array.isArray(parsed.models)&&parsed.models.length){
-        const cleaned=parsed.models.filter(id=>!String(id).toLowerCase().includes('lyria'));
+        const bad=new Set(openRouterBadModels().filter(x=>Date.now()-x.at<1000*60*60*12).map(x=>x.model));
+        const cleaned=parsed.models.filter(id=>{
+          const lower=String(id).toLowerCase();
+          return !bad.has(id)&&!lower.includes('lyria')&&!lower.includes('google/gemma');
+        });
         if(cleaned.length)return cleaned;
       }
     }catch(e){}
@@ -715,11 +731,12 @@ async function loadOpenRouterFreeVisionModels(apiKey){
       .filter(m=>isFreeOpenRouterModel(m)&&supportsOpenRouterImage(m))
       .map(m=>m.id)
       .sort((a,b)=>preferredOpenRouterModelOrder(a)-preferredOpenRouterModelOrder(b)||a.localeCompare(b));
-    const merged=['openrouter/free'].concat(models.filter(id=>id!=='openrouter/free'));
+    const bad=new Set(openRouterBadModels().filter(x=>Date.now()-x.at<1000*60*60*12).map(x=>x.model));
+    const merged=['openrouter/free'].concat(models.filter(id=>id!=='openrouter/free')).filter(id=>!bad.has(id));
     if(merged.length)localStorage.setItem(OPENROUTER_MODELS_STORAGE,JSON.stringify({at:Date.now(),models:merged}));
     return merged.length?merged:['openrouter/free'];
   }catch(err){
-    return ['openrouter/free','nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free','nvidia/nemotron-nano-12b-v2-vl:free','google/gemma-4-31b-it:free','google/gemma-4-26b-a4b-it:free'];
+    return ['openrouter/free','nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free','nvidia/nemotron-nano-12b-v2-vl:free'];
   }
 }
 async function openRouterResponseJSON(prompt,imageUrl){
@@ -751,7 +768,11 @@ async function openRouterResponseJSON(prompt,imageUrl){
       });
       clearTimeout(timeout);
       const raw=await res.text();
-      if(!res.ok){lastError=model+' '+res.status+' '+raw.slice(0,220);continue}
+      if(!res.ok){
+        lastError=model+' '+res.status+' '+raw.slice(0,220);
+        if(res.status===401||/Missing Authentication header|BYOK|own key/i.test(raw))markOpenRouterBadModel(model,lastError);
+        continue;
+      }
       const parsed=parseJSONLoose(extractOpenRouterText(JSON.parse(raw)));
       parsed.openrouter_model_used=model;
       return parsed;
