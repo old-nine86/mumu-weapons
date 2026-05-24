@@ -689,7 +689,7 @@ function supportsOpenRouterImage(model){
   const output=arch.output_modalities||arch.outputModalities||[];
   const id=String(model.id||'').toLowerCase();
   const name=String(model.name||'').toLowerCase();
-  const blocked=id.includes('lyria')||name.includes('lyria')||id.includes('audio')||id.includes('music')||id.includes('google/gemma');
+  const blocked=id.includes('lyria')||name.includes('lyria')||id.includes('audio')||id.includes('music')||id.includes('google/gemma')||id.includes('nvidia/nemotron');
   return !blocked&&Array.isArray(input)&&input.includes('image')&&Array.isArray(output)&&output.includes('text');
 }
 function openRouterBadModels(){
@@ -703,8 +703,8 @@ function markOpenRouterBadModel(model,reason){
 function preferredOpenRouterModelOrder(id){
   id=String(id||'');
   if(id==='openrouter/free')return 0;
-  if(id.includes('nvidia/nemotron'))return 1;
-  if(id.includes('google/gemma'))return 2;
+  if(id.includes('qwen'))return 1;
+  if(id.includes('mistral'))return 2;
   if(id.includes('qwen'))return 3;
   return 5;
 }
@@ -717,7 +717,7 @@ async function loadOpenRouterFreeVisionModels(apiKey){
         const bad=new Set(openRouterBadModels().filter(x=>Date.now()-x.at<1000*60*60*12).map(x=>x.model));
         const cleaned=parsed.models.filter(id=>{
           const lower=String(id).toLowerCase();
-          return !bad.has(id)&&!lower.includes('lyria')&&!lower.includes('google/gemma');
+          return !bad.has(id)&&!lower.includes('lyria')&&!lower.includes('google/gemma')&&!lower.includes('nvidia/nemotron');
         });
         if(cleaned.length)return cleaned;
       }
@@ -736,8 +736,45 @@ async function loadOpenRouterFreeVisionModels(apiKey){
     if(merged.length)localStorage.setItem(OPENROUTER_MODELS_STORAGE,JSON.stringify({at:Date.now(),models:merged}));
     return merged.length?merged:['openrouter/free'];
   }catch(err){
-    return ['openrouter/free','nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free','nvidia/nemotron-nano-12b-v2-vl:free'];
+    return ['openrouter/free'];
   }
+}
+async function localWeaponFallbackJSON(imageUrl,lastError=''){
+  const canvas=await imageUrlToCanvas(imageUrl,900);
+  const w=canvas.width,h=canvas.height;
+  const ratio=w/Math.max(1,h);
+  const t=ratio>1.55?'gun':ratio<.7?'spear':'sword';
+  const area=Math.round((w*h)/8000);
+  const piece=Math.max(24,Math.min(260,Math.round(area*(t==='gun'?1.55:t==='spear'?1.35:1.2))));
+  const power=Math.max(90,Math.min(420,Math.round(piece*1.45+(t==='gun'?36:t==='spear'?26:32))));
+  const rarity=rarityFromAI('',power,piece);
+  return {
+    name_zh:t==='gun'?'玩家积木爆能枪':t==='spear'?'玩家积木星辉长柄':'玩家积木光刃',
+    name_en:t==='gun'?'Player Brick Blaster':t==='spear'?'Player Brick Polearm':'Player Brick Blade',
+    type:t,
+    label_zh:typeLabel(t),
+    label_en:{sword:'Blade',gun:'Blaster',spear:'Polearm'}[t],
+    rarity,
+    piece_count:piece,
+    ai_power:power,
+    card_score:Math.round(power+piece*.35),
+    attack:power,
+    defense:t==='spear'?96:t==='sword'?88:78,
+    speed:t==='gun'?78:t==='sword'?72:62,
+    stability:t==='spear'?86:76,
+    crit:t==='gun'?.18:t==='sword'?.16:.12,
+    complexity:Math.max(4,Math.min(10,Math.round(piece/28))),
+    balance:ratio>3||ratio<.35?6:8,
+    color_count:6,
+    recommended_mbti:t==='gun'?'ENTP':t==='spear'?'INFJ':'INTJ',
+    skill_zh:t==='gun'?'彩砖连射风暴':t==='spear'?'星辉突进阵':'光刃积木连击',
+    skill_en:t==='gun'?'Brick Burst Barrage':t==='spear'?'Starlight Charge':'Brick Blade Combo',
+    description_zh:'OpenRouter 免费模型暂时不可用，后台已用本地识别兜底生成属性。请审核时按图片微调名称和数值。',
+    description_en:'Generated with local fallback because free OpenRouter vision models were unavailable.',
+    tags:['本地兜底','玩家上传','待人工微调'],
+    openrouter_model_used:'local-fallback',
+    openrouter_error:lastError
+  };
 }
 async function openRouterResponseJSON(prompt,imageUrl){
   const apiKey=aiKey();
@@ -781,7 +818,8 @@ async function openRouterResponseJSON(prompt,imageUrl){
       lastError=model+' '+((err&&err.name)==='AbortError'?'timeout':((err&&err.message)||'failed'));
     }
   }
-  throw new Error('OpenRouter 免费模型暂时不可用。已自动尝试 '+tried.length+' 个模型，最后错误：'+lastError);
+  const fallback=await localWeaponFallbackJSON(imageUrl,'已自动尝试 '+tried.length+' 个模型，最后错误：'+lastError);
+  return fallback;
 }
 async function aiResponseJSON(prompt,imageUrl){
   const provider=aiProvider();
