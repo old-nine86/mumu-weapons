@@ -61,7 +61,7 @@ button{border:0;border-radius:999px;padding:12px 16px;font:inherit;font-weight:8
         <button class="good" onclick="bulkCompleteWeapons('all',this)">一键补全全部已加载</button>
         <button class="secondary" onclick="bulkCompleteWeapons('pending',this)">只补待审核</button>
         <button class="secondary" onclick="bulkCompleteWeapons('approved',this)">只补已通过</button>
-        <button class="secondary" onclick="loadAll()">刷新后台数据</button>
+        <button class="secondary" onclick="bulkCompleteWeapons('all-force',this)">重做全部橱窗</button>
       </div>
       <div class="line">批量补全会自动补中文/英文资料、等级数值、透明主体、卡片背景和手持展示图；默认使用本地自动流程，不消耗 API。</div>
       <div class="status" id="status">请输入审核口令。无 API 时选择“本地自动”，也能生成文字、属性、背景和展示图。</div>
@@ -292,16 +292,18 @@ function cardNeedsCompletion(card){
 }
 async function bulkCompleteWeapons(scope,btn){
   if(!key()){status('先输入审核口令。');return}
-  const selector=scope==='pending'?'#weaponGrid .card':scope==='approved'?'#approvedGrid .card':'#weaponGrid .card,#approvedGrid .card';
+  const force=String(scope||'').includes('force');
+  const cleanScope=String(scope||'').replace('-force','');
+  const selector=cleanScope==='pending'?'#weaponGrid .card':cleanScope==='approved'?'#approvedGrid .card':'#weaponGrid .card,#approvedGrid .card';
   const cards=[...document.querySelectorAll(selector)];
   if(!cards.length){status('当前页面没有可补全的武器，请先点“进入审核”或刷新后台数据。');return}
-  const targets=cards.filter(cardNeedsCompletion);
+  const targets=force?cards:cards.filter(cardNeedsCompletion);
   if(!targets.length){status('当前已加载武器资料和图片都比较完整，不需要批量补。');return}
   const providerSelect=document.getElementById('aiProvider');
   const previousProvider=providerSelect&&providerSelect.value;
   if(providerSelect)providerSelect.value='local';
   btn.disabled=true;
-  status('开始批量补全 '+targets.length+' 件武器。默认本地自动，不消耗 API。');
+  status((force?'开始强制重做橱窗 ':'开始批量补全 ')+targets.length+' 件武器。默认本地自动，不消耗 API。');
   let ok=0,fail=0;
   for(let i=0;i<targets.length;i++){
     const card=targets[i];
@@ -1044,6 +1046,39 @@ function fallbackPalette(ai){
   const p=palettes[rarity]||palettes.N;
   return type==='gun'?[p[1],p[0],p[3],p[2]]:type==='spear'?[p[3],p[0],p[2],p[1]]:p;
 }
+const CARD_BG_FILES={
+  SSR:['card-bg-01-ssr.webp','card-bg-02-ssr.webp','card-bg-03-ssr.webp','card-bg-04-ssr.webp','card-bg-05-ssr.webp'],
+  SR:['card-bg-06-sr.webp','card-bg-07-sr.webp','card-bg-08-sr.webp','card-bg-09-sr.webp','card-bg-10-sr.webp'],
+  R:['card-bg-11-r.webp','card-bg-12-r.webp','card-bg-13-r.webp','card-bg-14-r.webp','card-bg-15-r.webp'],
+  N:['card-bg-16-n.webp','card-bg-17-n.webp','card-bg-18-n.webp','card-bg-19-n.webp','card-bg-20-n.webp']
+};
+const CHARACTER_AVATARS={
+  ENTJ:'assets/characters/entj-avatar.webp',INTJ:'assets/characters/intj-avatar.webp',INTP:'assets/characters/intp-avatar.webp',ENTP:'assets/characters/entp-avatar.webp',
+  INFJ:'assets/characters/infj-avatar.webp',ENFJ:'assets/characters/enfj-avatar.webp',INFP:'assets/characters/infp-avatar.webp',ENFP:'assets/characters/enfp-avatar.webp',
+  ISTJ:'assets/characters/istj-avatar.webp',ISFJ:'assets/characters/isfj-avatar.webp',ESTJ:'assets/characters/estj-avatar.webp',ESFJ:'assets/characters/esfj-avatar.webp',
+  ISTP:'assets/characters/istp-avatar.webp',ISFP:'assets/characters/isfp-avatar.webp',ESTP:'assets/characters/estp-avatar.webp',ESFP:'assets/characters/esfp-avatar.webp'
+};
+function matchedCharacter(ai){
+  const explicit=String(ai.recommended_mbti||'').toUpperCase();
+  if(CHARACTER_AVATARS[explicit])return explicit;
+  const type=typeFromAI(ai.type);
+  const power=Number(ai.ai_power||0);
+  if(type==='gun')return power>230?'ENTP':'INTP';
+  if(type==='spear')return power>230?'INFJ':'ISTJ';
+  return power>260?'ENTJ':'INTJ';
+}
+function matchedBackground(ai){
+  const rarity=rarityFromAI(ai.rarity,ai.ai_power,ai.piece_count);
+  const pool=CARD_BG_FILES[rarity]||CARD_BG_FILES.N;
+  const typeIndex={sword:0,gun:1,spear:2}[typeFromAI(ai.type)]||0;
+  const score=Math.abs(Math.round(Number(ai.ai_power||0)+Number(ai.piece_count||0)))%pool.length;
+  return 'assets/card-bg/'+pool[(typeIndex+score)%pool.length];
+}
+async function bitmapFromUrl(url){
+  const res=await fetch(url,{cache:'no-store'});
+  if(!res.ok)throw new Error('素材读取失败：'+url);
+  return createImageBitmap(await res.blob());
+}
 async function fallbackCardBackground(ai){
   const [a,b,c,d]=fallbackPalette(ai);
   const rarity=rarityFromAI(ai.rarity,ai.ai_power,ai.piece_count);
@@ -1081,28 +1116,41 @@ async function fallbackHandheldShowcase(ai,weaponBlob){
   const canvas=document.createElement('canvas');
   canvas.width=640;canvas.height=860;
   const ctx=canvas.getContext('2d');
-  const bg=await fallbackCardBackground(ai);
-  const bgBitmap=await createImageBitmap(bg);
-  ctx.drawImage(bgBitmap,0,0,640,860);
-  const [a,b,c,d]=fallbackPalette(ai);
-  ctx.fillStyle='rgba(255,255,255,.5)';roundRect(ctx,66,175,508,500,34);ctx.fill();
-  ctx.save();ctx.globalAlpha=.9;
-  ctx.fillStyle=a;roundRect(ctx,76,514,92,92,20);ctx.fill();
-  ctx.strokeStyle=d;ctx.lineWidth=4;ctx.stroke();
-  ctx.fillStyle='#1f2933';ctx.beginPath();ctx.arc(106,550,6,0,Math.PI*2);ctx.arc(139,550,6,0,Math.PI*2);ctx.fill();
-  ctx.strokeStyle='#1f2933';ctx.lineWidth=3;ctx.beginPath();ctx.arc(122,570,15,.15*Math.PI,.85*Math.PI);ctx.stroke();
-  ctx.fillStyle=b;roundRect(ctx,56,610,132,86,18);ctx.fill();ctx.strokeStyle=d;ctx.stroke();
-  ctx.restore();
+  try{
+    const bgBitmap=await bitmapFromUrl(matchedBackground(ai));
+    ctx.drawImage(bgBitmap,0,0,640,860);
+  }catch(err){
+    const bg=await fallbackCardBackground(ai);
+    const bgBitmap=await createImageBitmap(bg);
+    ctx.drawImage(bgBitmap,0,0,640,860);
+  }
+  ctx.fillStyle='rgba(255,255,255,.48)';
+  roundRect(ctx,48,86,544,668,38);ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,.72)';ctx.lineWidth=3;ctx.stroke();
+  const mbti=matchedCharacter(ai);
+  try{
+    const character=await bitmapFromUrl(CHARACTER_AVATARS[mbti]);
+    ctx.save();
+    ctx.shadowColor='rgba(31,41,51,.22)';ctx.shadowBlur=22;ctx.shadowOffsetY=16;
+    roundRect(ctx,50,560,178,218,28);ctx.clip();
+    ctx.drawImage(character,34,548,210,252);
+    ctx.restore();
+    ctx.fillStyle='rgba(255,255,255,.82)';roundRect(ctx,66,738,142,30,15);ctx.fill();
+    ctx.fillStyle='rgba(31,41,51,.74)';ctx.font='900 16px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.textAlign='center';ctx.fillText(mbti+' 适配',137,759);
+  }catch(err){
+    const [a,b,c,d]=fallbackPalette(ai);
+    ctx.fillStyle=a;roundRect(ctx,70,596,96,96,22);ctx.fill();ctx.strokeStyle=d;ctx.lineWidth=4;ctx.stroke();
+  }
   const weaponBitmap=await createImageBitmap(weaponBlob);
-  const scale=Math.min(600/weaponBitmap.width,430/weaponBitmap.height);
+  const scale=Math.min(560/weaponBitmap.width,430/weaponBitmap.height);
   const ww=weaponBitmap.width*scale,hh=weaponBitmap.height*scale;
   ctx.save();
-  ctx.shadowColor='rgba(31,41,51,.22)';ctx.shadowBlur=28;ctx.shadowOffsetY=22;
-  ctx.translate(340,420);ctx.rotate(-0.08);ctx.drawImage(weaponBitmap,-ww/2,-hh/2,ww,hh);
+  ctx.shadowColor='rgba(31,41,51,.26)';ctx.shadowBlur=34;ctx.shadowOffsetY=24;
+  ctx.translate(366,406);ctx.rotate(-0.055);ctx.drawImage(weaponBitmap,-ww/2,-hh/2,ww,hh);
   ctx.restore();
   ctx.fillStyle='rgba(31,41,51,.86)';ctx.font='900 30px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.textAlign='center';
-  ctx.fillText(String(ai.name_zh||ai.name||'积木武器').slice(0,16),320,746);
-  ctx.font='800 18px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.fillText('PLAYER BRICK SHOWCASE',320,778);
+  ctx.fillText(String(ai.name_zh||ai.name||'积木武器').slice(0,16),360,744);
+  ctx.font='800 18px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.fillText('BRICK WEAPON SHOWCASE',360,776);
   return canvasToBlob(canvas,'image/webp',.92);
 }
 async function safeGeminiImageGenerate(prompt,options,onFallback){
