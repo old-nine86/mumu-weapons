@@ -7486,7 +7486,7 @@ function openModal(id){
   const hasShowcase=!!weaponShowcaseImage(w);
   const aiAssets=analysis.ai_assets&&typeof analysis.ai_assets==='object'?analysis.ai_assets:{};
   const heroBg=aiAssets.card_background_url||analysis.card_background_url||showcaseSrc;
-  const heroStyle=hasShowcase?' style="background-image:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,253,248,.78)),url(\''+heroBg+'\')"':'';
+  const heroStyle=(!hasShowcase&&heroBg)?' style="background-image:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,253,248,.78)),url(\''+heroBg+'\')"':'';
   document.getElementById('modalContent').className='modal-content';
   document.getElementById('modalContent').innerHTML=
     '<div class="modal-img-wrap '+(hasShowcase?'has-showcase':'')+'"'+heroStyle+'>'+

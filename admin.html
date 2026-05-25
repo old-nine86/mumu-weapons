@@ -229,9 +229,17 @@ function builtinRows(){
       analysis:{original_image_url:'assets/weapon-originals/weapon-'+String(w.i).padStart(2,'0')+'.jpg',refined_image_url:'assets/weapon-cutouts/weapon-'+String(w.i).padStart(2,'0')+'.png',ai_assets:{card_background_url:w.bg,handheld_showcase_url:'assets/weapon-showcases/weapon-'+String(w.i).padStart(2,'0')+'.webp',matched_character:w.character,composition:{x:0,y:0,scale:100,rotate:0}}}
     };
     const saved=overrides[id]||{};
-    const analysis=Object.assign({},base.analysis,saved.analysis||{});
-    analysis.ai_assets=Object.assign({},base.analysis.ai_assets,(saved.analysis&&saved.analysis.ai_assets)||{});
-    return Object.assign({},base,saved,{id,builtin:true,analysis});
+    const savedAnalysis=saved.analysis&&typeof saved.analysis==='object'?saved.analysis:{};
+    const savedAssets=savedAnalysis.ai_assets&&typeof savedAnalysis.ai_assets==='object'?savedAnalysis.ai_assets:{};
+    const safeSaved=Object.assign({},saved);
+    delete safeSaved.analysis;
+    delete safeSaved.image_url;
+    delete safeSaved.showcase_url;
+    const analysis=Object.assign({},base.analysis);
+    analysis.ai_assets=Object.assign({},base.analysis.ai_assets);
+    if(savedAssets.card_background_url)analysis.ai_assets.card_background_url=savedAssets.card_background_url;
+    if(savedAssets.composition)analysis.ai_assets.composition=savedAssets.composition;
+    return Object.assign({},base,safeSaved,{id,builtin:true,analysis});
   });
 }
 function mergeApprovedRows(rows){
