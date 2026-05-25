@@ -1348,12 +1348,12 @@ function roundRect(ctx,x,y,w,h,r){
   ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
   ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
 }
-async function fallbackHandheldShowcase(ai,weaponBlob,composition={}){
+async function fallbackHandheldShowcase(ai,weaponBlob,composition={},backgroundUrl=''){
   const canvas=document.createElement('canvas');
   canvas.width=640;canvas.height=860;
   const ctx=canvas.getContext('2d');
   try{
-    const bgBitmap=await bitmapFromUrl(matchedBackground(ai));
+    const bgBitmap=await bitmapFromUrl(backgroundUrl||matchedBackground(ai));
     ctx.drawImage(bgBitmap,0,0,640,860);
   }catch(err){
     const bg=await fallbackCardBackground(ai);
@@ -1427,6 +1427,7 @@ async function aiRefineFull(id,btn){
     const ai=await aiResponseJSON(aiPromptForWeapon(),source);
     const fields=fillWeaponFieldsFromAI(card,ai);
     const composition=collectComposition(card);
+    const selectedBackgroundUrl=collectWeaponFields(card).card_background_url||'';
     const localImageProvider=provider==='gemini'||provider==='openrouter'||provider==='local';
     setAIStatus(card,localImageProvider?(provider==='local'?'本地自动 2/4：清理主体并放大构图。':provider==='openrouter'?'OpenRouter 免费模型 2/4：识别完成，使用本地算法抠图。':'Google 全流程 2/4：使用本地算法抠图并保存主体。'):'AI 全流程 2/4：生成透明武器主体...');
     const originalBlob=await urlToBlob(source);
@@ -1438,16 +1439,17 @@ async function aiRefineFull(id,btn){
     if(root&&root.querySelector('[data-ai-cutout]'))root.querySelector('[data-ai-cutout]').src=cutoutUrl;
     if(localImageProvider){
       setAIStatus(card,provider==='local'?'本地自动 3/4：生成统一橱窗背景...':provider==='openrouter'?('OpenRouter 3/4：已用 '+escapeHTML(ai.openrouter_model_used||'免费模型')+' 识别，本地生成专属卡片背景...'):'Google 全流程 3/4：生成专属卡片背景...');
-      const bgResult=provider==='openrouter'||provider==='local'
-        ? {blob:await fallbackCardBackground(ai),fallback:true,error:'OpenRouter free models do not generate images'}
-        : await safeGeminiImageGenerate(backgroundPrompt(ai,style),{},()=>fallbackCardBackground(ai));
-      const bgBlob=bgResult.blob;
-      const bgUrl=await uploadImageBlob(bgBlob,id,provider==='local'?'local-card-bg':provider==='openrouter'?'openrouter-card-bg':'gemini-card-bg');
+      const bgResult=selectedBackgroundUrl
+        ? {blob:null,fallback:false,error:'manual background selected'}
+        : (provider==='openrouter'||provider==='local'
+          ? {blob:await fallbackCardBackground(ai),fallback:true,error:'OpenRouter free models do not generate images'}
+          : await safeGeminiImageGenerate(backgroundPrompt(ai,style),{},()=>fallbackCardBackground(ai)));
+      const bgUrl=selectedBackgroundUrl||await uploadImageBlob(bgResult.blob,id,provider==='local'?'local-card-bg':provider==='openrouter'?'openrouter-card-bg':'gemini-card-bg');
       if(root&&root.querySelector('[data-ai-bg]'))root.querySelector('[data-ai-bg]').src=bgUrl;
       setAIStatus(card,provider==='local'?'本地自动 4/4：合成大武器展示图...':provider==='openrouter'?'OpenRouter 免费模型 4/4：本地合成角色手持展示图...':(bgResult.fallback?'Google 图片额度不足，已用本地高级卡片背景兜底。继续生成展示图...':'Google 全流程 4/4：生成角色手持展示图...'));
       const handResult=provider==='openrouter'||provider==='local'
-        ? {blob:await fallbackHandheldShowcase(ai,cutoutBlob,composition),fallback:true,error:'OpenRouter free models do not generate images'}
-        : await safeGeminiImageGenerate(handheldPrompt(ai,style,character),{imageBlob:cutoutBlob},()=>fallbackHandheldShowcase(ai,cutoutBlob,composition));
+        ? {blob:await fallbackHandheldShowcase(ai,cutoutBlob,composition,bgUrl),fallback:true,error:'OpenRouter free models do not generate images'}
+        : await safeGeminiImageGenerate(handheldPrompt(ai,style,character),{imageBlob:cutoutBlob},()=>fallbackHandheldShowcase(ai,cutoutBlob,composition,bgUrl));
       const handBlob=handResult.blob;
       const handUrl=await uploadImageBlob(handBlob,id,provider==='local'?'local-handheld':provider==='openrouter'?'openrouter-handheld':'gemini-handheld');
       const showcaseInput=card.querySelector('[data-field="showcase_url"]');
