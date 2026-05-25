@@ -21,6 +21,7 @@ button{border:0;border-radius:999px;padding:12px 16px;font:inherit;font-weight:8
 .edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 10px}.edit-grid label{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:12px;font-weight:800}.edit-grid input,.edit-grid select{padding:10px 11px;border-radius:12px;font-size:14px;font-weight:650}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.actions.three{grid-template-columns:1fr 1fr 1fr}.showcase-tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px;align-items:center}.showcase-tools input{padding:10px;border-radius:12px}
 .refine-tools{display:grid;grid-template-columns:1fr;gap:10px;margin:0;padding:0;border:0;background:transparent}.refine-tools .row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center}.refine-note{color:var(--muted);font-size:12px;font-weight:650;line-height:1.55}.image-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.image-pair figure{margin:0;padding:8px;border:1px solid rgba(0,0,0,.06);border-radius:16px;background:#fbfbfd}.image-pair figcaption{font-size:12px;color:var(--muted);font-weight:800;margin-bottom:6px}.image-pair img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#fff;border-radius:12px}
 .ai-workbench{display:grid;gap:12px;margin:0;padding:0;border:0;background:transparent;box-shadow:none}.ai-workbench .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ai-workbench .actions{grid-template-columns:1fr 1fr}.ai-title{font-weight:850;color:var(--ink)}.ai-note{color:var(--muted);font-size:12px;font-weight:650;line-height:1.55}.ai-card-status{padding:10px 12px;border-radius:14px;background:#f5f5f7;color:#515154;font-size:12px;font-weight:750;line-height:1.45}.ai-assets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.ai-assets figure{margin:0;padding:7px;border:1px solid rgba(0,0,0,.06);border-radius:15px;background:#fbfbfd}.ai-assets figcaption{font-size:11px;color:var(--muted);font-weight:800;margin-bottom:5px}.ai-assets img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;background:#f5f5f7}
+.background-picker{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:10px;margin:10px 0}.background-picker label{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:12px;font-weight:800}.background-preview{border:1px solid rgba(0,0,0,.06);border-radius:16px;background:#f5f5f7;overflow:hidden;min-height:150px}.background-preview img{width:100%;height:100%;object-fit:cover;display:block}
 .admin-steps{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}.admin-step{background:#f5f5f7;border:1px solid rgba(0,0,0,.04);border-radius:18px;padding:14px;font-weight:750;color:var(--muted)}.admin-step b{display:block;color:var(--ink);font-size:18px;margin-bottom:3px}.empty{padding:34px;text-align:center;color:var(--muted);font-weight:800}a{color:var(--blue)}
 @media(max-width:960px){.admin-hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.card{grid-template-columns:160px minmax(0,1fr)}}
 @media(max-width:720px){.wrap{padding:16px 12px 44px}.top{margin:-16px -12px 20px;padding:13px 12px}.login,.ai-login,.bulk-tools,.card,.edit-grid,.showcase-tools,.refine-tools .row,.ai-workbench .row,.ai-workbench .actions,.actions,.actions.three{grid-template-columns:1fr}.image{aspect-ratio:16/10}.image-pair,.ai-assets{grid-template-columns:1fr}.section-title{top:62px}}
@@ -155,6 +156,44 @@ function aiAssetUrl(item,key){
   const assets=analysis.ai_assets&&typeof analysis.ai_assets==='object'?analysis.ai_assets:{};
   return assets[key]||analysis[key]||'';
 }
+const CARD_BG_FILES={
+  SSR:['card-bg-01-ssr.webp','card-bg-02-ssr.webp','card-bg-03-ssr.webp','card-bg-04-ssr.webp','card-bg-05-ssr.webp'],
+  SR:['card-bg-06-sr.webp','card-bg-07-sr.webp','card-bg-08-sr.webp','card-bg-09-sr.webp','card-bg-10-sr.webp'],
+  R:['card-bg-11-r.webp','card-bg-12-r.webp','card-bg-13-r.webp','card-bg-14-r.webp','card-bg-15-r.webp'],
+  N:['card-bg-16-n.webp','card-bg-17-n.webp','card-bg-18-n.webp','card-bg-19-n.webp','card-bg-20-n.webp']
+};
+function cardBgUrl(file){return file?('assets/card-bg/'+file):''}
+function cardBackgroundOptions(selected){
+  const labels={SSR:'SSR 传说背景',SR:'SR 稀有背景',R:'R 精良背景',N:'N 普通背景'};
+  return '<option value="">按等级自动匹配</option>'+Object.entries(CARD_BG_FILES).map(([rarity,files])=>
+    '<optgroup label="'+labels[rarity]+'">'+files.map((file,i)=>{
+      const url=cardBgUrl(file);
+      return '<option value="'+url+'" '+(selected===url?'selected':'')+'>'+rarity+'-'+String(i+1).padStart(2,'0')+' · '+file.replace(/^card-bg-|\.webp$/g,'')+'</option>';
+    }).join('')+'</optgroup>'
+  ).join('');
+}
+function backgroundPicker(item){
+  const selected=aiAssetUrl(item,'card_background_url');
+  const preview=selected||cardBgUrl((CARD_BG_FILES[item.card_rarity]||CARD_BG_FILES.SR)[0]);
+  return `
+    <div class="background-picker">
+      <label>卡牌背景<select data-field="card_background_url" onchange="previewSelectedBackground(this)">${cardBackgroundOptions(selected)}</select></label>
+      <div class="background-preview"><img data-bg-preview src="${escapeHTML(preview)}" alt="卡牌背景预览"></div>
+    </div>`;
+}
+function previewSelectedBackground(select){
+  const card=select.closest('.card');
+  const img=card&&card.querySelector('[data-bg-preview]');
+  const rarity=(card&&card.querySelector('[data-field="card_rarity"]')&&card.querySelector('[data-field="card_rarity"]').value)||'SR';
+  if(img)img.src=select.value||cardBgUrl((CARD_BG_FILES[rarity]||CARD_BG_FILES.SR)[0]);
+  const aiBg=card&&card.querySelector('[data-ai-bg]');
+  if(aiBg&&select.value)aiBg.src=select.value;
+}
+function refreshBackgroundForRarity(select){
+  const card=select.closest('.card');
+  const bgSelect=card&&card.querySelector('[data-field="card_background_url"]');
+  if(bgSelect&&!bgSelect.value)previewSelectedBackground(bgSelect);
+}
 function aiWorkbench(item){
   const bg=aiAssetUrl(item,'card_background_url');
   const hand=aiAssetUrl(item,'handheld_showcase_url')||item.showcase_url||'';
@@ -243,7 +282,7 @@ function weaponEditor(item,extra=''){
       <label>技能<input data-field="skill" maxlength="28" value="${escapeHTML(item.skill||'')}"></label>
       <label>积木数<input data-field="piece_count" type="number" min="0" max="300" value="${escapeHTML(item.piece_count||0)}"></label>
       <label>AI战力<input data-field="ai_power" type="number" min="1" max="500" value="${escapeHTML(item.ai_power||100)}"></label>
-      <label>收藏等级<select data-field="card_rarity">
+      <label>收藏等级<select data-field="card_rarity" onchange="refreshBackgroundForRarity(this)">
         <option value="" ${!item.card_rarity?'selected':''}>自动计算</option>
         <option value="SSR" ${item.card_rarity==='SSR'?'selected':''}>SSR 传说</option>
         <option value="SR" ${item.card_rarity==='SR'?'selected':''}>SR 稀有</option>
@@ -263,6 +302,7 @@ function weaponEditor(item,extra=''){
       <label>英文分类<input data-field="label_en" maxlength="28" value="${escapeHTML(item.label_en||'')}" placeholder="Blade / Blaster..."></label>
       <label>英文技能<input data-field="skill_en" maxlength="40" value="${escapeHTML(item.skill_en||'')}" placeholder="English skill name"></label>
     </div>
+    ${backgroundPicker(item)}
     <textarea data-field="description" maxlength="120" placeholder="武器介绍">${escapeHTML(item.description||'')}</textarea>
     <textarea data-field="description_en" maxlength="180" placeholder="English description">${escapeHTML(item.description_en||'')}</textarea>
     ${extra}`;
@@ -475,6 +515,21 @@ async function saveWeapon(id,btn,silent=false){
       edited_defense:Number(fields.defense||82),
       edited_crit:Number(fields.crit||0.12)
     });
+    if(fields.card_background_url){
+      const root=card.querySelector('[data-ai-root]');
+      const cutout=(root&&root.querySelector('[data-ai-cutout]')&&root.querySelector('[data-ai-cutout]').getAttribute('src'))||refinedImageUrl({image_url:card.querySelector('.image img')&&card.querySelector('.image img').src,analysis:{}});
+      const handheld=(root&&root.querySelector('[data-ai-handheld]')&&root.querySelector('[data-ai-handheld]').getAttribute('src'))||fields.showcase_url||'';
+      await rpc('admin_update_weapon_ai_assets',{
+        input_review_key:key(),
+        weapon_id:id,
+        refined_image_url:cutout||'',
+        card_background_url:fields.card_background_url,
+        handheld_showcase_url:handheld||'',
+        ai_metadata:{manual_card_background_url:fields.card_background_url,manual_card_rarity:fields.card_rarity||''}
+      });
+      const aiBg=root&&root.querySelector('[data-ai-bg]');
+      if(aiBg)aiBg.src=fields.card_background_url;
+    }
     if(!silent)status('武器信息已保存。');
   }catch(err){
     status(err.message||'保存失败');
@@ -1047,12 +1102,6 @@ function fallbackPalette(ai){
   const p=palettes[rarity]||palettes.N;
   return type==='gun'?[p[1],p[0],p[3],p[2]]:type==='spear'?[p[3],p[0],p[2],p[1]]:p;
 }
-const CARD_BG_FILES={
-  SSR:['card-bg-01-ssr.webp','card-bg-02-ssr.webp','card-bg-03-ssr.webp','card-bg-04-ssr.webp','card-bg-05-ssr.webp'],
-  SR:['card-bg-06-sr.webp','card-bg-07-sr.webp','card-bg-08-sr.webp','card-bg-09-sr.webp','card-bg-10-sr.webp'],
-  R:['card-bg-11-r.webp','card-bg-12-r.webp','card-bg-13-r.webp','card-bg-14-r.webp','card-bg-15-r.webp'],
-  N:['card-bg-16-n.webp','card-bg-17-n.webp','card-bg-18-n.webp','card-bg-19-n.webp','card-bg-20-n.webp']
-};
 const CHARACTER_AVATARS={
   ENTJ:'assets/characters/entj-avatar.webp',INTJ:'assets/characters/intj-avatar.webp',INTP:'assets/characters/intp-avatar.webp',ENTP:'assets/characters/entp-avatar.webp',
   INFJ:'assets/characters/infj-avatar.webp',ENFJ:'assets/characters/enfj-avatar.webp',INFP:'assets/characters/infp-avatar.webp',ENFP:'assets/characters/enfp-avatar.webp',
