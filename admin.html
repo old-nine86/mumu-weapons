@@ -22,9 +22,11 @@ button{border:0;border-radius:999px;padding:12px 16px;font:inherit;font-weight:8
 .refine-tools{display:grid;grid-template-columns:1fr;gap:10px;margin:0;padding:0;border:0;background:transparent}.refine-tools .row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center}.refine-note{color:var(--muted);font-size:12px;font-weight:650;line-height:1.55}.image-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.image-pair figure{margin:0;padding:8px;border:1px solid rgba(0,0,0,.06);border-radius:16px;background:#fbfbfd}.image-pair figcaption{font-size:12px;color:var(--muted);font-weight:800;margin-bottom:6px}.image-pair img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#fff;border-radius:12px}
 .ai-workbench{display:grid;gap:12px;margin:0;padding:0;border:0;background:transparent;box-shadow:none}.ai-workbench .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ai-workbench .actions{grid-template-columns:1fr 1fr}.ai-title{font-weight:850;color:var(--ink)}.ai-note{color:var(--muted);font-size:12px;font-weight:650;line-height:1.55}.ai-card-status{padding:10px 12px;border-radius:14px;background:#f5f5f7;color:#515154;font-size:12px;font-weight:750;line-height:1.45}.ai-assets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.ai-assets figure{margin:0;padding:7px;border:1px solid rgba(0,0,0,.06);border-radius:15px;background:#fbfbfd}.ai-assets figcaption{font-size:11px;color:var(--muted);font-weight:800;margin-bottom:5px}.ai-assets img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;background:#f5f5f7}
 .background-picker{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:10px;margin:10px 0}.background-picker label{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:12px;font-weight:800}.background-preview{border:1px solid rgba(0,0,0,.06);border-radius:16px;background:#f5f5f7;overflow:hidden;min-height:150px}.background-preview img{width:100%;height:100%;object-fit:cover;display:block}
+.composition-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}.composition-tools label{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:12px;font-weight:800}.composition-tools input{padding:8px 0}
+.admin-nav{position:sticky;top:58px;z-index:24;display:flex;gap:8px;margin:0 0 22px;padding:8px;border:1px solid rgba(0,0,0,.06);border-radius:999px;background:rgba(255,255,255,.86);backdrop-filter:blur(18px);box-shadow:0 12px 30px rgba(0,0,0,.05)}.admin-nav button{flex:1;background:transparent;color:var(--muted);box-shadow:none}.admin-nav button.active{background:var(--ink);color:#fff}.admin-pane{display:block}.admin-pane.hidden{display:none}
 .admin-steps{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}.admin-step{background:#f5f5f7;border:1px solid rgba(0,0,0,.04);border-radius:18px;padding:14px;font-weight:750;color:var(--muted)}.admin-step b{display:block;color:var(--ink);font-size:18px;margin-bottom:3px}.empty{padding:34px;text-align:center;color:var(--muted);font-weight:800}a{color:var(--blue)}
 @media(max-width:960px){.admin-hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.card{grid-template-columns:160px minmax(0,1fr)}}
-@media(max-width:720px){.wrap{padding:16px 12px 44px}.top{margin:-16px -12px 20px;padding:13px 12px}.login,.ai-login,.bulk-tools,.card,.edit-grid,.showcase-tools,.refine-tools .row,.ai-workbench .row,.ai-workbench .actions,.actions,.actions.three{grid-template-columns:1fr}.image{aspect-ratio:16/10}.image-pair,.ai-assets{grid-template-columns:1fr}.section-title{top:62px}}
+@media(max-width:720px){.wrap{padding:16px 12px 44px}.top{margin:-16px -12px 20px;padding:13px 12px}.login,.ai-login,.bulk-tools,.card,.edit-grid,.showcase-tools,.refine-tools .row,.ai-workbench .row,.ai-workbench .actions,.actions,.actions.three,.composition-tools{grid-template-columns:1fr}.image{aspect-ratio:16/10}.image-pair,.ai-assets{grid-template-columns:1fr}.section-title{top:62px}.admin-nav{top:55px;border-radius:24px;flex-direction:column}}
 </style>
 </head>
 <body>
@@ -78,12 +80,23 @@ button{border:0;border-radius:999px;padding:12px 16px;font:inherit;font-weight:8
     </div>
   </div>
 
-  <div class="section-title">待审核武器</div>
-  <div class="grid" id="weaponGrid"></div>
-  <div class="section-title">已通过武器管理</div>
-  <div class="grid" id="approvedGrid"></div>
-  <div class="section-title">待审核推广证明</div>
-  <div class="grid" id="promoGrid"></div>
+  <div class="admin-nav">
+    <button class="active" data-admin-tab="pending" onclick="showAdminPane('pending')">待审核武器</button>
+    <button data-admin-tab="approved" onclick="showAdminPane('approved')">已通过武器</button>
+    <button data-admin-tab="promo" onclick="showAdminPane('promo')">推广证明</button>
+  </div>
+  <section class="admin-pane" data-admin-pane="pending">
+    <div class="section-title">待审核武器</div>
+    <div class="grid" id="weaponGrid"></div>
+  </section>
+  <section class="admin-pane hidden" data-admin-pane="approved">
+    <div class="section-title">已通过武器管理</div>
+    <div class="grid" id="approvedGrid"></div>
+  </section>
+  <section class="admin-pane hidden" data-admin-pane="promo">
+    <div class="section-title">待审核推广证明</div>
+    <div class="grid" id="promoGrid"></div>
+  </section>
 </div>
 
 <script src="supabase-config.js?v=3"></script>
@@ -100,6 +113,10 @@ function headers(){return{apikey:CLOUD.anonKey,Authorization:'Bearer '+CLOUD.ano
 function escapeHTML(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function status(text){document.getElementById('status').textContent=text}
 function key(){return document.getElementById('reviewKey').value.trim()}
+function showAdminPane(name){
+  document.querySelectorAll('[data-admin-pane]').forEach(pane=>pane.classList.toggle('hidden',pane.dataset.adminPane!==name));
+  document.querySelectorAll('[data-admin-tab]').forEach(tab=>tab.classList.toggle('active',tab.dataset.adminTab===name));
+}
 function aiProvider(){return document.getElementById('aiProvider').value||localStorage.getItem(AI_PROVIDER_STORAGE)||'local'}
 function aiKey(){return document.getElementById('aiKey').value.trim()||localStorage.getItem(AI_KEY_STORAGE)||localStorage.getItem(OPENAI_KEY_STORAGE)||''}
 function openAIKey(){return aiKey()}
@@ -180,6 +197,28 @@ function backgroundPicker(item){
       <label>卡牌背景<select data-field="card_background_url" onchange="previewSelectedBackground(this)">${cardBackgroundOptions(selected)}</select></label>
       <div class="background-preview"><img data-bg-preview src="${escapeHTML(preview)}" alt="卡牌背景预览"></div>
     </div>`;
+}
+function compositionFromItem(item){
+  const analysis=itemAnalysis(item);
+  const assets=analysis.ai_assets&&typeof analysis.ai_assets==='object'?analysis.ai_assets:{};
+  const c=assets.composition||analysis.composition||{};
+  return {
+    x:Number.isFinite(Number(c.x))?Number(c.x):0,
+    y:Number.isFinite(Number(c.y))?Number(c.y):0,
+    scale:Number.isFinite(Number(c.scale))?Number(c.scale):100,
+    rotate:Number.isFinite(Number(c.rotate))?Number(c.rotate):0
+  };
+}
+function compositionControls(item){
+  const c=compositionFromItem(item);
+  return `
+    <div class="composition-tools">
+      <label>左右中心<input data-field="composition_x" type="range" min="-180" max="180" value="${escapeHTML(c.x)}"></label>
+      <label>上下中心<input data-field="composition_y" type="range" min="-180" max="180" value="${escapeHTML(c.y)}"></label>
+      <label>武器缩放<input data-field="composition_scale" type="range" min="55" max="155" value="${escapeHTML(c.scale)}"></label>
+      <label>旋转角度<input data-field="composition_rotate" type="range" min="-30" max="30" value="${escapeHTML(c.rotate)}"></label>
+    </div>
+    <div class="line">调完以后点“按构图重做橱窗”，会用当前背景、角色和中心点重新生成展示图。</div>`;
 }
 function previewSelectedBackground(select){
   const card=select.closest('.card');
@@ -312,6 +351,15 @@ function collectWeaponFields(card){
   card.querySelectorAll('[data-field]').forEach(input=>fields[input.dataset.field]=input.value.trim());
   return fields;
 }
+function collectComposition(card){
+  const fields=collectWeaponFields(card);
+  return {
+    x:Number(fields.composition_x||0),
+    y:Number(fields.composition_y||0),
+    scale:Number(fields.composition_scale||100),
+    rotate:Number(fields.composition_rotate||0)
+  };
+}
 function weakAdminText(value){
   const text=String(value||'').trim();
   if(!text)return true;
@@ -385,7 +433,7 @@ function renderWeapons(rows){
           <div class="line">推广证明：${escapeHTML(item.share_proof||'无')} · <a href="${escapeHTML(item.image_url)}" target="_blank" rel="noopener">看原图</a></div>
         </div>
         <details class="admin-section" open><summary>精修工作台</summary><div class="admin-section-body">${aiWorkbench(item)}</div></details>
-        <details class="admin-section"><summary>主体图与橱窗</summary><div class="admin-section-body">${refineTools(item)}<div class="showcase-tools"><input type="file" accept="image/*" data-showcase-file><button class="secondary" onclick="uploadShowcase('${escapeHTML(item.id)}',this)">上传展示图</button></div></div></details>
+        <details class="admin-section"><summary>主体图与橱窗</summary><div class="admin-section-body">${refineTools(item)}${compositionControls(item)}<div class="showcase-tools"><input type="file" accept="image/*" data-showcase-file><button class="secondary" onclick="uploadShowcase('${escapeHTML(item.id)}',this)">上传展示图</button><button class="secondary" onclick="aiRefineFull('${escapeHTML(item.id)}',this)">按构图重做橱窗</button></div></div></details>
         <details class="admin-section"><summary>资料编辑</summary><div class="admin-section-body">${weaponEditor(item)}</div></details>
         <textarea placeholder="审核备注，可不填"></textarea>
         <div class="actions three">
@@ -453,7 +501,7 @@ function renderApproved(rows){
           <div class="line"><a href="${escapeHTML(item.image_url)}" target="_blank" rel="noopener">原武器图</a>${item.showcase_url?' · <a href="'+escapeHTML(item.showcase_url)+'" target="_blank" rel="noopener">展示图</a>':' · 未配展示图'}</div>
         </div>
         <details class="admin-section"><summary>精修工作台</summary><div class="admin-section-body">${aiWorkbench(item)}</div></details>
-        <details class="admin-section"><summary>主体图与橱窗</summary><div class="admin-section-body">${refineTools(item)}<div class="showcase-tools"><input type="file" accept="image/*" data-showcase-file><button class="secondary" onclick="uploadShowcase('${escapeHTML(item.id)}',this)">上传/更换展示图</button></div></div></details>
+        <details class="admin-section"><summary>主体图与橱窗</summary><div class="admin-section-body">${refineTools(item)}${compositionControls(item)}<div class="showcase-tools"><input type="file" accept="image/*" data-showcase-file><button class="secondary" onclick="uploadShowcase('${escapeHTML(item.id)}',this)">上传/更换展示图</button><button class="secondary" onclick="aiRefineFull('${escapeHTML(item.id)}',this)">按构图重做橱窗</button></div></div></details>
         <details class="admin-section" open><summary>资料编辑</summary><div class="admin-section-body">${weaponEditor(item)}</div></details>
         <div class="actions">
           <button class="good" onclick="saveWeapon('${escapeHTML(item.id)}',this)">保存信息</button>
@@ -491,6 +539,7 @@ async function uploadShowcase(id,btn){
 async function saveWeapon(id,btn,silent=false){
   const card=btn.closest('.card');
   const fields=collectWeaponFields(card);
+  const composition=collectComposition(card);
   if(!silent){btn.disabled=true;status('正在保存武器信息...')}
   try{
     await rpc('admin_update_weapon',{
@@ -515,7 +564,7 @@ async function saveWeapon(id,btn,silent=false){
       edited_defense:Number(fields.defense||82),
       edited_crit:Number(fields.crit||0.12)
     });
-    if(fields.card_background_url){
+    if(fields.card_background_url||fields.composition_x||fields.composition_y||fields.composition_scale||fields.composition_rotate){
       const root=card.querySelector('[data-ai-root]');
       const cutout=(root&&root.querySelector('[data-ai-cutout]')&&root.querySelector('[data-ai-cutout]').getAttribute('src'))||refinedImageUrl({image_url:card.querySelector('.image img')&&card.querySelector('.image img').src,analysis:{}});
       const handheld=(root&&root.querySelector('[data-ai-handheld]')&&root.querySelector('[data-ai-handheld]').getAttribute('src'))||fields.showcase_url||'';
@@ -525,7 +574,7 @@ async function saveWeapon(id,btn,silent=false){
         refined_image_url:cutout||'',
         card_background_url:fields.card_background_url,
         handheld_showcase_url:handheld||'',
-        ai_metadata:{manual_card_background_url:fields.card_background_url,manual_card_rarity:fields.card_rarity||''}
+        ai_metadata:{manual_card_background_url:fields.card_background_url||'',manual_card_rarity:fields.card_rarity||'',composition}
       });
       const aiBg=root&&root.querySelector('[data-ai-bg]');
       if(aiBg)aiBg.src=fields.card_background_url;
@@ -1162,7 +1211,7 @@ function roundRect(ctx,x,y,w,h,r){
   ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
   ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
 }
-async function fallbackHandheldShowcase(ai,weaponBlob){
+async function fallbackHandheldShowcase(ai,weaponBlob,composition={}){
   const canvas=document.createElement('canvas');
   canvas.width=640;canvas.height=860;
   const ctx=canvas.getContext('2d');
@@ -1192,11 +1241,13 @@ async function fallbackHandheldShowcase(ai,weaponBlob){
     ctx.fillStyle=a;roundRect(ctx,70,596,96,96,22);ctx.fill();ctx.strokeStyle=d;ctx.lineWidth=4;ctx.stroke();
   }
   const weaponBitmap=await createImageBitmap(weaponBlob);
-  const scale=Math.min(560/weaponBitmap.width,430/weaponBitmap.height);
+  const scale=Math.min(560/weaponBitmap.width,430/weaponBitmap.height)*(Number(composition.scale||100)/100);
   const ww=weaponBitmap.width*scale,hh=weaponBitmap.height*scale;
   ctx.save();
   ctx.shadowColor='rgba(31,41,51,.26)';ctx.shadowBlur=34;ctx.shadowOffsetY=24;
-  ctx.translate(366,406);ctx.rotate(-0.055);ctx.drawImage(weaponBitmap,-ww/2,-hh/2,ww,hh);
+  ctx.translate(366+Number(composition.x||0),406+Number(composition.y||0));
+  ctx.rotate((Number(composition.rotate||0)-3)*Math.PI/180);
+  ctx.drawImage(weaponBitmap,-ww/2,-hh/2,ww,hh);
   ctx.restore();
   ctx.fillStyle='rgba(31,41,51,.86)';ctx.font='900 30px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';ctx.textAlign='center';
   ctx.fillText(String(ai.name_zh||ai.name||'积木武器').slice(0,16),360,744);
@@ -1237,6 +1288,7 @@ async function aiRefineFull(id,btn){
     const provider=aiProvider();
     const ai=await aiResponseJSON(aiPromptForWeapon(),source);
     const fields=fillWeaponFieldsFromAI(card,ai);
+    const composition=collectComposition(card);
     const localImageProvider=provider==='gemini'||provider==='openrouter'||provider==='local';
     setAIStatus(card,localImageProvider?(provider==='local'?'本地自动 2/4：清理主体并放大构图。':provider==='openrouter'?'OpenRouter 免费模型 2/4：识别完成，使用本地算法抠图。':'Google 全流程 2/4：使用本地算法抠图并保存主体。'):'AI 全流程 2/4：生成透明武器主体...');
     const originalBlob=await urlToBlob(source);
@@ -1256,8 +1308,8 @@ async function aiRefineFull(id,btn){
       if(root&&root.querySelector('[data-ai-bg]'))root.querySelector('[data-ai-bg]').src=bgUrl;
       setAIStatus(card,provider==='local'?'本地自动 4/4：合成大武器展示图...':provider==='openrouter'?'OpenRouter 免费模型 4/4：本地合成角色手持展示图...':(bgResult.fallback?'Google 图片额度不足，已用本地高级卡片背景兜底。继续生成展示图...':'Google 全流程 4/4：生成角色手持展示图...'));
       const handResult=provider==='openrouter'||provider==='local'
-        ? {blob:await fallbackHandheldShowcase(ai,cutoutBlob),fallback:true,error:'OpenRouter free models do not generate images'}
-        : await safeGeminiImageGenerate(handheldPrompt(ai,style,character),{imageBlob:cutoutBlob},()=>fallbackHandheldShowcase(ai,cutoutBlob));
+        ? {blob:await fallbackHandheldShowcase(ai,cutoutBlob,composition),fallback:true,error:'OpenRouter free models do not generate images'}
+        : await safeGeminiImageGenerate(handheldPrompt(ai,style,character),{imageBlob:cutoutBlob},()=>fallbackHandheldShowcase(ai,cutoutBlob,composition));
       const handBlob=handResult.blob;
       const handUrl=await uploadImageBlob(handBlob,id,provider==='local'?'local-handheld':provider==='openrouter'?'openrouter-handheld':'gemini-handheld');
       const showcaseInput=card.querySelector('[data-field="showcase_url"]');
@@ -1271,7 +1323,7 @@ async function aiRefineFull(id,btn){
           refined_image_url:cutoutUrl,
           card_background_url:bgUrl,
           handheld_showcase_url:handUrl,
-          ai_metadata:Object.assign({},ai,{admin_ai_provider:provider,filled_fields:fields,background_fallback:bgResult.fallback,handheld_fallback:handResult.fallback,background_error:bgResult.error,handheld_error:handResult.error})
+          ai_metadata:Object.assign({},ai,{admin_ai_provider:provider,filled_fields:fields,composition,background_fallback:bgResult.fallback,handheld_fallback:handResult.fallback,background_error:bgResult.error,handheld_error:handResult.error})
         });
       }catch(metaErr){
         setAIStatus(card,'Google 图片已生成；但 AI 元数据保存失败。展示图地址已填入表单，可手动保存。');
