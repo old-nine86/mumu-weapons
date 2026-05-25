@@ -58,10 +58,10 @@ button{border:0;border-radius:999px;padding:12px 16px;font:inherit;font-weight:8
         <button class="secondary" onclick="saveOpenAIKey()">保存设置</button>
       </div>
       <div class="bulk-tools">
-        <button class="good" onclick="bulkCompleteWeapons('all',this)">一键补全全部已加载</button>
+        <button class="good" onclick="bulkCompleteWeapons('all',this)">一键补全/重做旧图</button>
         <button class="secondary" onclick="bulkCompleteWeapons('pending',this)">只补待审核</button>
-        <button class="secondary" onclick="bulkCompleteWeapons('approved',this)">只补已通过</button>
-        <button class="secondary" onclick="bulkCompleteWeapons('all-force',this)">重做全部橱窗</button>
+        <button class="secondary" onclick="bulkCompleteWeapons('approved-force',this)">重做已通过橱窗</button>
+        <button class="secondary" onclick="loadAll()">刷新后台数据</button>
       </div>
       <div class="line">批量补全会自动补中文/英文资料、等级数值、透明主体、卡片背景和手持展示图；默认使用本地自动流程，不消耗 API。</div>
       <div class="status" id="status">请输入审核口令。无 API 时选择“本地自动”，也能生成文字、属性、背景和展示图。</div>
@@ -282,6 +282,7 @@ function cardNeedsCompletion(card){
   const requiredText=['name','label','skill','description','name_en','label_en','skill_en','description_en'];
   if(requiredText.some(name=>weakAdminText(fields[name])))return true;
   if(!fields.showcase_url)return true;
+  if(/(?:local|openrouter|gemini|ai)-handheld|PLAYER%20BRICK|PLAYER BRICK/i.test(fields.showcase_url))return true;
   if(!Number(fields.piece_count)||!Number(fields.ai_power)||!fields.card_rarity||!Number(fields.card_score))return true;
   const root=card.querySelector('[data-ai-root]');
   const bg=root&&root.querySelector('[data-ai-bg]');
