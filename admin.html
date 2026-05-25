@@ -6,67 +6,24 @@
 <title>沐沐积木武器库 · 审核台</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 10% 0,#ffe7ef 0 16rem,transparent 34rem),radial-gradient(circle at 86% 8%,#d9f0ff 0 18rem,transparent 36rem),linear-gradient(180deg,#fffaf2,#eef7ff 52%,#fff8fb);color:#1f2933}
-.wrap{max-width:1280px;margin:0 auto;padding:30px 18px 64px}
-.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:22px;padding:18px 4px}
-h1{margin:0;font-size:clamp(28px,4vw,48px);letter-spacing:0}
-.sub{margin-top:8px;color:#667085;font-weight:700}
-.panel{background:rgba(255,255,255,.86);border:1px solid rgba(31,41,51,.1);box-shadow:0 22px 55px rgba(31,41,51,.1);border-radius:24px;padding:18px;backdrop-filter:blur(18px)}
-.login{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:18px}
-.ai-login{display:grid;grid-template-columns:1.05fr 1.1fr .85fr auto;gap:10px;margin-top:10px}
-.bulk-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0 4px}
-input,textarea,select{width:100%;border:1px solid rgba(31,41,51,.14);border-radius:14px;padding:13px 14px;font:inherit;background:white;outline:none}
-textarea{min-height:78px;resize:vertical}
-.edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
-.edit-grid label{display:flex;flex-direction:column;gap:5px;color:#667085;font-size:12px;font-weight:900}
-.edit-grid input,.edit-grid select{padding:10px 11px;border-radius:12px;font-size:14px;font-weight:850}
-button{border:0;border-radius:14px;padding:13px 16px;font:inherit;font-weight:900;cursor:pointer;background:#1f2933;color:white;box-shadow:0 12px 24px rgba(31,41,51,.12)}
-button.secondary{background:#edf2f7;color:#1f2933}
-button.good{background:#17a36b}
-button.bad{background:#e5484d}
-button:disabled{opacity:.45;cursor:not-allowed}
-.status{color:#667085;font-weight:800;margin:12px 0 0}
-.section-title{font-size:24px;font-weight:950;margin:28px 0 12px;display:flex;align-items:center;gap:10px}
-.section-title::before{content:"";width:12px;height:28px;border-radius:999px;background:linear-gradient(180deg,#ff8a72,#ffd96a,#8ee6c6,#9fd7ff)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px}
-.card{overflow:hidden}
-.image{background:linear-gradient(135deg,#fff,#f7fbff);border-radius:20px;aspect-ratio:4/3;display:grid;place-items:center;border:1px solid rgba(31,41,51,.08);overflow:hidden}
-.image img{max-width:100%;max-height:100%;object-fit:contain}
-.meta{padding:14px 2px 0}
-.name{font-size:22px;font-weight:950;margin-bottom:6px}
-.line{color:#667085;font-weight:750;margin:4px 0;word-break:break-word}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
-.chip{background:#edf2f7;border-radius:999px;padding:6px 10px;font-weight:900;font-size:13px}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-.actions.three{grid-template-columns:1fr 1fr 1fr}
-.showcase-tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px;align-items:center}
-.showcase-tools input{padding:10px;border-radius:12px}
-.refine-tools{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px;padding:12px;border:1px solid rgba(255,166,77,.22);border-radius:18px;background:linear-gradient(135deg,#fffaf0,#fff)}
-.refine-tools .row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center}
-.refine-tools input{padding:10px;border-radius:12px}
-.refine-note{color:#8a5b1d;font-size:12px;font-weight:850;line-height:1.55}
-.ai-workbench{display:grid;gap:12px;margin-top:12px;padding:14px;border:1px solid rgba(95,73,255,.18);border-radius:20px;background:linear-gradient(135deg,#f6f3ff,#fff8ee);box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
-.ai-workbench .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.ai-workbench .actions{grid-template-columns:1fr 1fr}
-.ai-title{font-weight:950;color:#39257d}
-.ai-note{color:#655a7c;font-size:12px;font-weight:850;line-height:1.55}
-.ai-card-status{padding:9px 10px;border-radius:12px;background:rgba(57,37,125,.08);color:#39257d;font-size:12px;font-weight:900;line-height:1.45}
-.ai-assets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.ai-assets figure{margin:0;padding:7px;border:1px solid rgba(95,73,255,.12);border-radius:13px;background:white}
-.ai-assets figcaption{font-size:11px;color:#655a7c;font-weight:900;margin-bottom:5px}
-.ai-assets img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;background:#f4f0ff}
-.admin-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;align-items:stretch}
-.admin-hero .panel{min-height:100%}
-.admin-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
-.admin-step{background:rgba(255,255,255,.75);border:1px solid rgba(31,41,51,.08);border-radius:16px;padding:12px;font-weight:900;color:#4d5663}
-.admin-step b{display:block;color:#1f2933;font-size:18px;margin-bottom:3px}
-.image-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.image-pair figure{margin:0;padding:8px;border:1px solid rgba(31,41,51,.08);border-radius:14px;background:#fff}
-.image-pair figcaption{font-size:12px;color:#667085;font-weight:900;margin-bottom:6px}
-.image-pair img{width:100%;aspect-ratio:4/3;object-fit:contain;background:linear-gradient(45deg,#f1f5f9 25%,transparent 25%),linear-gradient(-45deg,#f1f5f9 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#f1f5f9 75%),linear-gradient(-45deg,transparent 75%,#f1f5f9 75%);background-size:18px 18px;background-position:0 0,0 9px,9px -9px,-9px 0;border-radius:10px}
-.empty{padding:34px;text-align:center;color:#667085;font-weight:900}
-a{color:#0b69d1}
-@media(max-width:780px){.top,.admin-hero{display:block}.login,.ai-login,.bulk-tools{grid-template-columns:1fr}.wrap{padding:18px 12px 40px}.refine-tools .row,.ai-workbench .row,.ai-workbench .actions,.admin-steps{grid-template-columns:1fr}.image-pair,.ai-assets{grid-template-columns:1fr}.grid{grid-template-columns:1fr}}
+:root{color-scheme:light;--ink:#1d1d1f;--muted:#6e6e73;--line:#e5e5ea;--panel:#fff;--soft:#f5f5f7;--blue:#0071e3;--green:#34c759;--red:#ff3b30;--shadow:0 18px 48px rgba(0,0,0,.08)}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;background:linear-gradient(180deg,#fbfbfd 0%,#f5f5f7 42%,#fff 100%);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1360px;margin:0 auto;padding:22px 22px 70px}
+.top{position:sticky;top:0;z-index:30;display:flex;justify-content:space-between;gap:18px;align-items:center;margin:-22px -22px 28px;padding:16px 22px;background:rgba(251,251,253,.82);border-bottom:1px solid rgba(0,0,0,.06);backdrop-filter:saturate(180%) blur(22px)}
+h1{margin:0;font-size:20px;letter-spacing:0;font-weight:800}.sub{margin-top:3px;color:var(--muted);font-size:13px;font-weight:600}.top a{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 14px;border-radius:999px;background:#fff;color:var(--blue);box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);text-decoration:none;font-weight:700}
+.panel{background:rgba(255,255,255,.9);border:1px solid rgba(0,0,0,.06);box-shadow:var(--shadow);border-radius:28px;padding:22px;backdrop-filter:blur(20px)}
+.admin-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr);gap:18px;align-items:stretch;margin-bottom:28px}.admin-hero .panel{min-height:100%}
+.login{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:10px;margin-bottom:12px}.ai-login{display:grid;grid-template-columns:1fr 1.1fr .8fr auto;gap:10px;margin-top:10px}.bulk-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0 8px}
+input,textarea,select{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;font:inherit;background:#fff;color:var(--ink);outline:none;transition:border-color .18s,box-shadow .18s}textarea{min-height:82px;resize:vertical}input:focus,textarea:focus,select:focus{border-color:rgba(0,113,227,.55);box-shadow:0 0 0 4px rgba(0,113,227,.12)}
+button{border:0;border-radius:999px;padding:12px 16px;font:inherit;font-weight:800;cursor:pointer;background:var(--ink);color:#fff;box-shadow:none;transition:transform .16s,background .16s,opacity .16s}button:hover{transform:translateY(-1px)}button.secondary{background:#f2f2f7;color:var(--ink)}button.good{background:var(--blue)}button.bad{background:#fff0ef;color:var(--red);box-shadow:inset 0 0 0 1px rgba(255,59,48,.18)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}.status{display:inline-flex;max-width:100%;margin:12px 0 0;padding:9px 12px;border-radius:999px;background:#f2f2f7;color:var(--muted);font-size:13px;font-weight:700}.line{color:var(--muted);font-weight:600;font-size:13px;line-height:1.55;word-break:break-word}.name{font-size:22px;font-weight:850;margin-bottom:6px}.section-title{position:sticky;top:69px;z-index:20;margin:34px 0 14px;padding:12px 2px;background:linear-gradient(180deg,rgba(245,245,247,.96),rgba(245,245,247,.75));backdrop-filter:blur(14px);font-size:24px;font-weight:850;letter-spacing:-.02em;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px}.card{display:grid;grid-template-columns:190px minmax(0,1fr);gap:18px;overflow:hidden;padding:18px}.image{background:linear-gradient(180deg,#fff,#f5f5f7);border-radius:22px;aspect-ratio:1/1.14;display:grid;place-items:center;border:1px solid rgba(0,0,0,.06);overflow:hidden}.image img{width:100%;height:100%;object-fit:contain;padding:10px}.meta{padding:0;min-width:0}.chips{display:flex;flex-wrap:wrap;gap:7px;margin:9px 0 11px}.chip{background:#f5f5f7;border:1px solid rgba(0,0,0,.04);border-radius:999px;padding:6px 10px;color:#515154;font-weight:750;font-size:12px}
+.card-summary{display:grid;gap:5px;margin:8px 0 12px}.admin-section{margin-top:10px;border:1px solid rgba(0,0,0,.07);border-radius:20px;background:#fff;overflow:hidden}.admin-section>summary{list-style:none;cursor:pointer;padding:13px 15px;font-weight:850;display:flex;align-items:center;justify-content:space-between;color:var(--ink);background:#fbfbfd}.admin-section>summary::-webkit-details-marker{display:none}.admin-section>summary::after{content:"+";width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#f2f2f7;color:var(--muted)}.admin-section[open]>summary::after{content:"-"}.admin-section-body{padding:14px;border-top:1px solid rgba(0,0,0,.06)}
+.edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 10px}.edit-grid label{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:12px;font-weight:800}.edit-grid input,.edit-grid select{padding:10px 11px;border-radius:12px;font-size:14px;font-weight:650}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.actions.three{grid-template-columns:1fr 1fr 1fr}.showcase-tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px;align-items:center}.showcase-tools input{padding:10px;border-radius:12px}
+.refine-tools{display:grid;grid-template-columns:1fr;gap:10px;margin:0;padding:0;border:0;background:transparent}.refine-tools .row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center}.refine-note{color:var(--muted);font-size:12px;font-weight:650;line-height:1.55}.image-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.image-pair figure{margin:0;padding:8px;border:1px solid rgba(0,0,0,.06);border-radius:16px;background:#fbfbfd}.image-pair figcaption{font-size:12px;color:var(--muted);font-weight:800;margin-bottom:6px}.image-pair img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#fff;border-radius:12px}
+.ai-workbench{display:grid;gap:12px;margin:0;padding:0;border:0;background:transparent;box-shadow:none}.ai-workbench .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ai-workbench .actions{grid-template-columns:1fr 1fr}.ai-title{font-weight:850;color:var(--ink)}.ai-note{color:var(--muted);font-size:12px;font-weight:650;line-height:1.55}.ai-card-status{padding:10px 12px;border-radius:14px;background:#f5f5f7;color:#515154;font-size:12px;font-weight:750;line-height:1.45}.ai-assets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.ai-assets figure{margin:0;padding:7px;border:1px solid rgba(0,0,0,.06);border-radius:15px;background:#fbfbfd}.ai-assets figcaption{font-size:11px;color:var(--muted);font-weight:800;margin-bottom:5px}.ai-assets img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;background:#f5f5f7}
+.admin-steps{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}.admin-step{background:#f5f5f7;border:1px solid rgba(0,0,0,.04);border-radius:18px;padding:14px;font-weight:750;color:var(--muted)}.admin-step b{display:block;color:var(--ink);font-size:18px;margin-bottom:3px}.empty{padding:34px;text-align:center;color:var(--muted);font-weight:800}a{color:var(--blue)}
+@media(max-width:960px){.admin-hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.card{grid-template-columns:160px minmax(0,1fr)}}
+@media(max-width:720px){.wrap{padding:16px 12px 44px}.top{margin:-16px -12px 20px;padding:13px 12px}.login,.ai-login,.bulk-tools,.card,.edit-grid,.showcase-tools,.refine-tools .row,.ai-workbench .row,.ai-workbench .actions,.actions,.actions.three{grid-template-columns:1fr}.image{aspect-ratio:16/10}.image-pair,.ai-assets{grid-template-columns:1fr}.section-title{top:62px}}
 </style>
 </head>
 <body>
@@ -377,19 +334,16 @@ function renderWeapons(rows){
         <div class="chips">
           <span class="chip">${escapeHTML(typeLabel(item.type))}</span>
           <span class="chip">创建者：${escapeHTML(item.creator)}</span>
+          <span class="chip">待审核</span>
         </div>
-        <div class="line">${escapeHTML(item.description)}</div>
-        <div class="line">技能：${escapeHTML(item.skill)}</div>
-        <div class="line">AI估算：${escapeHTML(item.piece_count||0)} 颗积木 · 战力 ${escapeHTML(item.ai_power||100)}</div>
-        <div class="line">推广证明：${escapeHTML(item.share_proof||'无')}</div>
-        <div class="line"><a href="${escapeHTML(item.image_url)}" target="_blank" rel="noopener">新窗口看原图</a></div>
-        ${refineTools(item)}
-        ${aiWorkbench(item)}
-        ${weaponEditor(item)}
-        <div class="showcase-tools">
-          <input type="file" accept="image/*" data-showcase-file>
-          <button class="secondary" onclick="uploadShowcase('${escapeHTML(item.id)}',this)">上传展示图</button>
+        <div class="card-summary">
+          <div class="line">${escapeHTML(item.description||'等待补全资料')}</div>
+          <div class="line">技能：${escapeHTML(item.skill||'待生成')} · ${escapeHTML(item.piece_count||0)} 颗 · 战力 ${escapeHTML(item.ai_power||100)}</div>
+          <div class="line">推广证明：${escapeHTML(item.share_proof||'无')} · <a href="${escapeHTML(item.image_url)}" target="_blank" rel="noopener">看原图</a></div>
         </div>
+        <details class="admin-section" open><summary>精修工作台</summary><div class="admin-section-body">${aiWorkbench(item)}</div></details>
+        <details class="admin-section"><summary>主体图与橱窗</summary><div class="admin-section-body">${refineTools(item)}<div class="showcase-tools"><input type="file" accept="image/*" data-showcase-file><button class="secondary" onclick="uploadShowcase('${escapeHTML(item.id)}',this)">上传展示图</button></div></div></details>
+        <details class="admin-section"><summary>资料编辑</summary><div class="admin-section-body">${weaponEditor(item)}</div></details>
         <textarea placeholder="审核备注，可不填"></textarea>
         <div class="actions three">
           <button class="secondary" onclick="saveWeapon('${escapeHTML(item.id)}',this)">仅保存修改</button>
@@ -448,15 +402,16 @@ function renderApproved(rows){
         <div class="chips">
           <span class="chip">${escapeHTML(typeLabel(item.type))}</span>
           <span class="chip">创建者：${escapeHTML(item.creator)}</span>
+          <span class="chip">已通过</span>
         </div>
-        <div class="line"><a href="${escapeHTML(item.image_url)}" target="_blank" rel="noopener">原武器图</a>${item.showcase_url?' · <a href="'+escapeHTML(item.showcase_url)+'" target="_blank" rel="noopener">展示图</a>':' · 未配展示图'}</div>
-        ${refineTools(item)}
-        ${aiWorkbench(item)}
-        ${weaponEditor(item)}
-        <div class="showcase-tools">
-          <input type="file" accept="image/*" data-showcase-file>
-          <button class="secondary" onclick="uploadShowcase('${escapeHTML(item.id)}',this)">上传/更换展示图</button>
+        <div class="card-summary">
+          <div class="line">${escapeHTML(item.description||'暂无描述')}</div>
+          <div class="line">${escapeHTML(item.piece_count||0)} 颗 · 战力 ${escapeHTML(item.ai_power||100)} · ${escapeHTML(item.card_rarity||'自动等级')}</div>
+          <div class="line"><a href="${escapeHTML(item.image_url)}" target="_blank" rel="noopener">原武器图</a>${item.showcase_url?' · <a href="'+escapeHTML(item.showcase_url)+'" target="_blank" rel="noopener">展示图</a>':' · 未配展示图'}</div>
         </div>
+        <details class="admin-section"><summary>精修工作台</summary><div class="admin-section-body">${aiWorkbench(item)}</div></details>
+        <details class="admin-section"><summary>主体图与橱窗</summary><div class="admin-section-body">${refineTools(item)}<div class="showcase-tools"><input type="file" accept="image/*" data-showcase-file><button class="secondary" onclick="uploadShowcase('${escapeHTML(item.id)}',this)">上传/更换展示图</button></div></div></details>
+        <details class="admin-section" open><summary>资料编辑</summary><div class="admin-section-body">${weaponEditor(item)}</div></details>
         <div class="actions">
           <button class="good" onclick="saveWeapon('${escapeHTML(item.id)}',this)">保存信息</button>
           <button class="secondary" onclick="loadApproved()">刷新</button>
