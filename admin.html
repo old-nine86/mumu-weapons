@@ -224,9 +224,9 @@ function builtinRows(){
       defense:w.defense,
       crit:w.crit,
       locale:'both',
-      image_url:'assets/weapon-showcases/weapon-'+String(w.i).padStart(2,'0')+'.webp',
+      image_url:'assets/weapon-cutouts/weapon-'+String(w.i).padStart(2,'0')+'.png',
       showcase_url:'assets/weapon-showcases/weapon-'+String(w.i).padStart(2,'0')+'.webp',
-      analysis:{original_image_url:'assets/weapon-showcases/weapon-'+String(w.i).padStart(2,'0')+'.webp',ai_assets:{card_background_url:w.bg,handheld_showcase_url:'assets/weapon-showcases/weapon-'+String(w.i).padStart(2,'0')+'.webp',matched_character:w.character,composition:{x:0,y:0,scale:100,rotate:0}}}
+      analysis:{original_image_url:'assets/weapon-originals/weapon-'+String(w.i).padStart(2,'0')+'.jpg',refined_image_url:'assets/weapon-cutouts/weapon-'+String(w.i).padStart(2,'0')+'.png',ai_assets:{card_background_url:w.bg,handheld_showcase_url:'assets/weapon-showcases/weapon-'+String(w.i).padStart(2,'0')+'.webp',matched_character:w.character,composition:{x:0,y:0,scale:100,rotate:0}}}
     };
     const saved=overrides[id]||{};
     const analysis=Object.assign({},base.analysis,saved.analysis||{});
