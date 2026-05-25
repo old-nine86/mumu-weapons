@@ -18,7 +18,7 @@ input,textarea,select{width:100%;border:1px solid var(--line);border-radius:14px
 button{border:0;border-radius:999px;padding:12px 16px;font:inherit;font-weight:800;cursor:pointer;background:var(--ink);color:#fff;box-shadow:none;transition:transform .16s,background .16s,opacity .16s}button:hover{transform:translateY(-1px)}button.secondary{background:#f2f2f7;color:var(--ink)}button.good{background:var(--blue)}button.bad{background:#fff0ef;color:var(--red);box-shadow:inset 0 0 0 1px rgba(255,59,48,.18)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}.status{display:inline-flex;max-width:100%;margin:12px 0 0;padding:9px 12px;border-radius:999px;background:#f2f2f7;color:var(--muted);font-size:13px;font-weight:700}.line{color:var(--muted);font-weight:600;font-size:13px;line-height:1.55;word-break:break-word}.name{font-size:22px;font-weight:850;margin-bottom:6px}.section-title{position:sticky;top:69px;z-index:20;margin:34px 0 14px;padding:12px 2px;background:linear-gradient(180deg,rgba(245,245,247,.96),rgba(245,245,247,.75));backdrop-filter:blur(14px);font-size:24px;font-weight:850;letter-spacing:-.02em;color:var(--ink)}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px}.card{display:grid;grid-template-columns:190px minmax(0,1fr);gap:18px;overflow:hidden;padding:18px}.image{background:linear-gradient(180deg,#fff,#f5f5f7);border-radius:22px;aspect-ratio:1/1.14;display:grid;place-items:center;border:1px solid rgba(0,0,0,.06);overflow:hidden}.image img{width:100%;height:100%;object-fit:contain;padding:10px}.meta{padding:0;min-width:0}.chips{display:flex;flex-wrap:wrap;gap:7px;margin:9px 0 11px}.chip{background:#f5f5f7;border:1px solid rgba(0,0,0,.04);border-radius:999px;padding:6px 10px;color:#515154;font-weight:750;font-size:12px}
 .card-summary{display:grid;gap:5px;margin:8px 0 12px}.admin-section{margin-top:10px;border:1px solid rgba(0,0,0,.07);border-radius:20px;background:#fff;overflow:hidden}.admin-section>summary{list-style:none;cursor:pointer;padding:13px 15px;font-weight:850;display:flex;align-items:center;justify-content:space-between;color:var(--ink);background:#fbfbfd}.admin-section>summary::-webkit-details-marker{display:none}.admin-section>summary::after{content:"+";width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#f2f2f7;color:var(--muted)}.admin-section[open]>summary::after{content:"-"}.admin-section-body{padding:14px;border-top:1px solid rgba(0,0,0,.06)}
-.edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 10px}.edit-grid label{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:12px;font-weight:800}.edit-grid input,.edit-grid select{padding:10px 11px;border-radius:12px;font-size:14px;font-weight:650}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.actions.three{grid-template-columns:1fr 1fr 1fr}.showcase-tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px;align-items:center}.showcase-tools input{padding:10px;border-radius:12px}
+.edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 10px}.edit-grid label{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:12px;font-weight:800}.edit-grid input,.edit-grid select{padding:10px 11px;border-radius:12px;font-size:14px;font-weight:650}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.actions.three{grid-template-columns:1fr 1fr 1fr}.showcase-tools{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;margin-top:10px;align-items:center}.showcase-tools input{padding:10px;border-radius:12px}
 .refine-tools{display:grid;grid-template-columns:1fr;gap:10px;margin:0;padding:0;border:0;background:transparent}.refine-tools .row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center}.refine-note{color:var(--muted);font-size:12px;font-weight:650;line-height:1.55}.image-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.image-pair figure{margin:0;padding:8px;border:1px solid rgba(0,0,0,.06);border-radius:16px;background:#fbfbfd}.image-pair figcaption{font-size:12px;color:var(--muted);font-weight:800;margin-bottom:6px}.image-pair img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#fff;border-radius:12px}
 .ai-workbench{display:grid;gap:12px;margin:0;padding:0;border:0;background:transparent;box-shadow:none}.ai-workbench .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ai-workbench .actions{grid-template-columns:1fr 1fr}.ai-title{font-weight:850;color:var(--ink)}.ai-note{color:var(--muted);font-size:12px;font-weight:650;line-height:1.55}.ai-card-status{padding:10px 12px;border-radius:14px;background:#f5f5f7;color:#515154;font-size:12px;font-weight:750;line-height:1.45}.ai-assets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.ai-assets figure{margin:0;padding:7px;border:1px solid rgba(0,0,0,.06);border-radius:15px;background:#fbfbfd}.ai-assets figcaption{font-size:11px;color:var(--muted);font-weight:800;margin-bottom:5px}.ai-assets img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;background:#f5f5f7}
 .background-picker{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:10px;margin:10px 0}.background-picker label{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:12px;font-weight:800}.background-preview{border:1px solid rgba(0,0,0,.06);border-radius:16px;background:#f5f5f7;overflow:hidden;min-height:150px}.background-preview img{width:100%;height:100%;object-fit:cover;display:block}
@@ -179,6 +179,66 @@ const CARD_BG_FILES={
   R:['card-bg-11-r.webp','card-bg-12-r.webp','card-bg-13-r.webp','card-bg-14-r.webp','card-bg-15-r.webp'],
   N:['card-bg-16-n.webp','card-bg-17-n.webp','card-bg-18-n.webp','card-bg-19-n.webp','card-bg-20-n.webp']
 };
+const BUILTIN_ADMIN_STORAGE='mumu_builtin_weapon_admin_overrides_v1';
+const BUILTIN_WEAPONS=[
+  {i:1,n:'键刃黄金圣剑',t:'sword',l:'组合武器',skill:'圣光解锁斩',d:'键刃解除封印，黄金圣剑劈开黑暗。适合主角型角色使用。',pieceCount:168,aiPower:286,rarity:'SSR',score:99,defense:118,crit:.24,bg:'assets/card-bg/card-bg-01-ssr.webp',character:'ENFJ'},
+  {i:2,n:'大十字剑',t:'sword',l:'阔剑',skill:'十字烈焰斩',d:'宽大的十字护手燃起烈焰，适合正面突破和重击。',pieceCount:136,aiPower:232,rarity:'SR',score:88,defense:104,crit:.18,bg:'assets/card-bg/card-bg-06-sr.webp',character:'ENTJ'},
+  {i:3,n:'三叉戟',t:'spear',l:'海神三叉戟',skill:'怒海狂澜',d:'超长三叉轮廓召唤水流压制，适合控场和远距牵制。',pieceCount:118,aiPower:214,rarity:'SR',score:84,defense:96,crit:.16,bg:'assets/card-bg/card-bg-07-sr.webp',character:'INFJ'},
+  {i:4,n:'菱形光刃',t:'sword',l:'对称光刃',skill:'棱镜折射阵',d:'对称菱形结构折射光束，适合精准、稳定、讲究阵型的角色。',pieceCount:146,aiPower:246,rarity:'SR',score:91,defense:110,crit:.19,bg:'assets/card-bg/card-bg-08-sr.webp',character:'ISTJ'},
+  {i:5,n:'突击步枪',t:'gun',l:'战术步枪',skill:'弹幕风暴',d:'长枪管和握把组成连续火力，适合战术压制。',pieceCount:152,aiPower:255,rarity:'SSR',score:94,defense:92,crit:.21,bg:'assets/card-bg/card-bg-02-ssr.webp',character:'ESTJ'},
+  {i:6,n:'核子武器',t:'gun',l:'重型核子枪',skill:'核子聚变炮',d:'重型能量炮聚合绿色核心，爆发范围大但需要稳定掌控。',pieceCount:184,aiPower:306,rarity:'SSR',score:100,defense:86,crit:.27,bg:'assets/card-bg/card-bg-03-ssr.webp',character:'INTJ'},
+  {i:7,n:'闪电长矛',t:'spear',l:'雷神之矛',skill:'雷霆万钧',d:'闪电形矛头快速突进，适合高机动先手攻击。',pieceCount:126,aiPower:226,rarity:'SR',score:86,defense:91,crit:.2,bg:'assets/card-bg/card-bg-09-sr.webp',character:'ESTP'},
+  {i:8,n:'暗影之刃',t:'sword',l:'暗杀匕首',skill:'暗影突袭',d:'轻巧短刃适合潜入、绕后和出其不意的致命一击。',pieceCount:76,aiPower:154,rarity:'R',score:72,defense:72,crit:.28,bg:'assets/card-bg/card-bg-11-r.webp',character:'ISTP'},
+  {i:9,n:'等离子炮',t:'gun',l:'能量炮',skill:'等离子爆破',d:'大型能量炮穿透防御，适合冷静蓄力后的决定性攻击。',pieceCount:164,aiPower:276,rarity:'SSR',score:97,defense:98,crit:.23,bg:'assets/card-bg/card-bg-04-ssr.webp',character:'INTP'},
+  {i:10,n:'彩虹光剑',t:'sword',l:'七色光剑',skill:'七彩绚烂斩',d:'七色光芒汇聚成长剑，适合华丽、自由、鼓舞队友的战斗方式。',pieceCount:132,aiPower:238,rarity:'SR',score:89,defense:88,crit:.22,bg:'assets/card-bg/card-bg-10-sr.webp',character:'ENFP'},
+  {i:11,n:'机关弩',t:'gun',l:'连射弩',skill:'万箭齐发',d:'复古机关结构连续发射，适合稳扎稳打的防守反击。',pieceCount:94,aiPower:174,rarity:'R',score:76,defense:84,crit:.15,bg:'assets/card-bg/card-bg-12-r.webp',character:'ISFJ'}
+];
+function isBuiltinId(id){return String(id||'').startsWith('builtin-')}
+function loadBuiltinOverrides(){
+  try{return JSON.parse(localStorage.getItem(BUILTIN_ADMIN_STORAGE)||'{}')||{}}catch(e){return {}}
+}
+function saveBuiltinOverride(id,fields){
+  const all=loadBuiltinOverrides();
+  all[id]=Object.assign({},all[id]||{},fields,{updated_at:new Date().toISOString()});
+  localStorage.setItem(BUILTIN_ADMIN_STORAGE,JSON.stringify(all));
+}
+function builtinRows(){
+  const overrides=loadBuiltinOverrides();
+  return BUILTIN_WEAPONS.map(w=>{
+    const id='builtin-'+w.i;
+    const base={
+      id,
+      builtin:true,
+      status:'approved',
+      name:w.n,
+      creator:'沐沐武器库',
+      type:w.t,
+      label:w.l,
+      skill:w.skill,
+      description:w.d,
+      piece_count:w.pieceCount,
+      ai_power:w.aiPower,
+      card_rarity:w.rarity,
+      card_score:w.score,
+      defense:w.defense,
+      crit:w.crit,
+      locale:'both',
+      image_url:'assets/weapon-showcases/weapon-'+String(w.i).padStart(2,'0')+'.webp',
+      showcase_url:'assets/weapon-showcases/weapon-'+String(w.i).padStart(2,'0')+'.webp',
+      analysis:{original_image_url:'assets/weapon-showcases/weapon-'+String(w.i).padStart(2,'0')+'.webp',ai_assets:{card_background_url:w.bg,handheld_showcase_url:'assets/weapon-showcases/weapon-'+String(w.i).padStart(2,'0')+'.webp',matched_character:w.character,composition:{x:0,y:0,scale:100,rotate:0}}}
+    };
+    const saved=overrides[id]||{};
+    const analysis=Object.assign({},base.analysis,saved.analysis||{});
+    analysis.ai_assets=Object.assign({},base.analysis.ai_assets,(saved.analysis&&saved.analysis.ai_assets)||{});
+    return Object.assign({},base,saved,{id,builtin:true,analysis});
+  });
+}
+function mergeApprovedRows(rows){
+  const cloudRows=Array.isArray(rows)?rows:[];
+  const cloudNames=new Set(cloudRows.map(row=>String(row.name||'').trim()).filter(Boolean));
+  const builtins=builtinRows().filter(row=>!cloudNames.has(row.name));
+  return builtins.concat(cloudRows);
+}
 function cardBgUrl(file){return file?('assets/card-bg/'+file):''}
 function cardBackgroundOptions(selected){
   const labels={SSR:'SSR 传说背景',SR:'SR 稀有背景',R:'R 精良背景',N:'N 普通背景'};
@@ -475,12 +535,20 @@ async function reviewWeapon(id,decision,btn){
   }
 }
 async function loadApproved(){
-  if(!key())return;
+  if(!key()){
+    renderApproved(mergeApprovedRows([]));
+    status('已显示网站内置武器。输入审核口令后，还会合并云端已通过武器。');
+    return;
+  }
   status('正在读取已通过武器...');
   try{
     const rows=await rpc('list_admin_weapons',{input_review_key:key()});
-    renderApproved(rows);
-  }catch(err){status(err.message||'读取已通过武器失败');}
+    renderApproved(mergeApprovedRows(rows));
+    status('已通过武器 '+document.querySelectorAll('#approvedGrid .card').length+' 件。');
+  }catch(err){
+    renderApproved(mergeApprovedRows([]));
+    status((err.message||'读取已通过武器失败')+'；已先显示网站内置武器。');
+  }
 }
 function renderApproved(rows){
   const grid=document.getElementById('approvedGrid');
@@ -493,12 +561,13 @@ function renderApproved(rows){
         <div class="chips">
           <span class="chip">${escapeHTML(typeLabel(item.type))}</span>
           <span class="chip">创建者：${escapeHTML(item.creator)}</span>
-          <span class="chip">已通过</span>
+          <span class="chip">${item.builtin?'内置武器':'已通过'}</span>
         </div>
         <div class="card-summary">
           <div class="line">${escapeHTML(item.description||'暂无描述')}</div>
           <div class="line">${escapeHTML(item.piece_count||0)} 颗 · 战力 ${escapeHTML(item.ai_power||100)} · ${escapeHTML(item.card_rarity||'自动等级')}</div>
           <div class="line"><a href="${escapeHTML(item.image_url)}" target="_blank" rel="noopener">原武器图</a>${item.showcase_url?' · <a href="'+escapeHTML(item.showcase_url)+'" target="_blank" rel="noopener">展示图</a>':' · 未配展示图'}</div>
+          ${item.builtin?'<div class="line">这是网站原始内置武器，已按后台标准加入管理。修改会先保存在本机后台。</div>':''}
         </div>
         <details class="admin-section"><summary>精修工作台</summary><div class="admin-section-body">${aiWorkbench(item)}</div></details>
         <details class="admin-section"><summary>主体图与橱窗</summary><div class="admin-section-body">${refineTools(item)}${compositionControls(item)}<div class="showcase-tools"><input type="file" accept="image/*" data-showcase-file><button class="secondary" onclick="uploadShowcase('${escapeHTML(item.id)}',this)">上传/更换展示图</button><button class="secondary" onclick="aiRefineFull('${escapeHTML(item.id)}',this)">按构图重做橱窗</button></div></div></details>
@@ -541,6 +610,30 @@ async function saveWeapon(id,btn,silent=false){
   const fields=collectWeaponFields(card);
   const composition=collectComposition(card);
   if(!silent){btn.disabled=true;status('正在保存武器信息...')}
+  if(isBuiltinId(id)){
+    const root=card.querySelector('[data-ai-root]');
+    const cutout=(root&&root.querySelector('[data-ai-cutout]')&&root.querySelector('[data-ai-cutout]').getAttribute('src'))||fields.showcase_url||'';
+    const handheld=(root&&root.querySelector('[data-ai-handheld]')&&root.querySelector('[data-ai-handheld]').getAttribute('src'))||fields.showcase_url||'';
+    const analysis={ai_assets:{
+      card_background_url:fields.card_background_url||'',
+      handheld_showcase_url:handheld||'',
+      composition
+    }};
+    if(cutout)analysis.refined_image_url=cutout;
+    saveBuiltinOverride(id,Object.assign({},fields,{
+      piece_count:Number(fields.piece_count||0),
+      ai_power:Number(fields.ai_power||100),
+      card_score:Number(fields.card_score||0),
+      defense:Number(fields.defense||82),
+      crit:Number(fields.crit||0.12),
+      analysis
+    }));
+    const hero=card.querySelector('.image img');
+    if(hero&&(fields.showcase_url||handheld))hero.src=fields.showcase_url||handheld;
+    if(!silent)status('内置武器调整已保存在本机后台。需要发布到公开站时，我可以再同步进网站代码。');
+    if(!silent)btn.disabled=false;
+    return;
+  }
   try{
     await rpc('admin_update_weapon',{
       input_review_key:key(),
@@ -1316,6 +1409,10 @@ async function aiRefineFull(id,btn){
       if(showcaseInput)showcaseInput.value=handUrl;
       if(root&&root.querySelector('[data-ai-handheld]'))root.querySelector('[data-ai-handheld]').src=handUrl;
       await saveWeapon(id,btn,true);
+      if(isBuiltinId(id)){
+        setAIStatus(card,provider==='local'?'内置武器本地自动流程完成：文字、属性、背景、展示图已保存到本机后台。':'内置武器流程完成：生成结果已保存到本机后台。');
+        return;
+      }
       try{
         await rpc('admin_update_weapon_ai_assets',{
           input_review_key:key(),
@@ -1343,6 +1440,10 @@ async function aiRefineFull(id,btn){
     if(showcaseInput)showcaseInput.value=handUrl;
     if(root&&root.querySelector('[data-ai-handheld]'))root.querySelector('[data-ai-handheld]').src=handUrl;
     await saveWeapon(id,btn,true);
+    if(isBuiltinId(id)){
+      setAIStatus(card,'内置武器 AI 流程完成：主体、背景、手持展示图、属性已保存到本机后台。');
+      return;
+    }
     try{
       await rpc('admin_update_weapon_ai_assets',{
         input_review_key:key(),
@@ -1363,6 +1464,16 @@ async function aiRefineFull(id,btn){
   }
 }
 async function replaceMainImage(id,nextUrl,originalUrl,btn){
+  if(isBuiltinId(id)){
+    const card=btn.closest('.card');
+    const current=card.querySelector('[data-current-image]');
+    const hero=card.querySelector('.image img');
+    const showcase=card.querySelector('[data-field="showcase_url"]');
+    if(current)current.src=nextUrl;
+    if(hero)hero.src=nextUrl;
+    if(showcase&&!showcase.value)showcase.value=nextUrl;
+    return;
+  }
   try{
     await rpc('admin_replace_weapon_image',{
       input_review_key:key(),
