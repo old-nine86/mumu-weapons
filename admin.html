@@ -21,8 +21,8 @@ button{border:0;border-radius:999px;padding:12px 16px;font:inherit;font-weight:8
 .edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 10px}.edit-grid label{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:12px;font-weight:800}.edit-grid input,.edit-grid select{padding:10px 11px;border-radius:12px;font-size:14px;font-weight:650}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.actions.three{grid-template-columns:1fr 1fr 1fr}.showcase-tools{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;margin-top:10px;align-items:center}.showcase-tools input{padding:10px;border-radius:12px}
 .refine-tools{display:grid;grid-template-columns:1fr;gap:10px;margin:0;padding:0;border:0;background:transparent}.refine-tools .row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center}.refine-note{color:var(--muted);font-size:12px;font-weight:650;line-height:1.55}.image-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.image-pair figure{margin:0;padding:8px;border:1px solid rgba(0,0,0,.06);border-radius:16px;background:#fbfbfd}.image-pair figcaption{font-size:12px;color:var(--muted);font-weight:800;margin-bottom:6px}.image-pair img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#fff;border-radius:12px}
 .ai-workbench{display:grid;gap:12px;margin:0;padding:0;border:0;background:transparent;box-shadow:none}.ai-workbench .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ai-workbench .actions{grid-template-columns:1fr 1fr}.ai-title{font-weight:850;color:var(--ink)}.ai-note{color:var(--muted);font-size:12px;font-weight:650;line-height:1.55}.ai-card-status{padding:10px 12px;border-radius:14px;background:#f5f5f7;color:#515154;font-size:12px;font-weight:750;line-height:1.45}.ai-assets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.ai-assets figure{margin:0;padding:7px;border:1px solid rgba(0,0,0,.06);border-radius:15px;background:#fbfbfd}.ai-assets figcaption{font-size:11px;color:var(--muted);font-weight:800;margin-bottom:5px}.ai-assets img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;background:#f5f5f7}
-.background-picker{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:10px;margin:10px 0}.background-picker label{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:12px;font-weight:800}.background-preview{border:1px solid rgba(0,0,0,.06);border-radius:16px;background:#f5f5f7;overflow:hidden;min-height:150px}.background-preview img{width:100%;height:100%;object-fit:cover;display:block}
-.composition-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}.composition-tools label{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:12px;font-weight:800}.composition-tools input{padding:8px 0}
+.background-picker{display:grid;gap:12px;margin:10px 0}.background-picker label{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:12px;font-weight:800}.background-picker select{display:none}.background-preview{border:1px solid rgba(0,0,0,.06);border-radius:18px;background:#f5f5f7;overflow:hidden;min-height:170px}.background-preview img{width:100%;height:100%;object-fit:cover;display:block}.bg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px}.bg-choice{position:relative;border:2px solid transparent;border-radius:14px;padding:0;background:#fff;overflow:hidden;aspect-ratio:3/4;box-shadow:inset 0 0 0 1px rgba(0,0,0,.07);cursor:pointer}.bg-choice:hover{transform:translateY(-1px)}.bg-choice.active{border-color:var(--blue);box-shadow:0 0 0 4px rgba(0,113,227,.12)}.bg-choice img{width:100%;height:100%;object-fit:cover;display:block}.bg-choice span{position:absolute;left:5px;bottom:5px;border-radius:999px;padding:3px 6px;background:rgba(255,255,255,.86);color:var(--ink);font-size:10px;font-weight:900;backdrop-filter:blur(8px)}
+.composition-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0;padding:12px;border:1px solid rgba(0,0,0,.06);border-radius:18px;background:#fbfbfd}.composition-tools label{display:flex;flex-direction:column;gap:7px;color:var(--muted);font-size:12px;font-weight:800}.composition-tools input{padding:8px 0}.range-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.range-value{min-width:42px;padding:2px 6px;border-radius:999px;background:#fff;color:var(--ink);text-align:center;font-size:11px;font-weight:900;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
 .admin-nav{position:sticky;top:58px;z-index:24;display:flex;gap:8px;margin:0 0 22px;padding:8px;border:1px solid rgba(0,0,0,.06);border-radius:999px;background:rgba(255,255,255,.86);backdrop-filter:blur(18px);box-shadow:0 12px 30px rgba(0,0,0,.05)}.admin-nav button{flex:1;background:transparent;color:var(--muted);box-shadow:none}.admin-nav button.active{background:var(--ink);color:#fff}.admin-pane{display:block}.admin-pane.hidden{display:none}
 .admin-steps{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}.admin-step{background:#f5f5f7;border:1px solid rgba(0,0,0,.04);border-radius:18px;padding:14px;font-weight:750;color:var(--muted)}.admin-step b{display:block;color:var(--ink);font-size:18px;margin-bottom:3px}.empty{padding:34px;text-align:center;color:var(--muted);font-weight:800}a{color:var(--blue)}
 @media(max-width:960px){.admin-hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.card{grid-template-columns:160px minmax(0,1fr)}}
@@ -252,10 +252,17 @@ function cardBackgroundOptions(selected){
 function backgroundPicker(item){
   const selected=aiAssetUrl(item,'card_background_url');
   const preview=selected||cardBgUrl((CARD_BG_FILES[item.card_rarity]||CARD_BG_FILES.SR)[0]);
+  const tiles=Object.entries(CARD_BG_FILES).map(([rarity,files])=>files.map((file,i)=>{
+    const url=cardBgUrl(file);
+    const label=rarity+'-'+String(i+1).padStart(2,'0');
+    return `<button type="button" class="bg-choice ${selected===url?'active':''}" data-bg-url="${escapeHTML(url)}" onclick="chooseCardBackground(this)" title="${escapeHTML(label)}"><img src="${escapeHTML(url)}" alt="${escapeHTML(label)}"><span>${escapeHTML(label)}</span></button>`;
+  }).join('')).join('');
   return `
     <div class="background-picker">
       <label>卡牌背景<select data-field="card_background_url" onchange="previewSelectedBackground(this)">${cardBackgroundOptions(selected)}</select></label>
       <div class="background-preview"><img data-bg-preview src="${escapeHTML(preview)}" alt="卡牌背景预览"></div>
+      <div class="bg-grid">${tiles}</div>
+      <div class="line">直接点图片选择背景。上面大图是当前选中的背景预览。</div>
     </div>`;
 }
 function compositionFromItem(item){
@@ -273,20 +280,35 @@ function compositionControls(item){
   const c=compositionFromItem(item);
   return `
     <div class="composition-tools">
-      <label>左右中心<input data-field="composition_x" type="range" min="-180" max="180" value="${escapeHTML(c.x)}"></label>
-      <label>上下中心<input data-field="composition_y" type="range" min="-180" max="180" value="${escapeHTML(c.y)}"></label>
-      <label>武器缩放<input data-field="composition_scale" type="range" min="55" max="155" value="${escapeHTML(c.scale)}"></label>
-      <label>旋转角度<input data-field="composition_rotate" type="range" min="-30" max="30" value="${escapeHTML(c.rotate)}"></label>
+      <label><span class="range-head">左右中心<span class="range-value" data-range-value="composition_x">${escapeHTML(c.x)}</span></span><input data-field="composition_x" type="range" min="-180" max="180" value="${escapeHTML(c.x)}" oninput="updateRangeValue(this)"></label>
+      <label><span class="range-head">上下中心<span class="range-value" data-range-value="composition_y">${escapeHTML(c.y)}</span></span><input data-field="composition_y" type="range" min="-180" max="180" value="${escapeHTML(c.y)}" oninput="updateRangeValue(this)"></label>
+      <label><span class="range-head">武器缩放<span class="range-value" data-range-value="composition_scale">${escapeHTML(c.scale)}%</span></span><input data-field="composition_scale" type="range" min="55" max="155" value="${escapeHTML(c.scale)}" oninput="updateRangeValue(this)"></label>
+      <label><span class="range-head">旋转角度<span class="range-value" data-range-value="composition_rotate">${escapeHTML(c.rotate)}°</span></span><input data-field="composition_rotate" type="range" min="-30" max="30" value="${escapeHTML(c.rotate)}" oninput="updateRangeValue(this)"></label>
     </div>
     <div class="line">调完以后点“按构图重做橱窗”，会用当前背景、角色和中心点重新生成展示图。</div>`;
+}
+function chooseCardBackground(btn){
+  const picker=btn.closest('.background-picker');
+  const select=picker&&picker.querySelector('[data-field="card_background_url"]');
+  if(!select)return;
+  select.value=btn.dataset.bgUrl||'';
+  picker.querySelectorAll('.bg-choice').forEach(item=>item.classList.toggle('active',item===btn));
+  previewSelectedBackground(select);
 }
 function previewSelectedBackground(select){
   const card=select.closest('.card');
   const img=card&&card.querySelector('[data-bg-preview]');
   const rarity=(card&&card.querySelector('[data-field="card_rarity"]')&&card.querySelector('[data-field="card_rarity"]').value)||'SR';
   if(img)img.src=select.value||cardBgUrl((CARD_BG_FILES[rarity]||CARD_BG_FILES.SR)[0]);
+  const picker=select.closest('.background-picker');
+  if(picker)picker.querySelectorAll('.bg-choice').forEach(item=>item.classList.toggle('active',item.dataset.bgUrl===select.value));
   const aiBg=card&&card.querySelector('[data-ai-bg]');
   if(aiBg&&select.value)aiBg.src=select.value;
+}
+function updateRangeValue(input){
+  const card=input.closest('.card');
+  const out=card&&card.querySelector('[data-range-value="'+input.dataset.field+'"]');
+  if(out)out.textContent=input.value+(input.dataset.field==='composition_scale'?'%':input.dataset.field==='composition_rotate'?'°':'');
 }
 function refreshBackgroundForRarity(select){
   const card=select.closest('.card');
@@ -493,7 +515,7 @@ function renderWeapons(rows){
           <div class="line">推广证明：${escapeHTML(item.share_proof||'无')} · <a href="${escapeHTML(item.image_url)}" target="_blank" rel="noopener">看原图</a></div>
         </div>
         <details class="admin-section" open><summary>精修工作台</summary><div class="admin-section-body">${aiWorkbench(item)}</div></details>
-        <details class="admin-section"><summary>主体图与橱窗</summary><div class="admin-section-body">${refineTools(item)}${compositionControls(item)}<div class="showcase-tools"><input type="file" accept="image/*" data-showcase-file><button class="secondary" onclick="uploadShowcase('${escapeHTML(item.id)}',this)">上传展示图</button><button class="secondary" onclick="aiRefineFull('${escapeHTML(item.id)}',this)">按构图重做橱窗</button></div></div></details>
+        <details class="admin-section" open><summary>主体图与橱窗</summary><div class="admin-section-body">${refineTools(item)}${compositionControls(item)}<div class="showcase-tools"><input type="file" accept="image/*" data-showcase-file><button class="secondary" onclick="uploadShowcase('${escapeHTML(item.id)}',this)">上传展示图</button><button class="secondary" onclick="aiRefineFull('${escapeHTML(item.id)}',this)">按构图重做橱窗</button></div></div></details>
         <details class="admin-section"><summary>资料编辑</summary><div class="admin-section-body">${weaponEditor(item)}</div></details>
         <textarea placeholder="审核备注，可不填"></textarea>
         <div class="actions three">
@@ -570,7 +592,7 @@ function renderApproved(rows){
           ${item.builtin?'<div class="line">这是网站原始内置武器，已按后台标准加入管理。修改会先保存在本机后台。</div>':''}
         </div>
         <details class="admin-section"><summary>精修工作台</summary><div class="admin-section-body">${aiWorkbench(item)}</div></details>
-        <details class="admin-section"><summary>主体图与橱窗</summary><div class="admin-section-body">${refineTools(item)}${compositionControls(item)}<div class="showcase-tools"><input type="file" accept="image/*" data-showcase-file><button class="secondary" onclick="uploadShowcase('${escapeHTML(item.id)}',this)">上传/更换展示图</button><button class="secondary" onclick="aiRefineFull('${escapeHTML(item.id)}',this)">按构图重做橱窗</button></div></div></details>
+        <details class="admin-section" open><summary>主体图与橱窗</summary><div class="admin-section-body">${refineTools(item)}${compositionControls(item)}<div class="showcase-tools"><input type="file" accept="image/*" data-showcase-file><button class="secondary" onclick="uploadShowcase('${escapeHTML(item.id)}',this)">上传/更换展示图</button><button class="secondary" onclick="aiRefineFull('${escapeHTML(item.id)}',this)">按构图重做橱窗</button></div></div></details>
         <details class="admin-section" open><summary>资料编辑</summary><div class="admin-section-body">${weaponEditor(item)}</div></details>
         <div class="actions">
           <button class="good" onclick="saveWeapon('${escapeHTML(item.id)}',this)">保存信息</button>
