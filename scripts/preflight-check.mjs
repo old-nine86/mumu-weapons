@@ -66,6 +66,13 @@ for (const file of files) {
       fail(`${file}: script block ${idx + 1} does not parse: ${error.message}`);
     }
   });
+
+  const styles = [...html.matchAll(/<style(?:\s[^>]*)?>([\s\S]*?)<\/style>/g)].map(m => m[1]);
+  styles.forEach((style, idx) => {
+    const open = (style.match(/\{/g) || []).length;
+    const close = (style.match(/\}/g) || []).length;
+    if (open !== close) fail(`${file}: style block ${idx + 1} has unbalanced braces ${open}/${close}`);
+  });
 }
 
 const en = read('en/index.html');

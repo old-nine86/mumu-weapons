@@ -3398,6 +3398,28 @@ body::before{
   .modal-name{font-size:24px}
   .modal-feature-grid,.modal-analysis-grid{grid-template-columns:1fr 1fr}
 }
+
+
+/* ===== NARROW PHONE POLISH ===== */
+@media(max-width:520px){
+  .modal-overlay{padding:10px}
+  .modal-content{width:100%;max-height:94dvh;border-radius:22px}
+  .modal-img-wrap{min-height:240px;padding:14px}
+  .modal-feature-grid,.modal-analysis-grid,.modal-action-row{grid-template-columns:1fr!important}
+  .modal-name{font-size:22px;line-height:1.15}
+  .quiz-actions,.weapon-promo-actions{display:grid;grid-template-columns:1fr;width:100%}
+  .quiz-actions .battle-start-btn,.weapon-promo-actions .growth-chip,.growth-chip,.battle-start-btn.ready{width:100%;margin-left:0;margin-right:0;justify-content:center;text-align:center}
+  .arena-controls{display:grid;grid-template-columns:1fr 1fr;width:100%;gap:8px}
+  .arena-controls .arena-again{grid-column:1 / -1;width:100%}
+  .arena-control-btn,.arena-again{min-height:44px}
+  .fighter{width:min(46vw,168px);padding:10px 8px}
+  .fighter-name,.fighter-sub{max-width:100%;overflow-wrap:anywhere;text-align:center}
+  .char-profile-modal{max-height:94dvh;border-radius:22px}
+  .char-profile-name{font-size:28px;line-height:1.05}
+  .char-profile-tags{gap:6px}
+  .char-profile-tags span{border-radius:14px}
+}
+
 </style>
 </head>
 <body>
