@@ -13,7 +13,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe 
 h1{margin:0;font-size:20px;letter-spacing:0;font-weight:800}.sub{margin-top:3px;color:var(--muted);font-size:13px;font-weight:600}.top a{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 14px;border-radius:999px;background:#fff;color:var(--blue);box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);text-decoration:none;font-weight:700}
 .panel{background:rgba(255,255,255,.9);border:1px solid rgba(0,0,0,.06);box-shadow:var(--shadow);border-radius:28px;padding:22px;backdrop-filter:blur(20px)}
 .admin-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr);gap:18px;align-items:stretch;margin-bottom:28px}.admin-hero .panel{min-height:100%}
-.login{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:10px;margin-bottom:12px}.ai-login{display:grid;grid-template-columns:1fr 1.1fr .8fr auto;gap:10px;margin-top:10px}.bulk-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0 8px}
+.login{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:10px;margin-bottom:12px}.ai-login{display:grid;grid-template-columns:1fr 1.1fr .8fr auto;gap:10px;margin-top:10px}.bulk-tools{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:16px 0 8px}
 input,textarea,select{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;font:inherit;background:#fff;color:var(--ink);outline:none;transition:border-color .18s,box-shadow .18s}textarea{min-height:82px;resize:vertical}input:focus,textarea:focus,select:focus{border-color:rgba(0,113,227,.55);box-shadow:0 0 0 4px rgba(0,113,227,.12)}
 button{border:0;border-radius:999px;padding:12px 16px;font:inherit;font-weight:800;cursor:pointer;background:var(--ink);color:#fff;box-shadow:none;transition:transform .16s,background .16s,opacity .16s}button:hover{transform:translateY(-1px)}button.secondary{background:#f2f2f7;color:var(--ink)}button.good{background:var(--blue)}button.bad{background:#fff0ef;color:var(--red);box-shadow:inset 0 0 0 1px rgba(255,59,48,.18)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}.status{display:inline-flex;max-width:100%;margin:12px 0 0;padding:9px 12px;border-radius:999px;background:#f2f2f7;color:var(--muted);font-size:13px;font-weight:700}.line{color:var(--muted);font-weight:600;font-size:13px;line-height:1.55;word-break:break-word}.name{font-size:22px;font-weight:850;margin-bottom:6px}.section-title{position:sticky;top:69px;z-index:20;margin:34px 0 14px;padding:12px 2px;background:linear-gradient(180deg,rgba(245,245,247,.96),rgba(245,245,247,.75));backdrop-filter:blur(14px);font-size:24px;font-weight:850;letter-spacing:-.02em;color:var(--ink)}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px}#approvedGrid{grid-template-columns:repeat(auto-fit,minmax(620px,1fr));align-items:start}#approvedGrid .card{grid-template-columns:230px minmax(0,1fr);gap:22px;padding:22px}.card{display:grid;grid-template-columns:190px minmax(0,1fr);gap:18px;overflow:hidden;padding:18px}.image{background:linear-gradient(180deg,#fff,#f5f5f7);border-radius:22px;aspect-ratio:1/1.14;display:grid;place-items:center;border:1px solid rgba(0,0,0,.06);overflow:hidden}.image img{width:100%;height:100%;object-fit:contain;padding:10px}.meta{padding:0;min-width:0}.chips{display:flex;flex-wrap:wrap;gap:7px;margin:9px 0 11px}.chip{background:#f5f5f7;border:1px solid rgba(0,0,0,.04);border-radius:999px;padding:6px 10px;color:#515154;font-weight:750;font-size:12px}
@@ -66,8 +66,10 @@ button{border:0;border-radius:999px;padding:12px 16px;font:inherit;font-weight:8
         <button class="secondary" onclick="bulkCompleteWeapons('pending',this)">只补待审核</button>
         <button class="secondary" onclick="bulkCompleteWeapons('approved-force',this)">重做已通过橱窗</button>
         <button class="secondary" onclick="loadAll()">刷新后台数据</button>
+        <button class="secondary" onclick="copyBuiltinOverrides()">复制内置修改</button>
       </div>
-      <div class="line">批量补全会自动补中文/英文资料、等级数值、透明主体、卡片背景和手持展示图；默认使用本地自动流程，不消耗 API。</div>
+      <div class="line">批量补全会自动补中文/英文资料、等级数值、透明主体、卡片背景和手持展示图；默认使用本地自动流程，不消耗 API。AI Key 只保存在本次浏览器会话，关闭页面后清空。</div>
+      <div class="line">当前审核口令适合个人站长使用；如果以后开放多人后台，需要升级到 Supabase 登录或 Edge Function 权限。</div>
       <div class="status" id="status">请输入审核口令。无 API 时选择“本地自动”，也能生成文字、属性、背景和展示图。</div>
     </div>
     <div class="panel">
@@ -109,6 +111,7 @@ const OPENROUTER_MODELS_STORAGE='mumu_admin_openrouter_free_vision_models';
 const OPENAI_KEY_STORAGE='mumu_admin_openai_key';
 const OPENAI_QUALITY_STORAGE='mumu_admin_openai_quality';
 const OPENROUTER_BAD_MODELS_STORAGE='mumu_admin_openrouter_bad_models';
+function keyStore(){try{return window.sessionStorage||localStorage}catch(e){return localStorage}}
 function cloudBase(){return String(CLOUD.url||'').replace(/\/+$/,'')}
 function headers(){return{apikey:CLOUD.anonKey,Authorization:'Bearer '+CLOUD.anonKey,'Content-Type':'application/json'}}
 function escapeHTML(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
@@ -117,26 +120,32 @@ function key(){return document.getElementById('reviewKey').value.trim()}
 function showAdminPane(name){
   document.querySelectorAll('[data-admin-pane]').forEach(pane=>pane.classList.toggle('hidden',pane.dataset.adminPane!==name));
   document.querySelectorAll('[data-admin-tab]').forEach(tab=>tab.classList.toggle('active',tab.dataset.adminTab===name));
+  if(name==='approved'&&!document.querySelector('#approvedGrid .card'))loadApproved();
+  if(name==='promo'&&!document.querySelector('#promoGrid .card'))loadPromotions();
 }
 function aiProvider(){return document.getElementById('aiProvider').value||localStorage.getItem(AI_PROVIDER_STORAGE)||'local'}
-function aiKey(){return document.getElementById('aiKey').value.trim()||localStorage.getItem(AI_KEY_STORAGE)||localStorage.getItem(OPENAI_KEY_STORAGE)||''}
+function aiKey(){return document.getElementById('aiKey').value.trim()||keyStore().getItem(AI_KEY_STORAGE)||''}
 function openAIKey(){return aiKey()}
 function openAIQuality(){return document.getElementById('aiQuality').value||localStorage.getItem(OPENAI_QUALITY_STORAGE)||'medium'}
 function saveOpenAIKey(){
   const k=document.getElementById('aiKey').value.trim();
   const provider=aiProvider();
   const q=document.getElementById('aiQuality').value||'medium';
-  if(k)localStorage.setItem(AI_KEY_STORAGE,k);
+  if(k)keyStore().setItem(AI_KEY_STORAGE,k);else keyStore().removeItem(AI_KEY_STORAGE);
+  localStorage.removeItem(AI_KEY_STORAGE);
+  localStorage.removeItem(OPENAI_KEY_STORAGE);
   localStorage.setItem(AI_PROVIDER_STORAGE,provider);
   if(provider==='openrouter'){
     localStorage.removeItem(OPENROUTER_MODELS_STORAGE);
     localStorage.removeItem(OPENROUTER_BAD_MODELS_STORAGE);
   }
   localStorage.setItem(OPENAI_QUALITY_STORAGE,q);
-  status(k?'AI 设置已保存在本机浏览器。当前服务：'+provider:'已保存图片质量；API Key 为空时不会调用 AI。');
+  status(k?'AI 设置已保存到本次会话。当前服务：'+provider:'已保存图片质量；API Key 为空时不会调用 AI。');
 }
 function restoreOpenAISettings(){
-  const k=localStorage.getItem(AI_KEY_STORAGE)||localStorage.getItem(OPENAI_KEY_STORAGE)||'';
+  localStorage.removeItem(AI_KEY_STORAGE);
+  localStorage.removeItem(OPENAI_KEY_STORAGE);
+  const k=keyStore().getItem(AI_KEY_STORAGE)||'';
   const provider=localStorage.getItem(AI_PROVIDER_STORAGE)||'local';
   const q=localStorage.getItem(OPENAI_QUALITY_STORAGE)||'medium';
   const keyInput=document.getElementById('aiKey');
@@ -145,6 +154,15 @@ function restoreOpenAISettings(){
   if(keyInput&&k)keyInput.value=k;
   if(providerInput)providerInput.value=provider;
   if(quality)quality.value=q;
+}
+async function copyBuiltinOverrides(){
+  const raw=localStorage.getItem(BUILTIN_ADMIN_STORAGE)||'{}';
+  try{
+    await navigator.clipboard.writeText(raw);
+    status('已复制内置武器修改 JSON。把它交给 Codex 发布后，线上所有设备都会同步。');
+  }catch(e){
+    status('复制失败，请在浏览器允许剪贴板权限后重试。');
+  }
 }
 restoreOpenAISettings();
 async function rpc(name,body){
@@ -173,6 +191,12 @@ function aiAssetUrl(item,key){
   const analysis=itemAnalysis(item);
   const assets=analysis.ai_assets&&typeof analysis.ai_assets==='object'?analysis.ai_assets:{};
   return assets[key]||analysis[key]||'';
+}
+function showcaseImageUrl(item){
+  return (item&&item.showcase_url)||aiAssetUrl(item,'handheld_showcase_url')||'';
+}
+function adminDisplayImageUrl(item){
+  return showcaseImageUrl(item)||refinedImageUrl(item)||originalImageUrl(item)||'';
 }
 const CARD_BG_FILES={
   SSR:['card-bg-01-ssr.webp','card-bg-02-ssr.webp','card-bg-03-ssr.webp','card-bg-04-ssr.webp','card-bg-05-ssr.webp'],
@@ -523,7 +547,7 @@ function renderWeapons(rows){
   if(!rows.length){grid.innerHTML='<div class="panel empty">暂时没有待审核内容。</div>';return}
   grid.innerHTML=rows.map(item=>`
     <div class="panel card" data-id="${escapeHTML(item.id)}">
-      <div class="image"><img src="${escapeHTML(item.image_url)}" alt="${escapeHTML(item.name)}"></div>
+      <div class="image"><img src="${escapeHTML(adminDisplayImageUrl(item))}" alt="${escapeHTML(item.name)}"></div>
       <div class="meta">
         <div class="name">${escapeHTML(item.name)}</div>
         <div class="chips">
@@ -534,7 +558,7 @@ function renderWeapons(rows){
         <div class="card-summary">
           <div class="line">${escapeHTML(item.description||'等待补全资料')}</div>
           <div class="line">技能：${escapeHTML(item.skill||'待生成')} · ${escapeHTML(item.piece_count||0)} 颗 · 战力 ${escapeHTML(item.ai_power||100)}</div>
-          <div class="line">推广证明：${escapeHTML(item.share_proof||'无')} · <a href="${escapeHTML(item.image_url)}" target="_blank" rel="noopener">看原图</a></div>
+          <div class="line">推广证明：${escapeHTML(item.share_proof||'无')} · <a href="${escapeHTML(originalImageUrl(item))}" target="_blank" rel="noopener">看原图</a></div>
         </div>
         <details class="admin-section" open><summary>精修工作台</summary><div class="admin-section-body">${aiWorkbench(item)}</div></details>
         <details class="admin-section" open><summary>主体图与橱窗</summary><div class="admin-section-body">${refineTools(item)}${compositionControls(item)}<div class="showcase-tools"><input type="file" accept="image/*" data-showcase-file><button class="secondary" onclick="uploadShowcase('${escapeHTML(item.id)}',this)">上传展示图</button><button class="secondary" onclick="aiRefineFull('${escapeHTML(item.id)}',this)">按构图重做橱窗</button></div></div></details>
@@ -599,7 +623,7 @@ function renderApproved(rows){
   if(!rows.length){grid.innerHTML='<div class="panel empty">暂时没有已通过武器。</div>';return}
   grid.innerHTML=rows.map(item=>`
     <div class="panel card" data-id="${escapeHTML(item.id)}">
-      <div class="image"><img src="${escapeHTML(item.showcase_url||item.image_url)}" alt="${escapeHTML(item.name)}"></div>
+      <div class="image"><img src="${escapeHTML(adminDisplayImageUrl(item))}" alt="${escapeHTML(item.name)}"></div>
       <div class="meta">
         <div class="name">${escapeHTML(item.name)}</div>
         <div class="chips">
@@ -610,7 +634,7 @@ function renderApproved(rows){
         <div class="card-summary">
           <div class="line">${escapeHTML(item.description||'暂无描述')}</div>
           <div class="line">${escapeHTML(item.piece_count||0)} 颗 · 战力 ${escapeHTML(item.ai_power||100)} · ${escapeHTML(item.card_rarity||'自动等级')}</div>
-          <div class="line"><a href="${escapeHTML(item.image_url)}" target="_blank" rel="noopener">原武器图</a>${item.showcase_url?' · <a href="'+escapeHTML(item.showcase_url)+'" target="_blank" rel="noopener">展示图</a>':' · 未配展示图'}</div>
+          <div class="line"><a href="${escapeHTML(originalImageUrl(item))}" target="_blank" rel="noopener">原武器图</a>${showcaseImageUrl(item)?' · <a href="'+escapeHTML(showcaseImageUrl(item))+'" target="_blank" rel="noopener">展示图</a>':' · 未配展示图'}</div>
           ${item.builtin?'<div class="line">这是网站原始内置武器，已按后台标准加入管理。修改会先保存在本机后台。</div>':''}
         </div>
         <details class="admin-section"><summary>精修工作台</summary><div class="admin-section-body">${aiWorkbench(item)}</div></details>

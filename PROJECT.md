@@ -59,7 +59,7 @@ The site should feel like a polished toy product experience: soft, cute, high qu
 ### Phase 7: Forum
 
 - Added a forum system for suggestions and discussion.
-- Forum posts and replies use the same cloud backend and review workflow.
+- Forum posts and replies use the same cloud backend. They are public by default right now; account identity and forum pre-review are future moderation upgrades.
 
 ### Phase 8: Bilingual Site
 
@@ -136,6 +136,7 @@ Goal: turn site usage into natural promotion.
 - Add stricter IP/account-level quota tracking.
 - Add user profile pages and personal weapon collections.
 - Add moderation history and abuse controls.
+- Move strict upload quota and admin-only actions behind Supabase Edge Functions or another server-side layer.
 
 ### Commercialization
 

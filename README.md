@@ -29,7 +29,8 @@
 1. 先读 `PROJECT.md`，了解总计划和长期方向。
 2. 再读 `DEVELOPMENT_LOG.md` 顶部，了解最近做了什么。
 3. 修改完成后更新 `DEVELOPMENT_LOG.md`。
-4. 测试通过后提交并推送到 GitHub `main` 分支。
+4. 运行 `node scripts/preflight-check.mjs` 做发布前自检。
+5. 测试通过后提交并推送到 GitHub `main` 分支。
 
 ## 当前产品方向
 
