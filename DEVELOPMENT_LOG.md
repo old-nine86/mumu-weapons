@@ -2,6 +2,25 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-26: Comic Full View and Avatar-Only Character Preview
+
+Goal:
+- Fix the character comic modal so the full four-panel comic image is visible.
+- Make MBTI character preview modals show a clean single character avatar instead of the full dossier sheet.
+
+Shipped:
+- Moved the Chinese comic story block out of the narrow character info column and into a full-width modal section.
+- Kept comic images in full aspect ratio with no crop/clip behavior.
+- Switched Chinese and English character profile preview art to `*-avatar.webp` assets when available.
+- Added avatar-only modal styling so each MBTI character opens with one clear standalone figure.
+
+Verification:
+- Parsed scripts and ran the project preflight check.
+- Browser smoke-tested the Chinese comic modal and Chinese/English avatar profile previews.
+
+Next:
+- Continue tuning the character story/comic flow after reviewing the live GitHub Pages result on mobile.
+
 ## 2026-05-24: Admin AI Refinement Workbench
 
 Goal:
