@@ -174,7 +174,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 /* ===== ARENA ===== */
 .arena{display:none;position:fixed;inset:0;background:none center/cover no-repeat;z-index:300;flex-direction:column;align-items:center;justify-content:center;padding:20px}
 .arena.active{display:flex}
-.arena-close{position:absolute;top:16px;right:24px;font-size:36px;color:#fff;cursor:pointer;z-index:301;font-weight:900;opacity:.6;transition:opacity .2s}
+.arena-close{position:absolute;top:16px;right:24px;font-size:36px;color:#fff;cursor:pointer;z-index:301;font-weight:900;opacity:.6;transition:opacity .2s;background:transparent;border:0;padding:4px;line-height:1}
 .arena-close:hover{opacity:1}
 .arena-ground{position:absolute;bottom:0;left:0;right:0;height:35%;background:linear-gradient(0deg,rgba(30,30,10,.4),transparent);pointer-events:none}
 .arena-ground::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,215,0,.3),transparent)}
@@ -209,7 +209,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 /* ===== MODAL ===== */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:250;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.active{display:flex}
-.modal-close{position:absolute;top:16px;right:24px;font-size:40px;color:#fff;cursor:pointer;z-index:251;font-weight:900;opacity:.6}
+.modal-close{position:absolute;top:16px;right:24px;font-size:40px;color:#fff;cursor:pointer;z-index:251;font-weight:900;opacity:.6;background:transparent;border:0;padding:4px;line-height:1}
 .modal-close:hover{opacity:1}
 .modal-content{background:var(--card-bg);border:1px solid rgba(255,255,255,.15);border-radius:16px;max-width:650px;width:100%;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;backdrop-filter:blur(20px)}
 .modal-img-wrap{background:linear-gradient(135deg,#0d0d2b,#141428);display:flex;align-items:center;justify-content:center;padding:24px}
@@ -3466,17 +3466,17 @@ body::before{
           <div class="upload-preview-grid with-card">
             <div class="upload-preview-tile">
               <div class="upload-preview-label">Original</div>
-              <img id="uploadOriginalImg" alt="Original preview">
+              <img id="uploadOriginalImg" alt="Original preview" loading="lazy" aria-hidden="true">
             </div>
             <div class="upload-preview-tile">
               <div class="upload-preview-label">Submitted for Review</div>
-              <img id="uploadPreviewImg" alt="Review preview">
+              <img id="uploadPreviewImg" alt="Review preview" loading="lazy" aria-hidden="true">
             </div>
             <div class="upload-card-preview">
               <div class="upload-preview-label">Reviewed Card Preview</div>
               <div class="upload-card-preview-inner" id="uploadCardPreview">
                 <div class="upload-card-rarity">SSR</div>
-                <img id="uploadCardImg" alt="Card preview">
+                <img id="uploadCardImg" alt="Card preview" loading="lazy" aria-hidden="true">
                 <div class="upload-card-meta"><span>🧱 0 bricks</span><span>🤖 Power 0</span></div>
                 <div class="upload-card-score">Score 0</div>
               </div>
@@ -3693,7 +3693,7 @@ body::before{
 
 <!-- CHARACTER SELECTION OVERLAY -->
 <div class="selection-overlay" id="selectionOverlay">
-  <div class="arena-close" onclick="closeSelection()">✕</div>
+  <button class="arena-close" type="button" aria-label="Close selection" onclick="closeSelection()">✕</button>
   <div class="sel-header"><h2>⚔️ Pick Your Fighters</h2><p id="selPrompt">Pick the first fighter</p></div>
   <div class="sel-selected">
     <div class="sel-pick" id="selPick1"><span class="pick-label">Fighter ①</span><span class="pick-name" id="selName1">Waiting...</span></div>
@@ -3716,7 +3716,7 @@ body::before{
 
 <!-- ARENA -->
 <div class="arena" id="arena">
-  <div class="arena-close" onclick="closeArena()">✕</div>
+  <button class="arena-close" type="button" aria-label="Close arena" onclick="closeArena()">✕</button>
   <div class="arena-ground"></div>
   <div class="arena-title">⚔️ Brick Warrior Arena ⚔️</div>
   <div class="arena-hud">
@@ -3757,7 +3757,7 @@ body::before{
 
 <!-- WEAPON DETAIL MODAL -->
 <div class="modal-overlay" id="modal" onclick="closeModal(event)">
-  <div class="modal-close" onclick="closeModal()">✕</div>
+  <button class="modal-close" type="button" aria-label="Close modal" onclick="closeModal()">✕</button>
   <div class="modal-content" id="modalContent" onclick="event.stopPropagation()"></div>
 </div>
 
@@ -3839,25 +3839,23 @@ const CHARACTERS=[
 ]
 
 const CHAR_MEDIA={
-  INTJ:{
-    image:'../assets/characters/intj-position.png',
-    avatar:'../assets/characters/intj-avatar.webp',
-    video:'../assets/characters/intj-promo.mp4',
-    title:'INTJ Architect',
-    subtitle:'Strategic planner / efficiency optimizer',
-    quote:'I am not solving problems. I am optimizing the code of the world.',
-    tags:['Quantum Strategy Blade','Energy visor','Purple-black palette','Low efficiency / chaos / meaningless small talk']
-  },
-  ISTJ:{
-    image:'../assets/characters/istj-position.png',
-    avatar:'../assets/characters/istj-avatar.webp',
-    video:'../assets/characters/istj-promo.mp4',
-    title:'ISTJ Inspector',
-    subtitle:'Quality controller / order keeper',
-    quote:'Rules are not limits. They are the guarantee that everything runs correctly.',
-    tags:['Precision Calibrator','Goggle details','Deep-blue palette','Chaos / mistakes / rule breaking']
-  }
-};
+  ENTJ:{image:'../assets/characters/entj-position.png',avatar:'../assets/characters/entj-avatar.webp',title:'ENTJ Blaze Commander',subtitle:'Battle commander / offensive leader',quote:'I do not wait for victory. I arrange it.',tags:['Blazing command sword','Red-gold armor','High-pressure push','Chaos / delay / inefficiency']},
+  INTJ:{image:'../assets/characters/intj-position.png',avatar:'../assets/characters/intj-avatar.webp',video:'../assets/characters/intj-promo.mp4',title:'INTJ Shadow Architect',subtitle:'Strategic planner / efficiency optimizer',quote:'I am not solving problems. I am optimizing the code of the world.',tags:['Quantum Strategy Blade','Energy visor','Purple-black palette','Low efficiency / chaos / meaningless small talk']},
+  INTP:{image:'../assets/characters/intp-position.png',avatar:'../assets/characters/intp-avatar.webp',title:'INTP Gear Genius',subtitle:'Logic engineer / prototype tactician',quote:'Give me ten seconds. I need to test a very unreasonable idea.',tags:['Prototype blaster','Blue tech suit','Logic overclock','No data / forced decisions / boring answers']},
+  ENTP:{image:'../assets/characters/entp-position.png',avatar:'../assets/characters/entp-avatar.webp',title:'ENTP Spark Trickster',subtitle:'Creative disruptor / trap designer',quote:'If the rules are dull, that proves they need an explosive upgrade.',tags:['Spark trap staff','Purple-orange armor','Idea explosion','Boredom / rigid plans / no experiments']},
+  ENFJ:{image:'../assets/characters/enfj-position.png',avatar:'../assets/characters/enfj-avatar.webp',title:'ENFJ Radiant Mentor',subtitle:'Team beacon / heroic guide',quote:'A real victory makes everyone believe they can shine.',tags:['Radiant hero blade','Green-gold armor','Team inspiration','Isolation / silence / lost hope']},
+  INFJ:{image:'../assets/characters/infj-position.png',avatar:'../assets/characters/infj-avatar.webp',title:'INFJ Moon Oracle',subtitle:'Destiny guardian / quiet prophet',quote:'I see more than victory. I see where everyone needs to arrive.',tags:['Moon crystal staff','Mint-purple armor','Prophecy barrier','Coldness / imbalance / losing the original purpose']},
+  INFP:{image:'../assets/characters/infp-position.png',avatar:'../assets/characters/infp-avatar.webp',title:'INFP Light Bard',subtitle:'Dream keeper / story defender',quote:'As long as the dream still glows, the brick castle will not fall.',tags:['Storybook light staff','Cream-gold armor','Ideal echo','Roughness / distortion / no story']},
+  ENFP:{image:'../assets/characters/enfp-position.png',avatar:'../assets/characters/enfp-avatar.webp',title:'ENFP Spark Ranger',subtitle:'Idea ranger / surprise attacker',quote:'Winning matters, but first the battle has to be fun!',tags:['Firework blaster','Orange-yellow armor','First-spark inspiration','Boredom / repetition / being boxed in']},
+  ISTJ:{image:'../assets/characters/istj-position.png',avatar:'../assets/characters/istj-avatar.webp',video:'../assets/characters/istj-promo.mp4',title:'ISTJ Blueprint Inspector',subtitle:'Quality controller / order keeper',quote:'Rules are not limits. They are the guarantee that everything runs correctly.',tags:['Precision Calibrator','Goggle details','Deep-blue palette','Chaos / mistakes / rule breaking']},
+  ISFJ:{image:'../assets/characters/isfj-position.png',avatar:'../assets/characters/isfj-avatar.webp',title:'ISFJ Shield Guardian',subtitle:'Warm defender / gentle frontline',quote:'Stand behind me. The shield will handle the rest.',tags:['Holy round shield','Sage armor','Protective field','Injured teammates / broken defense / coldness']},
+  ESTJ:{image:'../assets/characters/estj-position.png',avatar:'../assets/characters/estj-avatar.webp',title:'ESTJ Iron Marshal',subtitle:'Field executive / order enforcer',quote:'A good plan is not decoration. It is a command waiting to happen.',tags:['Command blaster','Iron-gray armor','Tactical order','Sloppiness / excuses / chaos']},
+  ESFJ:{image:'../assets/characters/esfj-position.png',avatar:'../assets/characters/esfj-avatar.webp',title:'ESFJ Heart Keeper',subtitle:'Morale supporter / team protector',quote:'If everyone is still smiling, this battle is not over.',tags:['Festival guard spear','Warm rose armor','Cheer shield','Loneliness / conflict / ignored feelings']},
+  ISTP:{image:'../assets/characters/istp-position.png',avatar:'../assets/characters/istp-avatar.webp',title:'ISTP Lone Hunter',subtitle:'Mechanic hunter / precision striker',quote:'No speech needed. The mechanism will answer.',tags:['Silent blaster','Toolbox armor','Clean shot','Noise / overplanning / broken tools']},
+  ISFP:{image:'../assets/characters/isfp-position.png',avatar:'../assets/characters/isfp-avatar.webp',title:'ISFP Crimson Artist',subtitle:'Battle artist / stylish duelist',quote:'If it must be a fight, at least make it beautiful.',tags:['Scarlet stage blade','Crimson-gold armor','Artful rhythm','Ugly rules / dull colors / no feeling']},
+  ESTP:{image:'../assets/characters/estp-position.png',avatar:'../assets/characters/estp-avatar.webp',title:'ESTP Thunder Scout',subtitle:'Speed attacker / arena breaker',quote:'Thinking is fine. Moving first is better.',tags:['Thunder jump blaster','Yellow assault armor','Fast tempo','Waiting / hesitation / slow plans']},
+  ESFP:{image:'../assets/characters/esfp-position.png',avatar:'../assets/characters/esfp-avatar.webp',title:'ESFP Sunburst Dancer',subtitle:'Show finisher / spotlight fighter',quote:'The crowd came for a show, so I brought the sun.',tags:['Golden encore sword','Sunburst armor','Stage finish','Silence / no audience / gray days']}
+}
 
 // ===== SVG CHARACTER GENERATOR =====
 function charPersonaParts(c){
@@ -4558,6 +4556,7 @@ function updateUploadCardPreview(){
   const bg=weaponCardBackground(w,rarity);
   wrap.style.backgroundImage="linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.22)),url('"+bg+"')";
   img.src=w.img;
+  img.removeAttribute('aria-hidden');
   const rarityEl=wrap.querySelector('.upload-card-rarity');
   const metaEl=wrap.querySelector('.upload-card-meta');
   const scoreEl=wrap.querySelector('.upload-card-score');
@@ -5161,8 +5160,10 @@ async function processUploadFile(file,fillDefaults){
     pendingUpload={fileName:file.name,img:originalPreview,originalImg:originalPreview,t,analysis};
     document.getElementById('uploadEmpty').style.display='none';
     document.getElementById('uploadPreview').style.display='flex';
-    document.getElementById('uploadOriginalImg').src=originalPreview;
-    document.getElementById('uploadPreviewImg').src=originalPreview;
+    const originalImg=document.getElementById('uploadOriginalImg');
+    const previewImg=document.getElementById('uploadPreviewImg');
+    originalImg.src=originalPreview; originalImg.removeAttribute('aria-hidden');
+    previewImg.src=originalPreview; previewImg.removeAttribute('aria-hidden');
     document.getElementById('uploadRecognition').textContent='Detected as '+typeEmoji(t)+' '+typeLabel(t)+' · confidence '+analysis.confidence+'% · about '+analysis.pieceCount+' bricks · Power '+analysis.aiPower;
     document.getElementById('uploadType').value=t;
     const cleanName=file.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').trim();
@@ -5414,7 +5415,14 @@ function renderComments(id){
   list.scrollTop=list.scrollHeight;
 }
 
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList.contains('comment-input')){const id=e.target.dataset.weaponId||e.target.id.replace('ci','');if(id)postComment(id)}});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&e.target.classList.contains('comment-input')){const id=e.target.dataset.weaponId||e.target.id.replace('ci','');if(id)postComment(id)}
+  if(e.key==='Escape'){
+    if(document.getElementById('modal')&&document.getElementById('modal').classList.contains('active'))closeModal();
+    if(document.getElementById('selection')&&document.getElementById('selection').style.display==='flex')closeSelection();
+    if(document.getElementById('arena')&&document.getElementById('arena').style.display==='flex')closeArena();
+  }
+});
 
 // ===== RENDER CHARACTERS =====
 function weaponLabel(type){
@@ -5530,7 +5538,7 @@ function openCharacterProfile(mbti){
       '<div class="char-profile-name">'+escapeHTML(media.title)+'</div>'+
       '<div class="char-profile-type">'+escapeHTML(media.subtitle)+' · '+escapeHTML(c.group)+' faction</div>'+
       '<div class="char-profile-quote">“'+escapeHTML(media.quote)+'”</div>'+
-      (media.pending?'<div class="char-profile-placeholder">Dossier image and promo animation are in production<br>Using the unified brick avatar for now</div>':'<video class="char-profile-video" src="'+media.video+'" poster="'+media.image+'" controls preload="metadata" playsinline></video><div class="char-video-hint">Press play to hear the promo audio.</div>')+
+      (media.pending?'<div class="char-profile-placeholder">Dossier image and promo animation are in production<br>Using the unified brick avatar for now</div>':(media.video?'<video class="char-profile-video" src="'+media.video+'" poster="'+media.image+'" controls preload="metadata" playsinline></video><div class="char-video-hint">Press play to hear the promo audio.</div>':'<div class="char-profile-placeholder ready">Dossier image connected<br>Promo animation pending; showing the premium character art for now.</div>'))+
       '<div class="char-profile-tags">'+
         '<span>Trait: '+escapeHTML(trait.label)+'</span>'+
         '<span>Role: '+escapeHTML(trait.role)+'</span>'+

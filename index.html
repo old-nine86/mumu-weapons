@@ -169,7 +169,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 /* ===== ARENA ===== */
 .arena{display:none;position:fixed;inset:0;background:none center/cover no-repeat;z-index:300;flex-direction:column;align-items:center;justify-content:center;padding:20px}
 .arena.active{display:flex}
-.arena-close{position:absolute;top:16px;right:24px;font-size:36px;color:#fff;cursor:pointer;z-index:301;font-weight:900;opacity:.6;transition:opacity .2s}
+.arena-close{position:absolute;top:16px;right:24px;font-size:36px;color:#fff;cursor:pointer;z-index:301;font-weight:900;opacity:.6;transition:opacity .2s;background:transparent;border:0;padding:4px;line-height:1}
 .arena-close:hover{opacity:1}
 .arena-ground{position:absolute;bottom:0;left:0;right:0;height:35%;background:linear-gradient(0deg,rgba(30,30,10,.4),transparent);pointer-events:none}
 .arena-ground::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,215,0,.3),transparent)}
@@ -204,7 +204,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 /* ===== MODAL ===== */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:250;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.active{display:flex}
-.modal-close{position:absolute;top:16px;right:24px;font-size:40px;color:#fff;cursor:pointer;z-index:251;font-weight:900;opacity:.6}
+.modal-close{position:absolute;top:16px;right:24px;font-size:40px;color:#fff;cursor:pointer;z-index:251;font-weight:900;opacity:.6;background:transparent;border:0;padding:4px;line-height:1}
 .modal-close:hover{opacity:1}
 .modal-content{background:var(--card-bg);border:1px solid rgba(255,255,255,.15);border-radius:16px;max-width:650px;width:100%;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;backdrop-filter:blur(20px)}
 .modal-img-wrap{background:linear-gradient(135deg,#0d0d2b,#141428);display:flex;align-items:center;justify-content:center;padding:24px}
@@ -4195,17 +4195,17 @@ body::before{
           <div class="upload-preview-grid with-card">
             <div class="upload-preview-tile">
               <div class="upload-preview-label">原图</div>
-              <img id="uploadOriginalImg" alt="原图预览">
+              <img id="uploadOriginalImg" alt="原图预览" loading="lazy" aria-hidden="true">
             </div>
             <div class="upload-preview-tile">
               <div class="upload-preview-label">提交审核图</div>
-              <img id="uploadPreviewImg" alt="提交审核图预览">
+              <img id="uploadPreviewImg" alt="提交审核图预览" loading="lazy" aria-hidden="true">
             </div>
             <div class="upload-card-preview">
               <div class="upload-preview-label">审核后收藏卡预览</div>
               <div class="upload-card-preview-inner" id="uploadCardPreview">
                 <div class="upload-card-rarity">SSR</div>
-                <img id="uploadCardImg" alt="收藏卡预览">
+                <img id="uploadCardImg" alt="收藏卡预览" loading="lazy" aria-hidden="true">
                 <div class="upload-card-meta"><span>🧱 0 颗</span><span>🤖 战力 0</span></div>
                 <div class="upload-card-score">评分 0</div>
               </div>
@@ -4514,7 +4514,7 @@ body::before{
 
 <!-- CHARACTER SELECTION OVERLAY -->
 <div class="selection-overlay" id="selectionOverlay">
-  <div class="arena-close" onclick="closeSelection()">✕</div>
+  <button class="arena-close" type="button" aria-label="关闭角色选择" onclick="closeSelection()">✕</button>
   <div class="sel-header"><h2>⚔️ 选择你的战士</h2><p id="selPrompt">请选择第一位战士</p></div>
   <div class="sel-selected">
     <div class="sel-pick" id="selPick1"><span class="pick-label">战士 ①</span><span class="pick-name" id="selName1">等待选择...</span></div>
@@ -4537,7 +4537,7 @@ body::before{
 
 <!-- ARENA -->
 <div class="arena" id="arena">
-  <div class="arena-close" onclick="closeArena()">✕</div>
+  <button class="arena-close" type="button" aria-label="关闭战场" onclick="closeArena()">✕</button>
   <div class="arena-ground"></div>
   <div class="arena-title">⚔️ 积木战士大乱斗 ⚔️</div>
   <div class="arena-hud">
@@ -4578,7 +4578,7 @@ body::before{
 
 <!-- WEAPON DETAIL MODAL -->
 <div class="modal-overlay" id="modal" onclick="closeModal(event)">
-  <div class="modal-close" onclick="closeModal()">✕</div>
+  <button class="modal-close" type="button" aria-label="关闭弹窗" onclick="closeModal()">✕</button>
   <div class="modal-content" id="modalContent" onclick="event.stopPropagation()"></div>
 </div>
 
@@ -5756,6 +5756,7 @@ function updateUploadCardPreview(){
   const bg=weaponCardBackground(w,rarity);
   wrap.style.backgroundImage="linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.22)),url('"+bg+"')";
   img.src=w.img;
+  img.removeAttribute('aria-hidden');
   const rarityEl=wrap.querySelector('.upload-card-rarity');
   const metaEl=wrap.querySelector('.upload-card-meta');
   const scoreEl=wrap.querySelector('.upload-card-score');
@@ -6751,8 +6752,10 @@ async function processUploadFile(file,fillDefaults){
     pendingUpload={fileName:file.name,img:originalPreview,originalImg:originalPreview,t,analysis};
     document.getElementById('uploadEmpty').style.display='none';
     document.getElementById('uploadPreview').style.display='flex';
-    document.getElementById('uploadOriginalImg').src=originalPreview;
-    document.getElementById('uploadPreviewImg').src=originalPreview;
+    const originalImg=document.getElementById('uploadOriginalImg');
+    const previewImg=document.getElementById('uploadPreviewImg');
+    originalImg.src=originalPreview; originalImg.removeAttribute('aria-hidden');
+    previewImg.src=originalPreview; previewImg.removeAttribute('aria-hidden');
     document.getElementById('uploadRecognition').textContent='识别为 '+typeEmoji(t)+' '+typeLabel(t)+' · 置信度 '+analysis.confidence+'% · 约 '+analysis.pieceCount+' 颗 · 战力 '+analysis.aiPower;
     renderUploadQuality(profile,analysis,packed);
     document.getElementById('uploadType').value=t;
@@ -7011,7 +7014,14 @@ function renderComments(id){
   list.scrollTop=list.scrollHeight;
 }
 
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList.contains('comment-input')){const id=e.target.dataset.weaponId||e.target.id.replace('ci','');if(id)postComment(id)}});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&e.target.classList.contains('comment-input')){const id=e.target.dataset.weaponId||e.target.id.replace('ci','');if(id)postComment(id)}
+  if(e.key==='Escape'){
+    if(document.getElementById('modal')&&document.getElementById('modal').classList.contains('active'))closeModal();
+    if(document.getElementById('selection')&&document.getElementById('selection').style.display==='flex')closeSelection();
+    if(document.getElementById('arena')&&document.getElementById('arena').style.display==='flex')closeArena();
+  }
+});
 
 // ===== RENDER CHARACTERS =====
 function weaponLabel(type){

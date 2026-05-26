@@ -46,6 +46,18 @@ for (const file of files) {
     if (!existsAsset(asset, file)) fail(`${file}: missing asset ${asset}`);
   }
 
+  const cssAssetMatches = html.matchAll(/url\(["']?((?:\.\.\/)?assets\/[^"')]+)["']?\)/g);
+  for (const match of cssAssetMatches) {
+    const asset = match[1].split('?')[0];
+    if (!existsAsset(asset, file)) fail(`${file}: missing CSS asset ${asset}`);
+  }
+
+  const staticHtml = html.split(/<script\b/i)[0];
+  const emptyImageMatches = staticHtml.matchAll(/<img\b(?![^>]*\baria-hidden=["']true["'])(?=[^>]*\bsrc=["']\s*["'])[^>]*>/g);
+  for (const match of emptyImageMatches) {
+    fail(`${file}: visible img has empty src: ${match[0].slice(0, 90)}`);
+  }
+
   const scripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m => m[1]);
   scripts.forEach((script, idx) => {
     try {
@@ -99,7 +111,7 @@ for (let i = 1; i <= 11; i += 1) {
     const output = execFileSync('sips', ['-g', 'pixelWidth', '-g', 'pixelHeight', file], { encoding: 'utf8' });
     const width = Number(output.match(/pixelWidth:\s*(\d+)/)?.[1] || 0);
     const height = Number(output.match(/pixelHeight:\s*(\d+)/)?.[1] || 0);
-    if (width < 700 || height < 900) warn(`${name}: low resolution ${width}x${height}`);
+    if (width !== 640 || height !== 860) warn(`${name}: expected 640x860, got ${width}x${height}`);
   } catch {
     warn('sips is unavailable, skipped image dimension checks');
     break;
