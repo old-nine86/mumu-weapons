@@ -5541,7 +5541,7 @@ function renderCharacters(){
           '<span class="char-skill">🎭 '+escapeHTML(trait.role)+'</span>'+
           '<span class="char-skill">🎒 '+weaponLabel(c.weaponPref)+'</span>'+
         '</div>'+
-        '<button class="char-media-badge" type="button">'+(media.pending?'Dossier in progress · View placeholder':'View dossier · Play promo')+'</button>'+
+        '<button class="char-media-badge" type="button">'+(media.pending?'Dossier in progress · View placeholder':(media.video?'View dossier · Play promo':'View dossier · Comic story'))+'</button>'+
       '</div>';
     g.appendChild(div);
   });
@@ -5801,7 +5801,7 @@ function renderSelectionPreview(c){
       '<div class="sel-preview-stat"><b>DEF</b><div class="char-meter"><span style="width:'+c.stats.def+'%"></span></div><em>'+c.stats.def+'</em></div>'+
       '<div class="sel-preview-stat"><b>Crit</b><div class="char-meter"><span style="width:'+(c.stats.crit*100*3)+'%"></span></div><em>'+(c.stats.crit*100).toFixed(0)+'%</em></div>'+
     '</div>'+
-    '<button class="sel-preview-action" type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">'+(media.pending?'View placeholder dossier':'View full dossier')+'</button>';
+    '<button class="sel-preview-action" type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">'+(media.pending?'View placeholder dossier':(media.video?'View dossier and promo':'View dossier and comic'))+'</button>';
 }
 
 function pickChar(c,el){

@@ -6,6 +6,7 @@ const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..')
 const files = ['index.html', 'en/index.html', 'admin.html'];
 const failures = [];
 const warnings = [];
+const allRpcNames = new Set();
 
 function read(file) {
   return fs.readFileSync(path.join(root, file), 'utf8');
@@ -58,7 +59,17 @@ for (const file of files) {
     fail(`${file}: visible img has empty src: ${match[0].slice(0, 90)}`);
   }
 
+  const staticIds = [...staticHtml.matchAll(/\bid=["']([^"']+)["']/g)].map(m => m[1]);
+  const seenIds = new Set();
+  const duplicateIds = new Set();
+  for (const id of staticIds) {
+    if (seenIds.has(id)) duplicateIds.add(id);
+    seenIds.add(id);
+  }
+  for (const id of duplicateIds) fail(`${file}: duplicate static id "${id}"`);
+
   const scripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m => m[1]);
+  const scriptText = scripts.join('\n');
   scripts.forEach((script, idx) => {
     try {
       new Function(script);
@@ -66,6 +77,18 @@ for (const file of files) {
       fail(`${file}: script block ${idx + 1} does not parse: ${error.message}`);
     }
   });
+
+  const inlineCalls = html.matchAll(/\bonclick=["'][^"']*?\b([A-Za-z_$][\w$]*)\s*\(/g);
+  for (const match of inlineCalls) {
+    const fn = match[1];
+    if (['if', 'for', 'while', 'switch', 'getElementById', 'querySelector', 'scrollIntoView', 'stopPropagation', 'preventDefault'].includes(fn)) continue;
+    const re = new RegExp(`(?:function\\s+${fn}\\s*\\(|(?:const|let|var)\\s+${fn}\\s*=|window\\.${fn}\\s*=)`);
+    if (!re.test(scriptText)) fail(`${file}: onclick references missing function ${fn}`);
+  }
+
+  for (const match of html.matchAll(/\/rpc\/([a-zA-Z0-9_]+)/g)) allRpcNames.add(match[1]);
+  for (const match of html.matchAll(/rest\/v1\/rpc\/([a-zA-Z0-9_]+)/g)) allRpcNames.add(match[1]);
+  for (const match of html.matchAll(/rpc\(['"]([a-zA-Z0-9_]+)['"]/g)) allRpcNames.add(match[1]);
 
   const styles = [...html.matchAll(/<style(?:\s[^>]*)?>([\s\S]*?)<\/style>/g)].map(m => m[1]);
   styles.forEach((style, idx) => {
@@ -99,11 +122,9 @@ if (/localStorage\.getItem\(AI_KEY_STORAGE/.test(admin)) {
 }
 
 const schema = read('supabase-schema.sql');
-const rpcNames = new Set();
-for (const match of admin.matchAll(/\/rpc\/([a-zA-Z0-9_]+)/g)) rpcNames.add(match[1]);
-for (const rpc of rpcNames) {
+for (const rpc of allRpcNames) {
   const re = new RegExp(`create\\s+or\\s+replace\\s+function\\s+(?:public\\.)?${rpc}\\b`, 'i');
-  if (!re.test(schema)) warn(`supabase-schema.sql: RPC ${rpc} is used by admin.html but not found in schema`);
+  if (!re.test(schema)) warn(`supabase-schema.sql: RPC ${rpc} is used by site files but not found in schema`);
 }
 
 const showcaseDir = path.join(root, 'assets', 'weapon-showcases');
