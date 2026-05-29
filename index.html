@@ -1217,6 +1217,292 @@ body::before{
   .char-comic-grid{grid-template-columns:1fr}
 }
 @media(max-width:520px){.char-comic-grid{grid-template-columns:1fr}}
+
+/* ===== MBTI WORLD TREE ===== */
+.world-tree-panel{
+  max-width:1180px;
+  margin:0 auto 38px;
+  padding:0 20px 28px;
+}
+.world-tree-head{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  align-items:flex-end;
+  margin:8px 0 14px;
+}
+.world-tree-kicker{
+  color:#0071e3;
+  font-size:12px;
+  font-weight:1000;
+  letter-spacing:.08em!important;
+}
+.world-tree-head h2{
+  margin:4px 0 6px;
+  color:#1d1d1f;
+  font-size:clamp(28px,5vw,54px);
+  line-height:1;
+  font-weight:1000;
+}
+.world-tree-head p{
+  max-width:720px;
+  color:#6e6e73;
+  font-size:14px;
+  font-weight:850;
+  line-height:1.7;
+}
+.tree-controls,.tree-mode-row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.tree-controls button,.tree-mode{
+  border:1px solid rgba(29,29,31,.1);
+  border-radius:999px;
+  background:rgba(255,255,255,.78);
+  color:#1d1d1f;
+  padding:10px 14px;
+  font:inherit;
+  font-size:13px;
+  font-weight:1000;
+  cursor:pointer;
+  box-shadow:0 12px 28px rgba(45,55,72,.08);
+}
+.tree-mode-row{
+  margin:0 0 14px;
+}
+.tree-mode.active{
+  background:#1d1d1f;
+  color:#fff;
+  border-color:#1d1d1f;
+}
+.world-tree-viewport{
+  position:relative;
+  height:min(76vh,760px);
+  min-height:520px;
+  border-radius:30px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 18%,rgba(255,255,255,.92),rgba(255,255,255,.42) 34%,transparent 58%),
+    linear-gradient(135deg,#fff8ee,#eef8ff);
+  border:1px solid rgba(255,255,255,.82);
+  box-shadow:0 34px 90px rgba(45,55,72,.16);
+  touch-action:none;
+}
+.world-tree-canvas{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:1380px;
+  height:780px;
+  transform:translate(-50%,-50%) scale(1);
+  transform-origin:center;
+  transition:transform .28s ease;
+}
+.world-tree-bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  user-select:none;
+  pointer-events:none;
+}
+.world-tree-lines,.world-tree-nodes{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+}
+.world-tree-lines path{
+  fill:none;
+  stroke:var(--line-color,rgba(255,255,255,.88));
+  stroke-width:.42;
+  stroke-linecap:round;
+  filter:drop-shadow(0 0 6px rgba(255,255,255,.86));
+  opacity:.78;
+  cursor:pointer;
+  stroke-dasharray:2.4 2.6;
+  animation:treeLineFlow 5s linear infinite;
+}
+.world-tree-lines path.is-dim{opacity:.22}
+.world-tree-lines path:hover{opacity:1;stroke-width:.7}
+@keyframes treeLineFlow{to{stroke-dashoffset:-18}}
+.tree-node{
+  position:absolute;
+  left:calc(var(--x)*1%);
+  top:calc(var(--y)*1%);
+  width:92px;
+  min-height:122px;
+  transform:translate(-50%,-50%);
+  display:grid;
+  justify-items:center;
+  gap:5px;
+  border:0;
+  background:transparent;
+  font:inherit;
+  cursor:pointer;
+  z-index:2;
+}
+.tree-node-avatar{
+  width:78px;
+  height:78px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle at 50% 42%,#fff 0 46%,transparent 47%),
+    conic-gradient(from 0deg,var(--node-color),#fff7d6,var(--node-color));
+  padding:5px;
+  box-shadow:0 14px 34px rgba(45,55,72,.16),0 0 0 4px rgba(255,255,255,.74);
+  transition:.22s ease;
+}
+.tree-node-avatar img,.tree-node-avatar svg{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  object-fit:cover;
+  background:#fffaf2;
+}
+.tree-node b{
+  color:#1d1d1f;
+  font-size:13px;
+  font-weight:1000;
+  line-height:1;
+  padding:6px 9px;
+  border-radius:999px;
+  background:rgba(255,255,255,.82);
+  box-shadow:0 10px 24px rgba(45,55,72,.12);
+}
+.tree-node span{
+  color:#6e6e73;
+  font-size:11px;
+  font-weight:900;
+  border-radius:999px;
+  padding:4px 8px;
+  background:rgba(255,255,255,.68);
+}
+.tree-node:hover .tree-node-avatar,.tree-node.active .tree-node-avatar{
+  transform:translateY(-4px) scale(1.12);
+  box-shadow:0 18px 44px rgba(45,55,72,.22),0 0 0 5px rgba(255,255,255,.88),0 0 36px color-mix(in srgb,var(--node-color) 56%,transparent);
+}
+.tree-detail-card{
+  position:absolute;
+  right:18px;
+  bottom:18px;
+  width:min(340px,calc(100% - 36px));
+  max-height:calc(100% - 36px);
+  overflow:auto;
+  border-radius:24px;
+  padding:18px;
+  background:rgba(255,255,255,.82);
+  border:1px solid rgba(255,255,255,.86);
+  box-shadow:0 24px 70px rgba(45,55,72,.16);
+  backdrop-filter:blur(22px) saturate(1.25);
+}
+.tree-detail-empty{
+  color:#6e6e73;
+  font-size:14px;
+  font-weight:900;
+  line-height:1.65;
+}
+.tree-detail-top{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.tree-detail-top img,.tree-detail-top svg{
+  width:72px;
+  height:72px;
+  border-radius:20px;
+  object-fit:cover;
+  background:#fff8ee;
+  box-shadow:0 14px 30px rgba(45,55,72,.12);
+}
+.tree-detail-name{
+  color:#1d1d1f;
+  font-size:22px;
+  font-weight:1000;
+  line-height:1.1;
+}
+.tree-detail-meta{
+  margin-top:5px;
+  color:#0071e3;
+  font-size:13px;
+  font-weight:1000;
+}
+.tree-detail-quote{
+  margin:14px 0 12px;
+  padding:13px;
+  border-radius:18px;
+  color:#5a5147;
+  background:linear-gradient(135deg,#fff7e8,#eef8ff);
+  font-size:14px;
+  font-weight:900;
+  line-height:1.55;
+}
+.tree-detail-chips{display:flex;gap:8px;flex-wrap:wrap}
+.tree-detail-chips span{
+  border-radius:999px;
+  padding:7px 10px;
+  background:#fff;
+  color:#536071;
+  font-size:12px;
+  font-weight:950;
+}
+.tree-detail-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:14px;
+}
+.tree-detail-actions button{
+  border:0;
+  border-radius:999px;
+  padding:11px 12px;
+  font:inherit;
+  font-size:12px;
+  font-weight:1000;
+  color:#fff;
+  background:#1d1d1f;
+  cursor:pointer;
+}
+.tree-detail-actions button.secondary{background:linear-gradient(135deg,#ffd96a,#ff8a72);color:#202124}
+.tree-legend{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-top:14px;
+}
+.tree-legend span{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  border-radius:999px;
+  padding:8px 12px;
+  background:rgba(255,255,255,.78);
+  color:#536071;
+  font-size:12px;
+  font-weight:950;
+  box-shadow:0 10px 24px rgba(45,55,72,.08);
+}
+.tree-legend i{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--c);
+}
+@media(max-width:760px){
+  .world-tree-head{display:grid}
+  .world-tree-viewport{height:74vh;min-height:560px;border-radius:24px}
+  .world-tree-canvas{width:1040px;height:588px}
+  .tree-node{width:76px;min-height:106px}
+  .tree-node-avatar{width:62px;height:62px}
+  .tree-node b{font-size:11px;padding:5px 7px}
+  .tree-node span{font-size:10px}
+  .tree-detail-card{left:12px;right:12px;bottom:12px;width:auto;max-height:238px}
+}
 .arena{
   background:
     linear-gradient(rgba(8,12,22,.86),rgba(8,12,22,.92)),
@@ -4218,6 +4504,7 @@ body::before{
     <div class="nav-tabs">
       <button class="nav-tab active" data-panel="weapons">⚔️ 武器库</button>
       <button class="nav-tab" data-panel="characters">👥 角色图鉴</button>
+      <button class="nav-tab" data-panel="tree">🌳 人格世界树</button>
       <button class="nav-tab" data-panel="comics">📖 漫画馆</button>
       <button class="nav-tab" data-panel="quiz">🧭 配武器测试</button>
       <button class="nav-tab" data-panel="growth">📣 推广中心</button>
@@ -4412,6 +4699,45 @@ body::before{
   <div class="char-progress-panel" id="charProgressPanel"></div>
   <div class="char-banner"><img src="assets/banner-characters-bricks.png" alt="战士档案"></div>
   <div class="char-grid" id="charGrid"></div>
+</div>
+
+<!-- WORLD TREE PANEL -->
+<div class="panel" id="panel-tree">
+  <section class="world-tree-panel">
+    <div class="world-tree-head">
+      <div>
+        <div class="world-tree-kicker">MBTI BRICK WORLD MAP</div>
+        <h2>人格世界树</h2>
+        <p>16 位积木战士住在同一棵大树的不同树杈上。拖动查看世界，点击角色节点看资料，点击光线看羁绊关系。</p>
+      </div>
+      <div class="tree-controls">
+        <button type="button" onclick="zoomWorldTree(0.12)">＋</button>
+        <button type="button" onclick="zoomWorldTree(-0.12)">－</button>
+        <button type="button" onclick="resetWorldTreeView()">复位</button>
+      </div>
+    </div>
+    <div class="tree-mode-row">
+      <button class="tree-mode active" data-tree-mode="group" onclick="setWorldTreeMode('group')">阵营树杈</button>
+      <button class="tree-mode" data-tree-mode="weapon" onclick="setWorldTreeMode('weapon')">武器流派</button>
+      <button class="tree-mode" data-tree-mode="bond" onclick="setWorldTreeMode('bond')">战斗羁绊</button>
+    </div>
+    <div class="world-tree-viewport" id="worldTreeViewport">
+      <div class="world-tree-canvas" id="worldTreeCanvas">
+        <img class="world-tree-bg" src="assets/world-tree/world-tree-bg.png" alt="人格世界树背景">
+        <svg class="world-tree-lines" id="worldTreeLines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <div class="world-tree-nodes" id="worldTreeNodes"></div>
+      </div>
+      <aside class="tree-detail-card" id="treeDetailCard">
+        <div class="tree-detail-empty">点一个角色节点，看看他住在哪条树杈上。</div>
+      </aside>
+    </div>
+    <div class="tree-legend">
+      <span><i style="--c:#8b5cf6"></i>NT 策略枝</span>
+      <span><i style="--c:#63d7b0"></i>NF 梦想枝</span>
+      <span><i style="--c:#5aa7ff"></i>SJ 守序枝</span>
+      <span><i style="--c:#ff8a3d"></i>SP 冒险枝</span>
+    </div>
+  </section>
 </div>
 
 <!-- COMICS PANEL -->
@@ -7260,6 +7586,143 @@ function characterAvatarHTML(c,size){
   if(media&&media.avatar)return '<img src="'+media.avatar+'" alt="'+escapeHTML(media.title)+'">';
   return genCharSVG(c,size);
 }
+const WORLD_TREE_POS={
+  ENTJ:{x:20,y:31},INTJ:{x:34,y:29},INTP:{x:49,y:42},ENTP:{x:20,y:56},
+  ENFJ:{x:27,y:58},INFJ:{x:40,y:58},INFP:{x:54,y:57},ENFP:{x:38,y:77},
+  ISTJ:{x:62,y:29},ISFJ:{x:75,y:28},ESTJ:{x:85,y:35},ESFJ:{x:66,y:55},
+  ISTP:{x:80,y:58},ISFP:{x:73,y:76},ESTP:{x:88,y:65},ESFP:{x:56,y:78}
+};
+const WORLD_TREE_GROUP_META={
+  NT:{label:'策略枝',color:'#8b5cf6',desc:'思考、规划、效率与奇袭的树杈。'},
+  NF:{label:'梦想枝',color:'#63d7b0',desc:'理想、共鸣、守护与鼓舞的树杈。'},
+  SJ:{label:'守序枝',color:'#5aa7ff',desc:'规则、责任、秩序与团队照护的树杈。'},
+  SP:{label:'冒险枝',color:'#ff8a3d',desc:'行动、手感、舞台与现场创造的树杈。'}
+};
+const WORLD_TREE_RELATIONS=[
+  {a:'ENTJ',b:'INTJ',type:'group',label:'战略同盟',desc:'一个定方向，一个算路径，开局就像已经复盘过三遍。'},
+  {a:'INTJ',b:'INTP',type:'group',label:'脑内实验室',desc:'INTJ负责删掉失败路线，INTP负责证明路线为什么奇怪但可行。'},
+  {a:'INTP',b:'ENTP',type:'group',label:'灵感爆炸',desc:'一个拆机制，一个改规则，敌人还没开打就开始看说明书。'},
+  {a:'ENTJ',b:'ENTP',type:'group',label:'高压推进',desc:'统帅把混乱压成阵型，辩论家把阵型变成惊喜。'},
+  {a:'ENFJ',b:'INFJ',type:'group',label:'星光指引',desc:'ENFJ让大家相信能赢，INFJ知道怎么避开最坏结局。'},
+  {a:'INFJ',b:'INFP',type:'group',label:'梦境护盾',desc:'一个看见未来，一个守住初心，是温柔但很难打穿的组合。'},
+  {a:'INFP',b:'ENFP',type:'group',label:'彩虹远征',desc:'梦想被点燃后，路线会自动长出花和隐藏关。'},
+  {a:'ENFJ',b:'ENFP',type:'group',label:'全队开麦',desc:'鼓舞和灵感一起出现，队友会突然觉得自己是主角。'},
+  {a:'ISTJ',b:'ISFJ',type:'group',label:'可靠后勤',desc:'一个检查规则，一个保护队友，队伍很难莫名其妙崩盘。'},
+  {a:'ISTJ',b:'ESTJ',type:'group',label:'秩序引擎',desc:'计划、执行、验收一条龙，战场像项目管理表一样稳定。'},
+  {a:'ISFJ',b:'ESFJ',type:'group',label:'安全屋',desc:'一个举盾，一个补给，队友会被照顾到不好意思乱冲。'},
+  {a:'ESTJ',b:'ESFJ',type:'group',label:'团队运营',desc:'ESTJ安排流程，ESFJ稳住情绪，混乱现场开始排队。'},
+  {a:'ISTP',b:'ESTP',type:'group',label:'手感突击',desc:'ISTP拆弱点，ESTP冲窗口，机会出现时没人犹豫。'},
+  {a:'ISTP',b:'ISFP',type:'group',label:'精准美学',desc:'一个把机制调准，一个把动作打漂亮，赢也要赢得有质感。'},
+  {a:'ISFP',b:'ESFP',type:'group',label:'舞台连击',desc:'战斗变成演出以后，对手会先输给气势。'},
+  {a:'ESTP',b:'ESFP',type:'group',label:'现场点燃',desc:'速度和聚光灯一起上场，战场节奏会被直接带飞。'},
+  {a:'ENTJ',b:'ESTJ',type:'bond',label:'执行压制',desc:'统帅下令，督军落地，适合打高压推进局。'},
+  {a:'INTJ',b:'INFJ',type:'bond',label:'双预判',desc:'一个预判效率，一个预判命运，敌人的破绽会被提前标记。'},
+  {a:'INTP',b:'ISTP',type:'bond',label:'机制拆解',desc:'一个理论拆解，一个动手拆解，装备问题很快变成敌方问题。'},
+  {a:'ENFP',b:'ENTP',type:'bond',label:'脑洞失控',desc:'这条线会制造很多意外，也会制造很多名场面。'},
+  {a:'ISFJ',b:'INFP',type:'bond',label:'温柔防线',desc:'护盾保护梦想，梦想反过来给护盾充电。'},
+  {a:'ESFJ',b:'ENFJ',type:'bond',label:'士气满格',desc:'一个照顾大家，一个点亮大家，适合持久战。'},
+  {a:'ISFP',b:'INFJ',type:'bond',label:'安静审美',desc:'打得不急，但每一步都像提前画好的分镜。'},
+  {a:'ESTP',b:'ENTJ',type:'bond',label:'冲锋号令',desc:'ENTJ给方向，ESTP负责把方向撞成通路。'},
+  {a:'ENTJ',b:'ISFP',type:'weapon',label:'剑刃共鸣',desc:'统帅的正面推进和艺术家的收尾斩，都是剑刃派的高光。'},
+  {a:'INTJ',b:'ISTJ',type:'weapon',label:'精密剑路',desc:'计划和规则叠在一起，剑路稳到像画了辅助线。'},
+  {a:'INTP',b:'ENFP',type:'weapon',label:'奇妙枪械',desc:'一个改零件，一个改想法，枪械派最容易诞生新玩具。'},
+  {a:'ENTP',b:'ESTP',type:'weapon',label:'爆发枪线',desc:'陷阱和速度一起出现，敌人还没反应就被换位置。'},
+  {a:'INFJ',b:'ISFJ',type:'weapon',label:'守护长柄',desc:'预言和护盾撑起中线，是最安心的树杈连接。'},
+  {a:'ENFJ',b:'ESFJ',type:'weapon',label:'团队长柄',desc:'长柄不是只负责攻击，也负责把队伍串成一条线。'}
+];
+let worldTreeMode='group';
+let worldTreeSelected='INTJ';
+let worldTreeView={zoom:1,panX:0,panY:0,drag:false,startX:0,startY:0,baseX:0,baseY:0};
+function worldTreeColor(c){return (WORLD_TREE_GROUP_META[c.group]||WORLD_TREE_GROUP_META.NT).color}
+function updateWorldTreeTransform(){
+  const canvas=document.getElementById('worldTreeCanvas');
+  if(!canvas)return;
+  canvas.style.transform='translate(calc(-50% + '+worldTreeView.panX+'px), calc(-50% + '+worldTreeView.panY+'px)) scale('+worldTreeView.zoom.toFixed(2)+')';
+}
+function setWorldTreeMode(mode){
+  worldTreeMode=mode;
+  document.querySelectorAll('.tree-mode').forEach(b=>b.classList.toggle('active',b.dataset.treeMode===mode));
+  renderWorldTree();
+}
+function zoomWorldTree(delta){
+  worldTreeView.zoom=Math.max(.72,Math.min(1.72,worldTreeView.zoom+delta));
+  updateWorldTreeTransform();
+}
+function resetWorldTreeView(){
+  worldTreeView={zoom:1,panX:0,panY:0,drag:false,startX:0,startY:0,baseX:0,baseY:0};
+  updateWorldTreeTransform();
+}
+function renderWorldTree(){
+  const nodes=document.getElementById('worldTreeNodes');
+  const lines=document.getElementById('worldTreeLines');
+  const viewport=document.getElementById('worldTreeViewport');
+  if(!nodes||!lines||!viewport)return;
+  const visible=WORLD_TREE_RELATIONS.filter(r=>r.type===worldTreeMode || (worldTreeMode==='group'&&r.type==='bond'));
+  lines.innerHTML=visible.map((r,i)=>{
+    const a=WORLD_TREE_POS[r.a],b=WORLD_TREE_POS[r.b];
+    const ca=CHARACTERS.find(c=>c.mbti===r.a),cb=CHARACTERS.find(c=>c.mbti===r.b);
+    if(!a||!b||!ca||!cb)return '';
+    const mx=(a.x+b.x)/2,my=(a.y+b.y)/2-5;
+    const color=r.type==='weapon'?'#ffb340':(r.type==='bond'?'#ff8ab3':worldTreeColor(ca));
+    return '<path data-rel="'+i+'" style="--line-color:'+color+'" d="M '+a.x+' '+a.y+' Q '+mx+' '+my+' '+b.x+' '+b.y+'" onclick="showWorldTreeRelation('+i+')"></path>';
+  }).join('');
+  nodes.innerHTML=CHARACTERS.map(c=>{
+    const pos=WORLD_TREE_POS[c.mbti]||{x:50,y:50};
+    const trait=getCharTrait(c);
+    return '<button class="tree-node '+(worldTreeSelected===c.mbti?'active':'')+'" style="--x:'+pos.x+';--y:'+pos.y+';--node-color:'+worldTreeColor(c)+'" type="button" onclick="selectWorldTreeCharacter(\''+c.mbti+'\')">'+
+      '<span class="tree-node-avatar">'+characterAvatarHTML(c,72)+'</span>'+
+      '<b>'+escapeHTML(c.mbti)+'</b>'+
+      '<span>'+escapeHTML(trait.role||c.mbtiName)+'</span>'+
+    '</button>';
+  }).join('');
+  selectWorldTreeCharacter(worldTreeSelected,false);
+  if(!viewport.dataset.bound){
+    viewport.dataset.bound='1';
+    viewport.addEventListener('pointerdown',e=>{
+      if(e.target.closest('.tree-node')||e.target.closest('.tree-detail-card')||e.target.closest('path'))return;
+      worldTreeView.drag=true;worldTreeView.startX=e.clientX;worldTreeView.startY=e.clientY;worldTreeView.baseX=worldTreeView.panX;worldTreeView.baseY=worldTreeView.panY;viewport.setPointerCapture(e.pointerId);
+    });
+    viewport.addEventListener('pointermove',e=>{
+      if(!worldTreeView.drag)return;
+      worldTreeView.panX=worldTreeView.baseX+(e.clientX-worldTreeView.startX);
+      worldTreeView.panY=worldTreeView.baseY+(e.clientY-worldTreeView.startY);
+      updateWorldTreeTransform();
+    });
+    viewport.addEventListener('pointerup',()=>{worldTreeView.drag=false});
+    viewport.addEventListener('wheel',e=>{e.preventDefault();zoomWorldTree(e.deltaY>0?-.08:.08)},{passive:false});
+  }
+  updateWorldTreeTransform();
+}
+function selectWorldTreeCharacter(mbti,scrollDetail=true){
+  const c=CHARACTERS.find(x=>x.mbti===mbti);
+  const card=document.getElementById('treeDetailCard');
+  if(!c||!card)return;
+  worldTreeSelected=mbti;
+  document.querySelectorAll('.tree-node').forEach(n=>n.classList.toggle('active',n.textContent.includes(mbti)));
+  const trait=getCharTrait(c);
+  const meta=WORLD_TREE_GROUP_META[c.group]||WORLD_TREE_GROUP_META.NT;
+  const related=WORLD_TREE_RELATIONS.filter(r=>r.a===mbti||r.b===mbti).slice(0,4).map(r=>{
+    const other=r.a===mbti?r.b:r.a;
+    return '<span>'+escapeHTML(other)+' · '+escapeHTML(r.label)+'</span>';
+  }).join('');
+  card.innerHTML=
+    '<div class="tree-detail-top">'+characterAvatarHTML(c,80)+'<div><div class="tree-detail-name">'+escapeHTML(c.name)+'</div><div class="tree-detail-meta">'+escapeHTML(c.mbti)+' · '+escapeHTML(c.mbtiName)+' · '+escapeHTML(meta.label)+'</div></div></div>'+
+    '<div class="tree-detail-quote">“'+escapeHTML(c.quotes.win)+'”</div>'+
+    '<div class="tree-detail-chips"><span>武器：'+weaponLabel(c.weaponPref)+'</span><span>定位：'+escapeHTML(trait.role)+'</span><span>人格技：'+escapeHTML(trait.label)+'</span>'+related+'</div>'+
+    '<div class="tree-detail-actions"><button type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">角色资料</button><button class="secondary" type="button" onclick="quickBattleFromQuiz(\''+c.mbti+'\')">用他开战</button></div>';
+  if(scrollDetail)card.scrollTop=0;
+}
+function showWorldTreeRelation(index){
+  const r=WORLD_TREE_RELATIONS.filter(x=>x.type===worldTreeMode || (worldTreeMode==='group'&&x.type==='bond'))[index];
+  const card=document.getElementById('treeDetailCard');
+  if(!r||!card)return;
+  const a=CHARACTERS.find(c=>c.mbti===r.a),b=CHARACTERS.find(c=>c.mbti===r.b);
+  if(!a||!b)return;
+  card.innerHTML=
+    '<div class="tree-detail-top">'+characterAvatarHTML(a,70)+characterAvatarHTML(b,70)+'<div><div class="tree-detail-name">'+escapeHTML(r.label)+'</div><div class="tree-detail-meta">'+escapeHTML(a.mbti)+' × '+escapeHTML(b.mbti)+' · '+(r.type==='weapon'?'武器流派':r.type==='bond'?'战斗羁绊':'同枝关系')+'</div></div></div>'+
+    '<div class="tree-detail-quote">'+escapeHTML(r.desc)+'</div>'+
+    '<div class="tree-detail-actions"><button type="button" onclick="selectWorldTreeCharacter(\''+a.mbti+'\')">'+escapeHTML(a.mbti)+'</button><button class="secondary" type="button" onclick="selectWorldTreeCharacter(\''+b.mbti+'\')">'+escapeHTML(b.mbti)+'</button></div>';
+}
 function renderCharacterProgress(){
   const panel=document.getElementById('charProgressPanel');
   if(!panel)return;
@@ -8364,6 +8827,7 @@ loadData().then(async()=>{
   renderWeapons();
   renderForum();
   renderCharacters();
+  renderWorldTree();
   renderComicGallery();
   renderGrowthCenter();
   renderQuiz();

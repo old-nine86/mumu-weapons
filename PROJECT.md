@@ -76,7 +76,22 @@ The site should feel like a polished toy product experience: soft, cute, high qu
 - Added an in-site promotion task center with seven-day content scripts, copyable captions, and promotion proof submission.
 - Connected quiz results, battle results, and weapon showcases to the promotion center with ready-to-post captions and proof templates.
 
+### Phase 10: MBTI World Tree
+
+- Planned and started `人格世界树`, an Obsidian-like relationship map for the 16 MBTI brick characters.
+- Added a generated premium brick world-tree background asset under `assets/world-tree/`.
+- First version goal: dynamic tree map, draggable/zoomable canvas, character nodes on branches, relationship lines, and clickable character/relationship detail cards.
+
 ## Near-Term Roadmap
+
+### Next Phase: World Tree Polish
+
+Goal: turn the character roster into a beautiful dynamic story map.
+
+- Improve node placement against the generated tree art.
+- Add richer relationship filters: faction, weapon preference, battle synergy, story bonds.
+- Add entrance animations, branch glow, and mobile-friendly guided navigation.
+- Later connect each branch to comics, weapons, arena picks, and AR world planning.
 
 ### Next Phase: Upload Quality Upgrade
 

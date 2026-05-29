@@ -2,6 +2,26 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-29: MBTI World Tree V1
+
+Goal:
+- Start the Obsidian-like dynamic relationship map requested for the character world.
+- Present the 16 MBTI brick characters as residents of a large beautiful brick world tree.
+
+Shipped:
+- Generated a premium pastel brick world-tree background with imagegen and saved it as `assets/world-tree/world-tree-bg.png`.
+- Added a new `人格世界树` navigation tab.
+- Added a draggable, zoomable world-tree canvas with 16 character nodes on different branches.
+- Added animated relationship lines with three filters: faction branches, weapon schools, and battle bonds.
+- Added a tree detail card for character nodes and relationship lines, with shortcuts to role profiles and battle.
+
+Verification:
+- Parsed scripts with the project preflight check.
+- Checked the generated background and front-avatar assets visually.
+
+Next:
+- Tune exact node placement after reviewing the live page, then generate branch-specific decorative assets if needed.
+
 ## 2026-05-26: Comic Full View and Avatar-Only Character Preview
 
 Goal:
