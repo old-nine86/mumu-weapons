@@ -1332,9 +1332,9 @@ body::before{
   position:absolute;
   left:calc(var(--x)*1%);
   top:calc(var(--y)*1%);
-  width:92px;
-  min-height:122px;
-  transform:translate(-50%,-39px);
+  width:136px;
+  min-height:166px;
+  transform:translate(-50%,-59px);
   display:grid;
   justify-items:center;
   gap:5px;
@@ -1345,8 +1345,8 @@ body::before{
   z-index:2;
 }
 .tree-node-avatar{
-  width:78px;
-  height:78px;
+  width:118px;
+  height:118px;
   border-radius:50%;
   display:grid;
   place-items:center;
@@ -1361,7 +1361,7 @@ body::before{
   width:100%;
   height:100%;
   border-radius:50%;
-  object-fit:cover;
+  object-fit:contain;
   background:#fffaf2;
 }
 .tree-node b{
@@ -1497,8 +1497,8 @@ body::before{
   .world-tree-head{display:grid}
   .world-tree-viewport{height:74vh;min-height:560px;border-radius:24px}
   .world-tree-canvas{width:1060px;height:530px}
-  .tree-node{width:76px;min-height:106px;transform:translate(-50%,-31px)}
-  .tree-node-avatar{width:62px;height:62px}
+  .tree-node{width:104px;min-height:134px;transform:translate(-50%,-44px)}
+  .tree-node-avatar{width:88px;height:88px}
   .tree-node b{font-size:11px;padding:5px 7px}
   .tree-node span{font-size:10px}
   .tree-detail-card{left:12px;right:12px;bottom:12px;width:auto;max-height:238px}
@@ -7587,8 +7587,8 @@ function characterAvatarHTML(c,size){
   return genCharSVG(c,size);
 }
 const WORLD_TREE_POS={
-  ENTJ:{x:13.2,y:25.1},INTJ:{x:24.1,y:23.4},INTP:{x:32.8,y:26.6},ENTP:{x:52.5,y:43.1},
-  ENFJ:{x:10.3,y:58.3},INFJ:{x:18.1,y:52.5},INFP:{x:28.6,y:56.3},ENFP:{x:41.4,y:56.6},
+  ENTJ:{x:14.8,y:25.1},INTJ:{x:24.1,y:23.4},INTP:{x:32.8,y:26.6},ENTP:{x:52.5,y:43.1},
+  ENFJ:{x:12.6,y:58.3},INFJ:{x:18.1,y:52.5},INFP:{x:28.6,y:56.3},ENFP:{x:41.4,y:56.6},
   ISTJ:{x:60.4,y:24.6},ISFJ:{x:70.2,y:22.1},ESTJ:{x:79.4,y:23.8},ESFJ:{x:66.4,y:42.7},
   ISTP:{x:59.1,y:53.6},ISFP:{x:67.4,y:60.4},ESTP:{x:74.8,y:61.8},ESFP:{x:91.0,y:47.1}
 };
