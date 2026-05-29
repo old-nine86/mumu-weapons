@@ -1154,12 +1154,112 @@ body::before{
   margin:0 auto;
   padding:20px;
 }
+.comic-library-shell{
+  max-width:1400px;
+  margin:0 auto 34px;
+  padding:0 20px 20px;
+}
+.comic-toolbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+  margin:2px auto 12px;
+}
+.comic-filter{
+  min-height:38px;
+  border:0;
+  border-radius:999px;
+  padding:9px 14px;
+  background:rgba(255,255,255,.72);
+  color:#536071;
+  font:inherit;
+  font-size:12px;
+  font-weight:950;
+  cursor:pointer;
+  box-shadow:0 10px 24px rgba(45,55,72,.08);
+}
+.comic-filter.active{
+  background:#1d1d1f;
+  color:#fff;
+}
+.comic-spotlight{
+  display:grid;
+  grid-template-columns:minmax(260px,.82fr) minmax(300px,1fr);
+  gap:16px;
+  align-items:stretch;
+  margin:12px auto 2px;
+}
+.comic-reader{
+  border:1px solid rgba(78,64,44,.1);
+  border-radius:28px;
+  background:rgba(255,255,255,.82);
+  box-shadow:0 24px 70px rgba(78,64,44,.1);
+  overflow:hidden;
+}
+.comic-reader img{
+  width:100%;
+  height:100%;
+  min-height:480px;
+  max-height:760px;
+  object-fit:contain;
+  background:#f6f8ff;
+  display:block;
+}
+.comic-reader-info{
+  border:1px solid rgba(78,64,44,.1);
+  border-radius:28px;
+  padding:20px;
+  background:linear-gradient(135deg,rgba(255,253,248,.94),rgba(238,248,255,.86));
+  box-shadow:0 24px 70px rgba(78,64,44,.08);
+}
+.comic-reader-kicker{color:#2f8fe8;font-size:12px;font-weight:1000;letter-spacing:.08em}
+.comic-reader-title{color:#202124;font-size:clamp(24px,4vw,42px);font-weight:1000;line-height:1.05;margin-top:8px}
+.comic-reader-meta{color:#686158;font-size:13px;font-weight:950;margin-top:8px}
+.comic-reader-copy{color:#5a5147;font-size:14px;font-weight:850;line-height:1.65;margin-top:14px}
+.comic-chapter-list{
+  display:grid;
+  gap:8px;
+  margin-top:14px;
+}
+.comic-chapter-list div{
+  border-radius:16px;
+  padding:10px 12px;
+  background:#fff;
+  color:#536071;
+  font-size:12px;
+  font-weight:900;
+  line-height:1.45;
+}
+.comic-reader-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:16px;
+}
+.comic-reader-actions button{
+  min-height:40px;
+  border:0;
+  border-radius:999px;
+  padding:10px 13px;
+  background:#1d1d1f;
+  color:#fff;
+  font:inherit;
+  font-size:12px;
+  font-weight:1000;
+  cursor:pointer;
+}
+.comic-reader-actions button.secondary{background:linear-gradient(135deg,#ffd96a,#ff8a72);color:#202124}
 .comic-gallery-card{
   border:1px solid rgba(78,64,44,.1);
   border-radius:24px;
   background:#fff;
   overflow:hidden;
   box-shadow:0 18px 44px rgba(78,64,44,.1);
+}
+.comic-gallery-card.active{
+  outline:3px solid rgba(47,143,232,.26);
+  box-shadow:0 24px 70px rgba(47,143,232,.16);
 }
 .comic-gallery-card img{
   width:100%;
@@ -1493,6 +1593,32 @@ body::before{
   border-radius:50%;
   background:var(--c);
 }
+.tree-branch-board{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin:14px auto 0;
+}
+.tree-branch-card{
+  border:0;
+  border-radius:20px;
+  padding:13px;
+  background:rgba(255,255,255,.78);
+  text-align:left;
+  font:inherit;
+  cursor:pointer;
+  box-shadow:0 14px 34px rgba(45,55,72,.08);
+}
+.tree-branch-card b{display:block;color:#202124;font-size:14px;font-weight:1000}
+.tree-branch-card span{display:block;color:#6e6e73;font-size:12px;font-weight:850;line-height:1.45;margin-top:4px}
+.tree-branch-card i{
+  display:inline-block;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--c);
+  margin-right:6px;
+}
 @media(max-width:760px){
   .world-tree-head{display:grid}
   .world-tree-viewport{height:74vh;min-height:560px;border-radius:24px}
@@ -1502,6 +1628,9 @@ body::before{
   .tree-node b{font-size:11px;padding:5px 7px}
   .tree-node span{font-size:10px}
   .tree-detail-card{left:12px;right:12px;bottom:12px;width:auto;max-height:238px}
+  .tree-branch-board{grid-template-columns:1fr 1fr}
+  .comic-spotlight{grid-template-columns:1fr}
+  .comic-reader img{min-height:360px;max-height:70vh}
 }
 .arena{
   background:
@@ -3846,6 +3975,47 @@ body::before{
 .plan-card-title{color:#202124;font-size:18px;font-weight:1000;margin-top:12px}
 .plan-card-copy{color:#77726b;font-size:13px;font-weight:800;line-height:1.5;margin-top:6px}
 .plan-card .commerce-link{margin-top:12px}
+.plan-timeline{
+  display:grid;
+  gap:10px;
+  margin-top:18px;
+}
+.plan-lane{
+  display:grid;
+  grid-template-columns:110px 1fr auto;
+  gap:12px;
+  align-items:center;
+  border:1px solid rgba(78,64,44,.08);
+  border-radius:20px;
+  padding:12px;
+  background:rgba(255,255,255,.82);
+}
+.plan-lane-status{
+  border-radius:999px;
+  padding:8px 10px;
+  text-align:center;
+  color:#202124;
+  background:#fff4d8;
+  font-size:12px;
+  font-weight:1000;
+}
+.plan-lane.done .plan-lane-status{background:#ddf8ef}
+.plan-lane.now .plan-lane-status{background:#dceeff}
+.plan-lane.next .plan-lane-status{background:#ffe2e8}
+.plan-lane-title{color:#202124;font-size:15px;font-weight:1000}
+.plan-lane-copy{color:#77726b;font-size:12px;font-weight:800;line-height:1.45;margin-top:3px}
+.plan-lane-action{
+  min-height:36px;
+  border:0;
+  border-radius:999px;
+  padding:8px 11px;
+  background:#1d1d1f;
+  color:#fff;
+  font:inherit;
+  font-size:12px;
+  font-weight:1000;
+  cursor:pointer;
+}
 .growth-center{
   max-width:1180px;
   margin:0 auto 34px;
@@ -4737,13 +4907,18 @@ body::before{
       <span><i style="--c:#5aa7ff"></i>SJ 守序枝</span>
       <span><i style="--c:#ff8a3d"></i>SP 冒险枝</span>
     </div>
+    <div class="tree-branch-board" id="treeBranchBoard"></div>
   </section>
 </div>
 
 <!-- COMICS PANEL -->
 <div class="panel" id="panel-comics">
   <div class="section-header"><h2>📖 MBTI 漫画馆</h2><div class="divider"></div><div class="sub">16 张 image2 四格漫画 · 点击可进入角色完整小剧场</div></div>
-  <div class="comic-gallery" id="comicGallery"></div>
+  <section class="comic-library-shell">
+    <div class="comic-toolbar" id="comicToolbar"></div>
+    <div class="comic-spotlight" id="comicSpotlight"></div>
+    <div class="comic-gallery" id="comicGallery"></div>
+  </section>
 </div>
 
 <!-- QUIZ PANEL -->
@@ -4780,6 +4955,7 @@ body::before{
           <button class="battle-start-btn ready" type="button" onclick="switchPanel('comics')">看漫画馆</button>
           <button class="battle-start-btn ready" type="button" onclick="openSelection()">进入战场</button>
         </div>
+        <div class="plan-timeline" id="planTimeline"></div>
       </div>
       <div class="plan-grid">
         <article class="plan-card">
@@ -7080,6 +7256,25 @@ async function copyGrowthText(text){
   }
 }
 
+const MASTER_PLAN_STEPS=[
+  {status:'done',label:'已上线',title:'武器库与上传审核',copy:'内置武器、玩家上传、AI 识别、后台审核和收藏卡预览已经形成基础入口。',panel:'weapons'},
+  {status:'done',label:'已上线',title:'16 位 MBTI 角色宇宙',copy:'角色图鉴、定位图、头像、漫画资源和战斗台词已经接入主站。',panel:'characters'},
+  {status:'now',label:'当前主线',title:'漫画馆 V2 与世界树 V2',copy:'漫画章节浏览、分享文案、世界树阵营导览和角色跳转入口是当前体验闭环。',panel:'comics'},
+  {status:'now',label:'推广循环',title:'测试、战斗、分享卡',copy:'配武器测试与战斗分享卡负责把玩家带回网站，推广中心记录发布证明。',panel:'quiz'},
+  {status:'next',label:'下一批',title:'英文站与商业入口',copy:'英文站同步中文核心体验，购买推荐和作者支援入口再逐步接真实链接。',panel:'growth'}
+];
+function renderMasterPlan(){
+  const box=document.getElementById('planTimeline');
+  if(!box)return;
+  box.innerHTML=MASTER_PLAN_STEPS.map(item=>
+    '<div class="plan-lane '+item.status+'">'+
+      '<div class="plan-lane-status">'+escapeHTML(item.label)+'</div>'+
+      '<div><div class="plan-lane-title">'+escapeHTML(item.title)+'</div><div class="plan-lane-copy">'+escapeHTML(item.copy)+'</div></div>'+
+      '<button class="plan-lane-action" type="button" onclick="switchPanel(\''+item.panel+'\')">查看</button>'+
+    '</div>'
+  ).join('');
+}
+
 function gentleNotice(text){
   const status=document.getElementById('growthStatus')||document.getElementById('uploadStatus')||document.getElementById('forumStatus');
   if(status)status.textContent=text;
@@ -7598,6 +7793,12 @@ const WORLD_TREE_GROUP_META={
   SJ:{label:'守序枝',color:'#5aa7ff',desc:'规则、责任、秩序与团队照护的树杈。'},
   SP:{label:'冒险枝',color:'#ff8a3d',desc:'行动、手感、舞台与现场创造的树杈。'}
 };
+const WORLD_TREE_BRANCH_GUIDE={
+  NT:{focus:'战术、推演、拆解与高压推进',route:'适合从 ENTJ 或 INTJ 开始读，再沿着光线看 INTP/ENTP 的脑洞组合。'},
+  NF:{focus:'信念、鼓舞、预判与温柔防线',route:'适合从 ENFJ 的集合号开始，再走到 INFJ/INFP 的守护故事。'},
+  SJ:{focus:'秩序、后勤、执行与团队稳定',route:'适合从 ISTJ 的规则线进入，再看 ESTJ/ESFJ 如何把队伍带稳。'},
+  SP:{focus:'手感、速度、舞台与现场创造',route:'适合从 ESTP 的突袭开始，再看 ISFP/ESFP 把战斗打成演出。'}
+};
 const WORLD_TREE_RELATIONS=[
   {a:'ENTJ',b:'INTJ',type:'group',label:'战略同盟',desc:'一个定方向，一个算路径，开局就像已经复盘过三遍。'},
   {a:'INTJ',b:'INTP',type:'group',label:'脑内实验室',desc:'INTJ负责删掉失败路线，INTP负责证明路线为什么奇怪但可行。'},
@@ -7633,10 +7834,12 @@ const WORLD_TREE_RELATIONS=[
 let worldTreeMode='group';
 let worldTreeSelected='INTJ';
 let worldTreeView={zoom:1,panX:0,panY:0,drag:false,startX:0,startY:0,baseX:0,baseY:0};
+let comicFilter='ALL';
+let comicSelected='ENTJ';
 function worldTreeColor(c){return (WORLD_TREE_GROUP_META[c.group]||WORLD_TREE_GROUP_META.NT).color}
 function defaultWorldTreeView(){
   const viewport=document.getElementById('worldTreeViewport');
-  const vw=viewport?viewport.clientWidth:window.innerWidth;
+  const vw=viewport&&viewport.clientWidth?viewport.clientWidth:window.innerWidth;
   if(vw<760){
     const zoom=Math.max(.4,Math.min(.72,(vw-24)/1126));
     return {zoom,panX:0,panY:20,drag:false,startX:0,startY:0,baseX:0,baseY:0};
@@ -7668,6 +7871,7 @@ function renderWorldTree(){
   const lines=document.getElementById('worldTreeLines');
   const viewport=document.getElementById('worldTreeViewport');
   if(!nodes||!lines||!viewport)return;
+  renderWorldTreeBranchBoard();
   const visible=WORLD_TREE_RELATIONS.filter(r=>r.type===worldTreeMode || (worldTreeMode==='group'&&r.type==='bond'));
   lines.innerHTML=visible.map((r,i)=>{
     const a=WORLD_TREE_POS[r.a],b=WORLD_TREE_POS[r.b];
@@ -7708,6 +7912,25 @@ function renderWorldTree(){
   }
   updateWorldTreeTransform();
 }
+function renderWorldTreeBranchBoard(){
+  const board=document.getElementById('treeBranchBoard');
+  if(!board)return;
+  board.innerHTML=Object.keys(WORLD_TREE_GROUP_META).map(group=>{
+    const meta=WORLD_TREE_GROUP_META[group];
+    const guide=WORLD_TREE_BRANCH_GUIDE[group];
+    const count=CHARACTERS.filter(c=>c.group===group).length;
+    return '<button class="tree-branch-card" type="button" style="--c:'+meta.color+'" onclick="focusWorldTreeGroup(\''+group+'\')">'+
+      '<b><i></i>'+escapeHTML(group)+' · '+escapeHTML(meta.label)+' · '+count+' 位</b>'+
+      '<span>'+escapeHTML(guide.focus)+'</span>'+
+      '<span>'+escapeHTML(guide.route)+'</span>'+
+    '</button>';
+  }).join('');
+}
+function focusWorldTreeGroup(group){
+  const first=CHARACTERS.find(c=>c.group===group);
+  setWorldTreeMode('group');
+  if(first)selectWorldTreeCharacter(first.mbti);
+}
 function selectWorldTreeCharacter(mbti,scrollDetail=true){
   const c=CHARACTERS.find(x=>x.mbti===mbti);
   const card=document.getElementById('treeDetailCard');
@@ -7724,7 +7947,7 @@ function selectWorldTreeCharacter(mbti,scrollDetail=true){
     '<div class="tree-detail-top">'+characterAvatarHTML(c,80)+'<div><div class="tree-detail-name">'+escapeHTML(c.name)+'</div><div class="tree-detail-meta">'+escapeHTML(c.mbti)+' · '+escapeHTML(c.mbtiName)+' · '+escapeHTML(meta.label)+'</div></div></div>'+
     '<div class="tree-detail-quote">“'+escapeHTML(c.quotes.win)+'”</div>'+
     '<div class="tree-detail-chips"><span>武器：'+weaponLabel(c.weaponPref)+'</span><span>定位：'+escapeHTML(trait.role)+'</span><span>人格技：'+escapeHTML(trait.label)+'</span>'+related+'</div>'+
-    '<div class="tree-detail-actions"><button type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">角色资料</button><button class="secondary" type="button" onclick="quickBattleFromQuiz(\''+c.mbti+'\')">用他开战</button></div>';
+    '<div class="tree-detail-actions"><button type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">角色资料</button><button class="secondary" type="button" onclick="openComicReader(\''+c.mbti+'\')">看漫画</button><button type="button" onclick="quickBattleFromQuiz(\''+c.mbti+'\')">用他开战</button><button class="secondary" type="button" onclick="switchPanel(\'quiz\')">去测试</button></div>';
   if(scrollDetail)card.scrollTop=0;
 }
 function showWorldTreeRelation(index){
@@ -7736,7 +7959,7 @@ function showWorldTreeRelation(index){
   card.innerHTML=
     '<div class="tree-detail-top">'+characterAvatarHTML(a,70)+characterAvatarHTML(b,70)+'<div><div class="tree-detail-name">'+escapeHTML(r.label)+'</div><div class="tree-detail-meta">'+escapeHTML(a.mbti)+' × '+escapeHTML(b.mbti)+' · '+(r.type==='weapon'?'武器流派':r.type==='bond'?'战斗羁绊':'同枝关系')+'</div></div></div>'+
     '<div class="tree-detail-quote">'+escapeHTML(r.desc)+'</div>'+
-    '<div class="tree-detail-actions"><button type="button" onclick="selectWorldTreeCharacter(\''+a.mbti+'\')">'+escapeHTML(a.mbti)+'</button><button class="secondary" type="button" onclick="selectWorldTreeCharacter(\''+b.mbti+'\')">'+escapeHTML(b.mbti)+'</button></div>';
+    '<div class="tree-detail-actions"><button type="button" onclick="selectWorldTreeCharacter(\''+a.mbti+'\')">'+escapeHTML(a.mbti)+'</button><button class="secondary" type="button" onclick="selectWorldTreeCharacter(\''+b.mbti+'\')">'+escapeHTML(b.mbti)+'</button><button type="button" onclick="openComicReader(\''+a.mbti+'\')">看左边漫画</button><button class="secondary" type="button" onclick="openComicReader(\''+b.mbti+'\')">看右边漫画</button></div>';
 }
 function renderCharacterProgress(){
   const panel=document.getElementById('charProgressPanel');
@@ -7793,21 +8016,103 @@ function renderCharacters(){
 function renderComicGallery(){
   const g=document.getElementById('comicGallery');
   if(!g)return;
-  g.innerHTML=CHARACTERS.map(c=>{
+  renderComicToolbar();
+  renderComicSpotlight();
+  const list=CHARACTERS.filter(c=>comicFilter==='ALL'||c.group===comicFilter);
+  g.innerHTML=list.map(c=>{
     const story=getCharacterComicStory(c);
     const meme=(CHAR_MEMES[c.mbti]&&CHAR_MEMES[c.mbti][2])||story.moral;
-    return '<div class="comic-gallery-card">'+
+    return '<div class="comic-gallery-card '+(comicSelected===c.mbti?'active':'')+'">'+
       '<img src="'+escapeHTML(story.image||'')+'" alt="'+escapeHTML(c.name)+' 四格漫画" loading="lazy">'+
       '<div class="comic-gallery-info">'+
         '<div class="comic-gallery-title">'+escapeHTML(c.name)+' · '+escapeHTML(story.title)+'</div>'+
         '<div class="comic-gallery-meta">'+escapeHTML(c.mbti)+' · '+escapeHTML(c.mbtiName)+'</div>'+
         '<div class="comic-gallery-copy">'+escapeHTML(meme)+'</div>'+
         '<div class="comic-gallery-actions">'+
-          '<button class="char-share-btn" type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">看完整小剧场</button>'+
+          '<button class="char-share-btn" type="button" onclick="openComicReader(\''+c.mbti+'\')">打开章节</button>'+
+          '<button class="char-share-btn" type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">角色档案</button>'+
         '</div>'+
       '</div>'+
     '</div>';
   }).join('');
+}
+function renderComicToolbar(){
+  const bar=document.getElementById('comicToolbar');
+  if(!bar)return;
+  const filters=[['ALL','全部漫画'],['NT','NT 策略枝'],['NF','NF 梦想枝'],['SJ','SJ 守序枝'],['SP','SP 冒险枝']];
+  bar.innerHTML=filters.map(f=>'<button class="comic-filter '+(comicFilter===f[0]?'active':'')+'" type="button" onclick="setComicFilter(\''+f[0]+'\')">'+escapeHTML(f[1])+'</button>').join('');
+}
+function setComicFilter(group){
+  comicFilter=group;
+  if(group!=='ALL'&&!CHARACTERS.some(c=>c.mbti===comicSelected&&c.group===group)){
+    const first=CHARACTERS.find(c=>c.group===group);
+    if(first)comicSelected=first.mbti;
+  }
+  renderComicGallery();
+}
+function comicVisibleList(){
+  return CHARACTERS.filter(c=>comicFilter==='ALL'||c.group===comicFilter);
+}
+function openComicReader(mbti){
+  const c=CHARACTERS.find(x=>x.mbti===mbti);
+  if(!c)return;
+  comicSelected=mbti;
+  comicFilter='ALL';
+  switchPanel('comics');
+  renderComicGallery();
+  const spot=document.getElementById('comicSpotlight');
+  if(spot)spot.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function stepComicReader(delta){
+  const list=comicVisibleList();
+  const idx=Math.max(0,list.findIndex(c=>c.mbti===comicSelected));
+  const next=list[(idx+delta+list.length)%list.length];
+  if(next){
+    comicSelected=next.mbti;
+    renderComicGallery();
+  }
+}
+function renderComicSpotlight(){
+  const box=document.getElementById('comicSpotlight');
+  if(!box)return;
+  let c=CHARACTERS.find(x=>x.mbti===comicSelected);
+  if(!c||!(comicFilter==='ALL'||c.group===comicFilter))c=comicVisibleList()[0]||CHARACTERS[0];
+  if(!c)return;
+  comicSelected=c.mbti;
+  const story=getCharacterComicStory(c);
+  const trait=getCharTrait(c);
+  const chapters=(story.panels||[]).map((p,i)=>
+    '<div><b>第 '+(i+1)+' 格 · '+escapeHTML(p.beat||'剧情')+'</b><br>'+escapeHTML(p.line||p.action||p.scene||'这一格还在写对白。')+'</div>'
+  ).join('');
+  box.innerHTML=
+    '<div class="comic-reader"><img src="'+escapeHTML(story.image||'')+'" alt="'+escapeHTML(c.name)+' 完整漫画" loading="lazy"></div>'+
+    '<div class="comic-reader-info">'+
+      '<div class="comic-reader-kicker">COMIC CHAPTER · '+escapeHTML(c.group)+'</div>'+
+      '<div class="comic-reader-title">'+escapeHTML(c.name)+' · '+escapeHTML(story.title)+'</div>'+
+      '<div class="comic-reader-meta">'+escapeHTML(c.mbti)+' · '+escapeHTML(c.mbtiName)+' · '+escapeHTML(trait.role)+' · '+weaponLabel(c.weaponPref)+'</div>'+
+      '<div class="comic-reader-copy">'+escapeHTML(story.moral)+'</div>'+
+      '<div class="comic-chapter-list">'+chapters+'</div>'+
+      '<div class="comic-reader-actions">'+
+        '<button type="button" onclick="stepComicReader(-1)">上一张</button>'+
+        '<button type="button" onclick="stepComicReader(1)">下一张</button>'+
+        '<button class="secondary" type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">完整小剧场</button>'+
+        '<button type="button" onclick="copyComicShareText(\''+c.mbti+'\')">复制分享文案</button>'+
+        '<button class="secondary" type="button" onclick="switchPanel(\'tree\');selectWorldTreeCharacter(\''+c.mbti+'\')">去世界树</button>'+
+      '</div>'+
+    '</div>';
+}
+async function copyComicShareText(mbti){
+  const c=CHARACTERS.find(x=>x.mbti===mbti);
+  if(!c)return;
+  const story=getCharacterComicStory(c);
+  const text=[
+    '沐沐积木武器库漫画馆更新：'+c.mbti+' '+c.name+'《'+story.title+'》',
+    story.moral,
+    '看完整 16 位 MBTI 积木战士漫画：old-nine86.github.io/mumu-weapons',
+    '#积木 #MBTI #漫画 #自制网站 #玩具分享'
+  ].join('\n');
+  await copyGrowthText(text);
+  gentleNotice('漫画分享文案已复制。');
 }
 
 function openCharacterProfile(mbti){
@@ -8843,6 +9148,7 @@ function renderStaticShell(){
   renderComicGallery();
   renderGrowthCenter();
   renderQuiz();
+  renderMasterPlan();
   updateLeaderboard();
 }
 

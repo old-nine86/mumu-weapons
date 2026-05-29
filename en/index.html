@@ -1816,6 +1816,73 @@ body::before{
 .char-stat-mini{
   background:#fff;
 }
+.world-tree-lite,.comic-library-lite,.plan-lite{
+  max-width:1180px;
+  margin:0 auto 34px;
+  padding:20px;
+}
+.world-tree-lite-grid,.comic-gallery-lite,.plan-lite-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:14px;
+}
+.world-tree-lite-card,.comic-lite-card,.plan-lite-card{
+  border:1px solid rgba(78,64,44,.1);
+  border-radius:24px;
+  background:rgba(255,255,255,.82);
+  box-shadow:0 18px 48px rgba(78,64,44,.08);
+  overflow:hidden;
+}
+.world-tree-lite-card{
+  padding:16px;
+}
+.world-tree-lite-card b,.plan-lite-card b{
+  display:block;
+  color:#202124;
+  font-size:17px;
+  font-weight:1000;
+}
+.world-tree-lite-card span,.plan-lite-card span{
+  display:block;
+  color:#686158;
+  font-size:13px;
+  font-weight:850;
+  line-height:1.5;
+  margin-top:6px;
+}
+.world-tree-avatar-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:12px;
+}
+.world-tree-avatar-row button{
+  border:0;
+  border-radius:999px;
+  padding:7px 9px;
+  background:#fff;
+  color:#536071;
+  font:inherit;
+  font-size:11px;
+  font-weight:950;
+  cursor:pointer;
+}
+.comic-lite-card img{
+  width:100%;
+  aspect-ratio:3/4;
+  object-fit:cover;
+  object-position:50% 0;
+  display:block;
+  background:#eef4ff;
+}
+.comic-lite-info{
+  padding:13px;
+}
+.comic-lite-title{color:#202124;font-size:17px;font-weight:1000}
+.comic-lite-copy{color:#686158;font-size:12px;font-weight:850;line-height:1.45;margin-top:7px}
+.plan-lite-card{
+  padding:18px;
+}
 .selection-overlay{
   background:
     radial-gradient(circle at 20% 12%,rgba(255,183,200,.28),transparent 24rem),
@@ -1871,6 +1938,7 @@ body::before{
     grid-template-columns:1fr;
     padding-inline:12px;
   }
+  .world-tree-lite-grid,.comic-gallery-lite,.plan-lite-grid{grid-template-columns:1fr}
   .sel-layout{
     grid-template-columns:1fr;
   }
@@ -3474,7 +3542,10 @@ body::before{
     <div class="nav-tabs">
       <button class="nav-tab active" data-panel="weapons">⚔️ Weapons</button>
       <button class="nav-tab" data-panel="characters">👥 Fighters</button>
+      <button class="nav-tab" data-panel="tree">🌳 World Tree</button>
+      <button class="nav-tab" data-panel="comics">📖 Comics</button>
       <button class="nav-tab" data-panel="quiz">🧭 Weapon Match</button>
+      <button class="nav-tab" data-panel="plan">🚀 Plan</button>
       <button class="nav-tab" data-panel="studio">🏛️ Studio</button>
     </div>
   </div>
@@ -3666,6 +3737,22 @@ body::before{
   <div class="char-grid" id="charGrid"></div>
 </div>
 
+<!-- WORLD TREE PANEL -->
+<div class="panel" id="panel-tree">
+  <div class="section-header"><h2>🌳 MBTI World Tree</h2><div class="divider"></div><div class="sub">A readable English mirror of the 16-fighter world tree.</div></div>
+  <section class="world-tree-lite">
+    <div class="world-tree-lite-grid" id="worldTreeLite"></div>
+  </section>
+</div>
+
+<!-- COMICS PANEL -->
+<div class="panel" id="panel-comics">
+  <div class="section-header"><h2>📖 MBTI Comic Library</h2><div class="divider"></div><div class="sub">16 synced comic pages from the Chinese site.</div></div>
+  <section class="comic-library-lite">
+    <div class="comic-gallery-lite" id="comicGalleryLite"></div>
+  </section>
+</div>
+
 <!-- QUIZ PANEL -->
 <div class="panel" id="panel-quiz">
   <section class="quiz-panel">
@@ -3683,6 +3770,14 @@ body::before{
       <button class="battle-start-btn" type="button" onclick="resetQuiz()">Retake</button>
     </div>
     <div class="quiz-result" id="quizResult"></div>
+  </section>
+</div>
+
+<!-- MASTER PLAN PANEL -->
+<div class="panel" id="panel-plan">
+  <div class="section-header"><h2>🚀 Mumu Brick Universe Plan</h2><div class="divider"></div><div class="sub">From uploaded weapons to comics, arena battles, sharing, and bilingual growth.</div></div>
+  <section class="plan-lite">
+    <div class="plan-lite-grid" id="planLite"></div>
   </section>
 </div>
 
@@ -5578,6 +5673,61 @@ function renderCharacters(){
   });
 }
 
+const EN_GROUP_META={
+  NT:{label:'Strategy Branch',desc:'Planning, systems, pressure, and strange experiments.'},
+  NF:{label:'Dream Branch',desc:'Belief, empathy, protection, and team inspiration.'},
+  SJ:{label:'Order Branch',desc:'Rules, care, logistics, and reliable execution.'},
+  SP:{label:'Adventure Branch',desc:'Speed, style, field instincts, and live improvisation.'}
+};
+const EN_COMIC_TITLES={
+  ENTJ:'Grand Command',INTJ:'The Seventh Shadow Step',INTP:'Failed Results Are Useful',ENTP:'I Convinced the Opposition',
+  ENFJ:'Hero Assembly Signal',INFJ:'Gentle Prophecy',INFP:'Rebuild the Broken Dream',ENFP:'Rainbow Detour',
+  ISTJ:'Item Thirteen: Strike',ISFJ:'Light Behind the Shield',ESTJ:'Battle Delivery Day',ESFJ:'Warm Supply Station',
+  ISTP:'One Screw Only',ISFP:'Win Beautifully',ESTP:'We Explain While Moving',ESFP:'All Stage Lights'
+};
+function englishComicImage(c){return '../assets/comics/'+c.mbti.toLowerCase()+'-comic-page.png'}
+function renderEnglishWorldTree(){
+  const box=document.getElementById('worldTreeLite');
+  if(!box)return;
+  box.innerHTML=Object.keys(EN_GROUP_META).map(group=>{
+    const meta=EN_GROUP_META[group];
+    const chars=CHARACTERS.filter(c=>c.group===group);
+    return '<article class="world-tree-lite-card">'+
+      '<b>'+escapeHTML(group)+' · '+escapeHTML(meta.label)+'</b>'+
+      '<span>'+escapeHTML(meta.desc)+'</span>'+
+      '<div class="world-tree-avatar-row">'+chars.map(c=>'<button type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">'+escapeHTML(c.mbti)+' · '+escapeHTML(c.name)+'</button>').join('')+'</div>'+
+    '</article>';
+  }).join('');
+}
+function renderEnglishComicGallery(){
+  const box=document.getElementById('comicGalleryLite');
+  if(!box)return;
+  box.innerHTML=CHARACTERS.map(c=>{
+    const trait=getCharTrait(c);
+    return '<article class="comic-lite-card">'+
+      '<img src="'+englishComicImage(c)+'" alt="'+escapeHTML(c.name)+' comic page" loading="lazy">'+
+      '<div class="comic-lite-info">'+
+        '<div class="comic-lite-title">'+escapeHTML(c.name)+' · '+escapeHTML(EN_COMIC_TITLES[c.mbti]||'Brick Comic')+'</div>'+
+        '<div class="comic-lite-copy">'+escapeHTML(c.mbti+' · '+c.mbtiName+' · '+trait.role+' · '+c.quotes.win)+'</div>'+
+        '<div class="comic-gallery-actions"><button class="char-share-btn" type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">View dossier</button></div>'+
+      '</div>'+
+    '</article>';
+  }).join('');
+}
+function renderEnglishPlan(){
+  const box=document.getElementById('planLite');
+  if(!box)return;
+  const items=[
+    ['Live','Weapon Library','Upload brick weapons, generate cards, and let approved weapons join the public arsenal.'],
+    ['Live','Character Universe','16 MBTI fighters now have avatars, dossiers, stats, quotes, and battle roles.'],
+    ['Live','Comics and World Tree','The Chinese site has the full interactive version; this English page mirrors the core content.'],
+    ['Next','Bilingual Growth Loop','Sync future sharing tools, shop/support placeholders, and project updates across both languages.']
+  ];
+  box.innerHTML=items.map(item=>
+    '<article class="plan-lite-card"><b>'+escapeHTML(item[0])+' · '+escapeHTML(item[1])+'</b><span>'+escapeHTML(item[2])+'</span></article>'
+  ).join('');
+}
+
 function openCharacterProfile(mbti){
   const c=CHARACTERS.find(x=>x.mbti===mbti);
   if(!c)return;
@@ -6278,6 +6428,19 @@ function closeArena(){
 }
 
 // ===== INIT =====
+function renderStaticShell(){
+  renderWeapons();
+  renderForum();
+  renderCharacters();
+  renderEnglishWorldTree();
+  renderEnglishComicGallery();
+  renderEnglishPlan();
+  renderQuiz();
+  updateDashboard();
+  updateLeaderboard();
+}
+renderStaticShell();
+
 loadData().then(async()=>{
   await refreshPromotionBonus();
   applyUploadedWeapons();
@@ -6285,6 +6448,9 @@ loadData().then(async()=>{
   renderWeapons();
   renderForum();
   renderCharacters();
+  renderEnglishWorldTree();
+  renderEnglishComicGallery();
+  renderEnglishPlan();
   renderQuiz();
   renderStudio();
   updateDashboard();

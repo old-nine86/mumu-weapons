@@ -2,6 +2,27 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-29: Content Loop V2
+
+Goal:
+- Continue the full project plan in order: comics, world tree, English sync, duplicate cleanup plan, and master plan board.
+
+Shipped:
+- Upgraded the Chinese comic library with group filters, a spotlight reader, previous/next navigation, chapter beats, character jumps, world-tree jumps, and share-copy text.
+- Added world-tree branch guide cards and richer detail actions for dossier, comics, quiz, and battle entry.
+- Upgraded the master plan page into a status board with live/now/next lanes.
+- Synced the English site with World Tree, Comics, and Plan navigation panels plus immediate static rendering.
+- Added `DUPLICATE_FILE_CLEANUP.md` with counts, examples, and safe review/deletion commands for duplicate-looking untracked files.
+
+Verification:
+- Parsed inline scripts in `index.html` and `en/index.html`.
+- Checked diff formatting.
+- Browser-tested local Chinese site: 16 character cards, 16 comic cards, 5 comic filters, 4 world-tree branch cards, and 5 plan lanes render immediately.
+- Browser-tested local English site: World Tree, Comics, and Plan nav entries render with 4 branch cards, 16 comic cards, and 4 plan cards.
+
+Next:
+- Deploy and re-test GitHub Pages.
+
 ## 2026-05-29: Live Smoke Test Fixes
 
 Goal:
