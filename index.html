@@ -1332,9 +1332,9 @@ body::before{
   position:absolute;
   left:calc(var(--x)*1%);
   top:calc(var(--y)*1%);
-  width:136px;
-  min-height:166px;
-  transform:translate(-50%,-59px);
+  width:118px;
+  min-height:150px;
+  transform:translate(-50%,-52px);
   display:grid;
   justify-items:center;
   gap:5px;
@@ -1345,8 +1345,8 @@ body::before{
   z-index:2;
 }
 .tree-node-avatar{
-  width:118px;
-  height:118px;
+  width:100px;
+  height:100px;
   border-radius:50%;
   display:grid;
   place-items:center;
@@ -1354,7 +1354,7 @@ body::before{
     radial-gradient(circle at 50% 42%,#fff 0 46%,transparent 47%),
     conic-gradient(from 0deg,var(--node-color),#fff7d6,var(--node-color));
   padding:5px;
-  box-shadow:0 14px 34px rgba(45,55,72,.16),0 0 0 4px rgba(255,255,255,.74);
+  box-shadow:0 12px 30px rgba(45,55,72,.16),0 0 0 4px rgba(255,255,255,.74);
   transition:.22s ease;
 }
 .tree-node-avatar img,.tree-node-avatar svg{
@@ -7587,10 +7587,10 @@ function characterAvatarHTML(c,size){
   return genCharSVG(c,size);
 }
 const WORLD_TREE_POS={
-  ENTJ:{x:13.2,y:25.1},INTJ:{x:24.1,y:23.4},INTP:{x:32.8,y:26.6},ENTP:{x:52.5,y:43.1},
-  ENFJ:{x:10.3,y:58.3},INFJ:{x:18.1,y:52.5},INFP:{x:28.6,y:56.3},ENFP:{x:41.4,y:56.6},
+  ENTJ:{x:15.4,y:25.1},INTJ:{x:24.1,y:23.4},INTP:{x:32.8,y:26.6},ENTP:{x:52.5,y:43.1},
+  ENFJ:{x:15.0,y:58.3},INFJ:{x:20.2,y:52.5},INFP:{x:29.4,y:56.3},ENFP:{x:41.4,y:56.6},
   ISTJ:{x:60.4,y:24.6},ISFJ:{x:70.2,y:22.1},ESTJ:{x:79.4,y:23.8},ESFJ:{x:66.4,y:42.7},
-  ISTP:{x:59.1,y:53.6},ISFP:{x:67.4,y:60.4},ESTP:{x:74.8,y:61.8},ESFP:{x:91.0,y:47.1}
+  ISTP:{x:59.1,y:53.6},ISFP:{x:67.4,y:60.4},ESTP:{x:74.8,y:61.8},ESFP:{x:85.5,y:47.1}
 };
 const WORLD_TREE_GROUP_META={
   NT:{label:'策略枝',color:'#8b5cf6',desc:'思考、规划、效率与奇袭的树杈。'},
@@ -7634,6 +7634,15 @@ let worldTreeMode='group';
 let worldTreeSelected='INTJ';
 let worldTreeView={zoom:1,panX:0,panY:0,drag:false,startX:0,startY:0,baseX:0,baseY:0};
 function worldTreeColor(c){return (WORLD_TREE_GROUP_META[c.group]||WORLD_TREE_GROUP_META.NT).color}
+function defaultWorldTreeView(){
+  const viewport=document.getElementById('worldTreeViewport');
+  const vw=viewport?viewport.clientWidth:window.innerWidth;
+  if(vw<760){
+    const zoom=Math.max(.4,Math.min(.72,(vw-24)/1126));
+    return {zoom,panX:0,panY:20,drag:false,startX:0,startY:0,baseX:0,baseY:0};
+  }
+  return {zoom:1,panX:0,panY:0,drag:false,startX:0,startY:0,baseX:0,baseY:0};
+}
 function updateWorldTreeTransform(){
   const canvas=document.getElementById('worldTreeCanvas');
   if(!canvas)return;
@@ -7645,11 +7654,13 @@ function setWorldTreeMode(mode){
   renderWorldTree();
 }
 function zoomWorldTree(delta){
-  worldTreeView.zoom=Math.max(.72,Math.min(1.72,worldTreeView.zoom+delta));
+  const viewport=document.getElementById('worldTreeViewport');
+  const minZoom=viewport&&viewport.clientWidth<760?.38:.72;
+  worldTreeView.zoom=Math.max(minZoom,Math.min(1.72,worldTreeView.zoom+delta));
   updateWorldTreeTransform();
 }
 function resetWorldTreeView(){
-  worldTreeView={zoom:1,panX:0,panY:0,drag:false,startX:0,startY:0,baseX:0,baseY:0};
+  worldTreeView=defaultWorldTreeView();
   updateWorldTreeTransform();
 }
 function renderWorldTree(){
@@ -7675,6 +7686,10 @@ function renderWorldTree(){
       '<span>'+escapeHTML(trait.role||c.mbtiName)+'</span>'+
     '</button>';
   }).join('');
+  if(!viewport.dataset.viewReady){
+    worldTreeView=defaultWorldTreeView();
+    viewport.dataset.viewReady='1';
+  }
   selectWorldTreeCharacter(worldTreeSelected,false);
   if(!viewport.dataset.bound){
     viewport.dataset.bound='1';
@@ -8820,6 +8835,19 @@ function closeArena(){
 }
 
 // ===== INIT =====
+function renderStaticShell(){
+  renderWeapons();
+  renderForum();
+  renderCharacters();
+  renderWorldTree();
+  renderComicGallery();
+  renderGrowthCenter();
+  renderQuiz();
+  updateLeaderboard();
+}
+
+renderStaticShell();
+
 loadData().then(async()=>{
   await refreshPromotionBonus();
   applyUploadedWeapons();

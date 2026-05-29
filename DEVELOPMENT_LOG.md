@@ -2,6 +2,41 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-29: Live Smoke Test Fixes
+
+Goal:
+- Fix issues found while smoke-testing the live GitHub Pages site.
+
+Shipped:
+- Changed startup so built-in weapons, characters, comics, world tree, quiz, and promotion center render immediately without waiting for Supabase cloud requests.
+- Kept cloud uploads, forum data, promotion bonuses, and studio state loading asynchronously and refreshing the UI after they arrive.
+- Added responsive default zoom for `人格世界树`, so narrow viewports start with a full-tree overview instead of clipped node edges.
+
+Verification:
+- Parsed scripts in `index.html`.
+- Checked diff formatting.
+- Browser-tested the local page: immediate render now shows 11 built-in weapons, 16 characters, 16 comic cards, and 16 world-tree nodes before cloud data completes.
+
+Next:
+- Push to GitHub Pages and re-test the live URL after deployment finishes.
+
+## 2026-05-29: World Tree Layout Tuning
+
+Goal:
+- Review the new `人格世界树` page in-browser and make the first layout easier to read.
+
+Shipped:
+- Reduced desktop world-tree node size so the generated tree background stays visible.
+- Pulled the far-left NT/NF nodes and far-right ESFP node back inside the viewport.
+- Kept the 16 character nodes, relationship lines, zoom, drag, and detail-card interactions intact.
+
+Verification:
+- Parsed scripts in `index.html`.
+- Browser-measured the world-tree viewport after tuning: all 16 nodes render inside the visible tree canvas bounds.
+
+Next:
+- Add branch-specific decorations or labels if the world tree needs stronger visual grouping after mobile review.
+
 ## 2026-05-29: MBTI World Tree V1
 
 Goal:
