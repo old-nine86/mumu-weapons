@@ -2,6 +2,25 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-31: Sandbox Arena V2
+
+Goal:
+- Push the standalone arena toward a full side-scrolling sandbox survival game instead of a simple battle demo.
+
+Shipped:
+- Rebuilt `game.html` as a larger procedural world with forests, desert, highland, shadow biome, caves, ore layers, trees, and underground tunnels.
+- Added day/night time flow, biome/depth tracking, enemy spawning by time and region, item drops, pickup attraction, mining hardness, and mining progress.
+- Added inventory, crafting, persistent progress, upgraded sword/pick/blaster unlocks, brick/torch crafting, boss-summon progression, and a star-core boss win condition.
+- Kept the mobile controls and added a compact mobile inventory/crafting panel.
+
+Verification:
+- Parsed inline scripts in `game.html`, `index.html`, and `en/index.html`.
+- Captured local desktop and mobile smoke-test screenshots for V2.
+- Ran `node scripts/preflight-check.mjs` and `git diff --check`.
+
+Next:
+- Split the game into modules and add richer NPCs, armor/accessories, biome bosses, chests, map/minimap, and saved world edits.
+
 ## 2026-05-31: Sandbox Arena V1
 
 Goal:
