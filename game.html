@@ -21,7 +21,9 @@ body{touch-action:none}
 .pill{min-height:40px;padding:7px 10px;border-radius:8px;font-weight:900;font-size:12px;line-height:1.15}
 .pill strong{display:block;font-size:16px;color:var(--gold)}
 .side-panel{position:absolute;right:12px;top:92px;width:min(300px,calc(100vw - 24px));z-index:5;padding:10px;border-radius:10px}
-.side-panel h2{margin:0 0 8px;font-size:13px;letter-spacing:0;color:#d7e7ff}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 8px}
+.side-panel h2{margin:0;font-size:13px;letter-spacing:0;color:#d7e7ff}
+.bag-toggle{display:none;width:34px;height:34px;border:1px solid rgba(255,255,255,.16);border-radius:8px;background:rgba(255,255,255,.08);color:var(--white);font-size:18px;font-weight:950;cursor:pointer}
 .mini-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .mini-cell,.craft-btn{min-height:38px;border:1px solid rgba(255,255,255,.14);border-radius:8px;background:rgba(255,255,255,.06);color:var(--white);font-weight:900;font-size:12px;text-align:center}
 .mini-cell{display:grid;place-items:center;padding:4px}
@@ -40,7 +42,7 @@ body{touch-action:none}
 .toast{position:absolute;left:50%;top:86px;transform:translateX(-50%);max-width:min(620px,calc(100vw - 28px));padding:10px 14px;border:1px solid var(--line);border-radius:8px;background:rgba(19,21,28,.9);box-shadow:0 14px 34px rgba(0,0,0,.28);font-weight:900;text-align:center;opacity:0;transition:opacity .2s,transform .2s;z-index:9;pointer-events:none}.toast.show{opacity:1;transform:translateX(-50%) translateY(4px)}
 .overlay{position:absolute;inset:0;display:none;place-items:center;z-index:10;background:rgba(10,12,18,.52);backdrop-filter:blur(6px)}.overlay.show{display:grid}
 .modal{width:min(460px,calc(100vw - 28px));padding:22px;border:1px solid var(--line);border-radius:10px;background:rgba(24,27,36,.94);box-shadow:0 22px 60px rgba(0,0,0,.4);text-align:center}.modal h2{margin:0 0 8px;font-size:26px}.modal p{margin:0 0 18px;color:#d7e7ff;font-weight:800}.modal button{min-height:44px;padding:0 18px;border:0;border-radius:8px;background:var(--gold);color:#2d2200;font-weight:950;cursor:pointer}
-@media(max-width:860px){.topbar{grid-template-columns:1fr;right:auto;max-width:calc(100vw - 24px)}.status-grid{grid-template-columns:repeat(2,minmax(74px,1fr));justify-content:start}.title-card h1{font-size:15px}.side-panel{left:12px;right:auto;top:auto;bottom:154px;width:214px;padding:8px}.mini-grid{grid-template-columns:repeat(3,1fr)}.mini-cell,.craft-btn{min-height:32px;font-size:11px}.quest-line{display:none}.blueprint,.minimap{display:none}.toolbelt{bottom:92px;gap:6px;padding:6px}.icon-btn{width:42px;height:42px;font-size:19px}.mobile-pad{display:block}.back-link{width:max-content}}
+@media(max-width:860px){.topbar{grid-template-columns:1fr;right:auto;max-width:calc(100vw - 24px)}.status-grid{grid-template-columns:repeat(2,minmax(74px,1fr));justify-content:start}.title-card h1{font-size:15px}.side-panel{left:12px;right:auto;top:auto;bottom:154px;width:214px;padding:8px;transition:width .18s,padding .18s,background .18s}.panel-head{margin:0 0 8px}.bag-toggle{display:grid;place-items:center}.mini-grid{grid-template-columns:repeat(3,1fr)}.mini-cell,.craft-btn{min-height:32px;font-size:11px}.quest-line{display:none}.side-panel.collapsed{width:54px;padding:6px;border-radius:10px;background:rgba(22,24,32,.86)}.side-panel.collapsed .panel-head{margin:0}.side-panel.collapsed h2,.side-panel.collapsed .mini-grid,.side-panel.collapsed .craft-row,.side-panel.collapsed .quest-line{display:none}.side-panel.collapsed .bag-toggle{width:40px;height:40px}.blueprint,.minimap{display:none}.toolbelt{bottom:92px;gap:6px;padding:6px}.icon-btn{width:42px;height:42px;font-size:19px}.mobile-pad{display:block}.back-link{width:max-content}}
 @media(max-width:520px){.title-card p{display:none}.pill{font-size:11px;min-height:36px;padding:6px 8px}.pill strong{font-size:14px}}
 </style>
 </head>
@@ -59,7 +61,7 @@ body{touch-action:none}
   </div>
   <aside class="blueprint" aria-label="蓝图目标"><h2>蓝图推进</h2><div class="step-list" id="blueprintSteps"></div></aside>
   <canvas class="minimap" id="minimap" width="220" height="86" aria-label="小地图"></canvas>
-  <aside class="side-panel" aria-label="背包与合成"><h2>背包</h2><div class="mini-grid" id="inventoryGrid"></div><div class="craft-row" id="craftGrid"></div><div class="quest-line" id="questLine"><strong>目标</strong> 探索地底</div></aside>
+  <aside class="side-panel" id="bagPanel" aria-label="背包与合成"><div class="panel-head"><h2>背包</h2><button class="bag-toggle" id="bagToggle" type="button" aria-label="展开背包" aria-expanded="true">▣</button></div><div class="mini-grid" id="inventoryGrid"></div><div class="craft-row" id="craftGrid"></div><div class="quest-line" id="questLine"><strong>目标</strong> 探索地底</div></aside>
   <nav class="toolbelt" aria-label="工具栏">
     <button class="icon-btn active" type="button" data-tool="sword" title="近战">⚔</button>
     <button class="icon-btn" type="button" data-tool="blaster" title="远程">✦</button>
@@ -75,7 +77,7 @@ body{touch-action:none}
 (()=>{
 const canvas=document.getElementById('gameCanvas'),ctx=canvas.getContext('2d'),minimap=document.getElementById('minimap'),mctx=minimap.getContext('2d');
 const hpText=document.getElementById('hpText'),energyText=document.getElementById('energyText'),timeText=document.getElementById('timeText'),bagText=document.getElementById('bagText');
-const inventoryGrid=document.getElementById('inventoryGrid'),craftGrid=document.getElementById('craftGrid'),questLine=document.getElementById('questLine'),blueprintSteps=document.getElementById('blueprintSteps');
+const inventoryGrid=document.getElementById('inventoryGrid'),craftGrid=document.getElementById('craftGrid'),questLine=document.getElementById('questLine'),blueprintSteps=document.getElementById('blueprintSteps'),bagPanel=document.getElementById('bagPanel'),bagToggle=document.getElementById('bagToggle');
 const toast=document.getElementById('toast'),endOverlay=document.getElementById('endOverlay'),endTitle=document.getElementById('endTitle'),endCopy=document.getElementById('endCopy'),restartBtn=document.getElementById('restartBtn');
 const T=32,WORLD_W=380,WORLD_H=96,GRAVITY=.72,MAX_FALL=17;
 const itemNames={dirt:'泥土',stone:'石块',wood:'木材',copper:'铜矿',iron:'铁矿',gold:'金矿',crystal:'晶片',torch:'火把',brick:'砖块',star:'星核'};
@@ -190,6 +192,8 @@ function update(dt){
 function end(win){gameOver=true;endTitle.textContent=win?'星核到手了':'战场需要重建';endCopy.textContent=win?'你击败了星核守卫，沐沐沙盒战场进入下一阶段。':'修好地形、升级工具，再打一轮。';endOverlay.classList.add('show')}
 function blueprintState(){return[{label:'进入核心基地',done:Math.abs(player.x-core.x)<260},{label:'开启任意宝箱',done:openedChests.size>0},{label:'激活工作站',done:player.flags.sword2||player.inv.brick>0},{label:'深入 18 层以下',done:player.depth>=18},{label:'合成星核祭坛',done:player.flags.bossReady||bossSpawned||player.inv.star>0},{label:'击败星核守卫',done:player.inv.star>0}]}
 function updateHud(){hpText.textContent=Math.max(0,Math.round(player.hp));energyText.textContent=Math.round(player.energy);timeText.textContent=isNight()?'夜晚':'白昼';bagText.textContent=Object.values(player.inv).reduce((a,b)=>a+b,0);inventoryGrid.innerHTML=['wood','dirt','stone','copper','iron','gold','crystal','torch','brick','star'].map(k=>'<div class="mini-cell">'+itemNames[k]+'<br>'+((player.inv[k]||0))+'</div>').join('');craftGrid.innerHTML=recipes.map(r=>'<button class="craft-btn '+(canCraft(r)?'ready':'')+'" data-craft="'+r.id+'" type="button">'+r.name+'</button>').join('');const goal=player.inv.star>0?'星核已取得':player.flags.bossReady?'去影晶地星核门召唤 Boss':player.flags.blaster2?'收集金矿和晶片，合成星核祭坛':player.flags.pick2?'深入地下找金矿':player.flags.sword2?'合成铁镐，挖更深矿脉':'找 NPC / 宝箱 / 工作站推进基地';questLine.innerHTML='<strong>目标</strong> '+goal+' · '+activeBiome+' · 深度 '+player.depth;const steps=blueprintState();const active=steps.findIndex(s=>!s.done);blueprintSteps.innerHTML=steps.map((s,i)=>'<div class="step '+(s.done?'done':i===active?'active':'')+'"><span>'+(s.done?'✓':i+1)+'</span>'+s.label+'</div>').join('')}
+function setBagCollapsed(collapsed){bagPanel.classList.toggle('collapsed',collapsed);bagToggle.setAttribute('aria-expanded',String(!collapsed));bagToggle.setAttribute('aria-label',collapsed?'展开背包':'收起背包')}
+function syncBagForViewport(){setBagCollapsed(matchMedia('(max-width:860px)').matches)}
 function drawSky(vw,vh){const night=isNight(),shadow=activeBiome==='影晶地';const g=ctx.createLinearGradient(0,0,0,vh);g.addColorStop(0,night?'#0b1020':shadow?'#6072b5':'#1f9cf2');g.addColorStop(.3,night?'#1d2948':shadow?'#a2b8e6':'#8bdbff');g.addColorStop(.58,shadow?'#6e5594':activeBiome==='沙原'?'#d7bd6e':'#78b369');g.addColorStop(1,night?'#142019':'#24492f');ctx.fillStyle=g;ctx.fillRect(0,0,vw,vh);
   ctx.fillStyle=night?'rgba(24,32,58,.55)':'rgba(72,119,150,.24)';for(let i=0;i<7;i++){const x=i*280-(camera.x*.05)%280,y=155+(i%3)*30;ctx.beginPath();ctx.moveTo(x-80,y+120);ctx.lineTo(x+70,y-28);ctx.lineTo(x+210,y+120);ctx.fill();ctx.fillRect(x+120,y+42,230,78)}
   ctx.fillStyle=shadow?'rgba(56,36,95,.38)':'rgba(58,132,83,.32)';for(let i=0;i<10;i++){const x=i*170-(camera.x*.12)%170,y=225+(i%4)*16;ctx.fillRect(x,y,58,74);ctx.fillRect(x+14,y-32,38,36);ctx.fillRect(x+54,y+24,50,48)}
@@ -221,12 +225,14 @@ function draw(){const vw=innerWidth,vh=innerHeight;ctx.clearRect(0,0,vw,vh);cons
 function loop(now){const dt=Math.min(33,now-lastTime);lastTime=now;update(dt/16.67);draw();requestAnimationFrame(loop)}
 function syncTools(){document.querySelectorAll('[data-tool]').forEach(btn=>btn.classList.toggle('active',btn.dataset.tool===player.tool))}
 document.querySelectorAll('[data-tool]').forEach(btn=>btn.addEventListener('click',()=>{player.tool=btn.dataset.tool;syncTools()}));
+bagToggle.addEventListener('click',()=>setBagCollapsed(!bagPanel.classList.contains('collapsed')));
+window.addEventListener('resize',syncBagForViewport,{passive:true});
 craftGrid.addEventListener('click',e=>{const btn=e.target.closest('[data-craft]');if(!btn)return;const r=recipes.find(x=>x.id===btn.dataset.craft);if(r)craft(r)});
 window.addEventListener('keydown',e=>{keys[e.code]=true;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if(e.code==='Digit1')player.tool='sword';if(e.code==='Digit2')player.tool='blaster';if(e.code==='Digit3')player.tool='pick';if(e.code==='Digit4')player.tool='block';if(e.code==='Digit5')player.tool='torch';syncTools()});
 window.addEventListener('keyup',e=>{keys[e.code]=false});canvas.addEventListener('pointermove',e=>{pointer.x=e.clientX;pointer.y=e.clientY});canvas.addEventListener('pointerdown',e=>{pointer.down=true;pointer.button=e.button;pointer.x=e.clientX;pointer.y=e.clientY;canvas.setPointerCapture(e.pointerId);if(e.button===2)player.tool='block';syncTools()});canvas.addEventListener('pointerup',()=>{pointer.down=false;mineTarget=null});canvas.addEventListener('contextmenu',e=>e.preventDefault());
 document.querySelectorAll('[data-hold]').forEach(btn=>{const key=btn.dataset.hold;btn.addEventListener('pointerdown',()=>{keys[key]=true});btn.addEventListener('pointerup',()=>{keys[key]=false});btn.addEventListener('pointercancel',()=>{keys[key]=false});btn.addEventListener('pointerleave',()=>{keys[key]=false})});
 document.querySelectorAll('[data-tap]').forEach(btn=>btn.addEventListener('click',()=>{keys[btn.dataset.tap]=true}));
-restartBtn.addEventListener('click',reset);reset();requestAnimationFrame(loop);
+restartBtn.addEventListener('click',reset);syncBagForViewport();reset();requestAnimationFrame(loop);
 })();
 </script>
 </body>
