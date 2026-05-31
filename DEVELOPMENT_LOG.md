@@ -2,6 +2,24 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-31: Sandbox Arena V4 Blueprint Systems
+
+Goal:
+- Start implementing the V3 target art as actual gameplay systems, not only scenery.
+
+Shipped:
+- Upgraded `game.html` to V4 with a base NPC, workbench, furnace, anvil, and blueprint progress panel.
+- Added interactions for NPC guidance/healing, workstation crafting boosts, chest opening, and shrine-based Boss activation.
+- Expanded minimap markers and base visuals so the target art reads as a playable home base.
+
+Verification:
+- Parsed the `game.html` inline script.
+- Captured local desktop and mobile smoke-test screenshots for V4.
+- Ran `git -c core.fsmonitor=false diff --check -- game.html DEVELOPMENT_LOG.md`.
+
+Next:
+- Break the single-file game into modules, add real sprite sheets, and make the blueprint chain drive saved world state and NPC dialogue.
+
 ## 2026-05-31: Sandbox Arena V3 Target Art And World Features
 
 Goal:
