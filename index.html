@@ -4092,6 +4092,31 @@ body::before{
   font-weight:800;
   line-height:1.55;
 }
+.commerce-funnel{
+  grid-column:1/-1;
+  border:2px solid rgba(255,255,255,.84);
+  border-radius:30px;
+  padding:18px;
+  background:linear-gradient(135deg,rgba(255,253,248,.9),rgba(238,248,255,.78));
+  box-shadow:0 22px 70px rgba(78,64,44,.09);
+}
+.commerce-funnel-title{color:#202124;font-size:22px;font-weight:1000}
+.commerce-funnel-copy{color:#686158;font-size:13px;font-weight:850;line-height:1.6;margin-top:8px}
+.commerce-funnel-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-top:14px;
+}
+.commerce-funnel-step{
+  border-radius:22px;
+  padding:13px;
+  background:#fff;
+  border:1px solid rgba(78,64,44,.08);
+}
+.commerce-funnel-step b{display:block;color:#202124;font-size:14px;font-weight:1000}
+.commerce-funnel-step span{display:block;color:#77726b;font-size:12px;font-weight:800;line-height:1.45;margin-top:5px}
+.commerce-funnel-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .master-plan{
   max-width:1180px;
   margin:0 auto 34px;
@@ -4452,6 +4477,7 @@ body::before{
 }
 @media(max-width:768px){
   .commerce-row{grid-template-columns:1fr}
+  .commerce-funnel-grid{grid-template-columns:1fr}
   .plan-board,.plan-grid{grid-template-columns:1fr}
   .growth-hero,.growth-grid,.growth-submit-grid{grid-template-columns:1fr}
   .growth-stats{grid-template-columns:1fr}
@@ -4984,6 +5010,7 @@ body::before{
       </div>
       <div class="support-note">正式赞助入口会在配置收款方式后开放；现在可以先用推广、论坛建议和上传作品支持项目。</div>
     </section>
+    <section class="commerce-funnel" id="commerceFunnel"></section>
   </div>
   <section class="forum-panel" id="forumPanel">
     <div class="forum-head">
@@ -7429,6 +7456,26 @@ const MASTER_PLAN_STEPS=[
   {status:'now',label:'推广循环',title:'测试、战斗、分享卡',copy:'配武器测试与战斗分享卡负责把玩家带回网站，推广中心记录发布证明。',panel:'quiz'},
   {status:'next',label:'下一批',title:'英文站与商业入口',copy:'英文站同步中文核心体验，购买推荐和作者支援入口再逐步接真实链接。',panel:'growth'}
 ];
+const COMMERCE_FUNNEL_STEPS=[
+  {title:'1. 玩一下',copy:'先让玩家做配武器测试、看漫画或打一场战斗，形成可分享结果。'},
+  {title:'2. 发出去',copy:'复制标题、置顶评论和网站入口，发到抖音、快手、小红书或 B 站。'},
+  {title:'3. 交证明',copy:'把链接、账号名或截图说明提交到推广中心，等待审核。'},
+  {title:'4. 换奖励',copy:'审核通过后当前设备增加上传名额，后续再接商品推荐和支援入口。'}
+];
+function renderCommerceFunnel(){
+  const box=document.getElementById('commerceFunnel');
+  if(!box)return;
+  box.innerHTML=
+    '<div class="commerce-funnel-title">推广 / 商业闭环</div>'+
+    '<div class="commerce-funnel-copy">现在先跑通自然流流程：试玩生成素材，发布后提交证明，审核通过换上传名额。等内容稳定后，再把商品推荐、联盟链接和作者支援入口接到同一条路径里。</div>'+
+    '<div class="commerce-funnel-grid">'+COMMERCE_FUNNEL_STEPS.map(step=>'<div class="commerce-funnel-step"><b>'+escapeHTML(step.title)+'</b><span>'+escapeHTML(step.copy)+'</span></div>').join('')+'</div>'+
+    '<div class="commerce-funnel-actions">'+
+      '<button class="growth-chip secondary" type="button" onclick="switchPanel(\'quiz\')">生成测试素材</button>'+
+      '<button class="growth-chip" type="button" onclick="openSelection()">录战斗素材</button>'+
+      '<button class="growth-chip secondary" type="button" onclick="switchPanel(\'growth\')">提交推广证明</button>'+
+      '<button class="growth-chip" type="button" onclick="copyGrowthText(\'我在玩沐沐积木武器库：做 MBTI 配武器测试、看 16 位积木战士漫画，还能上传自己的积木武器。入口：https://old-nine86.github.io/mumu-weapons/\')">复制通用推广文案</button>'+
+    '</div>';
+}
 function renderMasterPlan(){
   const box=document.getElementById('planTimeline');
   if(!box)return;
@@ -9459,6 +9506,7 @@ function renderStaticShell(){
   renderWorldTree();
   renderComicGallery();
   renderGrowthCenter();
+  renderCommerceFunnel();
   renderQuiz();
   renderMasterPlan();
   updateLeaderboard();
@@ -9478,6 +9526,7 @@ loadData().then(async()=>{
   renderComicGallery();
   openComicFromHash();
   renderGrowthCenter();
+  renderCommerceFunnel();
   renderQuiz();
   renderStudio();
   updateDashboard();

@@ -2,6 +2,11 @@
 
 Date: 2026-05-29
 
+Update: 2026-05-31
+- Archived 470 duplicate-looking untracked files into `duplicate-review/`.
+- No duplicate assets were committed.
+- `live-smoke-ae5c2b2.png` was left untouched because it does not match the duplicate filename pattern.
+
 ## Summary
 
 The working tree contains 471 untracked files. 470 of them match the common macOS/Finder duplicate pattern `name 2.ext`, `name 3.ext`, and so on.

@@ -1836,6 +1836,10 @@ body::before{
 .world-tree-lite-card{
   padding:16px;
 }
+.world-tree-lite-card.active{
+  outline:3px solid rgba(47,143,232,.24);
+  background:linear-gradient(135deg,rgba(255,255,255,.94),rgba(238,248,255,.78));
+}
 .world-tree-lite-card b,.plan-lite-card b{
   display:block;
   color:#202124;
@@ -1867,6 +1871,35 @@ body::before{
   font-weight:950;
   cursor:pointer;
 }
+.world-tree-avatar-row button.active{
+  background:#1d1d1f;
+  color:#fff;
+}
+.world-tree-relation-panel{
+  margin-top:16px;
+  border:1px solid rgba(78,64,44,.1);
+  border-radius:24px;
+  padding:16px;
+  background:rgba(255,255,255,.84);
+  box-shadow:0 18px 48px rgba(78,64,44,.08);
+}
+.world-tree-relation-title{color:#202124;font-size:22px;font-weight:1000}
+.world-tree-relation-copy{color:#686158;font-size:13px;font-weight:850;line-height:1.55;margin-top:8px}
+.world-tree-relation-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:14px}
+.world-tree-relation-list button{
+  border:0;
+  border-radius:18px;
+  padding:11px;
+  background:#fff;
+  color:#536071;
+  text-align:left;
+  font:inherit;
+  font-size:12px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 10px 24px rgba(45,55,72,.08);
+}
+.world-tree-relation-list button.active{background:linear-gradient(135deg,#eef8ff,#fff4d8);color:#202124}
 .comic-lite-card img{
   width:100%;
   aspect-ratio:3/4;
@@ -1880,6 +1913,53 @@ body::before{
 }
 .comic-lite-title{color:#202124;font-size:17px;font-weight:1000}
 .comic-lite-copy{color:#686158;font-size:12px;font-weight:850;line-height:1.45;margin-top:7px}
+.comic-lite-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.comic-lite-actions button{
+  border:0;
+  border-radius:999px;
+  padding:9px 12px;
+  background:linear-gradient(135deg,#ffd96a,#ff8a72);
+  color:#202124;
+  font:inherit;
+  font-size:12px;
+  font-weight:1000;
+  cursor:pointer;
+}
+.comic-fullscreen{
+  position:fixed;
+  inset:0;
+  z-index:320;
+  display:none;
+  grid-template-rows:auto 1fr auto;
+  gap:12px;
+  padding:16px;
+  background:rgba(12,14,20,.92);
+  backdrop-filter:blur(18px) saturate(1.1);
+}
+.comic-fullscreen.active{display:grid}
+.comic-fullscreen-head,.comic-fullscreen-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#fff}
+.comic-fullscreen-title{min-width:0;font-size:18px;font-weight:1000;line-height:1.25}
+.comic-fullscreen-title span{display:block;color:#b9c8dc;font-size:12px;font-weight:850;margin-top:3px}
+.comic-fullscreen-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.comic-fullscreen button,.comic-fullscreen a{
+  min-height:40px;
+  border:0;
+  border-radius:999px;
+  padding:10px 13px;
+  background:rgba(255,255,255,.14);
+  color:#fff;
+  text-decoration:none;
+  font:inherit;
+  font-size:12px;
+  font-weight:1000;
+  cursor:pointer;
+}
+.comic-fullscreen .primary{background:linear-gradient(135deg,#ffd96a,#ff8a72);color:#202124}
+.comic-fullscreen-stage{min-height:0;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px}
+.comic-fullscreen-image{min-width:0;min-height:0;height:100%;display:grid;place-items:center}
+.comic-fullscreen-image img{max-width:100%;max-height:100%;object-fit:contain;border-radius:18px;background:#f6f8ff;box-shadow:0 24px 80px rgba(0,0,0,.38)}
+.comic-fullscreen-nav{width:44px;height:72px;border-radius:18px!important;font-size:24px!important;padding:0!important}
+.comic-fullscreen-foot{align-items:flex-start;color:#dbe5ff;font-size:13px;font-weight:850;line-height:1.55}
 .plan-lite-card{
   padding:18px;
 }
@@ -1939,6 +2019,11 @@ body::before{
     padding-inline:12px;
   }
   .world-tree-lite-grid,.comic-gallery-lite,.plan-lite-grid{grid-template-columns:1fr}
+  .comic-fullscreen{padding:10px;gap:8px}
+  .comic-fullscreen-stage{grid-template-columns:1fr;grid-template-rows:1fr auto}
+  .comic-fullscreen-stage .comic-fullscreen-nav{display:none}
+  .comic-fullscreen-head,.comic-fullscreen-foot{display:grid}
+  .comic-fullscreen-actions{justify-content:start}
   .sel-layout{
     grid-template-columns:1fr;
   }
@@ -3742,6 +3827,7 @@ body::before{
   <div class="section-header"><h2>🌳 MBTI World Tree</h2><div class="divider"></div><div class="sub">A readable English mirror of the 16-fighter world tree.</div></div>
   <section class="world-tree-lite">
     <div class="world-tree-lite-grid" id="worldTreeLite"></div>
+    <div class="world-tree-relation-panel" id="worldTreeRelationLite"></div>
   </section>
 </div>
 
@@ -3907,6 +3993,18 @@ body::before{
 <div class="modal-overlay" id="modal" onclick="closeModal(event)">
   <button class="modal-close" type="button" aria-label="Close modal" onclick="closeModal()">✕</button>
   <div class="modal-content" id="modalContent" onclick="event.stopPropagation()"></div>
+</div>
+<div class="comic-fullscreen" id="comicFullscreenEn" aria-hidden="true">
+  <div class="comic-fullscreen-head">
+    <div class="comic-fullscreen-title" id="comicFullscreenTitleEn">Comic Library<span>MBTI Brick Fighter</span></div>
+    <div class="comic-fullscreen-actions" id="comicFullscreenActionsEn"></div>
+  </div>
+  <div class="comic-fullscreen-stage">
+    <button class="comic-fullscreen-nav" type="button" onclick="stepEnglishComicFullscreen(-1)" aria-label="Previous">‹</button>
+    <div class="comic-fullscreen-image" id="comicFullscreenImageEn"></div>
+    <button class="comic-fullscreen-nav" type="button" onclick="stepEnglishComicFullscreen(1)" aria-label="Next">›</button>
+  </div>
+  <div class="comic-fullscreen-foot" id="comicFullscreenFootEn"></div>
 </div>
 
 <div class="footer">MADE WITH 🧱 BRICKS & ❤️ · Mumu Brick Weapons · 2026 · 16 MBTI warriors</div>
@@ -5564,6 +5662,12 @@ function renderComments(id){
 }
 
 document.addEventListener('keydown',e=>{
+  const comicOverlay=document.getElementById('comicFullscreenEn');
+  if(comicOverlay&&comicOverlay.classList.contains('active')){
+    if(e.key==='Escape'){closeEnglishComicFullscreen();return;}
+    if(e.key==='ArrowLeft'){stepEnglishComicFullscreen(-1);return;}
+    if(e.key==='ArrowRight'){stepEnglishComicFullscreen(1);return;}
+  }
   if(e.key==='Enter'&&e.target.classList.contains('comment-input')){const id=e.target.dataset.weaponId||e.target.id.replace('ci','');if(id)postComment(id)}
   if(e.key==='Escape'){
     if(document.getElementById('modal')&&document.getElementById('modal').classList.contains('active'))closeModal();
@@ -5571,6 +5675,7 @@ document.addEventListener('keydown',e=>{
     if(document.getElementById('arena')&&document.getElementById('arena').style.display==='flex')closeArena();
   }
 });
+window.addEventListener('hashchange',openEnglishComicFromHash);
 
 // ===== RENDER CHARACTERS =====
 function weaponLabel(type){
@@ -5685,34 +5790,130 @@ const EN_COMIC_TITLES={
   ISTJ:'Item Thirteen: Strike',ISFJ:'Light Behind the Shield',ESTJ:'Battle Delivery Day',ESFJ:'Warm Supply Station',
   ISTP:'One Screw Only',ISFP:'Win Beautifully',ESTP:'We Explain While Moving',ESFP:'All Stage Lights'
 };
+const EN_TREE_RELATIONS=[
+  {a:'ENTJ',b:'INTJ',type:'Strategy',label:'Strategic Alliance',desc:'One sets direction, the other calculates the route.'},
+  {a:'INTJ',b:'INTP',type:'Strategy',label:'Mind Lab',desc:'INTJ deletes failed routes while INTP proves the strange route can work.'},
+  {a:'ENFJ',b:'INFJ',type:'Dream',label:'Guiding Light',desc:'ENFJ makes the team believe; INFJ spots the safest path.'},
+  {a:'INFP',b:'ENFP',type:'Dream',label:'Rainbow Quest',desc:'A dream catches fire and suddenly finds a hidden stage.'},
+  {a:'ISTJ',b:'ESTJ',type:'Order',label:'Order Engine',desc:'Planning, execution, and review become one steady battle loop.'},
+  {a:'ISFJ',b:'ESFJ',type:'Order',label:'Safe House',desc:'Shield and supplies keep the whole team brave enough to move.'},
+  {a:'ISTP',b:'ESTP',type:'Adventure',label:'Tactical Rush',desc:'ISTP finds the weak point; ESTP runs straight through the opening.'},
+  {a:'ISFP',b:'ESFP',type:'Adventure',label:'Stage Combo',desc:'When the battle becomes a performance, momentum turns into a weapon.'}
+];
+let englishTreeSelected='INTJ';
+let englishTreeRelation=0;
+let englishComicSelected='ENTJ';
+let englishComicFullscreenOpen=false;
 function englishComicImage(c){return '../assets/comics/'+c.mbti.toLowerCase()+'-comic-page.png'}
+function englishComicLink(mbti){return location.origin+location.pathname+location.search+'#comic-'+String(mbti||englishComicSelected).toUpperCase()}
+async function copyEnglishText(text){
+  try{
+    if(navigator.clipboard)await navigator.clipboard.writeText(text);
+    else prompt('Copy',text);
+  }catch(e){prompt('Copy',text);}
+}
 function renderEnglishWorldTree(){
   const box=document.getElementById('worldTreeLite');
   if(!box)return;
   box.innerHTML=Object.keys(EN_GROUP_META).map(group=>{
     const meta=EN_GROUP_META[group];
     const chars=CHARACTERS.filter(c=>c.group===group);
-    return '<article class="world-tree-lite-card">'+
+    return '<article class="world-tree-lite-card '+(chars.some(c=>c.mbti===englishTreeSelected)?'active':'')+'">'+
       '<b>'+escapeHTML(group)+' · '+escapeHTML(meta.label)+'</b>'+
       '<span>'+escapeHTML(meta.desc)+'</span>'+
-      '<div class="world-tree-avatar-row">'+chars.map(c=>'<button type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">'+escapeHTML(c.mbti)+' · '+escapeHTML(c.name)+'</button>').join('')+'</div>'+
+      '<div class="world-tree-avatar-row">'+chars.map(c=>'<button class="'+(c.mbti===englishTreeSelected?'active':'')+'" type="button" onclick="selectEnglishTreeCharacter(\''+c.mbti+'\')">'+escapeHTML(c.mbti)+' · '+escapeHTML(c.name)+'</button>').join('')+'</div>'+
     '</article>';
   }).join('');
+  renderEnglishTreeRelationPanel();
+}
+function selectEnglishTreeCharacter(mbti){
+  englishTreeSelected=mbti;
+  const idx=EN_TREE_RELATIONS.findIndex(r=>r.a===mbti||r.b===mbti);
+  englishTreeRelation=idx>=0?idx:0;
+  renderEnglishWorldTree();
+}
+function showEnglishTreeRelation(index){
+  englishTreeRelation=index;
+  const r=EN_TREE_RELATIONS[index];
+  if(r)englishTreeSelected=r.a;
+  renderEnglishWorldTree();
+}
+function renderEnglishTreeRelationPanel(){
+  const box=document.getElementById('worldTreeRelationLite');
+  if(!box)return;
+  const c=CHARACTERS.find(x=>x.mbti===englishTreeSelected)||CHARACTERS[0];
+  const related=EN_TREE_RELATIONS.filter(r=>r.a===c.mbti||r.b===c.mbti);
+  const active=EN_TREE_RELATIONS[englishTreeRelation]||related[0]||EN_TREE_RELATIONS[0];
+  box.innerHTML=
+    '<div class="world-tree-relation-title">'+escapeHTML(c.mbti+' · '+c.name+' Relationship Map')+'</div>'+
+    '<div class="world-tree-relation-copy">'+escapeHTML('Selected branch: '+(EN_GROUP_META[c.group]&&EN_GROUP_META[c.group].label||c.group)+'. Click a bond to focus both fighters, then jump into the dossier or comic.')+'</div>'+
+    '<div class="world-tree-relation-list">'+EN_TREE_RELATIONS.map((r,i)=>'<button class="'+(active===r?'active':'')+'" type="button" onclick="showEnglishTreeRelation('+i+')"><b>'+escapeHTML(r.a+' × '+r.b+' · '+r.label)+'</b><span>'+escapeHTML(r.desc)+'</span></button>').join('')+'</div>'+
+    '<div class="comic-lite-actions"><button type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">View dossier</button><button type="button" onclick="openEnglishComicFullscreen(\''+c.mbti+'\')">Open comic</button></div>';
 }
 function renderEnglishComicGallery(){
   const box=document.getElementById('comicGalleryLite');
   if(!box)return;
   box.innerHTML=CHARACTERS.map(c=>{
     const trait=getCharTrait(c);
-    return '<article class="comic-lite-card">'+
+    return '<article class="comic-lite-card '+(englishComicSelected===c.mbti?'active':'')+'">'+
       '<img src="'+englishComicImage(c)+'" alt="'+escapeHTML(c.name)+' comic page" loading="lazy">'+
       '<div class="comic-lite-info">'+
         '<div class="comic-lite-title">'+escapeHTML(c.name)+' · '+escapeHTML(EN_COMIC_TITLES[c.mbti]||'Brick Comic')+'</div>'+
         '<div class="comic-lite-copy">'+escapeHTML(c.mbti+' · '+c.mbtiName+' · '+trait.role+' · '+c.quotes.win)+'</div>'+
-        '<div class="comic-gallery-actions"><button class="char-share-btn" type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">View dossier</button></div>'+
+        '<div class="comic-lite-actions"><button type="button" onclick="openEnglishComicFullscreen(\''+c.mbti+'\')">Full screen</button><button type="button" onclick="copyEnglishComicLink(\''+c.mbti+'\')">Copy link</button><button type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">View dossier</button></div>'+
       '</div>'+
     '</article>';
   }).join('');
+}
+function renderEnglishComicFullscreen(){
+  if(!englishComicFullscreenOpen)return;
+  const c=CHARACTERS.find(x=>x.mbti===englishComicSelected)||CHARACTERS[0];
+  const title=document.getElementById('comicFullscreenTitleEn');
+  const actions=document.getElementById('comicFullscreenActionsEn');
+  const image=document.getElementById('comicFullscreenImageEn');
+  const foot=document.getElementById('comicFullscreenFootEn');
+  if(!title||!actions||!image||!foot)return;
+  title.innerHTML=escapeHTML(c.name+' · '+(EN_COMIC_TITLES[c.mbti]||'Brick Comic'))+'<span>'+escapeHTML(c.mbti+' · '+c.mbtiName+' · '+c.group)+'</span>';
+  image.innerHTML='<img src="'+englishComicImage(c)+'" alt="'+escapeHTML(c.name)+' full comic">';
+  actions.innerHTML='<button type="button" onclick="closeEnglishComicFullscreen()">Close</button><button type="button" onclick="copyEnglishComicLink(\''+c.mbti+'\')">Copy link</button><a class="primary" href="'+englishComicImage(c)+'" download="'+escapeHTML(c.mbti.toLowerCase()+'-comic-page.png')+'">Save image</a><button class="primary" type="button" onclick="closeEnglishComicFullscreen();openCharacterProfile(\''+c.mbti+'\')">Dossier</button>';
+  foot.innerHTML='<div>'+escapeHTML(c.quotes.win)+'</div><div>Keyboard: Left / Right to switch, Esc to close.</div><div class="comic-fullscreen-actions"><button type="button" onclick="stepEnglishComicFullscreen(-1)">Previous</button><button type="button" onclick="stepEnglishComicFullscreen(1)">Next</button></div>';
+  history.replaceState(null,'',location.pathname+location.search+'#comic-'+c.mbti);
+}
+function openEnglishComicFullscreen(mbti){
+  const c=CHARACTERS.find(x=>x.mbti===mbti);
+  if(c)englishComicSelected=c.mbti;
+  renderEnglishComicGallery();
+  englishComicFullscreenOpen=true;
+  const overlay=document.getElementById('comicFullscreenEn');
+  if(overlay){overlay.classList.add('active');overlay.setAttribute('aria-hidden','false');}
+  renderEnglishComicFullscreen();
+}
+function closeEnglishComicFullscreen(){
+  englishComicFullscreenOpen=false;
+  const overlay=document.getElementById('comicFullscreenEn');
+  if(overlay){overlay.classList.remove('active');overlay.setAttribute('aria-hidden','true');}
+}
+function stepEnglishComicFullscreen(delta){
+  const idx=Math.max(0,CHARACTERS.findIndex(c=>c.mbti===englishComicSelected));
+  const next=CHARACTERS[(idx+delta+CHARACTERS.length)%CHARACTERS.length];
+  englishComicSelected=next.mbti;
+  renderEnglishComicGallery();
+  renderEnglishComicFullscreen();
+}
+async function copyEnglishComicLink(mbti){
+  const c=CHARACTERS.find(x=>x.mbti===mbti);
+  if(c)englishComicSelected=c.mbti;
+  await copyEnglishText(englishComicLink(englishComicSelected));
+}
+function openEnglishComicFromHash(){
+  const match=String(location.hash||'').match(/^#comic-([A-Z]{4})$/i);
+  if(!match)return;
+  const mbti=match[1].toUpperCase();
+  if(CHARACTERS.some(c=>c.mbti===mbti)){
+    englishComicSelected=mbti;
+    switchPanel('comics');
+    renderEnglishComicGallery();
+  }
 }
 function renderEnglishPlan(){
   const box=document.getElementById('planLite');
@@ -6440,6 +6641,7 @@ function renderStaticShell(){
   updateLeaderboard();
 }
 renderStaticShell();
+openEnglishComicFromHash();
 
 loadData().then(async()=>{
   await refreshPromotionBonus();
@@ -6450,6 +6652,7 @@ loadData().then(async()=>{
   renderCharacters();
   renderEnglishWorldTree();
   renderEnglishComicGallery();
+  openEnglishComicFromHash();
   renderEnglishPlan();
   renderQuiz();
   renderStudio();

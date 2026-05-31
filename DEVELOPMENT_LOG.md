@@ -2,6 +2,26 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-31: Final Plan Sweep
+
+Goal:
+- Finish the remaining plan items in one pass: English deep sync, duplicate-file cleanup, and promotion / commerce loop.
+
+Shipped:
+- Added English comic full-screen reading, per-comic hash links, image save, link copy, keyboard navigation, and dossier jumps.
+- Added an English world-tree relationship panel with selectable fighters and bonds.
+- Added a Chinese promotion / commerce funnel explaining the play, post, proof, and reward loop.
+- Archived 470 duplicate-looking untracked files into `duplicate-review/` without committing them.
+- Updated `DUPLICATE_FILE_CLEANUP.md` with the archive result.
+
+Verification:
+- Parsed inline scripts in `index.html` and `en/index.html`.
+- Checked diff formatting.
+- Confirmed duplicate-looking files were archived under `duplicate-review/` and not staged.
+
+Next:
+- Deploy and re-test Chinese and English pages online.
+
 ## 2026-05-31: World Tree V3
 
 Goal:
