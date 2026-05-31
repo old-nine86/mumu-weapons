@@ -2,6 +2,24 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-31: Sandbox Arena V3 Target Art And World Features
+
+Goal:
+- Generate a visual target for the game and start implementing the world features shown in that target.
+
+Shipped:
+- Generated the original target concept image `assets/game/sandbox-v3-target.png` for the brick sandbox survival direction.
+- Updated `game.html` to V3 with a stronger core-base silhouette, tower/ladder structure, platforms, treasure chests, water pools, lava pockets, crystal shrine tiles, and a minimap.
+- Added chest opening rewards, V3 local save key, ladder climbing, liquid slowdown/damage, and visible minimap markers for player/core/camera.
+
+Verification:
+- Parsed inline scripts in `game.html`, `index.html`, and `en/index.html`.
+- Captured local desktop and mobile smoke-test screenshots for V3.
+- Ran `node scripts/preflight-check.mjs` and `git diff --check`.
+
+Next:
+- Convert the target concept into modular sprite sheets and split the game script into maintainable systems.
+
 ## 2026-05-31: Sandbox Arena V2
 
 Goal:
