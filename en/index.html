@@ -3632,6 +3632,7 @@ body::before{
       <button class="nav-tab" data-panel="quiz">🧭 Weapon Match</button>
       <button class="nav-tab" data-panel="plan">🚀 Plan</button>
       <button class="nav-tab" data-panel="studio">🏛️ Studio</button>
+      <button class="nav-tab" type="button" onclick="location.href='../game.html'">🎮 Sandbox</button>
     </div>
   </div>
   <div class="stats-bar">
@@ -4301,6 +4302,7 @@ function switchPanel(panel){
   if(next)next.classList.add('active');
 }
 document.querySelectorAll('.nav-tab').forEach(tab=>{
+  if(!tab.dataset.panel)return;
   tab.addEventListener('click',()=>switchPanel(tab.dataset.panel));
 });
 

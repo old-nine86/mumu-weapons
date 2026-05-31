@@ -2,6 +2,24 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-31: Sandbox Arena V1
+
+Goal:
+- Rebuild the weapon battlefield as a standalone side-scrolling brick sandbox game page.
+
+Shipped:
+- Added `game.html` with pixel-style terrain, movement, jumping, mining, block placement, melee/ranged attacks, material inventory, enemy waves, and crystal-core defense.
+- Added Chinese and English navigation entries that open the standalone game page.
+- Updated tab binding so non-panel navigation buttons do not trigger an empty panel switch.
+
+Verification:
+- Parsed inline scripts in `index.html`, `en/index.html`, and `game.html`.
+- Captured local desktop and mobile smoke-test screenshots for `game.html`.
+- Ran `node scripts/preflight-check.mjs` and `git diff --check`.
+
+Next:
+- Tune controls, difficulty, and mobile layout after live testing.
+
 ## 2026-05-31: Final Plan Sweep
 
 Goal:

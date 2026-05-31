@@ -4857,6 +4857,7 @@ body::before{
       <button class="nav-tab" data-panel="growth">📣 推广中心</button>
       <button class="nav-tab" data-panel="plan">🚀 总计划</button>
       <button class="nav-tab" data-panel="studio">🏛️ 我的馆</button>
+      <button class="nav-tab" type="button" onclick="location.href='game.html'">🎮 沙盒战场</button>
     </div>
   </div>
   <div class="stats-bar">
@@ -6021,6 +6022,7 @@ function switchPanel(panel){
   }
 }
 document.querySelectorAll('.nav-tab').forEach(tab=>{
+  if(!tab.dataset.panel)return;
   tab.addEventListener('click',()=>switchPanel(tab.dataset.panel));
 });
 
