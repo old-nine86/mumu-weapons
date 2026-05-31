@@ -1516,8 +1516,20 @@ body::before{
   stroke-dasharray:2.4 2.6;
   animation:treeLineFlow 5s linear infinite;
 }
-.world-tree-lines path.is-dim{opacity:.22}
-.world-tree-lines path:hover{opacity:1;stroke-width:.7}
+.world-tree-lines path.is-dim{opacity:.14;filter:none}
+.world-tree-lines path.is-active{
+  opacity:1;
+  stroke-width:.82;
+  stroke-dasharray:0;
+  filter:drop-shadow(0 0 10px var(--line-color,rgba(255,255,255,.9)));
+}
+.world-tree-lines path.is-selected{
+  opacity:1;
+  stroke-width:1.05;
+  stroke-dasharray:0;
+  filter:drop-shadow(0 0 14px var(--line-color,rgba(255,255,255,.95)));
+}
+.world-tree-lines path:hover{opacity:1;stroke-width:.9}
 @keyframes treeLineFlow{to{stroke-dashoffset:-18}}
 .tree-node{
   position:absolute;
@@ -1577,6 +1589,11 @@ body::before{
   transform:translateY(-4px) scale(1.12);
   box-shadow:0 18px 44px rgba(45,55,72,.22),0 0 0 5px rgba(255,255,255,.88),0 0 36px color-mix(in srgb,var(--node-color) 56%,transparent);
 }
+.tree-node.is-related .tree-node-avatar{
+  box-shadow:0 18px 44px rgba(45,55,72,.2),0 0 0 5px rgba(255,255,255,.88),0 0 30px color-mix(in srgb,var(--node-color) 45%,transparent);
+}
+.tree-node.is-dim{opacity:.42}
+.tree-node.is-dim:hover{opacity:1}
 .tree-detail-card{
   position:absolute;
   right:18px;
@@ -1641,6 +1658,39 @@ body::before{
   font-size:12px;
   font-weight:950;
 }
+.tree-relation-list{
+  display:grid;
+  gap:8px;
+  margin-top:13px;
+}
+.tree-relation-item{
+  border:0;
+  border-radius:18px;
+  padding:10px 12px;
+  background:#fff;
+  color:#536071;
+  text-align:left;
+  font:inherit;
+  cursor:pointer;
+  box-shadow:0 10px 24px rgba(45,55,72,.08);
+}
+.tree-relation-item.active{
+  background:linear-gradient(135deg,#eef8ff,#fff4d8);
+  color:#1d1d1f;
+}
+.tree-relation-item b{
+  display:block;
+  color:#202124;
+  font-size:12px;
+  font-weight:1000;
+}
+.tree-relation-item span{
+  display:block;
+  margin-top:3px;
+  font-size:11px;
+  font-weight:850;
+  line-height:1.45;
+}
 .tree-detail-actions{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -1699,6 +1749,10 @@ body::before{
   font:inherit;
   cursor:pointer;
   box-shadow:0 14px 34px rgba(45,55,72,.08);
+}
+.tree-branch-card.active{
+  outline:3px solid color-mix(in srgb,var(--c) 34%,transparent);
+  background:linear-gradient(135deg,rgba(255,255,255,.92),rgba(255,244,216,.72));
 }
 .tree-branch-card b{display:block;color:#202124;font-size:14px;font-weight:1000}
 .tree-branch-card span{display:block;color:#6e6e73;font-size:12px;font-weight:850;line-height:1.45;margin-top:4px}
@@ -7945,6 +7999,7 @@ const WORLD_TREE_RELATIONS=[
 ];
 let worldTreeMode='group';
 let worldTreeSelected='INTJ';
+let worldTreeActiveRelation=null;
 let worldTreeView={zoom:1,panX:0,panY:0,drag:false,startX:0,startY:0,baseX:0,baseY:0};
 let comicFilter='ALL';
 let comicSelected='ENTJ';
@@ -7966,6 +8021,7 @@ function updateWorldTreeTransform(){
 }
 function setWorldTreeMode(mode){
   worldTreeMode=mode;
+  worldTreeActiveRelation=null;
   document.querySelectorAll('.tree-mode').forEach(b=>b.classList.toggle('active',b.dataset.treeMode===mode));
   renderWorldTree();
 }
@@ -7979,20 +8035,26 @@ function resetWorldTreeView(){
   worldTreeView=defaultWorldTreeView();
   updateWorldTreeTransform();
 }
+function visibleWorldTreeRelations(){
+  return WORLD_TREE_RELATIONS.filter(r=>r.type===worldTreeMode || (worldTreeMode==='group'&&r.type==='bond'));
+}
+function relationTypeLabel(type){
+  return type==='weapon'?'武器流派':type==='bond'?'战斗羁绊':'同枝关系';
+}
 function renderWorldTree(){
   const nodes=document.getElementById('worldTreeNodes');
   const lines=document.getElementById('worldTreeLines');
   const viewport=document.getElementById('worldTreeViewport');
   if(!nodes||!lines||!viewport)return;
   renderWorldTreeBranchBoard();
-  const visible=WORLD_TREE_RELATIONS.filter(r=>r.type===worldTreeMode || (worldTreeMode==='group'&&r.type==='bond'));
+  const visible=visibleWorldTreeRelations();
   lines.innerHTML=visible.map((r,i)=>{
     const a=WORLD_TREE_POS[r.a],b=WORLD_TREE_POS[r.b];
     const ca=CHARACTERS.find(c=>c.mbti===r.a),cb=CHARACTERS.find(c=>c.mbti===r.b);
     if(!a||!b||!ca||!cb)return '';
     const mx=(a.x+b.x)/2,my=(a.y+b.y)/2-5;
     const color=r.type==='weapon'?'#ffb340':(r.type==='bond'?'#ff8ab3':worldTreeColor(ca));
-    return '<path data-rel="'+i+'" style="--line-color:'+color+'" d="M '+a.x+' '+a.y+' Q '+mx+' '+my+' '+b.x+' '+b.y+'" onclick="showWorldTreeRelation('+i+')"></path>';
+    return '<path data-rel="'+i+'" data-a="'+escapeHTML(r.a)+'" data-b="'+escapeHTML(r.b)+'" data-type="'+escapeHTML(r.type)+'" style="--line-color:'+color+'" d="M '+a.x+' '+a.y+' Q '+mx+' '+my+' '+b.x+' '+b.y+'" onclick="showWorldTreeRelation('+i+')"></path>';
   }).join('');
   nodes.innerHTML=CHARACTERS.map(c=>{
     const pos=WORLD_TREE_POS[c.mbti]||{x:50,y:50};
@@ -8024,6 +8086,7 @@ function renderWorldTree(){
     viewport.addEventListener('wheel',e=>{e.preventDefault();zoomWorldTree(e.deltaY>0?-.08:.08)},{passive:false});
   }
   updateWorldTreeTransform();
+  applyWorldTreeHighlights();
 }
 function renderWorldTreeBranchBoard(){
   const board=document.getElementById('treeBranchBoard');
@@ -8032,7 +8095,7 @@ function renderWorldTreeBranchBoard(){
     const meta=WORLD_TREE_GROUP_META[group];
     const guide=WORLD_TREE_BRANCH_GUIDE[group];
     const count=CHARACTERS.filter(c=>c.group===group).length;
-    return '<button class="tree-branch-card" type="button" style="--c:'+meta.color+'" onclick="focusWorldTreeGroup(\''+group+'\')">'+
+    return '<button class="tree-branch-card '+(CHARACTERS.find(c=>c.mbti===worldTreeSelected&&c.group===group)?'active':'')+'" type="button" style="--c:'+meta.color+'" onclick="focusWorldTreeGroup(\''+group+'\')">'+
       '<b><i></i>'+escapeHTML(group)+' · '+escapeHTML(meta.label)+' · '+count+' 位</b>'+
       '<span>'+escapeHTML(guide.focus)+'</span>'+
       '<span>'+escapeHTML(guide.route)+'</span>'+
@@ -8041,38 +8104,82 @@ function renderWorldTreeBranchBoard(){
 }
 function focusWorldTreeGroup(group){
   const first=CHARACTERS.find(c=>c.group===group);
+  worldTreeActiveRelation=null;
   setWorldTreeMode('group');
   if(first)selectWorldTreeCharacter(first.mbti);
+}
+function applyWorldTreeHighlights(){
+  const selected=worldTreeSelected;
+  const active=worldTreeActiveRelation;
+  document.querySelectorAll('#worldTreeLines path').forEach(path=>{
+    const a=path.dataset.a,b=path.dataset.b;
+    const isRelated=a===selected||b===selected;
+    const isSelected=active!==null&&Number(path.dataset.rel)===active;
+    path.classList.toggle('is-active',isRelated);
+    path.classList.toggle('is-selected',isSelected);
+    path.classList.toggle('is-dim',!!selected&&!isRelated&&!isSelected);
+  });
+  document.querySelectorAll('.tree-node').forEach(node=>{
+    const text=node.textContent||'';
+    const mbti=(text.match(/[A-Z]{4}/)||[])[0];
+    const related=visibleWorldTreeRelations().some(r=>(r.a===selected&&r.b===mbti)||(r.b===selected&&r.a===mbti));
+    const activeRel=active!==null?visibleWorldTreeRelations()[active]:null;
+    const inActive=activeRel&&(activeRel.a===mbti||activeRel.b===mbti);
+    node.classList.toggle('is-related',related||inActive);
+    node.classList.toggle('is-dim',!!selected&&mbti!==selected&&!related&&!inActive);
+  });
+  document.querySelectorAll('.tree-branch-card').forEach(card=>{
+    const activeGroup=CHARACTERS.find(c=>c.mbti===selected);
+    card.classList.toggle('active',!!activeGroup&&card.textContent.includes(activeGroup.group+' ·'));
+  });
 }
 function selectWorldTreeCharacter(mbti,scrollDetail=true){
   const c=CHARACTERS.find(x=>x.mbti===mbti);
   const card=document.getElementById('treeDetailCard');
   if(!c||!card)return;
   worldTreeSelected=mbti;
+  worldTreeActiveRelation=null;
   document.querySelectorAll('.tree-node').forEach(n=>n.classList.toggle('active',n.textContent.includes(mbti)));
   const trait=getCharTrait(c);
   const meta=WORLD_TREE_GROUP_META[c.group]||WORLD_TREE_GROUP_META.NT;
-  const related=WORLD_TREE_RELATIONS.filter(r=>r.a===mbti||r.b===mbti).slice(0,4).map(r=>{
+  const allRelated=visibleWorldTreeRelations().filter(r=>r.a===mbti||r.b===mbti);
+  const related=allRelated.slice(0,6).map(r=>{
     const other=r.a===mbti?r.b:r.a;
     return '<span>'+escapeHTML(other)+' · '+escapeHTML(r.label)+'</span>';
+  }).join('');
+  const relationList=allRelated.map(r=>{
+    const index=visibleWorldTreeRelations().indexOf(r);
+    const other=r.a===mbti?r.b:r.a;
+    return '<button class="tree-relation-item" type="button" onclick="showWorldTreeRelation('+index+')">'+
+      '<b>'+escapeHTML(other)+' · '+escapeHTML(r.label)+' · '+relationTypeLabel(r.type)+'</b>'+
+      '<span>'+escapeHTML(r.desc)+'</span>'+
+    '</button>';
   }).join('');
   card.innerHTML=
     '<div class="tree-detail-top">'+characterAvatarHTML(c,80)+'<div><div class="tree-detail-name">'+escapeHTML(c.name)+'</div><div class="tree-detail-meta">'+escapeHTML(c.mbti)+' · '+escapeHTML(c.mbtiName)+' · '+escapeHTML(meta.label)+'</div></div></div>'+
     '<div class="tree-detail-quote">“'+escapeHTML(c.quotes.win)+'”</div>'+
     '<div class="tree-detail-chips"><span>武器：'+weaponLabel(c.weaponPref)+'</span><span>定位：'+escapeHTML(trait.role)+'</span><span>人格技：'+escapeHTML(trait.label)+'</span>'+related+'</div>'+
+    '<div class="tree-relation-list">'+relationList+'</div>'+
     '<div class="tree-detail-actions"><button type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">角色资料</button><button class="secondary" type="button" onclick="openComicReader(\''+c.mbti+'\')">看漫画</button><button type="button" onclick="quickBattleFromQuiz(\''+c.mbti+'\')">用他开战</button><button class="secondary" type="button" onclick="switchPanel(\'quiz\')">去测试</button></div>';
   if(scrollDetail)card.scrollTop=0;
+  applyWorldTreeHighlights();
 }
 function showWorldTreeRelation(index){
-  const r=WORLD_TREE_RELATIONS.filter(x=>x.type===worldTreeMode || (worldTreeMode==='group'&&x.type==='bond'))[index];
+  const visible=visibleWorldTreeRelations();
+  const r=visible[index];
   const card=document.getElementById('treeDetailCard');
   if(!r||!card)return;
   const a=CHARACTERS.find(c=>c.mbti===r.a),b=CHARACTERS.find(c=>c.mbti===r.b);
   if(!a||!b)return;
+  worldTreeActiveRelation=index;
+  worldTreeSelected=a.mbti;
+  document.querySelectorAll('.tree-node').forEach(n=>n.classList.toggle('active',n.textContent.includes(a.mbti)||n.textContent.includes(b.mbti)));
   card.innerHTML=
     '<div class="tree-detail-top">'+characterAvatarHTML(a,70)+characterAvatarHTML(b,70)+'<div><div class="tree-detail-name">'+escapeHTML(r.label)+'</div><div class="tree-detail-meta">'+escapeHTML(a.mbti)+' × '+escapeHTML(b.mbti)+' · '+(r.type==='weapon'?'武器流派':r.type==='bond'?'战斗羁绊':'同枝关系')+'</div></div></div>'+
     '<div class="tree-detail-quote">'+escapeHTML(r.desc)+'</div>'+
+    '<div class="tree-detail-chips"><span>'+escapeHTML(a.name)+'</span><span>'+escapeHTML(b.name)+'</span><span>'+relationTypeLabel(r.type)+'</span></div>'+
     '<div class="tree-detail-actions"><button type="button" onclick="selectWorldTreeCharacter(\''+a.mbti+'\')">'+escapeHTML(a.mbti)+'</button><button class="secondary" type="button" onclick="selectWorldTreeCharacter(\''+b.mbti+'\')">'+escapeHTML(b.mbti)+'</button><button type="button" onclick="openComicReader(\''+a.mbti+'\')">看左边漫画</button><button class="secondary" type="button" onclick="openComicReader(\''+b.mbti+'\')">看右边漫画</button></div>';
+  applyWorldTreeHighlights();
 }
 function renderCharacterProgress(){
   const panel=document.getElementById('charProgressPanel');

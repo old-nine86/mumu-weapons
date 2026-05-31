@@ -2,6 +2,26 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-31: World Tree V3
+
+Goal:
+- Continue the next plan by making `人格世界树` read like a relationship map, not only a decorative tree.
+
+Shipped:
+- Added relationship-line highlighting for the selected character.
+- Dimmed unrelated nodes and paths so active bonds are easier to scan.
+- Added a relationship list inside the character detail card, with each item clickable.
+- Enhanced relation clicks so the selected line and its two characters stay highlighted.
+- Added active styling to the selected branch guide card.
+
+Verification:
+- Parsed inline scripts in `index.html`.
+- Checked diff formatting.
+- Ran static checks for the new relation highlight, dimming, selected relation, and relation-list hooks.
+
+Next:
+- Verify, deploy, and smoke-test the live GitHub Pages tree.
+
 ## 2026-05-31: Comic Library V3
 
 Goal:
