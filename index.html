@@ -1250,6 +1250,97 @@ body::before{
   cursor:pointer;
 }
 .comic-reader-actions button.secondary{background:linear-gradient(135deg,#ffd96a,#ff8a72);color:#202124}
+.comic-fullscreen{
+  position:fixed;
+  inset:0;
+  z-index:320;
+  display:none;
+  grid-template-rows:auto 1fr auto;
+  gap:12px;
+  padding:16px;
+  background:rgba(12,14,20,.92);
+  backdrop-filter:blur(18px) saturate(1.1);
+}
+.comic-fullscreen.active{display:grid}
+.comic-fullscreen-head,.comic-fullscreen-foot{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  color:#fff;
+}
+.comic-fullscreen-title{
+  min-width:0;
+  font-size:18px;
+  font-weight:1000;
+  line-height:1.25;
+}
+.comic-fullscreen-title span{
+  display:block;
+  color:#b9c8dc;
+  font-size:12px;
+  font-weight:850;
+  margin-top:3px;
+}
+.comic-fullscreen-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:flex-end;
+}
+.comic-fullscreen button,.comic-fullscreen a{
+  min-height:40px;
+  border:0;
+  border-radius:999px;
+  padding:10px 13px;
+  background:rgba(255,255,255,.14);
+  color:#fff;
+  text-decoration:none;
+  font:inherit;
+  font-size:12px;
+  font-weight:1000;
+  cursor:pointer;
+}
+.comic-fullscreen button.primary,.comic-fullscreen a.primary{
+  background:linear-gradient(135deg,#ffd96a,#ff8a72);
+  color:#202124;
+}
+.comic-fullscreen-stage{
+  min-height:0;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;
+  gap:12px;
+}
+.comic-fullscreen-image{
+  min-width:0;
+  min-height:0;
+  height:100%;
+  display:grid;
+  place-items:center;
+}
+.comic-fullscreen-image img{
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  border-radius:18px;
+  background:#f6f8ff;
+  box-shadow:0 24px 80px rgba(0,0,0,.38);
+}
+.comic-fullscreen-nav{
+  width:44px;
+  height:72px;
+  border-radius:18px!important;
+  font-size:24px!important;
+  padding:0!important;
+}
+.comic-fullscreen-foot{
+  align-items:flex-start;
+  color:#dbe5ff;
+  font-size:13px;
+  font-weight:850;
+  line-height:1.55;
+}
 .comic-gallery-card{
   border:1px solid rgba(78,64,44,.1);
   border-radius:24px;
@@ -1631,6 +1722,12 @@ body::before{
   .tree-branch-board{grid-template-columns:1fr 1fr}
   .comic-spotlight{grid-template-columns:1fr}
   .comic-reader img{min-height:360px;max-height:70vh}
+  .comic-fullscreen{padding:10px;gap:8px}
+  .comic-fullscreen-stage{grid-template-columns:1fr;grid-template-rows:1fr auto}
+  .comic-fullscreen-stage .comic-fullscreen-nav{display:none}
+  .comic-fullscreen-head,.comic-fullscreen-foot{display:grid}
+  .comic-fullscreen-actions{justify-content:start}
+  .comic-fullscreen-image img{border-radius:14px}
 }
 .arena{
   background:
@@ -5154,6 +5251,18 @@ body::before{
   <button class="modal-close" type="button" aria-label="关闭弹窗" onclick="closeModal()">✕</button>
   <div class="modal-content" id="modalContent" onclick="event.stopPropagation()"></div>
 </div>
+<div class="comic-fullscreen" id="comicFullscreen" aria-hidden="true">
+  <div class="comic-fullscreen-head">
+    <div class="comic-fullscreen-title" id="comicFullscreenTitle">漫画馆<span>MBTI 积木战士</span></div>
+    <div class="comic-fullscreen-actions" id="comicFullscreenActions"></div>
+  </div>
+  <div class="comic-fullscreen-stage">
+    <button class="comic-fullscreen-nav" type="button" onclick="stepComicFullscreen(-1)" aria-label="上一张">‹</button>
+    <div class="comic-fullscreen-image" id="comicFullscreenImage"></div>
+    <button class="comic-fullscreen-nav" type="button" onclick="stepComicFullscreen(1)" aria-label="下一张">›</button>
+  </div>
+  <div class="comic-fullscreen-foot" id="comicFullscreenFoot"></div>
+</div>
 
 <div class="footer">MADE WITH 🧱 BRICKS & ❤️ · 沐沐的积木武器库 · 2026 · 16人格战士参战</div>
 
@@ -5826,6 +5935,9 @@ function switchPanel(panel){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   const next=document.getElementById('panel-'+panel);
   if(next)next.classList.add('active');
+  if(panel!=='comics'&&location.hash&&location.hash.indexOf('#comic-')===0){
+    history.replaceState(null,'',location.pathname+location.search);
+  }
 }
 document.querySelectorAll('.nav-tab').forEach(tab=>{
   tab.addEventListener('click',()=>switchPanel(tab.dataset.panel));
@@ -7836,6 +7948,7 @@ let worldTreeSelected='INTJ';
 let worldTreeView={zoom:1,panX:0,panY:0,drag:false,startX:0,startY:0,baseX:0,baseY:0};
 let comicFilter='ALL';
 let comicSelected='ENTJ';
+let comicFullscreenOpen=false;
 function worldTreeColor(c){return (WORLD_TREE_GROUP_META[c.group]||WORLD_TREE_GROUP_META.NT).color}
 function defaultWorldTreeView(){
   const viewport=document.getElementById('worldTreeViewport');
@@ -8030,6 +8143,7 @@ function renderComicGallery(){
         '<div class="comic-gallery-copy">'+escapeHTML(meme)+'</div>'+
         '<div class="comic-gallery-actions">'+
           '<button class="char-share-btn" type="button" onclick="openComicReader(\''+c.mbti+'\')">打开章节</button>'+
+          '<button class="char-share-btn" type="button" onclick="openComicFullscreen(\''+c.mbti+'\')">全屏阅读</button>'+
           '<button class="char-share-btn" type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">角色档案</button>'+
         '</div>'+
       '</div>'+
@@ -8050,6 +8164,13 @@ function setComicFilter(group){
   }
   renderComicGallery();
 }
+function comicLink(mbti){
+  return location.origin+location.pathname+location.search+'#comic-'+String(mbti||comicSelected).toUpperCase();
+}
+function updateComicHash(mbti){
+  const next='#comic-'+String(mbti||comicSelected).toUpperCase();
+  if(location.hash!==next)history.replaceState(null,'',location.pathname+location.search+next);
+}
 function comicVisibleList(){
   return CHARACTERS.filter(c=>comicFilter==='ALL'||c.group===comicFilter);
 }
@@ -8060,6 +8181,7 @@ function openComicReader(mbti){
   comicFilter='ALL';
   switchPanel('comics');
   renderComicGallery();
+  updateComicHash(mbti);
   const spot=document.getElementById('comicSpotlight');
   if(spot)spot.scrollIntoView({behavior:'smooth',block:'start'});
 }
@@ -8070,6 +8192,7 @@ function stepComicReader(delta){
   if(next){
     comicSelected=next.mbti;
     renderComicGallery();
+    updateComicHash(next.mbti);
   }
 }
 function renderComicSpotlight(){
@@ -8095,11 +8218,72 @@ function renderComicSpotlight(){
       '<div class="comic-reader-actions">'+
         '<button type="button" onclick="stepComicReader(-1)">上一张</button>'+
         '<button type="button" onclick="stepComicReader(1)">下一张</button>'+
+        '<button class="secondary" type="button" onclick="openComicFullscreen(\''+c.mbti+'\')">全屏阅读</button>'+
         '<button class="secondary" type="button" onclick="openCharacterProfile(\''+c.mbti+'\')">完整小剧场</button>'+
         '<button type="button" onclick="copyComicShareText(\''+c.mbti+'\')">复制分享文案</button>'+
+        '<button type="button" onclick="copyComicLink(\''+c.mbti+'\')">复制漫画链接</button>'+
         '<button class="secondary" type="button" onclick="switchPanel(\'tree\');selectWorldTreeCharacter(\''+c.mbti+'\')">去世界树</button>'+
       '</div>'+
     '</div>';
+}
+function renderComicFullscreen(){
+  if(!comicFullscreenOpen)return;
+  const overlay=document.getElementById('comicFullscreen');
+  const title=document.getElementById('comicFullscreenTitle');
+  const actions=document.getElementById('comicFullscreenActions');
+  const image=document.getElementById('comicFullscreenImage');
+  const foot=document.getElementById('comicFullscreenFoot');
+  const c=CHARACTERS.find(x=>x.mbti===comicSelected)||CHARACTERS[0];
+  if(!overlay||!title||!actions||!image||!foot||!c)return;
+  const story=getCharacterComicStory(c);
+  title.innerHTML=escapeHTML(c.name+' · '+story.title)+'<span>'+escapeHTML(c.mbti+' · '+c.mbtiName+' · '+(WORLD_TREE_GROUP_META[c.group]&&WORLD_TREE_GROUP_META[c.group].label||c.group))+'</span>';
+  image.innerHTML='<img src="'+escapeHTML(story.image||'')+'" alt="'+escapeHTML(c.name)+' 全屏漫画">';
+  actions.innerHTML=
+    '<button type="button" onclick="closeComicFullscreen()">关闭</button>'+
+    '<button type="button" onclick="copyComicLink(\''+c.mbti+'\')">复制链接</button>'+
+    '<a class="primary" href="'+escapeHTML(story.image||'#')+'" download="'+escapeHTML(c.mbti.toLowerCase()+'-comic-page.png')+'">保存原图</a>'+
+    '<button class="primary" type="button" onclick="closeComicFullscreen();openCharacterProfile(\''+c.mbti+'\')">角色档案</button>';
+  foot.innerHTML='<div>'+escapeHTML(story.moral)+'</div><div>键盘：← / → 切换，Esc 关闭。手机上可用下方按钮切换。</div><div class="comic-fullscreen-actions"><button type="button" onclick="stepComicFullscreen(-1)">上一张</button><button type="button" onclick="stepComicFullscreen(1)">下一张</button></div>';
+  updateComicHash(c.mbti);
+}
+function openComicFullscreen(mbti){
+  const c=CHARACTERS.find(x=>x.mbti===mbti);
+  if(c)comicSelected=c.mbti;
+  comicFilter='ALL';
+  switchPanel('comics');
+  renderComicGallery();
+  comicFullscreenOpen=true;
+  const overlay=document.getElementById('comicFullscreen');
+  if(overlay){
+    overlay.classList.add('active');
+    overlay.setAttribute('aria-hidden','false');
+  }
+  renderComicFullscreen();
+}
+function closeComicFullscreen(){
+  comicFullscreenOpen=false;
+  const overlay=document.getElementById('comicFullscreen');
+  if(overlay){
+    overlay.classList.remove('active');
+    overlay.setAttribute('aria-hidden','true');
+  }
+}
+function stepComicFullscreen(delta){
+  const list=comicVisibleList();
+  const idx=Math.max(0,list.findIndex(c=>c.mbti===comicSelected));
+  const next=list[(idx+delta+list.length)%list.length];
+  if(next){
+    comicSelected=next.mbti;
+    renderComicGallery();
+    renderComicFullscreen();
+  }
+}
+async function copyComicLink(mbti){
+  const c=CHARACTERS.find(x=>x.mbti===mbti);
+  if(c)comicSelected=c.mbti;
+  updateComicHash(comicSelected);
+  await copyGrowthText(comicLink(comicSelected));
+  gentleNotice('漫画单独链接已复制。');
 }
 async function copyComicShareText(mbti){
   const c=CHARACTERS.find(x=>x.mbti===mbti);
@@ -8108,11 +8292,23 @@ async function copyComicShareText(mbti){
   const text=[
     '沐沐积木武器库漫画馆更新：'+c.mbti+' '+c.name+'《'+story.title+'》',
     story.moral,
-    '看完整 16 位 MBTI 积木战士漫画：old-nine86.github.io/mumu-weapons',
+    '看完整 16 位 MBTI 积木战士漫画：'+comicLink(c.mbti),
     '#积木 #MBTI #漫画 #自制网站 #玩具分享'
   ].join('\n');
   await copyGrowthText(text);
   gentleNotice('漫画分享文案已复制。');
+}
+function openComicFromHash(){
+  const match=String(location.hash||'').match(/^#comic-([A-Z]{4})$/i);
+  if(!match)return;
+  const mbti=match[1].toUpperCase();
+  if(CHARACTERS.some(c=>c.mbti===mbti)){
+    comicSelected=mbti;
+    comicFilter='ALL';
+    switchPanel('comics');
+    renderComicGallery();
+    setTimeout(()=>{const spot=document.getElementById('comicSpotlight');if(spot)spot.scrollIntoView({behavior:'smooth',block:'start'});},80);
+  }
 }
 
 function openCharacterProfile(mbti){
@@ -8425,6 +8621,15 @@ function closeModal(e){
   document.querySelectorAll('#modal video').forEach(v=>{try{v.pause()}catch(err){}});
   document.getElementById('modal').classList.remove('active');
 }
+
+document.addEventListener('keydown',function(e){
+  const overlay=document.getElementById('comicFullscreen');
+  if(!overlay||!overlay.classList.contains('active'))return;
+  if(e.key==='Escape'){closeComicFullscreen();return;}
+  if(e.key==='ArrowLeft'){stepComicFullscreen(-1);return;}
+  if(e.key==='ArrowRight'){stepComicFullscreen(1);return;}
+});
+window.addEventListener('hashchange',openComicFromHash);
 
 document.addEventListener('click',function(e){
   const card=e.target.closest('.weapon-card');if(!card)return;
@@ -9153,6 +9358,7 @@ function renderStaticShell(){
 }
 
 renderStaticShell();
+openComicFromHash();
 
 loadData().then(async()=>{
   await refreshPromotionBonus();
@@ -9163,6 +9369,7 @@ loadData().then(async()=>{
   renderCharacters();
   renderWorldTree();
   renderComicGallery();
+  openComicFromHash();
   renderGrowthCenter();
   renderQuiz();
   renderStudio();

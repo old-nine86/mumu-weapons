@@ -2,6 +2,25 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-05-31: Comic Library V3
+
+Goal:
+- Start the next plan by upgrading the comic library into a stronger reading and sharing surface.
+
+Shipped:
+- Added a full-screen comic reader with previous/next controls, keyboard navigation, original-image download, link copy, and dossier jump.
+- Added per-comic hash links such as `#comic-ENTJ`, so a comic can be opened directly and shared.
+- Updated comic share text to point to the selected comic URL.
+
+Verification:
+- Parsed inline scripts in `index.html`.
+- Checked diff formatting.
+- Ran static checks for the new full-screen reader, per-comic hash links, copy-link action, and original-image download action.
+- Local in-app browser access to `localhost:8001` was blocked by the browser client, so final interaction verification will happen on GitHub Pages after deploy.
+
+Next:
+- Deploy and test the live GitHub Pages URL.
+
 ## 2026-05-29: Content Loop V2
 
 Goal:
