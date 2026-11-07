@@ -7,6 +7,19 @@ const files = ['index.html', 'en/index.html', 'admin.html'];
 const failures = [];
 const warnings = [];
 const allRpcNames = new Set();
+const sandboxModules = [
+  'game/world.mjs',
+  'game/rules.mjs',
+  'game/persistence.mjs',
+  'game/player.mjs',
+  'game/input.mjs',
+  'game/combat.mjs',
+  'game/ui.mjs',
+];
+const sandboxTests = [
+  'tests/sandbox-core.test.mjs',
+  'tests/sandbox-runtime.test.mjs',
+];
 
 function read(file) {
   return fs.readFileSync(path.join(root, file), 'utf8');
@@ -144,6 +157,23 @@ for (let i = 1; i <= 11; i += 1) {
     warn('sips is unavailable, skipped image dimension checks');
     break;
   }
+}
+
+for (const file of sandboxModules) {
+  try {
+    execFileSync(process.execPath, ['--check', path.join(root, file)], { encoding: 'utf8' });
+  } catch (error) {
+    fail(`${file}: module syntax check failed: ${error.stderr || error.message}`);
+  }
+}
+
+try {
+  execFileSync(process.execPath, ['--test', ...sandboxTests.map(file => path.join(root, file))], {
+    cwd: root,
+    encoding: 'utf8',
+  });
+} catch (error) {
+  fail(`sandbox core tests failed: ${error.stdout || error.stderr || error.message}`);
 }
 
 if (warnings.length) {
