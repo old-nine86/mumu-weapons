@@ -217,6 +217,43 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .modal-stat-val{font-size:20px;font-weight:900;color:var(--gold)}
 .modal-stat-label{font-size:10px;color:#888;font-weight:700}
 
+/* ===== BUILD MANUAL STUDIO ===== */
+.manual-studio{max-width:1220px;margin:0 auto;padding:20px;display:grid;grid-template-columns:minmax(280px,420px) 1fr;gap:20px;position:relative;z-index:1}
+.manual-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:18px;backdrop-filter:blur(14px);box-shadow:0 14px 36px rgba(0,0,0,.24)}
+.manual-title{font-size:20px;font-weight:950;color:var(--white);margin-bottom:8px}
+.manual-sub{font-size:13px;color:#aaa;line-height:1.6;margin-bottom:14px}
+.manual-upload{display:grid;place-items:center;min-height:210px;border:2px dashed rgba(255,215,0,.38);border-radius:10px;background:rgba(255,255,255,.04);cursor:pointer;text-align:center;padding:16px}
+.manual-upload input{display:none}
+.manual-upload-icon{font-size:38px;margin-bottom:8px}
+.manual-pick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}
+.manual-pick{border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(255,255,255,.05);color:var(--white);padding:8px;display:flex;align-items:center;gap:8px;text-align:left;cursor:pointer;font-family:inherit;font-weight:850}
+.manual-pick img{width:34px;height:42px;object-fit:contain}
+.manual-preview{display:grid;grid-template-columns:220px 1fr;gap:18px;align-items:start}
+.manual-preview-art{min-height:260px;border-radius:10px;background:linear-gradient(135deg,#0d0d2b,#141428);display:grid;place-items:center;padding:16px}
+.manual-preview-art img{max-width:180px;max-height:240px;object-fit:contain;filter:drop-shadow(0 0 18px rgba(255,215,0,.25))}
+.manual-meta{display:grid;gap:10px}
+.manual-name{font-size:24px;font-weight:950;color:var(--gold)}
+.manual-source{width:max-content;max-width:100%;padding:6px 9px;border-radius:999px;background:rgba(255,215,0,.12);border:1px solid rgba(255,215,0,.24);color:var(--gold);font-size:11px;font-weight:900}
+.manual-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.manual-stat{padding:10px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);text-align:center}
+.manual-stat b{display:block;font-size:20px;color:var(--white)}
+.manual-stat span{font-size:11px;color:#999;font-weight:800}
+.manual-palette{display:flex;flex-wrap:wrap;gap:6px}
+.manual-color{display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.06);font-size:11px;color:#ddd;font-weight:850}
+.manual-color i{width:14px;height:14px;border-radius:4px;display:block;border:1px solid rgba(255,255,255,.25)}
+.manual-parts{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}
+.manual-parts th,.manual-parts td{padding:9px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
+.manual-parts th{color:var(--gold);font-size:11px;letter-spacing:1px}
+.manual-steps{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+.manual-step{padding:12px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+.manual-step b{display:block;color:var(--white);margin-bottom:5px}
+.manual-step span{font-size:12px;color:#aaa;line-height:1.55}
+.manual-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.manual-action{border:0;border-radius:8px;background:var(--gold);color:#1a1a1a;font-family:inherit;font-weight:950;padding:10px 14px;cursor:pointer;text-decoration:none}
+.manual-action.secondary{background:rgba(255,255,255,.09);color:var(--white);border:1px solid rgba(255,255,255,.12)}
+.manual-empty{min-height:360px;display:grid;place-items:center;text-align:center;color:#999}
+@media(max-width:820px){.manual-studio{grid-template-columns:1fr;padding:14px}.manual-preview{grid-template-columns:1fr}.manual-preview-art{min-height:220px}.manual-stats,.manual-steps{grid-template-columns:1fr}.manual-pick-grid{grid-template-columns:1fr}.manual-parts{font-size:11px}.manual-parts th,.manual-parts td{padding:7px 5px}}
+
 /* ===== LEADERBOARD ===== */
 .lb-wrap{max-width:900px;margin:0 auto;padding:0 20px 24px;position:relative;z-index:1}
 .lb-title{text-align:center;font-size:20px;font-weight:900;color:var(--white);margin-bottom:12px}
@@ -2765,6 +2802,7 @@ body::before{
 }
 @media(max-width:768px){
   .hero-banner{
+    width:auto;
     height:240px;
     margin:10px 10px 0;
     border-width:6px;
@@ -3973,6 +4011,11 @@ body::before{
 .weapon-card .card-showcase.card-bg-art .rarity-score{
   z-index:6;
 }
+/* 商品与作者支援区暂不对外开放：容器保留在 DOM 里，避免 render 报错，但对访客不可见 */
+.commerce-row[hidden],
+.commerce-row[hidden] *{
+  display:none !important;
+}
 .commerce-row{
   display:grid;
   grid-template-columns:1.15fr .85fr;
@@ -4072,6 +4115,18 @@ body::before{
   background:#f2f0ec;
   color:#8b8680;
   cursor:not-allowed;
+}
+.product-card .commerce-link,.support-options .support-link{
+  width:100%;
+  border:0;
+  font-family:inherit;
+}
+.commerce-status{
+  margin-top:12px;
+  color:#77726b;
+  font-size:11px;
+  font-weight:800;
+  line-height:1.55;
 }
 .support-options{
   display:grid;
@@ -4854,6 +4909,7 @@ body::before{
       <button class="nav-tab" data-panel="tree">🌳 人格世界树</button>
       <button class="nav-tab" data-panel="comics">📖 漫画馆</button>
       <button class="nav-tab" data-panel="quiz">🧭 配武器测试</button>
+      <button class="nav-tab" data-panel="manual">📐 拼装说明书</button>
       <button class="nav-tab" data-panel="growth">📣 推广中心</button>
       <button class="nav-tab" data-panel="plan">🚀 总计划</button>
       <button class="nav-tab" data-panel="studio">🏛️ 我的馆</button>
@@ -4974,42 +5030,24 @@ body::before{
     <button class="filter-btn" data-filter="spear">🔱 长柄</button>
   </div>
   <div class="grid-container" id="weaponsGrid"></div>
-  <div class="commerce-row">
+  <div class="commerce-row" id="commerceRow" hidden aria-hidden="true">
     <section class="shop-panel">
       <div class="commerce-kicker">BRICK TOY PICKS</div>
       <div class="commerce-title">积木玩具推广橱窗</div>
       <div class="commerce-sub">这里可以放你的淘宝、京东、拼多多、亚马逊或联盟推广链接，适合推荐同款积木武器、城堡套装和小人配件。</div>
-      <div class="product-list">
-        <article class="product-card">
-          <div class="product-visual">🗡️</div>
-          <div class="product-name">积木剑刃套装</div>
-          <div class="product-note">适合收藏武器墙、骑士角色和战场摆拍。</div>
-          <a class="commerce-link" href="#forumPanel" onclick="document.getElementById('forumPanel').scrollIntoView({behavior:'smooth',block:'start'})">去论坛推荐</a>
-        </article>
-        <article class="product-card">
-          <div class="product-visual">🔫</div>
-          <div class="product-name">积木枪械配件</div>
-          <div class="product-note">适合机甲、科幻小队和自定义武器库。</div>
-          <a class="commerce-link" href="#forumPanel" onclick="document.getElementById('forumPanel').scrollIntoView({behavior:'smooth',block:'start'})">去论坛推荐</a>
-        </article>
-        <article class="product-card">
-          <div class="product-visual">🏰</div>
-          <div class="product-name">积木战场底板</div>
-          <div class="product-note">适合搭建角色战场、展示架和拍照场景。</div>
-          <a class="commerce-link" href="#forumPanel" onclick="document.getElementById('forumPanel').scrollIntoView({behavior:'smooth',block:'start'})">去论坛推荐</a>
-        </article>
-      </div>
+      <div class="product-list" id="commerceProducts"></div>
+      <div class="commerce-status" id="commerceStatus">购买链接尚未配置。只有经过核验的链接才会开放；点击次数仅保存在当前设备，不记录身份信息。</div>
     </section>
     <section class="support-panel">
       <div class="commerce-kicker">SUPPORT THE CREATOR</div>
       <div class="commerce-title">作者支援计划</div>
       <div class="commerce-sub">喜欢这个积木武器库的话，可以在这里支持作者继续更新角色、武器和战场玩法。</div>
-      <div class="support-options">
+      <div class="support-options" id="commerceSupport">
         <a class="support-link" href="#forumPanel" onclick="document.getElementById('forumPanel').scrollIntoView({behavior:'smooth',block:'start'})">💛 论坛留言支持</a>
         <a class="support-link" href="#growth" onclick="switchPanel('growth');return false">📣 帮忙推广</a>
         <a class="support-link" href="#studio" onclick="switchPanel('studio');return false">🏛️ 关注作者馆</a>
       </div>
-      <div class="support-note">正式赞助入口会在配置收款方式后开放；现在可以先用推广、论坛建议和上传作品支持项目。</div>
+      <div class="support-note">正式支援入口会在配置并核验收款方式后开放；现在可以先用推广、论坛建议和上传作品支持项目。</div>
     </section>
     <section class="commerce-funnel" id="commerceFunnel"></section>
   </div>
@@ -5040,6 +5078,36 @@ body::before{
     <div class="lb-title">🏆 战力排行榜</div>
     <table class="lb-table"><thead><tr><th>排名</th><th>武器</th><th>票数</th><th>战力</th><th>战力条</th></tr></thead><tbody id="lbBody"></tbody></table>
   </div>
+</div>
+
+<!-- BUILD MANUAL PANEL -->
+<div class="panel" id="panel-manual">
+  <div class="section-header"><h2>📐 积木拼装说明书工坊</h2><div class="divider"></div><div class="sub">上传武器照片或选择现有武器，自动识别积木颜色、轮廓和结构，生成配装/拼装说明书</div></div>
+  <section class="manual-studio">
+    <aside class="manual-card">
+      <div class="manual-title">识别积木武器</div>
+      <div class="manual-sub">配置云端视觉 AI 后会优先生成更细的零件和步骤；未配置、超时或服务不可用时，会自动使用本地 Canvas 估算，不会阻断说明书。</div>
+      <label class="manual-upload" for="manualFile">
+        <input id="manualFile" type="file" accept="image/*">
+        <div>
+          <div class="manual-upload-icon">📷</div>
+          <div><b>上传一张积木武器照片</b></div>
+          <div class="manual-sub">建议浅色背景、俯拍、武器占满画面</div>
+        </div>
+      </label>
+      <div class="manual-title" style="margin-top:18px;font-size:16px">从武器库生成</div>
+      <div class="manual-pick-grid" id="manualWeaponPicker"></div>
+    </aside>
+    <div class="manual-card" id="manualResult">
+      <div class="manual-empty">
+        <div>
+          <div style="font-size:42px;margin-bottom:10px">🧱</div>
+          <b>等待识别</b><br>
+          选择一把武器后，会在这里生成零件清单、分层拼装步骤和可复制说明书。
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
 
 <!-- CHARACTERS PANEL -->
@@ -5128,7 +5196,7 @@ body::before{
       <div class="plan-hero">
         <div class="plan-kicker">MUMU BRICK UNIVERSE</div>
         <div class="plan-title">先把好玩的东西做完整，再让更多人参与进来。</div>
-        <div class="plan-copy">当前主线是：玩家上传积木武器，系统变成收藏卡；角色图鉴和漫画馆负责讲故事；配武器测试和战斗分享卡负责传播；商业化入口支持继续更新素材、角色和玩法。</div>
+        <div class="plan-copy">当前主线是：玩家上传积木武器，系统变成收藏卡；角色图鉴和漫画馆负责讲故事；配武器测试和战斗分享卡负责传播。商品推荐和作者支援还在准备中，暂时没有开放购买入口。</div>
         <div class="plan-actions">
           <button class="battle-start-btn ready" type="button" onclick="switchPanel('weapons');document.getElementById('uploadStation')&&document.getElementById('uploadStation').scrollIntoView({behavior:'smooth',block:'start'})">上传武器</button>
           <button class="battle-start-btn ready" type="button" onclick="switchPanel('comics')">看漫画馆</button>
@@ -5158,8 +5226,8 @@ body::before{
         <article class="plan-card">
           <div class="plan-card-icon">💛</div>
           <div class="plan-card-title">持续更新</div>
-          <div class="plan-card-copy">购买推荐和作者支援入口会承接后续素材、服务器和推广成本。</div>
-          <button class="commerce-link" type="button" onclick="switchPanel('weapons');document.querySelector('.commerce-row')&&document.querySelector('.commerce-row').scrollIntoView({behavior:'smooth',block:'start'})">去支援区</button>
+          <div class="plan-card-copy">素材、服务器和推广成本还在自己扛，商品推荐和作者支援只是以后的可能方向，暂时不开放购买通道。</div>
+          <button class="commerce-link" type="button" onclick="switchPanel('growth')">去看看推广玩法</button>
         </article>
       </div>
     </div>
@@ -5348,7 +5416,10 @@ body::before{
 
 <div class="footer">MADE WITH 🧱 BRICKS & ❤️ · 沐沐的积木武器库 · 2026 · 16人格战士参战</div>
 
-<script src="supabase-config.js?v=3"></script>
+<script src="supabase-config.js?v=4"></script>
+<script src="manual-vision.js?v=1"></script>
+<script src="commerce-config.js?v=1"></script>
+<script src="commerce.js?v=1"></script>
 <script>
 // ===== PARTICLES =====
 (function(){const c=document.getElementById('particles');const colors=['#ffd70033','#e74c3c33','#3498db33','#9b59b633','#2ecc7133'];for(let i=0;i<30;i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.width=p.style.height=(2+Math.random()*4)+'px';p.style.background=colors[Math.floor(Math.random()*colors.length)];p.style.animationDuration=(8+Math.random()*12)+'s';p.style.animationDelay=Math.random()*10+'s';c.appendChild(p)}})();
@@ -6025,6 +6096,13 @@ document.querySelectorAll('.nav-tab').forEach(tab=>{
   if(!tab.dataset.panel)return;
   tab.addEventListener('click',()=>switchPanel(tab.dataset.panel));
 });
+function applyDeepLinkPanel(){
+  const params=new URLSearchParams(location.search);
+  const panel=params.get('panel');
+  if(panel&&document.getElementById('panel-'+panel))switchPanel(panel);
+  const manual=params.get('manual');
+  if(manual)setTimeout(()=>startManualFromWeapon(manual),80);
+}
 
 // ===== DATA =====
 const UPLOAD_ONCE_KEY='mumu_uploaded_weapon_once';
@@ -7454,9 +7532,10 @@ async function copyGrowthText(text){
 const MASTER_PLAN_STEPS=[
   {status:'done',label:'已上线',title:'武器库与上传审核',copy:'内置武器、玩家上传、AI 识别、后台审核和收藏卡预览已经形成基础入口。',panel:'weapons'},
   {status:'done',label:'已上线',title:'16 位 MBTI 角色宇宙',copy:'角色图鉴、定位图、头像、漫画资源和战斗台词已经接入主站。',panel:'characters'},
-  {status:'now',label:'当前主线',title:'漫画馆 V2 与世界树 V2',copy:'漫画章节浏览、分享文案、世界树阵营导览和角色跳转入口是当前体验闭环。',panel:'comics'},
-  {status:'now',label:'推广循环',title:'测试、战斗、分享卡',copy:'配武器测试与战斗分享卡负责把玩家带回网站，推广中心记录发布证明。',panel:'quiz'},
-  {status:'next',label:'下一批',title:'英文站与商业入口',copy:'英文站同步中文核心体验，购买推荐和作者支援入口再逐步接真实链接。',panel:'growth'}
+  {status:'done',label:'已上线',title:'漫画馆与人格世界树',copy:'漫画阅读、分享链接、关系高亮、角色跳转和阵营导览已经接入中文主站。',panel:'comics'},
+  {status:'next',label:'准备中',title:'商业与商品推荐',copy:'商品橱窗和作者支援入口还在准备阶段，目前对访客不展示，也没有开放购买通道；先继续打磨内容和玩法。',panel:'growth'},
+  {status:'now',label:'当前主线',title:'沙盒渲染模块化与视觉 AI 上线',copy:'沙盒的世界、规则、存档、角色、输入、战斗和 HUD 已拆成 7 个模块并覆盖 12 项测试；下一步拆分 Canvas 场景渲染，并完成视觉 AI 云端部署。',panel:'manual'},
+  {status:'next',label:'下一批',title:'内容和运营',copy:'先继续做内容运营和自然流推广；商品与支援入口等未来条件成熟后再单独评估，目前不会对外开放。',panel:'growth'}
 ];
 const COMMERCE_FUNNEL_STEPS=[
   {title:'1. 玩一下',copy:'先让玩家做配武器测试、看漫画或打一场战斗，形成可分享结果。'},
@@ -7760,7 +7839,7 @@ function renderForum(){
       '</div>'+
       '<div class="forum-body">'+escapeHTML(p.body)+'</div>'+
       '<div class="forum-replies">'+replies+'</div>'+
-      '<div class="forum-reply-row"><input id="forumReply'+p.id+'" maxlength="120" placeholder="回复这个话题..."><button class="forum-reply-btn" onclick="postForumReply('+JSON.stringify(String(p.id))+')">回复</button></div>'+
+      '<div class="forum-reply-row"><input id="forumReply'+p.id+'" maxlength="120" placeholder="回复这个话题..."><button class="forum-reply-btn" onclick="postForumReply('+jsAttr(p.id)+')">回复</button></div>'+
     '</article>';
   }).join('');
 }
@@ -7776,7 +7855,7 @@ function renderWeapons(){
     const d=document.createElement('div');d.className='weapon-card';d.dataset.type=w.t;d.dataset.rarity=rarity.key;
     d.onclick=event=>{event.stopPropagation();openModal(w.i)};
     const votes=getVotes(w.i);
-    const safeId=JSON.stringify(String(w.i));
+    const safeId=jsAttr(w.i);
     d.innerHTML=
       '<div class="card-showcase card-bg-art '+(standalone?'has-standalone':'')+'"'+bgStyle+'>'+
         (standalone?'<img class="weapon-showcase-full" src="'+escapeHTML(standalone)+'" alt="'+escapeHTML(w.n)+' 橱窗图" loading="lazy">':'')+
@@ -7907,9 +7986,9 @@ function renderWeaponPromoKitHTML(w){
   return '<div class="weapon-promo-title">📣 这把武器的发布素材包</div>'+
     '<div class="weapon-promo-copy">'+escapeHTML(weaponPromoCaption(w)+'\n\n置顶评论：'+weaponPinnedComment(w))+'</div>'+
     '<div class="weapon-promo-actions">'+
-      '<button class="growth-chip secondary" type="button" onclick="copyWeaponPromoCaption('+JSON.stringify(String(w.i))+')">复制标题/简介</button>'+
-      '<button class="growth-chip" type="button" onclick="copyWeaponPinnedComment('+JSON.stringify(String(w.i))+')">复制置顶评论</button>'+
-      '<button class="growth-chip" type="button" onclick="sendWeaponToGrowth('+JSON.stringify(String(w.i))+')">提交发布证明</button>'+
+      '<button class="growth-chip secondary" type="button" onclick="copyWeaponPromoCaption('+jsAttr(w.i)+')">复制标题/简介</button>'+
+      '<button class="growth-chip" type="button" onclick="copyWeaponPinnedComment('+jsAttr(w.i)+')">复制置顶评论</button>'+
+      '<button class="growth-chip" type="button" onclick="sendWeaponToGrowth('+jsAttr(w.i)+')">提交发布证明</button>'+
     '</div>';
 }
 
@@ -8757,14 +8836,15 @@ function openModal(id){
         '<div class="modal-stat"><div class="modal-stat-val">'+v+' 🗳️</div><div class="modal-stat-label">得票数</div></div>'+
       '</div>'+
       '<div class="vote-section">'+
-        '<div class="vote-btn'+(hasVoted(w.i)?' voted':'')+'" onclick="event.stopPropagation();voteWeapon('+JSON.stringify(String(w.i))+',this)">'+(hasVoted(w.i)?'❤️':'🤍')+'</div>'+
+        '<div class="vote-btn'+(hasVoted(w.i)?' voted':'')+'" onclick="event.stopPropagation();voteWeapon('+jsAttr(w.i)+',this)">'+(hasVoted(w.i)?'❤️':'🤍')+'</div>'+
         '<span class="vote-count" id="mvc'+w.i+'">'+v+'</span>'+
         '<span class="vote-label">投票 (+'+v*8+'战力)</span>'+
       '</div>'+
       '<div class="modal-action-row">'+
-        '<button class="modal-action-btn" type="button" onclick="shareWeaponShowcase('+JSON.stringify(String(w.i))+')">分享橱窗</button>'+
-        '<button class="modal-action-btn secondary" type="button" onclick="copyWeaponPromoCaption('+JSON.stringify(String(w.i))+')">复制发布文案</button>'+
-        '<button class="modal-action-btn" type="button" onclick="sendWeaponToGrowth('+JSON.stringify(String(w.i))+')">去推广中心</button>'+
+        '<button class="modal-action-btn" type="button" onclick="shareWeaponShowcase('+jsAttr(w.i)+')">分享橱窗</button>'+
+        '<button class="modal-action-btn secondary" type="button" onclick="startManualFromWeapon('+jsAttr(w.i)+')">生成拼装说明书</button>'+
+        '<button class="modal-action-btn secondary" type="button" onclick="copyWeaponPromoCaption('+jsAttr(w.i)+')">复制发布文案</button>'+
+        '<button class="modal-action-btn" type="button" onclick="sendWeaponToGrowth('+jsAttr(w.i)+')">去推广中心</button>'+
         '<a class="modal-action-btn secondary" href="#characters" onclick="closeModal();switchPanel(\'characters\');return false">带去角色战场</a>'+
         '<a class="modal-action-btn" href="#forumPanel" onclick="closeModal();document.getElementById(\'forumPanel\').scrollIntoView({behavior:\'smooth\',block:\'start\'});return false">推荐购买渠道</a>'+
       '</div>'+
@@ -9500,8 +9580,206 @@ function closeArena(){
   battleState=null;
 }
 
+// ===== BUILD MANUAL GENERATOR =====
+let currentManual=null,manualRequestToken=0;
+function renderManualStudio(){
+  const picker=document.getElementById('manualWeaponPicker');
+  if(!picker)return;
+  picker.innerHTML=WEAPONS.map(w=>{
+    const img=weaponShowcaseImage(w)||IMG[w.i]||w.originalImg||'';
+    return '<button class="manual-pick" type="button" onclick="startManualFromWeapon('+jsAttr(w.i)+')">'+
+      '<img src="'+escapeHTML(img)+'" alt="'+escapeHTML(w.n)+'">'+
+      '<span>'+escapeHTML(w.n)+'<br><small>'+escapeHTML(w.l)+' · '+(w.pieceCount||'待估算')+' 颗</small></span>'+
+    '</button>';
+  }).join('');
+  const file=document.getElementById('manualFile');
+  if(file&&!file.dataset.ready){
+    file.dataset.ready='1';
+    file.addEventListener('change',e=>{
+      const f=e.target.files&&e.target.files[0];
+      if(!f)return;
+      const reader=new FileReader();
+      reader.onload=()=>analyzeManualImage(String(reader.result),{n:f.name.replace(/\.[^.]+$/,''),t:'sword',l:'上传武器',pieceCount:0,analysis:{shape:'上传识别轮廓'}});
+      reader.readAsDataURL(f);
+    });
+  }
+}
+function startManualFromWeapon(id){
+  const w=WEAPONS.find(x=>String(x.i)===String(id));
+  if(!w)return;
+  closeModal();
+  switchPanel('manual');
+  renderManualStudio();
+  const src=weaponShowcaseImage(w)||IMG[w.i]||w.originalImg||'';
+  analyzeManualImage(src,w);
+}
+function analyzeManualImage(src,w){
+  const requestToken=++manualRequestToken;
+  const result=document.getElementById('manualResult');
+  if(result)result.innerHTML='<div class="manual-empty"><div><div style="font-size:38px;margin-bottom:10px">🔎</div><b>正在识别积木结构...</b><br>分析颜色、轮廓和拼装层级。</div></div>';
+  if(result&&window.matchMedia('(max-width:820px)').matches)result.scrollIntoView({behavior:'smooth',block:'start'});
+  const img=new Image();
+  img.crossOrigin='anonymous';
+  img.onload=()=>upgradeManualWithVision(buildManualFromImage(img,src,w),src,w,requestToken);
+  img.onerror=()=>upgradeManualWithVision(buildManualFallback(src,w),src,w,requestToken);
+  img.src=src;
+}
+async function upgradeManualWithVision(local,src,w,requestToken){
+  if(requestToken!==manualRequestToken)return;
+  const vision=window.MumuManualVision;
+  if(!vision||!vision.isEnabled()){
+    local.source='local';
+    renderManualResult(local);
+    return;
+  }
+  local.source='local-pending';
+  renderManualResult(local);
+  try{
+    const response=await vision.analyze({
+      src,
+      locale:'zh',
+      weaponHint:{name:w&&w.n||'',type:w&&w.t||local.type},
+      localEstimate:{estimated:local.estimated,type:local.type}
+    });
+    if(requestToken!==manualRequestToken)return;
+    renderManualResult(manualPayloadFromVision(response,src,w,local));
+  }catch(error){
+    if(requestToken!==manualRequestToken)return;
+    local.source='local-fallback';
+    renderManualResult(local);
+  }
+}
+function manualPayloadFromVision(response,src,w,local){
+  const ai=response.analysis;
+  return {
+    src,w,name:(w&&w.n)||'上传积木武器',type:ai.type,
+    palette:ai.colors.map(color=>({hex:color.hex,name:color.name,count:color.share})),
+    estimated:ai.estimated_bricks,aspect:local.aspect,width:local.width,height:local.height,
+    parts:ai.parts,steps:ai.steps,source:'vision',confidence:ai.confidence,
+    shape:ai.shape_summary,model:response.model
+  };
+}
+function buildManualFromImage(img,src,w){
+  const size=180,canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
+  canvas.width=size;canvas.height=size;
+  const scale=Math.min(size/img.naturalWidth,size/img.naturalHeight),dw=img.naturalWidth*scale,dh=img.naturalHeight*scale,dx=(size-dw)/2,dy=(size-dh)/2;
+  ctx.clearRect(0,0,size,size);ctx.drawImage(img,dx,dy,dw,dh);
+  let data;
+  try{data=ctx.getImageData(0,0,size,size).data}catch(e){return buildManualFallback(src,w)}
+  let minX=size,minY=size,maxX=0,maxY=0,count=0;const buckets={};
+  for(let y=0;y<size;y+=2)for(let x=0;x<size;x+=2){
+    const i=(y*size+x)*4,r=data[i],g=data[i+1],b=data[i+2],a=data[i+3];
+    const bright=(r+g+b)/3;
+    if(a<80||bright>244||(r>235&&g>235&&b>235))continue;
+    minX=Math.min(minX,x);minY=Math.min(minY,y);maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);count++;
+    const key=[Math.round(r/32)*32,Math.round(g/32)*32,Math.round(b/32)*32].join(',');
+    buckets[key]=(buckets[key]||0)+1;
+  }
+  if(count<20)return buildManualFallback(src,w);
+  const width=Math.max(1,maxX-minX),height=Math.max(1,maxY-minY),aspect=width/height;
+  const palette=Object.entries(buckets).sort((a,b)=>b[1]-a[1]).map(([key,n])=>{
+    const rgb=key.split(',').map(Number),hex='#'+rgb.map(v=>Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join('');
+    return {hex,count:n,name:brickColorName(rgb)};
+  }).filter((item,index,items)=>items.findIndex(candidate=>candidate.name===item.name)===index).slice(0,7);
+  const base=w&&w.pieceCount?Number(w.pieceCount):0;
+  const visualEstimate=Math.max(24,count*.08);
+  const adjustedVisual=base?Math.max(base*.65,Math.min(base*1.35,visualEstimate)):visualEstimate;
+  const estimated=Math.round(base?base*.85+adjustedVisual*.15:adjustedVisual);
+  const type=w&&w.t?w.t:(aspect>1.45?'gun':aspect<.72?'spear':'sword');
+  return manualPayload(src,w,palette,estimated,type,aspect,width,height);
+}
+function buildManualFallback(src,w){
+  const palette=(w&&w.analysis&&w.analysis.colorCount?['#facc15','#2563eb','#ef4444','#8b5a2b','#111827','#e5e7eb']:['#8a5a36','#68717c','#facc15','#2563eb']).map(hex=>({hex,name:brickColorName(hexToRgb(hex)),count:1}));
+  const estimated=Number(w&&w.pieceCount)||96;
+  return manualPayload(src,w,palette,estimated,(w&&w.t)||'sword',1.1,80,120);
+}
+function manualPayload(src,w,palette,estimated,type,aspect,width,height){
+  const main=palette[0]||{name:'混色',hex:'#999'};
+  const accent=palette[1]||main;
+  const parts=manualParts(estimated,type,palette);
+  const steps=manualSteps((w&&w.n)||'上传武器',type,main,accent,parts);
+  return {src,w,name:(w&&w.n)||'上传积木武器',type,palette,estimated,aspect,width,height,parts,steps,source:'local',confidence:0};
+}
+function hexToRgb(hex){const s=hex.replace('#','');return[parseInt(s.slice(0,2),16),parseInt(s.slice(2,4),16),parseInt(s.slice(4,6),16)]}
+function brickColorName(rgb){
+  const [r,g,b]=rgb;
+  if(r+g+b<120)return'黑/深灰';
+  if(r>210&&g>210&&b>210)return'白/透明';
+  if(r>190&&g>145&&b<90)return'黄/金';
+  if(r>170&&g<100&&b<100)return'红';
+  if(r<95&&g>120&&b<110)return'绿';
+  if(r<110&&g<150&&b>155)return'蓝';
+  if(r>120&&g<95&&b>130)return'紫';
+  if(r>120&&g>80&&b<70)return'棕/橙';
+  return'灰/混色';
+}
+function manualParts(total,type,palette){
+  const long=type==='spear'||type==='gun';
+  const blade=type==='gun'?'炮身/枪管':type==='spear'?'长柄/矛头':'剑身';
+  const handle=Math.max(10,Math.round(total*.16)),body=Math.max(18,Math.round(total*(long?.42:.36))),core=Math.max(12,Math.round(total*.18)),decor=Math.max(8,Math.round(total*.14)),lock=Math.max(6,total-handle-body-core-decor);
+  return [
+    {name:'1x2 基础砖',use:'主骨架 / 中轴',qty:core,color:palette[0]&&palette[0].name||'主色'},
+    {name:'1x4 长条砖',use:blade,qty:body,color:palette[1]&&palette[1].name||'副色'},
+    {name:'2x2 方砖',use:'护手 / 机匣 / 加宽区',qty:handle,color:palette[2]&&palette[2].name||'强调色'},
+    {name:'1x1 圆点或小砖',use:'装饰、瞄具、能量点',qty:decor,color:'按图案混色'},
+    {name:'薄板 / 连接件',use:'上下夹层锁定',qty:lock,color:'黑/灰/透明优先'}
+  ];
+}
+function manualSteps(name,type,main,accent,parts){
+  const head=type==='gun'?'炮口':type==='spear'?'矛头':'剑尖';
+  return [
+    {title:'1. 摆出轮廓底稿',text:'用 '+main.name+' 零件在桌面摆出 '+name+' 的外轮廓，先确认长度、握把位置和 '+head+' 朝向。'},
+    {title:'2. 搭中轴骨架',text:'使用 '+parts[0].name+' 做一条连续中轴，左右每 4-6 格补一个连接点，保证拿起时不散。'},
+    {title:'3. 拼主体层',text:'按图片主色铺 '+(type==='gun'?'枪身和弹匣':'刃身或长柄')+'，宽的位置用 2x2 方砖补强，细的位置用 1x2 保持线条。'},
+    {title:'4. 加护手和握把',text:'握把建议用深色砖交错堆 2-3 层，护手区域左右对称，儿童手握处不要留尖角。'},
+    {title:'5. 做颜色装饰',text:'把 '+accent.name+' 和其他高亮色放在边缘、能量核心或瞄具位置，尽量每隔一段重复一次，成品会更像原图。'},
+    {title:'6. 上下夹层锁定',text:'最后用薄板跨过接缝，把容易断的中轴、护手、'+head+' 位置压住；轻轻晃动检查松动点。'}
+  ];
+}
+function renderManualResult(m){
+  currentManual=m;
+  const typeLabel=weaponLabel(m.type);
+  const sourceLabel=m.source==='vision'?'✨ 云端视觉 AI · 置信度 '+m.confidence+'%':m.source==='local-pending'?'✨ 本地结果已生成 · 云端 AI 优化中':m.source==='local-fallback'?'🧮 本地图片估算 · 云端暂不可用':'🧮 本地图片估算';
+  const palette=m.palette.map(p=>'<span class="manual-color"><i style="background:'+escapeHTML(p.hex)+'"></i>'+escapeHTML(p.name)+'</span>').join('');
+  const partRows=m.parts.map(p=>'<tr><td>'+escapeHTML(p.name)+'</td><td>'+escapeHTML(p.use)+'</td><td>'+p.qty+'</td><td>'+escapeHTML(p.color)+'</td></tr>').join('');
+  const steps=m.steps.map(s=>'<div class="manual-step"><b>'+escapeHTML(s.title)+'</b><span>'+escapeHTML(s.text)+'</span></div>').join('');
+  const result=document.getElementById('manualResult');
+  result.innerHTML='<div class="manual-preview">'+
+    '<div class="manual-preview-art"><img src="'+escapeHTML(m.src)+'" alt="'+escapeHTML(m.name)+'"></div>'+
+    '<div class="manual-meta">'+
+      '<div class="manual-name">'+escapeHTML(m.name)+'</div>'+
+      '<div class="manual-source">'+sourceLabel+'</div>'+
+      '<div class="manual-sub">自动识别结果：'+typeLabel+' · 轮廓比例 '+m.aspect.toFixed(2)+' · 尺寸采样 '+Math.round(m.width)+'×'+Math.round(m.height)+(m.shape?' · '+escapeHTML(m.shape):'')+'。数量为估算值，实际拼装可按手头零件微调。</div>'+
+      '<div class="manual-stats"><div class="manual-stat"><b>'+m.estimated+'</b><span>估算颗粒</span></div><div class="manual-stat"><b>'+m.palette.length+'</b><span>主色数量</span></div><div class="manual-stat"><b>'+m.steps.length+'</b><span>拼装步骤</span></div></div>'+
+      '<div class="manual-palette">'+palette+'</div>'+
+      '<div class="manual-actions"><button class="manual-action" type="button" onclick="copyManualText()">复制说明书</button><button class="manual-action secondary" type="button" onclick="printManualPage()">打印页面</button></div>'+
+    '</div></div>'+
+    '<table class="manual-parts"><thead><tr><th>零件</th><th>用途</th><th>数量</th><th>建议颜色</th></tr></thead><tbody>'+partRows+'</tbody></table>'+
+    '<div class="manual-steps">'+steps+'</div>';
+}
+function manualText(m){
+  if(!m)return '';
+  return ['《'+m.name+'》积木拼装说明书','类型：'+weaponLabel(m.type),'估算颗粒：约 '+m.estimated+' 颗','主色：'+m.palette.map(p=>p.name).join(' / '),'','零件清单：'].concat(
+    m.parts.map(p=>' - '+p.name+' × '+p.qty+'：'+p.use+'（'+p.color+'）'),
+    ['','拼装步骤：'],
+    m.steps.map(s=>s.title+' '+s.text),
+    ['','分析来源：'+(m.source==='vision'?'云端视觉 AI':'本地图片估算'),'提示：这是基于照片生成的第一版说明书，实际拼装时请按零件库存微调。']
+  ).join('\n');
+}
+async function copyManualText(){
+  const text=manualText(currentManual);
+  if(!text){gentleNotice('请先上传或选择一把武器。');return}
+  if(navigator.clipboard)await navigator.clipboard.writeText(text);
+  else prompt('复制说明书',text);
+  gentleNotice('拼装说明书已复制。');
+}
+function printManualPage(){
+  window.print();
+}
+
 // ===== INIT =====
 function renderStaticShell(){
+  MumuCommerce.render({locale:'zh',productContainerId:'commerceProducts',supportContainerId:'commerceSupport',statusId:'commerceStatus'});
   renderWeapons();
   renderForum();
   renderCharacters();
@@ -9511,11 +9789,13 @@ function renderStaticShell(){
   renderCommerceFunnel();
   renderQuiz();
   renderMasterPlan();
+  renderManualStudio();
   updateLeaderboard();
 }
 
 renderStaticShell();
 openComicFromHash();
+applyDeepLinkPanel();
 
 loadData().then(async()=>{
   await refreshPromotionBonus();
@@ -9531,6 +9811,8 @@ loadData().then(async()=>{
   renderCommerceFunnel();
   renderQuiz();
   renderStudio();
+  renderManualStudio();
+  applyDeepLinkPanel();
   updateDashboard();
   updateLeaderboard();
 });
