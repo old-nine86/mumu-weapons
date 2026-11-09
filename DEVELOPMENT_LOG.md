@@ -2,6 +2,251 @@
 
 This log records the long-running development history for Mumu Brick Weapons. New phases should be added at the top or bottom with date, goal, shipped changes, verification, and next step.
 
+## 2026-11-09: 第二代预览进度与下一步计划
+
+Goal:
+- 根据当前第二代预览进度写下下一步工作计划，标出高优先级与等有富裕流量再做的事项。本次只更新计划文档，不改线上站，不提交，不发布。
+
+Current status:
+- 第二代九个预览页已齐，全部只在 `preview/`：首页、角色图鉴、后台后仓、上传、论坛、战场、说明书、世界树、沙盒。风格统一为已认可的马卡龙橱窗风；角色图鉴方向已获认可，后续前台预览按同样感觉来。
+- 世界树头像对齐已完成：16 位战士都坐进对应积木圆框。橙色树枝尖上多出一个装饰空框，是原图装饰，不是缺角色。
+- 约 390px 手机宽度已整理：预览标签可横向滑动，没有底栏的页面补回了可滑动导航，说明书和沙盒改为单列，战场「打开线上战场」「去沙盒建造」已改回一行。前台和后台可见文案已去掉数据表名、接口名等技术标识。
+- 后台预览已有七块：总览、待审武器、已通过、推广证明、论坛审核、上传配额、审核履历。待审、已通过和推广证明可对接现有审核能力；总览统计、论坛隐藏/恢复、修改上传配额和完整审核履历，依赖尚未上线的 `preview/v2-admin-extra-rpcs.sql`，这份 SQL 还没有应用到线上数据库。
+- 上传页和论坛前台已有第二代预览，尚未正式接入线上对应页面。
+- AI 精修工作台仍使用线上 `admin.html`，没有搬进第二代后台预览。
+- 线上站未改。本地 `main` 比远程超前 1 个提交（双语手册 + 隐藏未激活商品区），`preview/` 尚未提交。
+
+High priority（本周优先推进；仍只在预览里做，不改线上站、不发布）:
+1. 前台继续按已认可的人物图鉴风格，优化首页、角色页和其他预览页的美术与交互，保持精品玩具橱窗气质。
+2. 后台功能落地准备：把总览、论坛审核、上传配额、审核履历继续接到真实数据。主人点头后，再把 `preview/v2-admin-extra-rpcs.sql` 应用到 Supabase，让论坛隐藏和修改上传配额能对真实数据生效。未要求发布前，不替换线上 `admin.html`。
+3. 上传页和论坛前台预览继续按同一风格打磨，为以后正式接入线上对应页面做准备。正式替换线上页需要另一次明确同意。
+
+When usage allows（等有富裕流量再做）:
+- 把 AI 精修工作台从线上后台搬进第二代后台预览。
+- 做英文第二代预览页。
+- 部署 Vision 云函数，并用一张中文和一张英文实图测试；密钥只放在 Supabase secrets。
+- 继续把沙盒画布渲染从 `game.html` 拆成模块。
+- 在主人确认商品链接后再开通商品区。
+- 账号体系，以及更严格的身份、配额和反滥用。
+- 经明确要求后，再把第二代页面正式接入线上并发布；发布前跑 `node scripts/preflight-check.mjs`。
+
+Constraints:
+- 本次只更新 `DEVELOPMENT_LOG.md` 与 `PROJECT.md` 的近期路线图。
+- 不提交、不 push、不改线上站。
+
+## 2026-11-08: V2 Manual / World Tree / Sandbox Landings
+
+Shipped (preview only):
+- `preview/v2-manual.html`: manual workshop landing with live copy and the 11 built-in weapon showcases; links into live generator (steps are generated live, none invented).
+- `preview/v2-world-tree.html`: interactive restyle using the live WORLD_TREE positions, group meta, branch guide and 30 relations plus character data.
+- `preview/v2-sandbox.html`: sandbox V7 entry linking to unchanged `game.html`.
+- Unified nav across all V2 preview pages; admin kept on preview-flag only.
+
+## 2026-11-08: V2 Frontend Upload / Forum / Battle Previews
+
+Goal:
+- Continue spending remaining weekly usage on V2 frontend pages in the approved toy-cabinet style, without waiting for admin acceptance.
+
+Shipped (preview only):
+- `preview/v2-upload.html` (+ css/js): dedicated upload showcase with quota read from `upload_quota_rules`, promotion proof submit, pending weapon cloud submit path matching live public inserts.
+- `preview/v2-forum.html` (+ css/js): public approved topics/replies list, composer, replies; empty state for 0-row forum.
+- `preview/v2-battle.html` (+ css/js): character battle landing / picker that links to live `index.html` battle; does not rewrite the engine or `game.html`.
+- Shared `preview/v2-pages.css` and consistent V2 nav across home / characters / admin preview-flag bars. Admin is not exposed as a consumer feature on upload/forum nav.
+
+Verification:
+- Desktop screenshots under `preview/_shots/v2-upload-desktop.png`, `v2-forum-desktop.png`, `v2-battle-desktop.png`.
+- Live site files untouched; no commit/push; no SQL applied.
+
+Next:
+- manuals, world tree, sandbox landing previews if weekly usage remains before reset.
+
+## 2026-11-08: V2 Admin Preview (Toy-Shop Back Room)
+
+Goal:
+- Spend remaining weekly usage on the planned but unfinished admin vision, in the approved V2 soft premium toy-cabinet art direction, without touching live site files.
+
+Shipped (preview only under `preview/`):
+- Added `preview/v2-admin.html`, `preview/v2-admin.css`, `preview/v2-admin.js` — 总览 / 待审武器 / 已通过 / 推广证明 / 论坛审核 / 上传配额 / 审核履历.
+- Added review-key login that clears the input after submit and does not echo the key; real writes only after live login.
+- Added a no-secret 「查看预览结构」 mode with clearly labeled 示例 cards so art can be reviewed without the review key.
+- Ported pending approve/reject, bilingual edit/save, approved list save, and promotion approve/reject against existing RPCs; AI 精修工作台 kept as a link to live `admin.html` rather than a risky full port.
+- Added `preview/v2-admin-extra-rpcs.sql` (not applied live) for dashboard stats, forum list/hide, promotion full list, moderation history, and quota update — UI degrades gracefully until deployed.
+- Linked the admin preview from V2 home/characters preview-flag bars only.
+
+Verification:
+- Confirm live `index.html`, `en/`, `game.html`, `commerce-*.js`, `supabase-config.js`, and `admin.html` are untouched.
+- Open `preview/v2-admin.html?preview=1` for design review screenshots under `preview/_shots/`.
+- Do not commit/push in this batch.
+
+Next:
+- After admin preview is accepted, continue V2 frontend pages: upload, forum, battle, manuals, world tree, sandbox landing — same art system.
+- Optionally deploy `preview/v2-admin-extra-rpcs.sql` in Supabase SQL Editor when the owner wants live forum hide + quota write + full dashboard counts.
+
+## 2026-07-19: Sandbox Runtime Modularization
+
+Goal:
+- Finish separating player, combat, input, and HUD behavior from the sandbox page without changing its visual framing or controls.
+
+Shipped:
+- Added `game/player.mjs` for initial player state, movement, ladder intent, vitals, healing, and terrain effects.
+- Added `game/input.mjs` for keyboard aliases, one-shot actions, number-key tools, Canvas pointers, and mobile hold/tap controls.
+- Added `game/combat.mjs` for enemy profiles, sword and blaster attacks, cooldowns, energy, contact damage, rewards, and enemy motion.
+- Added `game/ui.mjs` for progression steps, goal selection, HUD view models, synchronized rendering, and mobile bag state.
+- Fixed low-energy blaster attacks so they no longer become accidental melee attacks.
+- Made enemy defeat rewards idempotent so overlapping hits cannot grant duplicate score or drops.
+- Moved mobile notices above the build palette so periodic enemy messages no longer cover status values.
+- Added six runtime tests and expanded preflight coverage to all seven sandbox modules and twelve tests.
+
+Verification:
+- Passed all 12 sandbox tests covering world, inventory, recipes, placement, mining, persistence, movement, input, terrain, attacks, rewards, and HUD progression.
+- Loaded all seven browser modules with no desktop or mobile console errors.
+- Fired the blaster through the desktop Canvas and mobile attack button; both visibly reduced energy from 100.
+- Reconfirmed quick wood placement reduces inventory and the HUD updates through the new view model.
+- Verified the 390 x 844 mobile notice, status grid, build palette, toolbelt, and touch controls do not overlap.
+- Passed the expanded project preflight and whitespace checks.
+
+Next:
+- Move Canvas backgrounds, tiles, actors, effects, lighting, and minimap drawing into rendering modules.
+- Keep gameplay state mutation out of rendering and add render smoke tests.
+
+## 2026-07-19: Sandbox Core Modularization
+
+Goal:
+- Start replacing the sandbox's single inline script with testable modules while preserving the live desktop and mobile game.
+
+Shipped:
+- Extracted deterministic terrain generation, biome boundaries, tile colors, world dimensions, and collision tile data into `game/world.mjs`.
+- Extracted inventory, recipes, affordability, crafting, placement, overlap, mining hardness, protected tiles, and drops into `game/rules.mjs`.
+- Added `game/persistence.mjs` with a validated V4 save format, V2/V3 migration, bounded values, selected-material persistence, and saved world edits.
+- Fixed star-core altar progression so materials are charged during crafting only once; activation no longer double-charges or creates negative inventory.
+- Made quick desktop pointer presses execute the selected tool immediately while retaining held mining and combat.
+- Added six focused Node tests and connected them to the project preflight.
+
+Verification:
+- Passed all six world, recipe, placement, mining, persistence, and migration tests.
+- Passed module syntax checks, the expanded project preflight, and whitespace checks.
+- Loaded all three modules in the browser and confirmed the canvas renders a nonblank live world.
+- Selected wood and placed a block with a quick click, reducing inventory from 10 to 9.
+- Waited for autosave, reloaded the game, and confirmed the count remained 9 and the same occupied tile did not consume another block.
+- Verified the settled 390 x 844 mobile view keeps status, materials, tools, and touch controls visible without overlap.
+
+Next:
+- Extract player movement and combat simulation from the remaining inline runtime.
+- Move HUD rendering and input bindings into dedicated modules with view-model and input-state tests.
+
+## 2026-07-19: Verified Commerce Configuration
+
+Goal:
+- Replace misleading purchase placeholders with a shared, maintainable, and privacy-light commercial configuration.
+
+Shipped:
+- Added `commerce-config.js` as the single bilingual source for product, affiliate, and creator-support destinations.
+- Added `commerce.js` to render both sites, require active and verified HTTPS destinations, and keep unavailable actions clearly disabled.
+- Preserved the useful forum, promotion, and creator-gallery support actions instead of treating them as purchase links.
+- Added current-device outbound click counts that store only item IDs and totals, with no identity data.
+- Updated the Chinese and English status copy so visitors can distinguish previews from real verified destinations.
+
+Verification:
+- Passed JavaScript syntax checks, project preflight, and whitespace checks.
+- Confirmed HTTPS destinations are accepted while unsafe protocols and unverified records are rejected.
+- Confirmed two local clicks increment only the selected item count.
+- Verified Chinese and English mobile commerce sections render three disabled product actions and one disabled creator-support action, with no active outbound link while configuration is empty.
+- Visually checked the mobile product and support layouts without text overlap.
+
+Next:
+- Add owner-approved product and support destinations to `commerce-config.js`, then activate them one at a time after mobile testing and disclosure review.
+- Deploy and evaluate the prepared cloud vision function.
+
+## 2026-07-19: Secure Vision AI Bridge
+
+Goal:
+- Prepare real build-manual vision analysis without exposing an OpenAI API key in the public static site or sacrificing offline reliability.
+
+Shipped:
+- Added shared `manual-vision.js` client logic for authenticated Supabase Function calls, image resizing, timeouts, response validation, and exact part-total normalization.
+- Added `supabase/functions/analyze-brick-weapon/index.ts`, which accepts image input, calls the OpenAI Responses API with a strict JSON schema, normalizes results, limits origins and image formats, and reads provider credentials only from server environment variables.
+- Defaulted the server model to `gpt-5.6-luna`, with `OPENAI_VISION_MODEL` available as a server-side override.
+- Connected both build-manual studios to cloud-vision-first behavior when configured, with immediate local results, request race protection, and automatic fallback on timeout or invalid output.
+- Added visible Chinese and English source labels so local estimates are not presented as cloud AI results.
+- Added deployment instructions and updated the project roadmap to match the current product state.
+
+Verification:
+- Verified the shared client with a mocked cloud response and confirmed normalized parts total exactly matches the AI brick estimate.
+- Checked the Edge Function with Deno 2.9.3 / TypeScript 6.0.3.
+- Verified both public pages still generate 177-piece local manuals with matching part totals and no browser errors while cloud vision is disabled.
+- Ran the project preflight and whitespace checks.
+
+Next:
+- Deploy the Edge Function, set `OPENAI_API_KEY` in Supabase secrets, and enable `manualVisionFunction` only after a live Chinese and English image test.
+- Add lightweight server-side usage controls before broad public rollout.
+
+## 2026-07-19: English Build Manual Sync
+
+Goal:
+- Bring the stable build-manual workflow to the English site without losing desktop, mobile, modal, or deep-link behavior.
+
+Shipped:
+- Added the English `Build Manual` navigation entry, responsive studio, local photo analysis, library picker, calibrated brick estimate, distinct color palette, parts table, six build steps, copy action, and print action.
+- Added `?panel=manual&manual=<weapon-id>` support and a `Generate Build Manual` action inside English weapon details.
+- Fixed English dynamic IDs for weapon voting, comments, modal voting, and forum replies by using the existing safe inline-argument encoder.
+- Updated the English plan board to show the build manual as live, sandbox building as current, and real AI plus commerce as next.
+- Removed the English mobile hero overflow inherited from the earlier layout.
+
+Verification:
+- Generated the Keyblade Golden Sword manual from both a deep link and the weapon detail modal.
+- Confirmed its calibrated estimate and parts total both equal 177, with seven distinct English color groups.
+- Verified copy feedback, modal closure, mobile result scrolling, and zero horizontal overflow at 390 x 844.
+- Verified the English desktop flow at 1280 x 800 and found no browser console errors.
+
+Next:
+- Add a real vision-analysis service while retaining local estimation as an offline fallback.
+- Connect verified commercial/support destinations instead of placeholders.
+- Continue modularizing the sandbox before adding larger world systems.
+
+## 2026-07-19: Manual And Sandbox Interaction QA
+
+Goal:
+- Turn the new build-manual and sandbox-material interfaces into verified, reliable user flows on desktop and mobile.
+
+Shipped:
+- Fixed dynamic weapon IDs that broke manual generation, voting, comments, promotion actions, and forum replies when inserted into inline handlers.
+- Calibrated manual brick estimates against existing weapon counts, deduplicated color categories, and analyzed the same showcase image shown in the picker.
+- Added mobile result scrolling after manual generation and removed a 10 px horizontal overflow from the mobile hero.
+- Stopped the sandbox HUD from rebuilding interactive material and crafting buttons every frame.
+- Fixed sandbox placement collision checks so blocks can be placed beside existing terrain while still preventing placement inside the player.
+
+Verification:
+- Generated a 177-piece manual from the 168-piece keyblade source; its part quantities total 177 and its palette contains seven distinct color categories.
+- Verified the manual deep link on a 1280 x 800 viewport and the full manual flow on a 390 x 844 viewport.
+- Verified five sandbox materials on desktop and mobile, selected wood, switched to the block tool, and placed a block that reduced wood inventory from 10 to 9.
+- Confirmed the tested pages have no horizontal overflow at 390 x 844 or 1280 x 800.
+
+Next:
+- Sync the stable manual workflow to the English site.
+- Replace local color/shape estimation with a real vision model when the AI service is ready.
+- Split the single-file sandbox into maintainable modules before the next large gameplay expansion.
+
+## 2026-07-03: Build Manual Studio And Sandbox Build Palette
+
+Goal:
+- Continue polishing the product loop by turning weapon images into practical brick-building guidance and making sandbox building less limited.
+
+Shipped:
+- Added a Chinese `拼装说明书` panel that can analyze an uploaded image or an existing weapon image with local Canvas sampling.
+- Generated estimated brick counts, color palettes, part lists, step-by-step build instructions, copyable manual text, and a print action.
+- Added weapon-modal entry points and deep-link support for opening the manual generator from a weapon.
+- Added a material palette to `game.html` so players can choose dirt, stone, wood, brick, or torch placement instead of only defaulting to dirt/brick.
+- Updated the in-site master plan board so the current main line reflects build manuals and sandbox construction polish.
+
+Verification:
+- Ran the project preflight check after replacing the inline print call with a named function.
+- Ran diff whitespace checks.
+
+Next:
+- Browser-test the manual generator and sandbox build palette on desktop and mobile.
+- Sync the new manual experience to the English site after the Chinese flow is stable.
+- Replace the local Canvas estimate with real vision AI when the recognition path is ready.
+
 ## 2026-05-31: Sandbox Arena V4 Blueprint Systems
 
 Goal:
@@ -1308,3 +1553,22 @@ Next:
 - 武器详情弹窗的橱窗图改为完整卡面铺满展示，避免被二次缩小成“卡中卡”。
 - 本机上传模式补齐 pieceCount、aiPower、analysis、cardRarity、cardScore、showcaseUrl，避免本地测试时丢失识别结果。
 - 后台“按构图重做橱窗”会优先使用当前手动选择的卡牌背景，不再擅自按等级重新换背景。
+
+## 2026-11-08 11:42 CST · preview only · world-tree node alignment polish
+
+- Cause: (1) earlier V2 used 16/10 + object-fit:cover cropping a 2:1 map; (2) after switching to aspect-ratio 2/1, an 8px border on `.tree-canvas` under global `box-sizing:border-box` made the content box non-2:1, so object-fit stretched the art and % nodes missed studded frames; (3) live `WORLD_TREE_POS` also miss a few frames for V2’s center transform, so V2 preview POS were frame-calibrated (template match + branch regions) without changing lore/relations.
+- Fix: borderless canvas (ring via box-shadow), exact 2/1 + object-fit:cover; calibrated `WORLD_TREE_POS` in `preview/v2-world-tree.html` only.
+- Shots: `preview/_shots/v2-world-tree-desktop.png`, `preview/_shots/v2-world-tree-map-only.png`.
+- Nav wrap at ~1100px already OK via `preview/v2-pages.css`; upload/forum/battle no overflow. Live index/admin/game/supabase untouched. No commit.
+
+## 2026-11-08 11:50 CST · preview only · V2 mobile ~390 polish
+
+- Looked at all 9 V2 pages at 390×844. Real issues: crowded multi-line `.preview-flag` (hard to tap); main `.nav-links` hidden ≤720px left secondary pages (upload/forum/battle/world-tree/admin/manual/sandbox) with no tabbar; manual/sandbox `.g3` stayed 2-col and squeezed step cards.
+- Fixes in `preview/v2-pages.css` (≤720): preview-flag → single horizontal chip scroller; restore scrollable `.nav-links` only when `body:not(:has(.tabbar))`; `.g3` → 1 col; page-actions tighten; world-tree node min 44px + modes wrap. Linked `v2-pages.css` into home/characters/admin.
+- Shots: `preview/_shots/v2-*-mobile.png` (+ `*-mobile-before.png` for home/battle/world-tree). Desktop world-tree still 2:1 / node ~52. Live files untouched. No commit.
+
+## 2026-11-08 11:54 CST · preview only · CTA nowrap + scrub tech UI copy
+
+- Battle `.page-actions` CTAs: `white-space:nowrap` + `min-width:max-content` in `v2-pages.css` (and battle/upload/forum inline) so labels like「打开线上战场」不再末字单独换行。
+- Consumer/admin copy: removed visible table/RPC/SQL identifiers (`upload_quota_rules`, `admin_*`, `list_admin_*`, `.sql`, `reviewed_at`, `free_per_ip`…); Chinese-only status text. Functionality unchanged; SQL file remains for the owner.
+- Shots: `preview/_shots/v2-battle-mobile.png`, `v2-battle-cta-mobile.png`, `v2-upload-mobile.png`. Live untouched. No commit.

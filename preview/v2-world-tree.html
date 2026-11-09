@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><meta name="theme-color" content="#fff8ed">
+<title>沐沐积木武器库 · 人格世界树小样</title><link rel="stylesheet" href="v2-home.css"><link rel="stylesheet" href="v2-pages.css"><style>.nav-links{flex-wrap:wrap}.nav-links a{padding:8px 11px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.tcard{padding:18px;border-radius:26px;background:linear-gradient(145deg,rgba(255,183,200,.16),rgba(159,215,255,.16) 60%,rgba(255,255,255,.92));border:1px solid rgba(255,255,255,.95);box-shadow:var(--shadow-soft)}
+.tcard b{display:block;font-size:16px;margin-bottom:6px}.tcard p{margin:0;font-size:13px;color:var(--ink-2);line-height:1.6}
+.sec-h{margin:30px 0 12px;font-size:22px;font-weight:900}
+.cta-band{margin-top:22px;padding:20px;border-radius:28px;background:linear-gradient(135deg,rgba(255,217,106,.35),rgba(255,183,200,.28));display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;box-shadow:var(--shadow-card)}
+.cta-band p{margin:0;max-width:60ch;font-size:13.5px;color:var(--ink-2)}
+.pill-btn{display:inline-flex;align-items:center;min-height:48px;padding:12px 22px;border-radius:999px;font-weight:900;background:linear-gradient(135deg,var(--butter),#ffc04d);color:var(--ink)}
+.pill-btn.alt{background:rgba(255,255,255,.85);border:1px solid var(--line)}
+.wcard{border-radius:24px;overflow:hidden;background:#fff;box-shadow:var(--shadow-soft);border:1px solid rgba(255,255,255,.95)}
+.wcard .st{aspect-ratio:1;background:linear-gradient(160deg,#ffe3ec,#e3f2ff)}.wcard img{width:100%;height:100%;object-fit:cover}
+.wcard .in{padding:10px 14px}.wcard b{font-size:14px}.wcard span{display:block;font-size:12px;color:var(--ink-3)}
+@media(max-width:900px){.g3,.g4{grid-template-columns:1fr 1fr}}.tree-modes{display:flex;gap:8px;margin-bottom:12px}.tm{border:1px solid var(--line);background:rgba(255,255,255,.85);border-radius:999px;padding:9px 16px;font:inherit;font-weight:800;cursor:pointer}.tm[aria-pressed=true]{background:linear-gradient(180deg,#fff,#fff1d6);box-shadow:var(--shadow-soft)}
+.tree-wrap{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;align-items:start}
+/* 坐标按整图 1774×887=2:1 标定。全局 border-box 下勿给 canvas 加 border，否则内容区不再是 2:1，object-fit 会拉伸导致节点错位。描边用 box-shadow。 */
+.tree-canvas{position:relative;width:100%;aspect-ratio:2 / 1;border-radius:30px;overflow:hidden;border:0;box-shadow:0 0 0 8px rgba(255,255,255,.8),var(--shadow-card);background:#1a2a1a}
+.tree-canvas img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+.tree-canvas svg,#nodes{position:absolute;inset:0;width:100%;height:100%}
+.nd{position:absolute;transform:translate(-50%,-50%);border:3px solid var(--c);border-radius:50%;width:clamp(36px,3.6vw,52px);height:clamp(36px,3.6vw,52px);padding:0;background:#fff;cursor:pointer;overflow:hidden;box-shadow:0 8px 18px -8px rgba(0,0,0,.4);z-index:2}
+.nd img{width:100%;height:100%;object-fit:cover;position:static}
+.nd.on{width:clamp(42px,4.2vw,60px);height:clamp(42px,4.2vw,60px);box-shadow:0 0 0 4px rgba(255,255,255,.85);z-index:3}
+.nd i{position:absolute;bottom:0;left:0;right:0;font-style:normal;font-size:7px;font-weight:900;background:rgba(255,255,255,.92);line-height:1.15;padding:1px 0}
+#detail img{width:110px;margin:0 auto 8px}.rel{margin-top:8px;padding:8px 10px;border-radius:14px;background:rgba(255,255,255,.8);font-size:12.5px;cursor:pointer}
+@media(max-width:900px){.tree-wrap{grid-template-columns:1fr}}</style></head><body>
+<div class="preview-flag"><div class="wrap"><span class="dot" aria-hidden="true"></span><span>第二代前台小样 · 不会替换当前线上站</span><a href="v2-home.html">武器橱窗</a><a href="v2-upload.html">上传</a><a href="v2-characters.html">角色</a><a href="v2-world-tree.html">世界树</a><a href="v2-battle.html">战场</a><a href="v2-manual.html">说明书</a><a href="v2-sandbox.html">沙盒</a><a href="v2-forum.html">论坛</a><a href="../index.html">返回当前线上站</a><a href="v2-admin.html">后仓审核小样</a></div></div>
+<header class="topbar"><div class="topbar-inner"><div class="topbar-row"><a class="brand" href="v2-home.html"><span class="brand-mark" aria-hidden="true">🧱</span><span class="brand-txt"><b>积木武器库 · 角色战场</b><i>沐沐的积木玩具橱窗</i></span></a><nav class="nav-links" aria-label="主导航"><a href="v2-home.html">武器橱窗</a><a href="v2-upload.html">上传</a><a href="v2-characters.html">角色</a><a href="v2-world-tree.html" class="is-current" aria-current="page">世界树</a><a href="v2-battle.html">战场</a><a href="v2-manual.html">说明书</a><a href="v2-sandbox.html">沙盒</a><a href="v2-forum.html">论坛</a></nav><a class="nav-cta" href="../index.html#tree">完整世界树</a></div></div></header>
+<section class="page-hero"><div class="page-frame"><img src="../assets/banner-characters-bricks.png" alt="积木战士合影" fetchpriority="high"><span class="page-tag">MBTI BRICK WORLD MAP</span><span class="page-badge"><b>16 位</b><span>4 条树杈 · 30 条光线</span></span></div>
+<div class="wrap page-head"><div><h1>16 位战士，<em>住在同一棵大树上</em>。</h1><p class="page-lede">16 位积木战士住在同一棵大树的不同树杈上。点击角色节点看资料，点击光线看羁绊关系。</p></div></div></section>
+<main class="wrap" style="margin-top:22px"><div class="tree-modes" role="group"><button class="tm" data-m="group" aria-pressed="true">阵营树杈</button><button class="tm" data-m="weapon" aria-pressed="false">武器流派</button><button class="tm" data-m="bond" aria-pressed="false">战斗羁绊</button></div>
+<div class="tree-wrap"><div class="tree-canvas"><img src="../assets/world-tree/world-tree-bg.png" alt="人格世界树背景"><svg id="lines" viewBox="0 0 100 100" preserveAspectRatio="none"></svg><div id="nodes"></div></div>
+<aside class="tcard" id="detail"><b>点一个角色节点</b><p>看看他住在哪条树杈上，点击光线看羁绊关系。</p></aside></div>
+<h2 class="sec-h">四条树杈</h2><div class="g4" id="branches"></div>
+<div class="cta-band"><p>完整版支持拖动、缩放和角色档案跳转。</p><a class="pill-btn" href="../index.html#tree">打开线上世界树</a></div></main>
+<footer class="footer-mini"><span>V2 人格世界树小样 · noindex</span><span><a href="v2-home.html">首页小样</a> · <a href="../index.html">线上站</a></span></footer>
+<script>
+const WORLD_TREE_POS={
+  ENTJ:{x:15.11,y:27.17},
+  INTJ:{x:24.80,y:19.50},
+  INTP:{x:33.71,y:21.20},
+  ENTP:{x:53.55,y:40.36},
+  ENFJ:{x:8.57,y:55.58},
+  INFJ:{x:18.15,y:52.54},
+  INFP:{x:28.64,y:56.26},
+  ENFP:{x:41.43,y:56.60},
+  ISTJ:{x:61.22,y:20.41},
+  ISFJ:{x:71.36,y:19.73},
+  ESTJ:{x:80.10,y:27.17},
+  ESFJ:{x:72.83,y:41.26},
+  ISTP:{x:56.68,y:57.55},
+  ISFP:{x:66.46,y:58.62},
+  ESTP:{x:74.75,y:61.78},
+  ESFP:{x:92.78,y:50.39}
+};
+const WORLD_TREE_GROUP_META={
+  NT:{label:'策略枝',color:'#8b5cf6',desc:'思考、规划、效率与奇袭的树杈。'},
+  NF:{label:'梦想枝',color:'#63d7b0',desc:'理想、共鸣、守护与鼓舞的树杈。'},
+  SJ:{label:'守序枝',color:'#5aa7ff',desc:'规则、责任、秩序与团队照护的树杈。'},
+  SP:{label:'冒险枝',color:'#ff8a3d',desc:'行动、手感、舞台与现场创造的树杈。'}
+};
+const WORLD_TREE_BRANCH_GUIDE={
+  NT:{focus:'战术、推演、拆解与高压推进',route:'适合从 ENTJ 或 INTJ 开始读，再沿着光线看 INTP/ENTP 的脑洞组合。'},
+  NF:{focus:'信念、鼓舞、预判与温柔防线',route:'适合从 ENFJ 的集合号开始，再走到 INFJ/INFP 的守护故事。'},
+  SJ:{focus:'秩序、后勤、执行与团队稳定',route:'适合从 ISTJ 的规则线进入，再看 ESTJ/ESFJ 如何把队伍带稳。'},
+  SP:{focus:'手感、速度、舞台与现场创造',route:'适合从 ESTP 的突袭开始，再看 ISFP/ESFP 把战斗打成演出。'}
+};
+const WORLD_TREE_RELATIONS=[
+  {a:'ENTJ',b:'INTJ',type:'group',label:'战略同盟',desc:'一个定方向，一个算路径，开局就像已经复盘过三遍。'},
+  {a:'INTJ',b:'INTP',type:'group',label:'脑内实验室',desc:'INTJ负责删掉失败路线，INTP负责证明路线为什么奇怪但可行。'},
+  {a:'INTP',b:'ENTP',type:'group',label:'灵感爆炸',desc:'一个拆机制，一个改规则，敌人还没开打就开始看说明书。'},
+  {a:'ENTJ',b:'ENTP',type:'group',label:'高压推进',desc:'统帅把混乱压成阵型，辩论家把阵型变成惊喜。'},
+  {a:'ENFJ',b:'INFJ',type:'group',label:'星光指引',desc:'ENFJ让大家相信能赢，INFJ知道怎么避开最坏结局。'},
+  {a:'INFJ',b:'INFP',type:'group',label:'梦境护盾',desc:'一个看见未来，一个守住初心，是温柔但很难打穿的组合。'},
+  {a:'INFP',b:'ENFP',type:'group',label:'彩虹远征',desc:'梦想被点燃后，路线会自动长出花和隐藏关。'},
+  {a:'ENFJ',b:'ENFP',type:'group',label:'全队开麦',desc:'鼓舞和灵感一起出现，队友会突然觉得自己是主角。'},
+  {a:'ISTJ',b:'ISFJ',type:'group',label:'可靠后勤',desc:'一个检查规则，一个保护队友，队伍很难莫名其妙崩盘。'},
+  {a:'ISTJ',b:'ESTJ',type:'group',label:'秩序引擎',desc:'计划、执行、验收一条龙，战场像项目管理表一样稳定。'},
+  {a:'ISFJ',b:'ESFJ',type:'group',label:'安全屋',desc:'一个举盾，一个补给，队友会被照顾到不好意思乱冲。'},
+  {a:'ESTJ',b:'ESFJ',type:'group',label:'团队运营',desc:'ESTJ安排流程，ESFJ稳住情绪，混乱现场开始排队。'},
+  {a:'ISTP',b:'ESTP',type:'group',label:'手感突击',desc:'ISTP拆弱点，ESTP冲窗口，机会出现时没人犹豫。'},
+  {a:'ISTP',b:'ISFP',type:'group',label:'精准美学',desc:'一个把机制调准，一个把动作打漂亮，赢也要赢得有质感。'},
+  {a:'ISFP',b:'ESFP',type:'group',label:'舞台连击',desc:'战斗变成演出以后，对手会先输给气势。'},
+  {a:'ESTP',b:'ESFP',type:'group',label:'现场点燃',desc:'速度和聚光灯一起上场，战场节奏会被直接带飞。'},
+  {a:'ENTJ',b:'ESTJ',type:'bond',label:'执行压制',desc:'统帅下令，督军落地，适合打高压推进局。'},
+  {a:'INTJ',b:'INFJ',type:'bond',label:'双预判',desc:'一个预判效率，一个预判命运，敌人的破绽会被提前标记。'},
+  {a:'INTP',b:'ISTP',type:'bond',label:'机制拆解',desc:'一个理论拆解，一个动手拆解，装备问题很快变成敌方问题。'},
+  {a:'ENFP',b:'ENTP',type:'bond',label:'脑洞失控',desc:'这条线会制造很多意外，也会制造很多名场面。'},
+  {a:'ISFJ',b:'INFP',type:'bond',label:'温柔防线',desc:'护盾保护梦想，梦想反过来给护盾充电。'},
+  {a:'ESFJ',b:'ENFJ',type:'bond',label:'士气满格',desc:'一个照顾大家，一个点亮大家，适合持久战。'},
+  {a:'ISFP',b:'INFJ',type:'bond',label:'安静审美',desc:'打得不急，但每一步都像提前画好的分镜。'},
+  {a:'ESTP',b:'ENTJ',type:'bond',label:'冲锋号令',desc:'ENTJ给方向，ESTP负责把方向撞成通路。'},
+  {a:'ENTJ',b:'ISFP',type:'weapon',label:'剑刃共鸣',desc:'统帅的正面推进和艺术家的收尾斩，都是剑刃派的高光。'},
+  {a:'INTJ',b:'ISTJ',type:'weapon',label:'精密剑路',desc:'计划和规则叠在一起，剑路稳到像画了辅助线。'},
+  {a:'INTP',b:'ENFP',type:'weapon',label:'奇妙枪械',desc:'一个改零件，一个改想法，枪械派最容易诞生新玩具。'},
+  {a:'ENTP',b:'ESTP',type:'weapon',label:'爆发枪线',desc:'陷阱和速度一起出现，敌人还没反应就被换位置。'},
+  {a:'INFJ',b:'ISFJ',type:'weapon',label:'守护长柄',desc:'预言和护盾撑起中线，是最安心的树杈连接。'},
+  {a:'ENFJ',b:'ESFJ',type:'weapon',label:'团队长柄',desc:'长柄不是只负责攻击，也负责把队伍串成一条线。'}
+];
+
+const CH=[{"id": 1,"name": "炎之统帅","mbti": "ENTJ","mbtiName": "指挥官","group": "NT","groupName": "智者","weaponPref": "sword","weaponLabel": "剑","stats": {"atk": 95,"def": 70,"crit": 0.18},"quotes": {"atk": ["全军出击！","碾碎他们！","不要退缩！"],"def": ["不错的攻击。","继续！","就这点本事？"],"sp": ["烈焰裁决！","感受统帅的怒火！"],"win": "胜利属于强者！","lose": "下次我会赢的。"},"avatar": "../assets/characters/entj-avatar.webp","position": "../assets/characters/entj-position.png","subtitle": "战场统帅 / 进攻指挥者","quote": "我不是在等待胜利，我是在安排胜利发生。","tags": ["烈焰统帅剑","红金指挥甲","高压推进","混乱 / 拖延 / 低效率"]},{"id": 2,"name": "暗影军师","mbti": "INTJ","mbtiName": "建筑师","group": "NT","groupName": "智者","weaponPref": "sword","weaponLabel": "剑","stats": {"atk": 85,"def": 80,"crit": 0.22},"quotes": {"atk": ["我已预见你的破绽。","按计划进行。","就是现在！"],"def": ["都在预料之中。","冷静应对。","你的套路我早看穿。"],"sp": ["暗影裁决！","智者的审判！"],"win": "一切尽在掌握。","lose": "这次算错了..."},"avatar": "../assets/characters/intj-avatar.webp","position": "../assets/characters/intj-position.png","subtitle": "战术规划者 / 效率优化者","quote": "我不是在解决问题，我只是在优化世界的代码。","tags": ["量子策略之刃","能量眼镜","紫黑色系","低效 / 混乱 / 无意义社交"]},{"id": 3,"name": "机械奇才","mbti": "INTP","mbtiName": "逻辑学家","group": "NT","groupName": "智者","weaponPref": "gun","weaponLabel": "枪","stats": {"atk": 78,"def": 65,"crit": 0.25},"quotes": {"atk": ["分析完毕，精确打击！","这个角度最优。","计算显示——命中！"],"def": ["有趣的数据...","正在重新计算...","参数修正完成。"],"sp": ["超频·极限运算！","科技就是力量！"],"win": "逻辑永远不会错。","lose": "需要更多数据..."},"avatar": "../assets/characters/intp-avatar.webp","position": "../assets/characters/intp-position.png","subtitle": "结构解析者 / 实验发明者","quote": "只要给我足够的零件，我可以把规则本身重新组装。","tags": ["模块发明炮","蓝青护目镜","逻辑超频","盲目行动 / 没有数据 / 重复劳动"]},{"id": 4,"name": "诡雷策士","mbti": "ENTP","mbtiName": "辩论家","group": "NT","groupName": "智者","weaponPref": "gun","weaponLabel": "枪","stats": {"atk": 88,"def": 60,"crit": 0.2},"quotes": {"atk": ["尝尝我的新发明！","猜猜会发生什么？","boom！"],"def": ["哈哈，差一点！","有意思！","换个角度来！"],"sp": ["终极诡雷·连环爆破！","艺术就是爆炸！"],"win": "我又赢了，无聊~","lose": "故意的，信不信？"},"avatar": "../assets/characters/entp-avatar.webp","position": "../assets/characters/entp-position.png","subtitle": "诡雷策士 / 创意破局者","quote": "如果规则太无聊，那就证明它需要一次爆炸式升级。","tags": ["闪电诡雷杖","紫橙实验甲","灵感爆破","无趣 / 死板 / 禁止尝试"]},{"id": 5,"name": "辉光导师","mbti": "ENFJ","mbtiName": "主人公","group": "NF","groupName": "理想","weaponPref": "sword","weaponLabel": "剑","stats": {"atk": 82,"def": 75,"crit": 0.15},"quotes": {"atk": ["跟随我的步伐！","为了同伴！","我们并肩作战！"],"def": ["我守护着大家！","别担心，有我在。","稳住阵脚！"],"sp": ["辉光闪耀！","希望之光永不熄灭！"],"win": "这是大家的力量！","lose": "没关系，我们继续前进。"},"avatar": "../assets/characters/enfj-avatar.webp","position": "../assets/characters/enfj-position.png","subtitle": "辉光导师 / 团队领航者","quote": "真正的胜利，是让每个人都相信自己能发光。","tags": ["辉光圣剑","绿金英雄甲","团队鼓舞","孤立 / 冷场 / 失去希望"]},{"id": 6,"name": "月影先知","mbti": "INFJ","mbtiName": "提倡者","group": "NF","groupName": "理想","weaponPref": "spear","weaponLabel": "长矛","stats": {"atk": 72,"def": 85,"crit": 0.17},"quotes": {"atk": ["星光指引我。","命中注定的一击。","命运的丝线..."],"def": ["我看到了你的轨迹。","平静如水...","预知已告诉我一切。"],"sp": ["月影·命运裁决！","星辰为我而闪耀！"],"win": "命运早已注定。","lose": "新的命运开始了..."},"avatar": "../assets/characters/infj-avatar.webp","position": "../assets/characters/infj-position.png","subtitle": "星月守护者 / 命运预言者","quote": "我看见的不只是胜负，还有每个人应该抵达的位置。","tags": ["星月水晶杖","薄荷紫守护甲","预知结界","冷漠 / 失衡 / 背离初心"]},{"id": 7,"name": "光之咏者","mbti": "INFP","mbtiName": "调停者","group": "NF","groupName": "理想","weaponPref": "spear","weaponLabel": "长矛","stats": {"atk": 65,"def": 72,"crit": 0.14},"quotes": {"atk": ["为了理想！","我心中的火焰！","不会放弃！"],"def": ["我还能坚持...","为了心中的信念！","伤痛让我更坚强。"],"sp": ["光之咏叹·神圣裁决！","请聆听我的祈祷！"],"win": "爱与和平...","lose": "梦想不会终结。"},"avatar": "../assets/characters/infp-avatar.webp","position": "../assets/characters/infp-position.png","subtitle": "光之咏者 / 理想守护者","quote": "只要梦想还亮着，积木城堡就不会倒下。","tags": ["光之诗杖","奶油金护甲","理想回响","粗暴 / 失真 / 没有故事"]},{"id": 8,"name": "星火游侠","mbti": "ENFP","mbtiName": "竞选者","group": "NF","groupName": "理想","weaponPref": "gun","weaponLabel": "枪","stats": {"atk": 90,"def": 55,"crit": 0.19},"quotes": {"atk": ["嗨起来！","自由开火！","看我表演！"],"def": ["哇哦！刺激！","差一点～","再来再来！"],"sp": ["星火燎原！","燃烧吧小宇宙！"],"win": "太好玩了哈哈哈！","lose": "下次一定更精彩！"},"avatar": "../assets/characters/enfp-avatar.webp","position": "../assets/characters/enfp-position.png","subtitle": "星火游侠 / 灵感突袭者","quote": "战场当然要赢，但首先得足够好玩！","tags": ["星火爆裂枪","橙黄游侠甲","先手灵感","无聊 / 没变化 / 被限制"]},{"id": 9,"name": "检查员","mbti": "ISTJ","mbtiName": "检查员","group": "SJ","groupName": "守护","weaponPref": "sword","weaponLabel": "剑","stats": {"atk": 70,"def": 95,"crit": 0.1},"quotes": {"atk": ["严格按标准执行。","精准打击。","没有多余动作。"],"def": ["坚如磐石。","阵型不破！","守住阵线。"],"sp": ["铁壁·绝对防御反击！","纪律就是力量！"],"win": "纪律带来胜利。","lose": "需要复盘改进。"},"avatar": "../assets/characters/istj-avatar.webp","position": "../assets/characters/istj-position.png","subtitle": "质量控制者 / 秩序维护者","quote": "规则不是限制，而是让一切正确运转的保障。","tags": ["精密校准尺","护目镜特写","深蓝色系","混乱 / 失误 / 不守规则"]},{"id": 10,"name": "坚盾卫士","mbti": "ISFJ","mbtiName": "守卫者","group": "SJ","groupName": "守护","weaponPref": "spear","weaponLabel": "长矛","stats": {"atk": 60,"def": 98,"crit": 0.08},"quotes": {"atk": ["请退后！","小心！","保护好大家！"],"def": ["我不会倒下！","盾在人在！","守护是我的使命。"],"sp": ["坚盾·圣光庇护！","为了需要守护的人！"],"win": "太好了，大家安全了。","lose": "没关系，只要大家没事..."},"avatar": "../assets/characters/isfj-avatar.webp","position": "../assets/characters/isfj-position.png","subtitle": "坚盾卫士 / 温柔防线","quote": "站到我身后，剩下的交给这面盾。","tags": ["圣光圆盾","鼠尾草护甲","守护结界","受伤的同伴 / 失守 / 冷漠"]},{"id": 11,"name": "钢铁督军","mbti": "ESTJ","mbtiName": "总经理","group": "SJ","groupName": "守护","weaponPref": "gun","weaponLabel": "枪","stats": {"atk": 92,"def": 78,"crit": 0.12},"quotes": {"atk": ["火力全开！","效率第一！","速战速决！"],"def": ["这不是问题。","标准流程应对。","井然有序。"],"sp": ["钢铁洪流·饱和打击！","压倒性火力！"],"win": "效率就是一切。","lose": "战术需要调整。"},"avatar": "../assets/characters/estj-avatar.webp","position": "../assets/characters/estj-position.png","subtitle": "钢铁督军 / 秩序压制者","quote": "效率不是口号，是把胜利按时交付。","tags": ["钢铁重炮","灰红指挥甲","效率火力","拖延 / 无序 / 责任缺席"]},{"id": 12,"name": "暖心护使","mbti": "ESFJ","mbtiName": "执政官","group": "SJ","groupName": "守护","weaponPref": "spear","weaponLabel": "长矛","stats": {"atk": 68,"def": 88,"crit": 0.11},"quotes": {"atk": ["大家一起加油！","别怕，我在这里！","齐心协力！"],"def": ["来我身后！","我会保护你的！","稳住！"],"sp": ["暖心·治愈风暴！","爱是最强的力量！"],"win": "我们做到了！","lose": "下次一起努力吧！"},"avatar": "../assets/characters/esfj-avatar.webp","position": "../assets/characters/esfj-position.png","subtitle": "暖心护使 / 团队支援者","quote": "只要大家还在一起，我们就还有办法。","tags": ["治愈长枪","玫瑰金护甲","暖心支援","冷场 / 分裂 / 不被需要"]},{"id": 13,"name": "孤狼猎手","mbti": "ISTP","mbtiName": "鉴赏家","group": "SP","groupName": "行动","weaponPref": "gun","weaponLabel": "枪","stats": {"atk": 88,"def": 62,"crit": 0.24},"quotes": {"atk": ["沉默是金。","一击必杀。","锁定。"],"def": ["哼。","躲得不错。","继续。"],"sp": ["孤狼·致命狙击！","猎物无处可逃。"],"win": "没什么好说的。","lose": "...再来。"},"avatar": "../assets/characters/istp-avatar.webp","position": "../assets/characters/istp-position.png","subtitle": "孤狼猎手 / 精准拆解者","quote": "别说太多，让结构自己回答。","tags": ["精密狙击器","石墨工具甲","弱点锁定","废话 / 失准 / 无法动手"]},{"id": 14,"name": "绯焰艺者","mbti": "ISFP","mbtiName": "探险家","group": "SP","groupName": "行动","weaponPref": "sword","weaponLabel": "剑","stats": {"atk": 75,"def": 58,"crit": 0.2},"quotes": {"atk": ["如火焰般舞动！","感受我的热情！","艺术就是战斗！"],"def": ["优雅地闪避...","动作要美。","像风一样。"],"sp": ["绯焰·舞动之刃！","用生命起舞！"],"win": "美极了...","lose": "还需要打磨。"},"avatar": "../assets/characters/isfp-avatar.webp","position": "../assets/characters/isfp-position.png","subtitle": "绯焰艺者 / 优雅突击者","quote": "每一次挥剑，都应该像一场漂亮的演出。","tags": ["绯焰舞刃","红橙艺术甲","连舞追击","僵硬 / 不美 / 没有手感"]},{"id": 15,"name": "雷霆先锋","mbti": "ESTP","mbtiName": "企业家","group": "SP","groupName": "行动","weaponPref": "gun","weaponLabel": "枪","stats": {"atk": 93,"def": 50,"crit": 0.21},"quotes": {"atk": ["冲啊！","来得正好！","接招！"],"def": ["哈哈不够看！","太慢了！","再来再来！"],"sp": ["雷霆万钧·先锋冲锋！","谁也别想挡我！"],"win": "就知道会赢！","lose": "偶尔输一次也不错！"},"avatar": "../assets/characters/estp-avatar.webp","position": "../assets/characters/estp-position.png","subtitle": "雷霆先锋 / 极速强攻者","quote": "想太久会错过机会，冲上去就有答案。","tags": ["雷霆爆冲枪","黄蓝先锋甲","开局强压","慢吞吞 / 犹豫 / 没刺激"]},{"id": 16,"name": "烈阳舞者","mbti": "ESFP","mbtiName": "表演者","group": "SP","groupName": "行动","weaponPref": "sword","weaponLabel": "剑","stats": {"atk": 80,"def": 55,"crit": 0.18},"quotes": {"atk": ["看我华丽的表演！","舞台属于我！","灯光！音乐！"],"def": ["华丽闪避！","太慢了太慢了～","优雅～"],"sp": ["烈阳·终极演出！","全场目光聚焦于我！"],"win": "谢谢观众朋友们！","lose": "安可！安可！"},"avatar": "../assets/characters/esfp-avatar.webp","position": "../assets/characters/esfp-position.png","subtitle": "烈阳舞者 / 舞台终结者","quote": "灯光给我，胜利也给我。","tags": ["烈阳演出剑","橙金舞台甲","表演终结","无人喝彩 / 沉闷 / 没节奏"]}];
+let mode='group',sel='INTJ';
+const $=s=>document.querySelector(s);const byM=k=>CH.find(c=>c.mbti===k);
+function rels(){return WORLD_TREE_RELATIONS.filter(r=>r.type===mode||(mode==='group'&&r.type==='bond'))}
+function draw(){
+ $('#lines').innerHTML=rels().map((r,i)=>{const a=WORLD_TREE_POS[r.a],b=WORLD_TREE_POS[r.b];const on=r.a===sel||r.b===sel;return `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${on?'#ffd96a':'rgba(255,255,255,.75)'}" stroke-width="${on?.7:.35}" stroke-dasharray="${r.type==='bond'?'1.2 .8':''}" vector-effect="none"/>`}).join('');
+ $('#nodes').innerHTML=CH.map(c=>{const p=WORLD_TREE_POS[c.mbti];const col=WORLD_TREE_GROUP_META[c.group].color;return `<button class="nd ${c.mbti===sel?'on':''}" style="left:${p.x}%;top:${p.y}%;--c:${col}" data-k="${c.mbti}" aria-label="${c.name}"><img src="${c.avatar}" alt=""><i>${c.mbti}</i></button>`}).join('');
+ const c=byM(sel),g=WORLD_TREE_GROUP_META[c.group];
+ $('#detail').innerHTML=`<img src="${c.avatar}" alt="${c.name}"><b>${c.name} · ${c.mbti}</b><p>${c.subtitle}<br><span style="color:${g.color};font-weight:900">${c.group} ${g.label}</span> · 偏好${c.weaponLabel}</p><p style="margin-top:6px">“${c.quote}”</p>`+rels().filter(r=>r.a===sel||r.b===sel).map(r=>`<div class="rel"><b style="font-size:13px;margin:0">${r.label}</b> ${r.a} × ${r.b}<br>${r.desc}</div>`).join('');
+}
+$('#nodes').addEventListener('click',e=>{const b=e.target.closest('.nd');if(b){sel=b.dataset.k;draw()}});
+document.querySelectorAll('.tm').forEach(b=>b.onclick=()=>{mode=b.dataset.m;document.querySelectorAll('.tm').forEach(x=>x.setAttribute('aria-pressed',x===b));draw()});
+$('#branches').innerHTML=Object.entries(WORLD_TREE_GROUP_META).map(([k,g])=>`<div class="tcard" style="border-top:5px solid ${g.color}"><b>${k} ${g.label}</b><p>${g.desc}</p><p style="margin-top:6px"><b style="display:inline;font-size:13px">关注：</b>${WORLD_TREE_BRANCH_GUIDE[k].focus}</p><p style="margin-top:6px">${WORLD_TREE_BRANCH_GUIDE[k].route}</p></div>`).join('');
+draw();
+</script></body></html>

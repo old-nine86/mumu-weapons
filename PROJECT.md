@@ -78,62 +78,118 @@ The site should feel like a polished toy product experience: soft, cute, high qu
 
 ### Phase 10: MBTI World Tree
 
-- Planned and started `人格世界树`, an Obsidian-like relationship map for the 16 MBTI brick characters.
+- Added `人格世界树`, an Obsidian-like relationship map for the 16 MBTI brick characters.
 - Added a generated premium brick world-tree background asset under `assets/world-tree/`.
-- First version goal: dynamic tree map, draggable/zoomable canvas, character nodes on branches, relationship lines, and clickable character/relationship detail cards.
+- Added character nodes, relationship lines, faction guidance, relationship highlighting, and character/profile navigation.
+- Added Chinese and English comic galleries connected to the same character universe.
+
+### Phase 11: Build Manuals And Sandbox Construction
+
+- Added bilingual build-manual studios for library weapons and uploaded photos.
+- Added calibrated local image analysis, distinct color groups, parts lists, build steps, copy/print actions, modal entry points, and deep links.
+- Added a secure optional Supabase Edge Function contract for OpenAI vision analysis, with local Canvas analysis retained as an automatic fallback.
+- Expanded the standalone sandbox with five selectable build materials, stable touch controls, crafting, world progression, and verified block placement.
+
+### Phase 12: Commercial Configuration Foundation
+
+- Added one shared bilingual configuration file for product, affiliate, and creator-support destinations.
+- Enabled outbound actions only when a destination is active, verified, and uses HTTPS.
+- Kept unavailable purchases and creator support visibly disabled while preserving useful forum, sharing, and gallery actions.
+- Added current-device click counts that store only item IDs and totals, with no identity or profile data.
+
+### Phase 13: Sandbox Core Modules
+
+- Extracted deterministic world generation and tile data from `game.html`.
+- Extracted inventory, recipes, building placement, mining, and collision rules into a reusable pure module.
+- Added a validated V4 save format with V2/V3 migration and persisted world edits.
+- Fixed star-core altar activation so crafting materials are charged once and inventory cannot be driven negative.
+- Added focused automated tests for world generation, recipes, placement, mining, save validation, and migration.
+
+### Phase 14: Sandbox Runtime Modules
+
+- Extracted player creation, movement intent, vitals, healing, and terrain effects into `game/player.mjs`.
+- Extracted keyboard, pointer, and mobile-control state into `game/input.mjs`.
+- Extracted enemy creation, weapon attacks, energy/cooldown rules, damage, rewards, and enemy motion into `game/combat.mjs`.
+- Extracted progression steps, current goals, HUD view models, and DOM rendering into `game/ui.mjs`.
+- Fixed low-energy blaster attacks so they no longer fall through into unintended melee attacks.
+- Prevented duplicate enemy defeat rewards and moved mobile notices away from status and control overlays.
+- Expanded the automated sandbox suite from 6 to 12 tests.
 
 ## Near-Term Roadmap
 
-### Next Phase: World Tree Polish
+The V2 preview family under `preview/` is the current art and interaction track. It is unpublished. Do not replace live `index.html`, `en/`, `admin.html`, or `game.html` until the owner explicitly asks to publish.
 
-Goal: turn the character roster into a beautiful dynamic story map.
+### Next Phase: V2 Preview Polish (high priority)
 
-- Improve node placement against the generated tree art.
-- Add richer relationship filters: faction, weapon preference, battle synergy, story bonds.
-- Add entrance animations, branch glow, and mobile-friendly guided navigation.
-- Later connect each branch to comics, weapons, arena picks, and AR world planning.
+Goal: keep refining the approved character-gallery art direction — macaron colors, full-bleed brick photography, real weapon photos, pink-blue gradient cards, and a soft premium toy-cabinet feel — without changing the live site.
 
-### Next Phase: Upload Quality Upgrade
+- Continue polishing the Chinese homepage, character gallery, and the other preview pages so they stay visually unified.
+- World-tree avatar-to-frame alignment and roughly 390px mobile layout are already done in preview; keep them intact while polishing.
+- Keep consumer-facing copy in plain Chinese; do not surface table, RPC, or SQL identifiers.
 
-Goal: make uploaded weapon images cleaner and more convincing as collectible weapon cards.
+### Next Phase: Admin Preview To Real Data (high priority, database changes need owner approval)
 
-- Improve background removal for common floor/background photos.
-- Add clearer upload guidance: clean background, enough light, weapon fills most of the frame.
-- Add upload preview states: original image, cleaned image, final weapon card preview.
-- Let admin replace or upload a better showcase image after approval.
+Goal: land the unfinished admin capabilities that now exist as a preview: dashboard totals, forum moderation, upload-quota editing, and moderation history.
 
-### Next Phase: Weapon Showcase Window
+- After the owner agrees, apply `preview/v2-admin-extra-rpcs.sql` in the Supabase SQL editor so forum hide/unhide, quota writes, dashboard counts, and history work on real data.
+- Keep wiring the preview admin against existing review capabilities for pending weapons, approved weapons, and promotion proofs.
+- Do not replace live `admin.html` until the owner asks to publish.
+- The AI refinement workbench stays on live `admin.html` for now and is not a high-priority port.
 
-Goal: clicking a weapon should open a premium display window.
+### Next Phase: Upload And Forum Preview Ready For Cutover (high priority, preview only)
 
-- Add a showcase modal for each weapon.
-- Use AI-generated showcase images when available.
-- Show weapon name, creator, type, brick count, AI power, skill, and analysis.
-- Support uploaded weapon showcase images from admin.
+Goal: finish the upload and public forum preview pages in the same art system so they can later replace the live sections.
 
-### Next Phase: Character Depth
+- Keep iterating `preview/v2-upload.html` and `preview/v2-forum.html`.
+- Formal replacement of the live upload and forum UI waits for an explicit publish request.
 
-Goal: make 16 MBTI characters more distinct in personality, visuals, and battle style.
+### Later, when there is spare capacity
 
-- Give each character clearer skill identity.
-- Improve visual accessories based on MBTI traits.
-- Add character synergy and counters.
-- Improve battle logs so every personality feels different.
+#### Cloud Vision Deployment
 
-### Next Phase: Promotion Loop
+Goal: activate real vision analysis without exposing provider keys in the public site.
 
-Goal: turn site usage into natural promotion.
+- Deploy `analyze-brick-weapon` as a Supabase Edge Function.
+- Store `OPENAI_API_KEY` only in Supabase secrets.
+- Verify one Chinese and one English uploaded photo through the live endpoint.
+- Monitor latency, cost, incomplete results, and fallback frequency before enabling it for every visitor.
 
-- Add follow/share prompts for Douyin and Kuaishou.
-- Keep improving promotion proof submission and reward clarity.
-- Make approved promotion rewards clearer.
-- Track basic metrics manually: visits, uploads, forum posts, comments, and video performance.
+#### Sandbox Rendering Architecture
+
+Goal: finish the remaining Canvas and scene boundaries now that gameplay state and UI logic are modular.
+
+- Split backgrounds, tiles, actors, effects, lighting, and minimap rendering out of `game.html`.
+- Introduce a render-state snapshot so drawing code does not mutate gameplay state.
+- Add lightweight render smoke tests and keep browser screenshots for desktop/mobile framing.
+- Preserve the current desktop/mobile controls and visual framing during the split.
+
+#### Commercial Activation
+
+Goal: activate the prepared commercial slots with destinations that have been reviewed by the project owner.
+
+- Add real product, affiliate, and creator-support URLs to `commerce-config.js`.
+- Confirm destination ownership, product relevance, disclosure text, and mobile behavior before marking each record active and verified.
+- Review current-device click totals during testing, then decide whether aggregated server-side analytics are worth adding.
+
+#### Moderation And Accounts
+
+Goal: strengthen community ownership and abuse controls as uploads and forum activity grow.
+
+- Add user identity and personal weapon collections.
+- Add server-side upload quotas and moderation history.
+- Move admin-only mutations behind authenticated server-side checks.
+
+#### Other spare-capacity items
+
+- Port the AI refinement workbench into the V2 admin preview.
+- Build English V2 preview pages.
+- Publish the V2 pages to the live GitHub Pages site only when asked, after `node scripts/preflight-check.mjs` passes.
 
 ## Long-Term Roadmap
 
 ### Real AI Recognition
 
-- Use a vision AI model to inspect uploaded weapon photos.
+- Deploy and evaluate the prepared vision Edge Function for uploaded weapon photos.
 - Generate weapon type, weapon name suggestions, brick count, battle stats, rarity, and description.
 - In the admin review flow, use AI to remove backgrounds, generate card backgrounds, and create LEGO-style character handheld showcase images before approval.
 - Improve fraud/spam detection.

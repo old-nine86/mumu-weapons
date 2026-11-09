@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#fff8ed">
+<title>沐沐积木武器库 · 第二代后台小样（玩具店后仓）</title>
+<link rel="stylesheet" href="v2-home.css"><link rel="stylesheet" href="v2-pages.css">
+<link rel="stylesheet" href="v2-admin.css">
+</head>
+<body class="admin-body">
+
+<div class="preview-flag"><div class="wrap"><span class="dot" aria-hidden="true"></span><span>第二代前台小样 · 不会替换当前线上站</span><a href="v2-home.html">武器橱窗</a><a href="v2-upload.html">上传</a><a href="v2-characters.html">角色</a><a href="v2-world-tree.html">世界树</a><a href="v2-battle.html">战场</a><a href="v2-manual.html">说明书</a><a href="v2-sandbox.html">沙盒</a><a href="v2-forum.html">论坛</a><a href="../index.html">返回当前线上站</a><a href="v2-admin.html">后仓审核小样</a></div></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-row">
+      <a class="brand" href="v2-admin.html">
+        <span class="brand-mark" aria-hidden="true">🧸</span>
+        <span class="brand-txt">
+          <b>积木武器库 · 后仓审核</b>
+          <i>玩具店后仓 · 审核工作室</i>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="预览导航">
+        <a href="v2-home.html">武器橱窗</a>
+        <a href="v2-upload.html">上传作品</a>
+        <a href="v2-characters.html">角色图鉴</a>
+        <a href="v2-forum.html">玩家论坛</a>
+        <a href="v2-battle.html">角色战场</a>
+        <a href="v2-admin.html" class="is-current" aria-current="page">后仓审核</a>
+      </nav>
+      <button type="button" class="nav-cta" id="previewToggleBtn">查看预览结构</button>
+    </div>
+    <div class="stats-bar" id="topStats">
+      <span class="stat-pill"><i aria-hidden="true">🔐</i><b id="topAuthLabel">未进入</b></span>
+      <span class="stat-pill"><i aria-hidden="true">🧱</i>后仓小样</span>
+      <span class="stat-pill"><i aria-hidden="true">✨</i>马卡龙工作室</span>
+    </div>
+  </div>
+</header>
+
+<section class="admin-hero">
+  <div class="admin-hero-frame">
+    <img src="../assets/hero-brick-playground.png" alt="积木玩具桌面与武器陈列，温暖灯光下的玩具店后仓氛围" width="1600" height="900" fetchpriority="high">
+    <span class="admin-hero-tag">玩具店后仓 · 不对外开放</span>
+    <span class="admin-hero-badge"><b>审核室</b><span>总览 · 武器 · 论坛 · 配额</span></span>
+  </div>
+  <div class="wrap admin-head">
+    <div>
+      <h1>后仓亮着灯，<em>把橱窗收拾整齐</em>。</h1>
+      <p class="admin-lede">和角色图鉴同一套马卡龙气质。这里只给审核员用：看待审武器、推广证明、论坛帖子和上传配额。AI 精修大工台仍在线上后台，本小样用链接指过去。</p>
+    </div>
+    <div class="admin-head-actions">
+      <button type="button" class="btn btn-butter" id="enterPreviewBtn">打开示例结构</button>
+      <a class="btn btn-ghost" href="../admin.html">打开线上 AI 精修台</a>
+    </div>
+  </div>
+</section>
+
+<div class="mode-banner" id="previewBanner" role="status">
+  <span class="pill">示例 / 预览结构</span>
+  <span>下面展示的是样式样板，不是线上真实审核数据。口令登录后会切换成真实路径。</span>
+  <button type="button" class="btn btn-sm btn-ghost" id="exitPreviewBtn">退出示例</button>
+</div>
+
+<section class="login-shell" id="loginShell">
+  <div class="glass-card">
+    <h2>进入审核工作室</h2>
+    <p class="sub">输入审核口令后读取待审队列。口令只留在本机会话，页面不会回显，也不会写入仓库。</p>
+    <div class="login-row">
+      <label class="field">审核口令
+        <input id="reviewKey" type="password" autocomplete="off" spellcheck="false" placeholder="在此输入审核口令">
+      </label>
+      <button type="button" class="btn btn-butter" id="loginBtn">进入审核</button>
+    </div>
+    <div class="status-line" id="statusLine">等待进入。也可先点右上角「查看预览结构」看美术稿。</div>
+  </div>
+  <div class="glass-card">
+    <h2>本批小样覆盖</h2>
+    <ul class="hint-list">
+      <li>总览：武器 / 推广 / 论坛计数</li>
+      <li>武器与推广：通过、拒绝、双语资料编辑</li>
+      <li>论坛：隐藏 / 恢复（需先开通完整审核能力）</li>
+      <li>上传配额：可查看现值；改写需先开通保存能力</li>
+      <li>审核履历：按审核时间拼时间线</li>
+    </ul>
+  </div>
+</section>
+
+<section class="admin-shell is-locked" id="adminShell">
+  <nav class="side-nav" aria-label="后仓分区">
+    <button type="button" class="is-active" data-pane="dash"><span class="ico">📊</span>总览</button>
+    <button type="button" data-pane="pending"><span class="ico">⏳</span>待审武器</button>
+    <button type="button" data-pane="approved"><span class="ico">✅</span>已通过武器</button>
+    <button type="button" data-pane="promo"><span class="ico">📣</span>推广证明</button>
+    <button type="button" data-pane="forum"><span class="ico">💬</span>论坛审核</button>
+    <button type="button" data-pane="quota"><span class="ico">🎫</span>上传配额</button>
+    <button type="button" data-pane="history"><span class="ico">🧾</span>审核履历</button>
+    <p class="nav-note">AI 抠图 / 橱窗精修仍请使用线上 <a href="../admin.html">admin.html</a>。本小样专注审核与后仓功能。</p>
+  </nav>
+
+  <div class="admin-workspace">
+    <!-- 总览 -->
+    <section class="pane is-active" data-pane-panel="dash">
+      <div class="workspace-head">
+        <div>
+          <h2>总览看板</h2>
+          <p id="dashSub">登录或打开示例后显示计数</p>
+        </div>
+        <div class="toolbar">
+          <button type="button" class="btn btn-sm btn-sky" id="refreshDashBtn">刷新总览</button>
+        </div>
+      </div>
+      <div class="stat-grid" id="statGrid">
+        <article class="stat-card" data-tone="butter"><div class="label">待审武器</div><div class="value" data-stat="weapons_pending">—</div><div class="hint">排队进橱窗</div></article>
+        <article class="stat-card" data-tone="mint"><div class="label">已通过武器</div><div class="value" data-stat="weapons_approved">—</div><div class="hint">亮着的格子</div></article>
+        <article class="stat-card" data-tone="pink"><div class="label">已拒绝武器</div><div class="value" data-stat="weapons_rejected">—</div><div class="hint">未上架</div></article>
+        <article class="stat-card"><div class="label">待审推广</div><div class="value" data-stat="promotions_pending">—</div><div class="hint">证明加名额</div></article>
+        <article class="stat-card" data-tone="mint"><div class="label">已通过推广</div><div class="value" data-stat="promotions_approved">—</div><div class="hint">已发奖金名额</div></article>
+        <article class="stat-card" data-tone="pink"><div class="label">已拒绝推广</div><div class="value" data-stat="promotions_rejected">—</div><div class="hint">未通过</div></article>
+        <article class="stat-card" data-tone="butter"><div class="label">可见帖 / 隐藏帖</div><div class="value"><span data-stat="forum_topics_visible">—</span>/<span data-stat="forum_topics_hidden">—</span></div><div class="hint">论坛主题</div></article>
+        <article class="stat-card"><div class="label">可见回复 / 隐藏回复</div><div class="value"><span data-stat="forum_replies_visible">—</span>/<span data-stat="forum_replies_hidden">—</span></div><div class="hint">论坛回复</div></article>
+      </div>
+      <div class="dash-panels">
+        <div class="glass-card">
+          <h2>今日后仓提醒</h2>
+          <div class="dash-list" id="dashReminders"></div>
+        </div>
+        <div class="glass-card">
+          <h2>功能接通状态</h2>
+          <div class="dash-list" id="dashRpcStatus"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 待审武器 -->
+    <section class="pane" data-pane-panel="pending">
+      <div class="workspace-head">
+        <div>
+          <h2>待审核武器</h2>
+          <p>通过 / 拒绝，并编辑中英文字段。橱窗精修请用线上后台。</p>
+        </div>
+        <div class="toolbar">
+          <button type="button" class="btn btn-sm btn-sky" data-refresh="pending">刷新待审</button>
+        </div>
+      </div>
+      <div class="card-grid" id="pendingGrid"></div>
+    </section>
+
+    <!-- 已通过 -->
+    <section class="pane" data-pane-panel="approved">
+      <div class="workspace-head">
+        <div>
+          <h2>已通过武器</h2>
+          <p>继续改双语资料与展示图地址，保存后写回武器资料。</p>
+        </div>
+        <div class="toolbar">
+          <button type="button" class="btn btn-sm btn-sky" data-refresh="approved">刷新已通过</button>
+        </div>
+      </div>
+      <div class="card-grid" id="approvedGrid"></div>
+    </section>
+
+    <!-- 推广 -->
+    <section class="pane" data-pane-panel="promo">
+      <div class="workspace-head">
+        <div>
+          <h2>推广证明</h2>
+          <p>待审可直接通过 / 拒绝。完整列表需先开通推广全量能力。</p>
+        </div>
+        <div class="toolbar">
+          <button type="button" class="btn btn-sm btn-sky" data-refresh="promo">刷新推广</button>
+        </div>
+      </div>
+      <div class="card-grid" id="promoGrid"></div>
+    </section>
+
+    <!-- 论坛 -->
+    <section class="pane" data-pane-panel="forum">
+      <div class="workspace-head">
+        <div>
+          <h2>论坛审核</h2>
+          <p>主题与回复可隐藏 / 恢复。未开通完整审核能力时，仅展示公开可见帖。</p>
+        </div>
+        <div class="toolbar">
+          <button type="button" class="btn btn-sm btn-sky" data-refresh="forum">刷新论坛</button>
+        </div>
+      </div>
+      <div class="forum-grid" id="forumGrid"></div>
+    </section>
+
+    <!-- 配额 -->
+    <section class="pane" data-pane-panel="quota">
+      <div class="workspace-head">
+        <div>
+          <h2>上传配额</h2>
+          <p>显示当前上传名额规则。保存改动需先开通配额保存能力。</p>
+        </div>
+        <div class="toolbar">
+          <button type="button" class="btn btn-sm btn-sky" data-refresh="quota">刷新配额</button>
+        </div>
+      </div>
+      <div class="quota-grid">
+        <div class="quota-big">
+          <div class="kicker">每 IP 免费上传</div>
+          <div class="num" id="quotaFree">—</div>
+          <div class="desc">默认 50 次</div>
+        </div>
+        <div class="quota-big">
+          <div class="kicker">推广通过奖励名额</div>
+          <div class="num" id="quotaBonus">—</div>
+          <div class="desc">默认每次 +10</div>
+        </div>
+      </div>
+      <div class="glass-card" style="margin-top:14px">
+        <h2>调整配额</h2>
+        <p class="sub" id="quotaUpdated">登录后可尝试保存。若还不能改写，说明后仓尚未开通配额保存。</p>
+        <div class="quota-form">
+          <label class="field">每 IP 免费次数
+            <input id="quotaFreeInput" type="number" min="0" max="500" step="1" value="50">
+          </label>
+          <label class="field">推广通过奖励
+            <input id="quotaBonusInput" type="number" min="0" max="100" step="1" value="10">
+          </label>
+          <div class="actions">
+            <button type="button" class="btn btn-mint" id="saveQuotaBtn">保存配额</button>
+          </div>
+        </div>
+        <p class="sub" style="margin-top:10px;font-size:12px;color:var(--ink-3)">配额保存能力需在后仓单独开通；说明写在仓库补充文件里，不在此展示。</p>
+      </div>
+    </section>
+
+    <!-- 履历 -->
+    <section class="pane" data-pane-panel="history">
+      <div class="workspace-head">
+        <div>
+          <h2>审核履历</h2>
+          <p>按武器与推广的审核时间拼时间线。开通履历能力后可看完整列表。</p>
+        </div>
+        <div class="toolbar">
+          <button type="button" class="btn btn-sm btn-sky" data-refresh="history">刷新履历</button>
+        </div>
+      </div>
+      <div class="history-list" id="historyList"></div>
+    </section>
+  </div>
+</section>
+
+<footer class="footer-mini">
+  <span>V2 后台小样 · noindex · 静态 GitHub Pages 架构不变</span>
+  <span>
+    <a href="v2-home.html">首页小样</a> ·
+    <a href="v2-characters.html">角色图鉴</a> ·
+    <a href="../admin.html">线上后台</a>
+  </span>
+</footer>
+
+<script src="../supabase-config.js?v=3"></script>
+<script src="v2-admin.js"></script>
+</body>
+</html>

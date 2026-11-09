@@ -1,0 +1,240 @@
+/* 沐沐积木武器库 · V2 前台分页共用样式
+   依赖 v2-home.css 色板与导航。上传 / 论坛 / 战场落地页共用。 */
+
+.page-hero { padding: 18px 0 8px; }
+.page-frame {
+  position: relative;
+  width: min(1180px, 100% - 48px);
+  margin-inline: auto;
+  border: 10px solid rgba(255,255,255,.72);
+  border-radius: 36px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: var(--shadow-lift);
+  aspect-ratio: 1180 / 360;
+}
+.page-frame img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: 50% 45%;
+}
+.page-frame::after {
+  content: "";
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255,248,237,.5), transparent 40%),
+    radial-gradient(circle at 90% 18%, rgba(159,215,255,.28), transparent 18rem);
+}
+.page-tag {
+  position: absolute; left: 20px; top: 20px; z-index: 2;
+  padding: 8px 16px; border-radius: 999px;
+  background: rgba(255,253,248,.92);
+  border: 1px solid rgba(255,255,255,.9);
+  box-shadow: var(--shadow-soft);
+  font-size: 12.5px; font-weight: 700; color: var(--ink-2);
+  backdrop-filter: blur(8px);
+}
+.page-badge {
+  position: absolute; right: 22px; bottom: 22px; z-index: 2;
+  display: grid; justify-items: end; gap: 2px;
+  padding: 12px 18px; border-radius: 22px;
+  background: rgba(255,253,248,.9);
+  border: 1px solid rgba(255,255,255,.95);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(10px); text-align: right;
+}
+.page-badge b { font-size: 22px; font-weight: 900; color: var(--toy-blue); line-height: 1.1; }
+.page-badge span { font-size: 11.5px; font-weight: 700; color: var(--ink-3); }
+
+.page-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 22px; margin-top: 26px; flex-wrap: wrap;
+}
+.page-head h1 {
+  margin: 0;
+  font-size: clamp(26px, 3.2vw, 36px);
+  line-height: 1.22; font-weight: 900; letter-spacing: -.01em;
+}
+.page-head h1 em { font-style: normal; color: var(--toy-blue); }
+.page-lede {
+  margin: 10px 0 0; max-width: 58ch;
+  font-size: 14.5px; color: var(--ink-2);
+}
+.page-actions { display: flex; gap: 10px; flex-wrap: wrap; padding-bottom: 4px; }
+.page-actions > a,
+.page-actions > .btn { white-space: nowrap; }
+
+.glass-panel {
+  background: rgba(255,253,248,.86);
+  border: 1px solid rgba(255,255,255,.95);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(16px) saturate(1.3);
+  padding: 22px;
+}
+.status-toast {
+  margin-top: 12px;
+  min-height: 22px;
+  font-size: 13px; font-weight: 750; color: var(--ink-2);
+}
+.status-toast[data-tone="good"] { color: #1f9d6a; }
+.status-toast[data-tone="bad"] { color: #e24b4b; }
+.status-toast[data-tone="warn"] { color: #d08912; }
+
+.empty-soft {
+  padding: 42px 22px; text-align: center;
+  border-radius: 28px;
+  background: rgba(255,255,255,.72);
+  border: 1px dashed var(--line-strong);
+  box-shadow: var(--shadow-soft);
+}
+.empty-soft .emoji { font-size: 36px; }
+.empty-soft h3 { margin: 10px 0 6px; font-size: 18px; }
+.empty-soft p { margin: 0; color: var(--ink-3); font-size: 13.5px; }
+
+.footer-mini {
+  width: min(1180px, 100% - 48px);
+  margin: 28px auto 40px;
+  padding: 14px 18px;
+  border-radius: 22px;
+  background: rgba(255,255,255,.55);
+  border: 1px solid var(--line);
+  color: var(--ink-3);
+  font-size: 12.5px;
+  display: flex; gap: 12px; flex-wrap: wrap; justify-content: space-between;
+}
+.footer-mini a { color: var(--toy-blue); font-weight: 800; }
+
+/* Shared nav wrap for 8-item V2 preview nav (desktop / tablet) */
+.nav-links{flex-wrap:wrap}
+.nav-links a{padding:8px 11px;font-size:13px}
+
+/* ---- Mobile ~390: keep desktop look, fix real overflow/tap issues ---- */
+@media (max-width: 720px) {
+  .page-frame { width: min(100% - 24px, 100%); border-width: 6px; border-radius: 26px; }
+  .footer-mini { width: min(100% - 24px, 100%); }
+
+  /* Preview flag: one scrollable chip row instead of 3-line wrap */
+  .preview-flag { font-size: 12px; }
+  .preview-flag .wrap {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 6px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .preview-flag .wrap::-webkit-scrollbar { display: none; }
+  .preview-flag .wrap > span:not(.dot) {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    max-width: 30vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .preview-flag a {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 6px 12px;
+    border-bottom: 0;
+    border-radius: 999px;
+    background: rgba(255,255,255,.9);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* Restore main nav strip only when page has no bottom tabbar (home/characters keep tabbar) */
+  body:not(:has(.tabbar)) .nav-links {
+    display: flex !important;
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 6px;
+    padding: 6px 0 2px;
+    scrollbar-width: none;
+  }
+  body:not(:has(.tabbar)) .nav-links::-webkit-scrollbar { display: none; }
+  body:not(:has(.tabbar)) .nav-links a {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 8px 12px;
+    font-size: 12.5px;
+    min-height: 36px;
+  }
+
+  .page-head { margin-top: 8px; }
+  .page-head h1 { font-size: 24px; }
+  .page-lede { font-size: 13.5px; max-width: none; }
+  .page-actions {
+    gap: 8px;
+  }
+  .page-actions > a,
+  .page-actions > .btn {
+    flex: 1 1 auto;
+    min-width: max-content;
+    justify-content: center;
+    text-align: center;
+    white-space: nowrap;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    font-size: 13px !important;
+  }
+
+  /* Manual / sandbox / world-tree shared grids: steps 1-col, weapon cards 2-col */
+  .g3 { grid-template-columns: 1fr !important; }
+  .g4 { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+
+  .cta-band {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .cta-band .pill-btn,
+  .cta-band a.pill-btn {
+    justify-content: center;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* World tree: usable taps, modes wrap, map stays full width */
+  .tree-modes { flex-wrap: wrap; }
+  .tm { flex: 1 1 auto; text-align: center; min-height: 40px; }
+  .tree-canvas {
+    border-radius: 22px !important;
+    box-shadow: 0 0 0 5px rgba(255,255,255,.8), var(--shadow-card) !important;
+  }
+  .nd {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .nd.on {
+    width: 50px !important;
+    height: 50px !important;
+  }
+  .nd i { font-size: 7px !important; }
+
+  .topbar-row { gap: 8px; }
+  .nav-cta {
+    padding: 10px 14px !important;
+    font-size: 12px !important;
+    white-space: nowrap;
+  }
+  .brand-txt b { font-size: 14.5px !important; }
+
+  /* Extra room under topbar when the scrollable nav strip is shown */
+  body:not(:has(.tabbar)) .topbar {
+    margin-bottom: -18px;
+  }
+  body:not(:has(.tabbar)) .page-hero,
+  body:not(:has(.tabbar)) .hero {
+    padding-top: 8px;
+  }
+}

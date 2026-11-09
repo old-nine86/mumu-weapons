@@ -1,0 +1,592 @@
+/* 沐沐积木武器库 · 第二代角色图鉴小样
+   外壳（预览标 / 白胶囊导航 / 背景 / 按钮 / 卡片 / 页脚）全部复用 v2-home.css，
+   这里只写图鉴页特有的：合影横幅、英雄标题、MBTI 筛选、角色卡、详情侧栏。 */
+
+/* ---------- 页首：合影大横幅（比首页英雄区矮一点） ---------- */
+.guide-hero { padding: 18px 0 6px; }
+.guide-frame {
+  position: relative;
+  width: min(1180px, 100% - 48px);
+  margin-inline: auto;
+  border: 10px solid rgba(255, 255, 255, 0.72);
+  border-radius: 36px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: var(--shadow-lift);
+  aspect-ratio: 1180 / 400;
+}
+.guide-frame img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  /* 原图右侧留白多、人物偏左，往左偏一点让人更居中 */
+  object-position: 32% 50%;
+  transform-origin: 32% 50%;
+  animation: guideDrift 30s ease-in-out infinite alternate;
+}
+@keyframes guideDrift {
+  from { transform: scale(1.01); }
+  to { transform: scale(1.045); }
+}
+.guide-frame::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 10% 12%, rgba(255, 183, 200, 0.22), transparent 20rem),
+    radial-gradient(circle at 92% 18%, rgba(159, 215, 255, 0.24), transparent 20rem);
+}
+.guide-tag {
+  position: absolute;
+  left: 20px; top: 20px;
+  z-index: 2;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-soft);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+  backdrop-filter: blur(8px);
+}
+/* 合影右侧留白处放一枚小徽章，不挡人 */
+.guide-badge {
+  position: absolute;
+  right: 22px; bottom: 22px;
+  z-index: 2;
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+  padding: 12px 18px;
+  border-radius: 22px;
+  background: rgba(255, 253, 248, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(10px);
+  text-align: right;
+}
+.guide-badge b {
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--toy-blue);
+}
+.guide-badge span { font-size: 11.5px; font-weight: 700; color: var(--ink-3); }
+
+.guide-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 26px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+.guide-head h1 {
+  margin: 0;
+  font-size: clamp(26px, 3.2vw, 38px);
+  line-height: 1.22;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+.guide-head h1 em { font-style: normal; color: var(--toy-blue); }
+.guide-lede {
+  margin: 10px 0 0;
+  max-width: 56ch;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+.guide-counts {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-bottom: 4px;
+}
+.count-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: var(--shadow-soft);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.count-pill b { font-size: 14px; font-weight: 900; color: var(--ink); }
+.count-pill[data-g="NT"] { background: linear-gradient(135deg, #eee6ff, #f8f4ff); }
+.count-pill[data-g="NF"] { background: linear-gradient(135deg, #dff6ec, #f2fdf8); }
+.count-pill[data-g="SJ"] { background: linear-gradient(135deg, #e2f1ff, #f4faff); }
+.count-pill[data-g="SP"] { background: linear-gradient(135deg, #ffe9ef, #fff6f8); }
+
+/* ---------- 筛选条 ---------- */
+.guide-filter {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.66);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), var(--shadow-soft);
+}
+/* 四种阵营被选中时各带一点自家颜色，仍是马卡龙浅底 */
+.chip[data-kind="NT"][aria-pressed="true"] { background: linear-gradient(180deg, #fff, #f1eaff); }
+.chip[data-kind="NF"][aria-pressed="true"] { background: linear-gradient(180deg, #fff, #e6f8f0); }
+.chip[data-kind="SJ"][aria-pressed="true"] { background: linear-gradient(180deg, #fff, #e8f5ff); }
+.chip[data-kind="SP"][aria-pressed="true"] { background: linear-gradient(180deg, #fff, #ffeef3); }
+
+/* ---------- 角色卡片网格 ---------- */
+.guide-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 22px;
+}
+.fighter {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 10px 6px;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 250, 241, 0.8));
+  box-shadow: var(--shadow-card);
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.24s ease;
+}
+.fighter[hidden] { display: none; }
+.fighter:hover {
+  transform: translateY(-6px) rotate(-0.35deg);
+  box-shadow: 0 34px 74px -32px rgba(78, 64, 44, 0.5);
+}
+.fighter:focus-visible {
+  outline: 3px solid rgba(47, 143, 232, 0.5);
+  outline-offset: 3px;
+}
+
+/* 舞台：和武器卡一样的粉蓝渐变 + 细点，只是更方一点放小人 */
+.fighter-stage {
+  --rot: -1.2deg;
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1 / 1;
+  border-radius: 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 22% 14%, rgba(255, 183, 200, 0.52), transparent 9rem),
+    radial-gradient(circle at 82% 18%, rgba(159, 215, 255, 0.54), transparent 10rem),
+    radial-gradient(circle at 50% 94%, rgba(255, 217, 106, 0.3), transparent 8rem),
+    linear-gradient(180deg, #fff9ef, #f7fbff);
+}
+.fighter-stage::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 18px;
+  background: radial-gradient(circle, rgba(130, 160, 200, 0.35) 0 2px, transparent 2.5px) 0 0 / 26px 26px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+.fighter-stage::after {
+  /* 脚下的接触阴影 */
+  content: "";
+  position: absolute;
+  left: 50%; bottom: 8%;
+  width: 58%; height: 12px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(90, 74, 48, 0.2), transparent 72%);
+  pointer-events: none;
+}
+.fighter-avatar {
+  position: relative;
+  z-index: 2;
+  width: 94%;
+  height: 94%;
+  object-fit: contain;
+  transform: rotate(var(--rot));
+  /* 头像本身是白底，用柔光晕把白边化进粉蓝底板里 */
+  filter: drop-shadow(0 14px 16px rgba(78, 64, 44, 0.22));
+  transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+  mix-blend-mode: multiply;
+}
+.fighter:hover .fighter-avatar { transform: rotate(0deg) scale(1.06) translateY(-3px); }
+
+.fighter-no {
+  position: absolute;
+  top: 12px; left: 14px;
+  z-index: 3;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: rgba(32, 33, 36, 0.42);
+}
+.fighter-mbti {
+  position: absolute;
+  top: 10px; right: 10px;
+  z-index: 3;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #4b4136;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+.fighter-mbti[data-g="NT"] { color: #4a3b77; background: linear-gradient(135deg, #f3edff, #ffffff); }
+.fighter-mbti[data-g="NF"] { color: #0b6349; background: linear-gradient(135deg, #e6f8f0, #ffffff); }
+.fighter-mbti[data-g="SJ"] { color: #0a4f78; background: linear-gradient(135deg, #e8f5ff, #ffffff); }
+.fighter-mbti[data-g="SP"] { color: #8a3a52; background: linear-gradient(135deg, #ffeef3, #ffffff); }
+
+.fighter-info {
+  padding: 13px 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.fighter-name {
+  font-size: 16.5px;
+  font-weight: 900;
+  line-height: 1.35;
+}
+.fighter-kind {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-3);
+  letter-spacing: 0.04em;
+}
+.fighter-weapon {
+  align-self: flex-start;
+  margin-top: 7px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #4b4136;
+  background: linear-gradient(135deg, rgba(255, 183, 200, 0.36), rgba(159, 215, 255, 0.36));
+  border: 1px solid rgba(255, 255, 255, 0.85);
+}
+.fighter-weapon[data-w="gun"] { background: linear-gradient(135deg, rgba(159, 215, 255, 0.42), rgba(142, 230, 198, 0.36)); }
+.fighter-weapon[data-w="spear"] { background: linear-gradient(135deg, rgba(255, 217, 106, 0.42), rgba(255, 183, 200, 0.36)); }
+
+.guide-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 6px 4px;
+  font-size: 12.5px;
+  color: var(--ink-3);
+  flex-wrap: wrap;
+}
+
+/* ---------- 详情侧栏（从右侧滑入的白卡，不遮成全屏黑） ---------- */
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(78, 64, 44, 0.18);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.26s ease, visibility 0.26s ease;
+}
+.sheet-backdrop[hidden] { display: none; }
+.sheet[hidden] { display: none; }
+.sheet-backdrop.is-on { opacity: 1; visibility: visible; }
+
+.sheet {
+  position: fixed;
+  z-index: 90;
+  top: 14px; right: 14px; bottom: 14px;
+  width: min(480px, calc(100% - 28px));
+  display: flex;
+  flex-direction: column;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(circle at 8% 4%, rgba(255, 183, 200, 0.32), transparent 16rem),
+    radial-gradient(circle at 94% 8%, rgba(159, 215, 255, 0.34), transparent 17rem),
+    linear-gradient(180deg, #fffdf8, #fff8ef);
+  box-shadow: 0 40px 100px -30px rgba(78, 64, 44, 0.5);
+  transform: translateX(calc(100% + 24px));
+  visibility: hidden;
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.32s ease;
+}
+.sheet.is-on { transform: none; visibility: visible; }
+
+.sheet-close {
+  position: absolute;
+  top: 14px; right: 14px;
+  z-index: 4;
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(87, 75, 55, 0.12);
+  background: rgba(255, 253, 248, 0.95);
+  box-shadow: var(--shadow-soft);
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.sheet-close:hover { color: var(--ink); background: #fff; }
+
+.sheet-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 14px 14px 22px;
+  border-radius: var(--r-xl);
+}
+
+/* 舞台：用 position.png 全身/场景图 */
+.sheet-stage {
+  position: relative;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 8px solid rgba(255, 255, 255, 0.85);
+  background:
+    radial-gradient(circle at 20% 12%, rgba(255, 183, 200, 0.5), transparent 12rem),
+    radial-gradient(circle at 84% 16%, rgba(159, 215, 255, 0.52), transparent 13rem),
+    radial-gradient(circle at 50% 96%, rgba(255, 217, 106, 0.32), transparent 11rem),
+    linear-gradient(180deg, #fff9ef, #f7fbff);
+  box-shadow: var(--shadow-soft);
+  aspect-ratio: 16 / 11;
+}
+.sheet-stage img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+}
+.sheet-stage::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 60%, rgba(255, 253, 248, 0.55));
+}
+
+.sheet-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 6px 0;
+  flex-wrap: wrap;
+}
+.sheet-name {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1.25;
+}
+.sheet-line {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink-3);
+  letter-spacing: 0.04em;
+}
+.sheet-mbti {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: var(--shadow-soft);
+  white-space: nowrap;
+}
+.sheet-mbti b { font-size: 14px; font-weight: 900; color: var(--ink); letter-spacing: 0.06em; }
+
+.sheet-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 14px 6px 0;
+}
+.sheet-tags span {
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #4b4136;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 217, 106, 0.6);
+}
+.sheet-tags span:first-child {
+  background: linear-gradient(135deg, rgba(255, 183, 200, 0.4), rgba(255, 217, 106, 0.4));
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+.sheet-quote {
+  margin: 16px 6px 0;
+  padding: 14px 18px;
+  border-radius: var(--r-sm);
+  border-left: 5px solid rgba(255, 183, 200, 0.9);
+  background: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.sheet-block { padding: 18px 6px 0; }
+.sheet-block h3 {
+  margin: 0 0 3px;
+  font-size: 13.5px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+.sheet-block .hint {
+  margin: 0 0 10px;
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+/* 战斗数值条 */
+.stats {
+  display: grid;
+  gap: 10px;
+}
+.stat {
+  display: grid;
+  grid-template-columns: 64px 1fr 46px;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.stat-rail {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: inset 0 1px 3px rgba(78, 64, 44, 0.14);
+  overflow: hidden;
+}
+.stat-rail i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--pink), var(--butter));
+}
+.stat:nth-child(2) .stat-rail i { background: linear-gradient(90deg, var(--sky), var(--mint)); }
+.stat:nth-child(3) .stat-rail i { background: linear-gradient(90deg, #cfe0ff, var(--coral)); }
+.stat b {
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--ink);
+  text-align: right;
+}
+
+/* 台词分组 */
+.quotes {
+  display: grid;
+  gap: 10px;
+}
+.qgroup {
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: var(--shadow-soft);
+}
+.qgroup b {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11.5px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+}
+.qgroup ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+.qgroup li {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.qgroup li::before {
+  content: "「";
+  color: var(--ink-3);
+}
+.qgroup li::after {
+  content: "」";
+  color: var(--ink-3);
+}
+.qgroup.win { background: linear-gradient(135deg, rgba(255, 217, 106, 0.26), rgba(255, 255, 255, 0.9)); }
+.qgroup.lose { background: linear-gradient(135deg, rgba(159, 215, 255, 0.26), rgba(255, 255, 255, 0.9)); }
+
+.sheet-src {
+  margin: 18px 6px 0;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--ink-3);
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 1080px) {
+  .guide-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 900px) {
+  .guide-frame { aspect-ratio: 16 / 10; }
+  .guide-head { align-items: flex-start; }
+}
+
+@media (max-width: 720px) {
+  .guide-frame {
+    width: calc(100% - 28px);
+    border-width: 6px;
+    border-radius: 26px;
+    aspect-ratio: 4 / 3;
+  }
+  .guide-tag { left: 12px; top: 12px; font-size: 11px; padding: 6px 12px; }
+  .guide-badge { right: 12px; bottom: 12px; padding: 9px 14px; border-radius: 18px; }
+  .guide-badge b { font-size: 19px; }
+  .guide-badge span { font-size: 10.5px; }
+  .guide-frame img { object-position: 38% 52%; }
+  .guide-head { margin-top: 22px; gap: 14px; }
+  .guide-head h1 { font-size: 24px; }
+  .guide-lede { font-size: 13.5px; }
+  .guide-counts { gap: 6px; }
+  .count-pill { padding: 6px 11px; font-size: 11px; }
+  .guide-filter { width: 100%; border-radius: 22px; }
+  .guide-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+  .fighter { border-radius: 24px; padding: 8px 8px 4px; }
+  .fighter-stage { border-radius: 18px; }
+  .fighter-name { font-size: 14px; }
+  .fighter-kind { font-size: 10.5px; }
+  .fighter-weapon { font-size: 10.5px; padding: 3px 9px; }
+  .sheet {
+    top: auto;
+    right: 8px; left: 8px; bottom: 8px;
+    width: auto;
+    max-height: calc(100% - 40px);
+    border-radius: 30px;
+    transform: translateY(calc(100% + 24px));
+  }
+  .sheet-scroll { padding: 10px 10px 18px; }
+  .sheet-name { font-size: 20px; }
+}
+
+@media (max-width: 400px) {
+  .fighter-name { font-size: 13px; }
+  .count-pill[data-g] { flex: 1 1 calc(50% - 6px); justify-content: center; }
+}

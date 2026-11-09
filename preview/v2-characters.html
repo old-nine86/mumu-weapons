@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#fff8ed">
+<title>沐沐积木武器库 · 第二代角色图鉴小样</title>
+<link rel="stylesheet" href="v2-home.css"><link rel="stylesheet" href="v2-pages.css">
+<link rel="stylesheet" href="v2-characters.css">
+<style>.nav-links{flex-wrap:wrap}.nav-links a{padding:8px 11px}</style></head>
+<body>
+
+<!-- 预览标 -->
+<div class="preview-flag"><div class="wrap"><span class="dot" aria-hidden="true"></span><span>第二代前台小样 · 不会替换当前线上站</span><a href="v2-home.html">武器橱窗</a><a href="v2-upload.html">上传</a><a href="v2-characters.html">角色</a><a href="v2-world-tree.html">世界树</a><a href="v2-battle.html">战场</a><a href="v2-manual.html">说明书</a><a href="v2-sandbox.html">沙盒</a><a href="v2-forum.html">论坛</a><a href="../index.html">返回当前线上站</a><a href="v2-admin.html">后仓审核小样</a></div></div>
+
+<!-- 导航：和首页同一套白色胶囊卡 -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-row">
+      <a class="brand" href="v2-home.html">
+        <span class="brand-mark" aria-hidden="true">🧱</span>
+        <span class="brand-txt">
+          <b>积木武器库 · 角色战场</b>
+          <i>沐沐的积木玩具橱窗</i>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="主导航"><a href="v2-home.html">武器橱窗</a><a href="v2-upload.html">上传</a><a href="v2-characters.html" class="is-current" aria-current="page">角色</a><a href="v2-world-tree.html">世界树</a><a href="v2-battle.html">战场</a><a href="v2-manual.html">说明书</a><a href="v2-sandbox.html">沙盒</a><a href="v2-forum.html">论坛</a></nav>
+      <a class="nav-cta" href="v2-upload.html">上传一件</a>
+    </div>
+    <div class="stats-bar">
+      <span class="stat-pill"><i aria-hidden="true">🧸</i><b>16</b> 位战士</span>
+      <span class="stat-pill"><i aria-hidden="true">🧩</i><b>4</b> 个阵营</span>
+      <span class="stat-pill"><i aria-hidden="true">⚔️</i><b>3</b> 种偏好武器</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- 页首：合影大横幅 -->
+  <section class="guide-hero">
+    <div class="guide-frame">
+      <img src="../assets/banner-characters-bricks.png" alt="八位积木小人穿着不同颜色的积木盔甲，站在马卡龙色的积木城堡前合影" fetchpriority="high" width="1822" height="863">
+      <span class="guide-tag">全员合影 · 积木城堡前</span>
+      <span class="guide-badge"><b>16 位</b><span>积木战士 · 4 个阵营</span></span>
+    </div>
+
+    <div class="wrap guide-head">
+      <div>
+        <h1>16 位积木战士，<em>各守一格橱窗</em>。</h1>
+        <p class="guide-lede">一人一个 MBTI 性格，一人一件偏好武器。点开卡片，看看现站里记录的战斗数值和台词。</p>
+      </div>
+      <div class="guide-counts" aria-label="阵营人数">
+        <span class="count-pill" data-g="NT">NT 智者 <b>4</b></span>
+        <span class="count-pill" data-g="NF">NF 理想 <b>4</b></span>
+        <span class="count-pill" data-g="SJ">SJ 守护 <b>4</b></span>
+        <span class="count-pill" data-g="SP">SP 行动 <b>4</b></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 图鉴 -->
+  <section class="section" id="roster">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="head-txt">
+          <h2>角色图鉴</h2>
+          <p id="rosterSub">16 位战士，按 MBTI 阵营分组</p>
+        </div>
+        <div class="guide-filter" role="group" aria-label="按阵营筛选">
+          <button class="chip" type="button" data-filter="all" aria-pressed="true">全部 16</button>
+          <button class="chip" type="button" data-filter="NT" data-kind="NT" aria-pressed="false">🧠 NT 智者 4</button>
+          <button class="chip" type="button" data-filter="NF" data-kind="NF" aria-pressed="false">🌱 NF 理想 4</button>
+          <button class="chip" type="button" data-filter="SJ" data-kind="SJ" aria-pressed="false">🛡️ SJ 守护 4</button>
+          <button class="chip" type="button" data-filter="SP" data-kind="SP" aria-pressed="false">⚡ SP 行动 4</button>
+        </div>
+      </div>
+
+      <div class="guide-grid" id="rosterGrid">
+        <button class="fighter" type="button" data-id="1" data-group="NT" aria-label="查看 炎之统帅 的详情">
+          <div class="fighter-stage" style="--rot:-1.2deg">
+            <span class="fighter-no">01</span>
+            <span class="fighter-mbti" data-g="NT">ENTJ</span>
+            <img class="fighter-avatar" src="../assets/characters/entj-avatar.webp" alt="炎之统帅（ENTJ 指挥官）积木战士头像" width="512" height="512" loading="lazy">
+          </div>
+          <div class="fighter-info">
+            <span class="fighter-name">炎之统帅</span>
+            <span class="fighter-kind">ENTJ · 指挥官</span>
+            <span class="fighter-weapon" data-w="sword">偏好 剑</span>
+          </div>
+        </button>
+        <button class="fighter" type="button" data-id="2" data-group="NT" aria-label="查看 暗影军师 的详情">
+          <div class="fighter-stage" style="--rot:1.0deg">
+            <span class="fighter-no">02</span>
+            <span class="fighter-mbti" data-g="NT">INTJ</span>
+            <img class="fighter-avatar" src="../assets/characters/intj-avatar.webp" alt="暗影军师（INTJ 建筑师）积木战士头像" width="512" height="512" loading="lazy">
+          </div>
+          <div class="fighter-info">
+            <span class="fighter-name">暗影军师</span>
+            <span class="fighter-kind">INTJ · 建筑师</span>
+            <span class="fighter-weapon" data-w="sword">偏好 剑</span>
+          </div>
+        </button>
+        <button class="fighter" type="button" data-id="3" data-group="NT" aria-label="查看 机械奇才 的详情">
+          <div class="fighter-stage" style="--rot:-0.8deg">
+            <span class="fighter-no">03</span>
+            <span class="fighter-mbti" data-g="NT">INTP</span>
+            <img class="fighter-avatar" src="../assets/characters/intp-avatar.webp" alt="机械奇才（INTP 逻辑学家）积木战士头像" width="512" height="512" loading="lazy">
+          </div>
+          <div class="fighter-info">
+            <span class="fighter-name">机械奇才</span>
+            <span class="fighter-kind">INTP · 逻辑学家</span>
+            <span class="fighter-weapon" data-w="gun">偏好 枪</span>
+          </div>
+        </button>
+        <button class="fighter" type="button" data-id="4" data-group="NT" aria-label="查看 诡雷策士 的详情">
+          <div class="fighter-stage" style="--rot:1.3deg">
+            <span class="fighter-no">04</span>
+            <span class="fighter-mbti" data-g="NT">ENTP</span>
+            <img class="fighter-avatar" src="../assets/characters/entp-avatar.webp" alt="诡雷策士（ENTP 辩论家）积木战士头像" width="512" height="512" loading="lazy">
+          </div>
+          <div class="fighter-info">
+            <span class="fighter-name">诡雷策士</span>
+            <span class="fighter-kind">ENTP · 辩论家</span>
+            <span class="fighter-weapon" data-w="gun">偏好 枪</span>
+          </div>
+        </button>
+        <button class="fighter" type="button" data-id="5" data-group="NF" aria-label="查看 辉光导师 的详情">
+          <div class="fighter-stage" style="--rot:-1.4deg">
+            <span class="fighter-no">05</span>
+            <span class="fighter-mbti" data-g="NF">ENFJ</span>
+            <img class="fighter-avatar" src="../assets/characters/enfj-avatar.webp" alt="辉光导师（ENFJ 主人公）积木战士头像" width="512" height="512" loading="lazy">
+          </div>
+          <div class="fighter-info">
+            <span class="fighter-name">辉光导师</span>
+            <span class="fighter-kind">ENFJ · 主人公</span>
+            <span class="fighter-weapon" data-w="sword">偏好 剑</span>
+          </div>
+        </button>
+        <button class="fighter" type="button" data-id="6" data-group="NF" aria-label="查看 月影先知 的详情">
+          <div class="fighter-stage" style="--rot:0.9deg">
+            <span class="fighter-no">06</span>
+            <span class="fighter-mbti" data-g="NF">INFJ</span>
+            <img class="fighter-avatar" src="../assets/characters/infj-avatar.webp" alt="月影先知（INFJ 提倡者）积木战士头像" width="512" height="512" loading="lazy">
+          </div>
+          <div class="fighter-info">
+            <span class="fighter-name">月影先知</span>
+            <span class="fighter-kind">INFJ · 提倡者</span>
+            <span class="fighter-weapon" data-w="spear">偏好 长矛</span>
+          </div>
+        </button>
+        <button class="fighter" type="button" data-id="7" data-group="NF" aria-label="查看 光之咏者 的详情">
+          <div class="fighter-stage" style="--rot:-1.0deg">
+            <span class="fighter-no">07</span>
+            <span class="fighter-mbti" data-g="NF">INFP</span>
+            <img class="fighter-avatar" src="../assets/characters/infp-avatar.webp" alt="光之咏者（INFP 调停者）积木战士头像" width="512" height="512" loading="lazy">
+          </div>
+          <div class="fighter-info">
+            <span class="fighter-name">光之咏者</span>
+            <span class="fighter-kind">INFP · 调停者</span>
+            <span class="fighter-weapon" data-w="spear">偏好 长矛</span>
+          </div>
+        </button>
+        <button class="fighter" type="button" data-id="8" data-group="NF" aria-label="查看 星火游侠 的详情">
+          <div class="fighter-stage" style="--rot:1.2deg">
+            <span class="fighter-no">08</span>
+            <span class="fighter-mbti" data-g="NF">ENFP</span>
+            <img class="fighter-avatar" src="../assets/characters/enfp-avatar.webp" alt="星火游侠（ENFP 竞选者）积木战士头像" width="512" height="512" loading="lazy">
+          </div>
+          <div class="fighter-info">
+            <span class="fighter-name">星火游侠</span>
+            <span class="fighter-kind">ENFP · 竞选者</span>
+            <span class="fighter-weapon" data-w="gun">偏好 枪</span>
+          </div>
+        </button>
+        <button class="fighter" type="button" data-id="9" data-group="SJ" aria-label="查看 检查员 的详情">
+          <div class="fighter-stage" style="--rot:-0.9deg">
+            <span class="fighter-no">09</span>
+            <span class="fighter-mbti" data-g="SJ">ISTJ</span>
+            <img class="fighter-avatar" src="../assets/characters/istj-avatar.webp" alt="检查员（ISTJ 检查员）积木战士头像" width="512" height="512" loading="lazy">
+          </div>
+          <div class="fighter-info">
+            <span class="fighter-name">检查员</span>
+            <span class="fighter-kind">ISTJ · 检查员</span>
+            <span class="fighter-weapon" data-w="sword">偏好 剑</span>
+          </div>
+        </button>
+        <button class="fighter" type="button" data-id="10" data-group="SJ" aria-label="查看 坚盾卫士 的详情">
+          <div class="fighter-stage" style="--rot:1.4deg">
+            <span class="fighter-no">10</span>
+            <span class="fighter-mbti" data-g="SJ">ISFJ</span>
+            <img class="fighter-avatar" src="../assets/characters/isfj-avatar.webp" alt="坚盾卫士（ISFJ 守卫者）积木战士头像" width="512" height="512" loading="lazy">
+          </div>
+          <div class="fighter-info">
+            <span class="fighter-name">坚盾卫士</span>
+            <span class="fighter-kind">ISFJ · 守卫者</span>
+            <span class="fighter-weapon" data-w="spear">偏好 长矛</span>
+          </div>
+        </button>
+        <button class="fighter" type="button" data-id="11" data-group="SJ" aria-label="查看 钢铁督军 的详情">
+          <div class="fighter-stage" style="--rot:-1.3deg">
+            <span class="fighter-no">11</span>
+            <span class="fighter-mbti" data-g="SJ">ESTJ</span>
+            <img class="fighter-avatar" src="../assets/characters/estj-avatar.webp" alt="钢铁督军（ESTJ 总经理）积木战士头像" width="512" height="512" loading="lazy">
+          </div>
+          <div class="fighter-info">
+            <span class="fighter-name">钢铁督军</span>
+            <span class="fighter-kind">ESTJ · 总经理</span>
+            <span class="fighter-weapon" data-w="gun">偏好 枪</span>
+          </div>
+        </button>
+        <button class="fighter" type="button" data-id="12" data-group="SJ" aria-label="查看 暖心护使 的详情">
+          <div class="fighter-stage" style="--rot:0.8deg">
+            <span class="fighter-no">12</span>
+            <span class="fighter-mbti" data-g="SJ">ESFJ</span>
+            <img class="fighter-avatar" src="../assets/characters/esfj-avatar.webp" alt="暖心护使（ESFJ 执政官）积木战士头像" width="512" height="512" loading="lazy">
+          </div>
+          <div class="fighter-info">
+            <span class="fighter-name">暖心护使</span>
+            <span class="fighter-kind">ESFJ · 执政官</span>
+            <span class="fighter-weapon" data-w="spear">偏好 长矛</span>
+          </div>
+        </button>
+        <button class="fighter" type="button" data-id="13" data-group="SP" aria-label="查看 孤狼猎手 的详情">
+          <div class="fighter-stage" style="--rot:-1.1deg">
+            <span class="fighter-no">13</span>
+            <span class="fighter-mbti" data-g="SP">ISTP</span>
+            <img class="fighter-avatar" src="../assets/characters/istp-avatar.webp" alt="孤狼猎手（ISTP 鉴赏家）积木战士头像" width="512" height="512" loading="lazy">
+          </div>
+          <div class="fighter-info">
+            <span class="fighter-name">孤狼猎手</span>
+            <span class="fighter-kind">ISTP · 鉴赏家</span>
+            <span class="fighter-weapon" data-w="gun">偏好 枪</span>
+          </div>
+        </button>
+        <button class="fighter" type="button" data-id="14" data-group="SP" aria-label="查看 绯焰艺者 的详情">
+          <div class="fighter-stage" style="--rot:1.1deg">
+            <span class="fighter-no">14</span>
+            <span class="fighter-mbti" data-g="SP">ISFP</span>
+            <img class="fighter-avatar" src="../assets/characters/isfp-avatar.webp" alt="绯焰艺者（ISFP 探险家）积木战士头像" width="512" height="512" loading="lazy">
+          </div>
+          <div class="fighter-info">
+            <span class="fighter-name">绯焰艺者</span>
+            <span class="fighter-kind">ISFP · 探险家</span>
+            <span class="fighter-weapon" data-w="sword">偏好 剑</span>
+          </div>
+        </button>
+        <button class="fighter" type="button" data-id="15" data-group="SP" aria-label="查看 雷霆先锋 的详情">
+          <div class="fighter-stage" style="--rot:-0.7deg">
+            <span class="fighter-no">15</span>
+            <span class="fighter-mbti" data-g="SP">ESTP</span>
+            <img class="fighter-avatar" src="../assets/characters/estp-avatar.webp" alt="雷霆先锋（ESTP 企业家）积木战士头像" width="512" height="512" loading="lazy">
+          </div>
+          <div class="fighter-info">
+            <span class="fighter-name">雷霆先锋</span>
+            <span class="fighter-kind">ESTP · 企业家</span>
+            <span class="fighter-weapon" data-w="gun">偏好 枪</span>
+          </div>
+        </button>
+        <button class="fighter" type="button" data-id="16" data-group="SP" aria-label="查看 烈阳舞者 的详情">
+          <div class="fighter-stage" style="--rot:1.3deg">
+            <span class="fighter-no">16</span>
+            <span class="fighter-mbti" data-g="SP">ESFP</span>
+            <img class="fighter-avatar" src="../assets/characters/esfp-avatar.webp" alt="烈阳舞者（ESFP 表演者）积木战士头像" width="512" height="512" loading="lazy">
+          </div>
+          <div class="fighter-info">
+            <span class="fighter-name">烈阳舞者</span>
+            <span class="fighter-kind">ESFP · 表演者</span>
+            <span class="fighter-weapon" data-w="sword">偏好 剑</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="guide-foot">
+        <span>名字、MBTI 和战斗数值都取自现站数据，没有新增设定。</span>
+        <a class="quiet-link" href="v2-home.html#shelf">先去逛逛武器橱窗 →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>沐沐积木武器库 · 积木武器收藏与展示</span>
+    <span>第二代角色图鉴小样 · <a href="../index.html">当前线上站</a></span>
+  </div>
+</footer>
+
+<!-- 移动端底部导航 -->
+<nav class="tabbar" aria-label="移动端导航">
+  <a href="v2-home.html#shelf"><span class="ic" aria-hidden="true">🗄️</span>橱窗</a>
+  <a href="v2-characters.html" class="is-current"><span class="ic" aria-hidden="true">👥</span>角色</a>
+  <a href="../game.html"><span class="ic" aria-hidden="true">🎮</span>战场</a>
+  <a href="v2-home.html#upload"><span class="ic" aria-hidden="true">＋</span>上传</a>
+  <a href="../index.html"><span class="ic" aria-hidden="true">🏛️</span>我的馆</a>
+</nav>
+
+<!-- 详情侧栏 -->
+<div class="sheet-backdrop" id="sheetBackdrop" hidden></div>
+<aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetName" hidden>
+  <button class="sheet-close" type="button" id="sheetClose" aria-label="关闭详情">✕</button>
+  <div class="sheet-scroll" id="sheetScroll">
+    <div class="sheet-stage">
+      <img id="sheetImg" src="" alt="">
+    </div>
+
+    <div class="sheet-head">
+      <div>
+        <h2 class="sheet-name" id="sheetName"></h2>
+        <p class="sheet-line" id="sheetLine"></p>
+      </div>
+      <span class="sheet-mbti"><b id="sheetMbti"></b><span id="sheetMbtiName"></span></span>
+    </div>
+
+    <div class="sheet-tags" id="sheetTags"></div>
+
+    <p class="sheet-quote" id="sheetQuote"></p>
+
+    <div class="sheet-block">
+      <h3>战斗数值</h3>
+      <p class="hint">数值来自现站 CHARACTERS 数据</p>
+      <div class="stats" id="sheetStats"></div>
+    </div>
+
+    <div class="sheet-block">
+      <h3>台词</h3>
+      <p class="hint">现站已录的出场台词，未新增</p>
+      <div class="quotes" id="sheetQuotes"></div>
+    </div>
+
+    <p class="sheet-src">第二代人设页只是视觉小样，不接后台，也不会替换线上站。</p>
+  </div>
+</aside>
+
+<script>
+(function () {
+  var DATA = [{"id": 1,"name": "炎之统帅","mbti": "ENTJ","mbtiName": "指挥官","group": "NT","groupName": "智者","weaponPref": "sword","weaponLabel": "剑","stats": {"atk": 95,"def": 70,"crit": 0.18},"quotes": {"atk": ["全军出击！","碾碎他们！","不要退缩！"],"def": ["不错的攻击。","继续！","就这点本事？"],"sp": ["烈焰裁决！","感受统帅的怒火！"],"win": "胜利属于强者！","lose": "下次我会赢的。"},"avatar": "../assets/characters/entj-avatar.webp","position": "../assets/characters/entj-position.png","subtitle": "战场统帅 / 进攻指挥者","quote": "我不是在等待胜利，我是在安排胜利发生。","tags": ["烈焰统帅剑","红金指挥甲","高压推进","混乱 / 拖延 / 低效率"]},{"id": 2,"name": "暗影军师","mbti": "INTJ","mbtiName": "建筑师","group": "NT","groupName": "智者","weaponPref": "sword","weaponLabel": "剑","stats": {"atk": 85,"def": 80,"crit": 0.22},"quotes": {"atk": ["我已预见你的破绽。","按计划进行。","就是现在！"],"def": ["都在预料之中。","冷静应对。","你的套路我早看穿。"],"sp": ["暗影裁决！","智者的审判！"],"win": "一切尽在掌握。","lose": "这次算错了..."},"avatar": "../assets/characters/intj-avatar.webp","position": "../assets/characters/intj-position.png","subtitle": "战术规划者 / 效率优化者","quote": "我不是在解决问题，我只是在优化世界的代码。","tags": ["量子策略之刃","能量眼镜","紫黑色系","低效 / 混乱 / 无意义社交"]},{"id": 3,"name": "机械奇才","mbti": "INTP","mbtiName": "逻辑学家","group": "NT","groupName": "智者","weaponPref": "gun","weaponLabel": "枪","stats": {"atk": 78,"def": 65,"crit": 0.25},"quotes": {"atk": ["分析完毕，精确打击！","这个角度最优。","计算显示——命中！"],"def": ["有趣的数据...","正在重新计算...","参数修正完成。"],"sp": ["超频·极限运算！","科技就是力量！"],"win": "逻辑永远不会错。","lose": "需要更多数据..."},"avatar": "../assets/characters/intp-avatar.webp","position": "../assets/characters/intp-position.png","subtitle": "结构解析者 / 实验发明者","quote": "只要给我足够的零件，我可以把规则本身重新组装。","tags": ["模块发明炮","蓝青护目镜","逻辑超频","盲目行动 / 没有数据 / 重复劳动"]},{"id": 4,"name": "诡雷策士","mbti": "ENTP","mbtiName": "辩论家","group": "NT","groupName": "智者","weaponPref": "gun","weaponLabel": "枪","stats": {"atk": 88,"def": 60,"crit": 0.2},"quotes": {"atk": ["尝尝我的新发明！","猜猜会发生什么？","boom！"],"def": ["哈哈，差一点！","有意思！","换个角度来！"],"sp": ["终极诡雷·连环爆破！","艺术就是爆炸！"],"win": "我又赢了，无聊~","lose": "故意的，信不信？"},"avatar": "../assets/characters/entp-avatar.webp","position": "../assets/characters/entp-position.png","subtitle": "诡雷策士 / 创意破局者","quote": "如果规则太无聊，那就证明它需要一次爆炸式升级。","tags": ["闪电诡雷杖","紫橙实验甲","灵感爆破","无趣 / 死板 / 禁止尝试"]},{"id": 5,"name": "辉光导师","mbti": "ENFJ","mbtiName": "主人公","group": "NF","groupName": "理想","weaponPref": "sword","weaponLabel": "剑","stats": {"atk": 82,"def": 75,"crit": 0.15},"quotes": {"atk": ["跟随我的步伐！","为了同伴！","我们并肩作战！"],"def": ["我守护着大家！","别担心，有我在。","稳住阵脚！"],"sp": ["辉光闪耀！","希望之光永不熄灭！"],"win": "这是大家的力量！","lose": "没关系，我们继续前进。"},"avatar": "../assets/characters/enfj-avatar.webp","position": "../assets/characters/enfj-position.png","subtitle": "辉光导师 / 团队领航者","quote": "真正的胜利，是让每个人都相信自己能发光。","tags": ["辉光圣剑","绿金英雄甲","团队鼓舞","孤立 / 冷场 / 失去希望"]},{"id": 6,"name": "月影先知","mbti": "INFJ","mbtiName": "提倡者","group": "NF","groupName": "理想","weaponPref": "spear","weaponLabel": "长矛","stats": {"atk": 72,"def": 85,"crit": 0.17},"quotes": {"atk": ["星光指引我。","命中注定的一击。","命运的丝线..."],"def": ["我看到了你的轨迹。","平静如水...","预知已告诉我一切。"],"sp": ["月影·命运裁决！","星辰为我而闪耀！"],"win": "命运早已注定。","lose": "新的命运开始了..."},"avatar": "../assets/characters/infj-avatar.webp","position": "../assets/characters/infj-position.png","subtitle": "星月守护者 / 命运预言者","quote": "我看见的不只是胜负，还有每个人应该抵达的位置。","tags": ["星月水晶杖","薄荷紫守护甲","预知结界","冷漠 / 失衡 / 背离初心"]},{"id": 7,"name": "光之咏者","mbti": "INFP","mbtiName": "调停者","group": "NF","groupName": "理想","weaponPref": "spear","weaponLabel": "长矛","stats": {"atk": 65,"def": 72,"crit": 0.14},"quotes": {"atk": ["为了理想！","我心中的火焰！","不会放弃！"],"def": ["我还能坚持...","为了心中的信念！","伤痛让我更坚强。"],"sp": ["光之咏叹·神圣裁决！","请聆听我的祈祷！"],"win": "爱与和平...","lose": "梦想不会终结。"},"avatar": "../assets/characters/infp-avatar.webp","position": "../assets/characters/infp-position.png","subtitle": "光之咏者 / 理想守护者","quote": "只要梦想还亮着，积木城堡就不会倒下。","tags": ["光之诗杖","奶油金护甲","理想回响","粗暴 / 失真 / 没有故事"]},{"id": 8,"name": "星火游侠","mbti": "ENFP","mbtiName": "竞选者","group": "NF","groupName": "理想","weaponPref": "gun","weaponLabel": "枪","stats": {"atk": 90,"def": 55,"crit": 0.19},"quotes": {"atk": ["嗨起来！","自由开火！","看我表演！"],"def": ["哇哦！刺激！","差一点～","再来再来！"],"sp": ["星火燎原！","燃烧吧小宇宙！"],"win": "太好玩了哈哈哈！","lose": "下次一定更精彩！"},"avatar": "../assets/characters/enfp-avatar.webp","position": "../assets/characters/enfp-position.png","subtitle": "星火游侠 / 灵感突袭者","quote": "战场当然要赢，但首先得足够好玩！","tags": ["星火爆裂枪","橙黄游侠甲","先手灵感","无聊 / 没变化 / 被限制"]},{"id": 9,"name": "检查员","mbti": "ISTJ","mbtiName": "检查员","group": "SJ","groupName": "守护","weaponPref": "sword","weaponLabel": "剑","stats": {"atk": 70,"def": 95,"crit": 0.1},"quotes": {"atk": ["严格按标准执行。","精准打击。","没有多余动作。"],"def": ["坚如磐石。","阵型不破！","守住阵线。"],"sp": ["铁壁·绝对防御反击！","纪律就是力量！"],"win": "纪律带来胜利。","lose": "需要复盘改进。"},"avatar": "../assets/characters/istj-avatar.webp","position": "../assets/characters/istj-position.png","subtitle": "质量控制者 / 秩序维护者","quote": "规则不是限制，而是让一切正确运转的保障。","tags": ["精密校准尺","护目镜特写","深蓝色系","混乱 / 失误 / 不守规则"]},{"id": 10,"name": "坚盾卫士","mbti": "ISFJ","mbtiName": "守卫者","group": "SJ","groupName": "守护","weaponPref": "spear","weaponLabel": "长矛","stats": {"atk": 60,"def": 98,"crit": 0.08},"quotes": {"atk": ["请退后！","小心！","保护好大家！"],"def": ["我不会倒下！","盾在人在！","守护是我的使命。"],"sp": ["坚盾·圣光庇护！","为了需要守护的人！"],"win": "太好了，大家安全了。","lose": "没关系，只要大家没事..."},"avatar": "../assets/characters/isfj-avatar.webp","position": "../assets/characters/isfj-position.png","subtitle": "坚盾卫士 / 温柔防线","quote": "站到我身后，剩下的交给这面盾。","tags": ["圣光圆盾","鼠尾草护甲","守护结界","受伤的同伴 / 失守 / 冷漠"]},{"id": 11,"name": "钢铁督军","mbti": "ESTJ","mbtiName": "总经理","group": "SJ","groupName": "守护","weaponPref": "gun","weaponLabel": "枪","stats": {"atk": 92,"def": 78,"crit": 0.12},"quotes": {"atk": ["火力全开！","效率第一！","速战速决！"],"def": ["这不是问题。","标准流程应对。","井然有序。"],"sp": ["钢铁洪流·饱和打击！","压倒性火力！"],"win": "效率就是一切。","lose": "战术需要调整。"},"avatar": "../assets/characters/estj-avatar.webp","position": "../assets/characters/estj-position.png","subtitle": "钢铁督军 / 秩序压制者","quote": "效率不是口号，是把胜利按时交付。","tags": ["钢铁重炮","灰红指挥甲","效率火力","拖延 / 无序 / 责任缺席"]},{"id": 12,"name": "暖心护使","mbti": "ESFJ","mbtiName": "执政官","group": "SJ","groupName": "守护","weaponPref": "spear","weaponLabel": "长矛","stats": {"atk": 68,"def": 88,"crit": 0.11},"quotes": {"atk": ["大家一起加油！","别怕，我在这里！","齐心协力！"],"def": ["来我身后！","我会保护你的！","稳住！"],"sp": ["暖心·治愈风暴！","爱是最强的力量！"],"win": "我们做到了！","lose": "下次一起努力吧！"},"avatar": "../assets/characters/esfj-avatar.webp","position": "../assets/characters/esfj-position.png","subtitle": "暖心护使 / 团队支援者","quote": "只要大家还在一起，我们就还有办法。","tags": ["治愈长枪","玫瑰金护甲","暖心支援","冷场 / 分裂 / 不被需要"]},{"id": 13,"name": "孤狼猎手","mbti": "ISTP","mbtiName": "鉴赏家","group": "SP","groupName": "行动","weaponPref": "gun","weaponLabel": "枪","stats": {"atk": 88,"def": 62,"crit": 0.24},"quotes": {"atk": ["沉默是金。","一击必杀。","锁定。"],"def": ["哼。","躲得不错。","继续。"],"sp": ["孤狼·致命狙击！","猎物无处可逃。"],"win": "没什么好说的。","lose": "...再来。"},"avatar": "../assets/characters/istp-avatar.webp","position": "../assets/characters/istp-position.png","subtitle": "孤狼猎手 / 精准拆解者","quote": "别说太多，让结构自己回答。","tags": ["精密狙击器","石墨工具甲","弱点锁定","废话 / 失准 / 无法动手"]},{"id": 14,"name": "绯焰艺者","mbti": "ISFP","mbtiName": "探险家","group": "SP","groupName": "行动","weaponPref": "sword","weaponLabel": "剑","stats": {"atk": 75,"def": 58,"crit": 0.2},"quotes": {"atk": ["如火焰般舞动！","感受我的热情！","艺术就是战斗！"],"def": ["优雅地闪避...","动作要美。","像风一样。"],"sp": ["绯焰·舞动之刃！","用生命起舞！"],"win": "美极了...","lose": "还需要打磨。"},"avatar": "../assets/characters/isfp-avatar.webp","position": "../assets/characters/isfp-position.png","subtitle": "绯焰艺者 / 优雅突击者","quote": "每一次挥剑，都应该像一场漂亮的演出。","tags": ["绯焰舞刃","红橙艺术甲","连舞追击","僵硬 / 不美 / 没有手感"]},{"id": 15,"name": "雷霆先锋","mbti": "ESTP","mbtiName": "企业家","group": "SP","groupName": "行动","weaponPref": "gun","weaponLabel": "枪","stats": {"atk": 93,"def": 50,"crit": 0.21},"quotes": {"atk": ["冲啊！","来得正好！","接招！"],"def": ["哈哈不够看！","太慢了！","再来再来！"],"sp": ["雷霆万钧·先锋冲锋！","谁也别想挡我！"],"win": "就知道会赢！","lose": "偶尔输一次也不错！"},"avatar": "../assets/characters/estp-avatar.webp","position": "../assets/characters/estp-position.png","subtitle": "雷霆先锋 / 极速强攻者","quote": "想太久会错过机会，冲上去就有答案。","tags": ["雷霆爆冲枪","黄蓝先锋甲","开局强压","慢吞吞 / 犹豫 / 没刺激"]},{"id": 16,"name": "烈阳舞者","mbti": "ESFP","mbtiName": "表演者","group": "SP","groupName": "行动","weaponPref": "sword","weaponLabel": "剑","stats": {"atk": 80,"def": 55,"crit": 0.18},"quotes": {"atk": ["看我华丽的表演！","舞台属于我！","灯光！音乐！"],"def": ["华丽闪避！","太慢了太慢了～","优雅～"],"sp": ["烈阳·终极演出！","全场目光聚焦于我！"],"win": "谢谢观众朋友们！","lose": "安可！安可！"},"avatar": "../assets/characters/esfp-avatar.webp","position": "../assets/characters/esfp-position.png","subtitle": "烈阳舞者 / 舞台终结者","quote": "灯光给我，胜利也给我。","tags": ["烈阳演出剑","橙金舞台甲","表演终结","无人喝彩 / 沉闷 / 没节奏"]}];
+  var byId = {};
+  DATA.forEach(function (d) { byId[d.id] = d; });
+
+  // ---- 阵营筛选 ----
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.fighter'));
+  var chips = Array.prototype.slice.call(document.querySelectorAll('.guide-filter .chip'));
+  var sub = document.getElementById('rosterSub');
+
+  function applyFilter(f) {
+    cards.forEach(function (card) {
+      card.hidden = !(f === 'all' || card.dataset.group === f);
+    });
+    var shown = cards.filter(function (c) { return !c.hidden; }).length;
+    sub.textContent = f === 'all'
+      ? '16 位战士，按 MBTI 阵营分组'
+      : '正在看 ' + {NT: '智者', NF: '理想', SJ: '守护', SP: '行动'}[f] + '阵营 ' + shown + ' 位';
+  }
+
+  chips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      chips.forEach(function (c) { c.setAttribute('aria-pressed', String(c === chip)); });
+      applyFilter(chip.dataset.filter);
+    });
+  });
+
+  // ---- 详情侧栏 ----
+  var sheet = document.getElementById('sheet');
+  var backdrop = document.getElementById('sheetBackdrop');
+  var scroller = document.getElementById('sheetScroll');
+  var closeBtn = document.getElementById('sheetClose');
+  var lastFocus = null;
+
+  var elImg = document.getElementById('sheetImg');
+  var elName = document.getElementById('sheetName');
+  var elLine = document.getElementById('sheetLine');
+  var elMbti = document.getElementById('sheetMbti');
+  var elMbtiName = document.getElementById('sheetMbtiName');
+  var elTags = document.getElementById('sheetTags');
+  var elQuote = document.getElementById('sheetQuote');
+  var elStats = document.getElementById('sheetStats');
+  var elQuotes = document.getElementById('sheetQuotes');
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (ch) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch];
+    });
+  }
+
+  function bar(label, value, max) {
+    var pct = Math.max(4, Math.min(100, Math.round(value / max * 100)));
+    return '<div class="stat"><span>' + label + '</span>' +
+      '<span class="stat-rail"><i style="width:' + pct + '%"></i></span>' +
+      '<b>' + value + '</b></div>';
+  }
+
+  function quoteGroup(label, list, cls) {
+    if (!list || !list.length) return '';
+    return '<div class="qgroup ' + (cls || '') + '"><b>' + label + '</b><ul>' +
+      list.map(function (q) { return '<li>' + esc(q) + '</li>'; }).join('') + '</ul></div>';
+  }
+
+  function open(id) {
+    var d = byId[id];
+    if (!d) return;
+    lastFocus = document.activeElement;
+
+    elImg.src = d.position;
+    elImg.alt = d.name + '（' + d.mbti + ' ' + d.mbtiName + '）全身场景图';
+    elName.textContent = d.name;
+    elLine.textContent = d.mbti + ' · ' + d.mbtiName + ' · ' + d.groupName + '阵营 · 偏好' + d.weaponLabel;
+    elMbti.textContent = d.mbti;
+    elMbtiName.textContent = d.mbtiName;
+
+    elTags.innerHTML = '<span>偏好 ' + d.weaponLabel + '</span>' +
+      d.tags.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('');
+
+    elQuote.textContent = d.quote;
+
+    elStats.innerHTML =
+      bar('攻击', d.stats.atk, 100) +
+      bar('防御', d.stats.def, 100) +
+      bar('暴击', Math.round(d.stats.crit * 100), 30);
+
+    elQuotes.innerHTML =
+      quoteGroup('登场 / 进攻', d.quotes.atk) +
+      quoteGroup('防守 / 受击', d.quotes.def) +
+      quoteGroup('必杀技', d.quotes.sp) +
+      quoteGroup('胜利', [d.quotes.win], 'win') +
+      quoteGroup('落败', [d.quotes.lose], 'lose');
+
+    scroller.scrollTop = 0;
+    sheet.removeAttribute('hidden');
+    backdrop.removeAttribute('hidden');
+    // 先落到收起位置，再加 is-on，保证过渡一定播出来
+    void sheet.offsetWidth;
+    sheet.classList.add('is-on');
+    backdrop.classList.add('is-on');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+
+  function close() {
+    sheet.classList.remove('is-on');
+    backdrop.classList.remove('is-on');
+    document.body.style.overflow = '';
+    setTimeout(function () {
+      if (!sheet.classList.contains('is-on')) {
+        sheet.setAttribute('hidden', '');
+        backdrop.setAttribute('hidden', '');
+      }
+    }, 340);
+    if (lastFocus) lastFocus.focus();
+  }
+
+  cards.forEach(function (card) {
+    card.addEventListener('click', function () { open(Number(card.dataset.id)); });
+  });
+  closeBtn.addEventListener('click', close);
+  backdrop.addEventListener('click', close);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && sheet.classList.contains('is-on')) close();
+  });
+})();
+</script>
+
+</body>
+</html>

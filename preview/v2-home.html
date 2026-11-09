@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#fff8ed">
+<title>沐沐积木武器库 · 第二代首页小样</title>
+<link rel="stylesheet" href="v2-home.css"><link rel="stylesheet" href="v2-pages.css">
+<style>.nav-links{flex-wrap:wrap}.nav-links a{padding:8px 11px}</style></head>
+<body>
+
+<!-- 预览标 -->
+<div class="preview-flag"><div class="wrap"><span class="dot" aria-hidden="true"></span><span>第二代前台小样 · 不会替换当前线上站</span><a href="v2-home.html">武器橱窗</a><a href="v2-upload.html">上传</a><a href="v2-characters.html">角色</a><a href="v2-world-tree.html">世界树</a><a href="v2-battle.html">战场</a><a href="v2-manual.html">说明书</a><a href="v2-sandbox.html">沙盒</a><a href="v2-forum.html">论坛</a><a href="../index.html">返回当前线上站</a><a href="v2-admin.html">后仓审核小样</a></div></div>
+
+<!-- 导航：白色胶囊卡，压在大图下沿 -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-row">
+      <a class="brand" href="v2-home.html">
+        <span class="brand-mark" aria-hidden="true">🧱</span>
+        <span class="brand-txt">
+          <b>积木武器库 · 角色战场</b>
+          <i>沐沐的积木玩具橱窗</i>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="主导航"><a href="#shelf" class="is-current" aria-current="page">武器橱窗</a><a href="v2-upload.html">上传</a><a href="v2-characters.html">角色</a><a href="v2-world-tree.html">世界树</a><a href="v2-battle.html">战场</a><a href="v2-manual.html">说明书</a><a href="v2-sandbox.html">沙盒</a><a href="v2-forum.html">论坛</a></nav>
+      <a class="nav-cta" href="v2-upload.html">上传一件</a>
+    </div>
+    <div class="stats-bar">
+      <span class="stat-pill"><i aria-hidden="true">⚔️</i><b>11</b> 件武器</span>
+      <span class="stat-pill"><i aria-hidden="true">🧸</i><b>16</b> 位战士</span>
+      <span class="stat-pill"><i aria-hidden="true">🧩</i><b>100%</b> 积木打造</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- 首屏：通栏大图 -->
+  <section class="hero">
+    <div class="hero-frame">
+      <img src="../assets/hero-brick-playground.png" alt="粉蓝积木城堡里，两位积木小人各持剑与长矛，旁边是一台积木大炮" fetchpriority="high" width="1600" height="900">
+      <span class="hero-tag">今日橱窗 · 积木战场一角</span>
+    </div>
+
+    <div class="wrap hero-copy">
+      <div class="hero-lead">
+        <span class="eyebrow">积木武器收藏馆</span>
+        <h1>一把把积木武器，<br>摆在<em>明亮的橱窗</em>里。</h1>
+        <p class="hero-lede">剑、枪、长矛，都是积木一块块拼出来的。每件都有自己的名字、评级和技能。挑一件细看，或者把你的作品放进橱窗。</p>
+      </div>
+      <div class="hero-act">
+        <div class="hero-actions">
+          <a class="btn btn-butter" href="#shelf">逛武器橱窗</a>
+          <a class="btn btn-pink" href="v2-upload.html">上传我的武器</a>
+        </div>
+        <p class="hero-fine">图片只在你的设备里预览，不会上传。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 武器橱窗 -->
+  <section class="section" id="shelf">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="head-txt">
+          <h2>武器橱窗</h2>
+          <p id="shelfSub">11 件积木武器，按类型摆在货架上</p>
+        </div>
+        <div class="shelf-filter" role="group" aria-label="按类型筛选">
+          <button class="chip" type="button" data-filter="all" aria-pressed="true">全部 11</button>
+          <button class="chip" type="button" data-filter="sword" aria-pressed="false">🗡️ 剑 5</button>
+          <button class="chip" type="button" data-filter="gun" aria-pressed="false">🔫 枪 4</button>
+          <button class="chip" type="button" data-filter="spear" aria-pressed="false">🔱 长矛 2</button>
+        </div>
+      </div>
+
+      <!-- 分类摄影横幅 -->
+      <div class="banner-row">
+        <figure class="banner is-on" data-banner="sword">
+          <img src="../assets/banner-sword-bricks.png" alt="三把粉紫黄色的积木宝剑插在积木小镇里" loading="lazy">
+          <figcaption><b>剑刃 · 5 件</b><span>最受欢迎的一格</span></figcaption>
+        </figure>
+        <figure class="banner" data-banner="gun">
+          <img src="../assets/banner-gun-bricks.png" alt="积木枪械摆成一排的照片" loading="lazy">
+          <figcaption><b>枪械 · 4 件</b><span>扳机一扣，弹幕开花</span></figcaption>
+        </figure>
+        <figure class="banner" data-banner="spear">
+          <img src="../assets/banner-spear-bricks.png" alt="积木长柄武器与积木小人照片" loading="lazy">
+          <figcaption><b>长矛 · 2 件</b><span>又长又轻，能捅到天边</span></figcaption>
+        </figure>
+        <figure class="banner is-on" data-banner="all">
+          <img src="../assets/banner-characters-bricks.png" alt="积木小人们站在一起的合影" loading="lazy" class="banner-people">
+          <figcaption><b>全部 · 11 件</b><span>挑一件喜欢的拿在手里</span></figcaption>
+        </figure>
+      </div>
+
+      <div class="cases" id="cases">
+        <!-- 01 -->
+        <article class="case" data-type="sword" data-ar="v">
+          <div class="case-stage" style="--w:40%;--h:64%" data-rot="-1.6">
+            <span class="case-num">01</span>
+            <span class="case-tier t-ssr">SSR</span>
+            <img src="../assets/weapon-cutouts/weapon-01.png" alt="键刃黄金圣剑 积木武器" loading="lazy">
+          </div>
+          <div class="case-info">
+            <div class="case-name">键刃黄金圣剑</div>
+            <div class="case-kind">组合武器</div>
+            <span class="case-skill">✨ 圣光解锁斩</span>
+          </div>
+        </article>
+        <!-- 02 -->
+        <article class="case" data-type="sword" data-ar="v">
+          <div class="case-stage" style="--w:28%;--h:62%" data-rot="1.4">
+            <span class="case-num">02</span>
+            <span class="case-tier t-sr">SR</span>
+            <img src="../assets/weapon-cutouts/weapon-02.png" alt="大十字剑 积木武器" loading="lazy">
+          </div>
+          <div class="case-info">
+            <div class="case-name">大十字剑</div>
+            <div class="case-kind">阔剑</div>
+            <span class="case-skill">🔥 十字烈焰斩</span>
+          </div>
+        </article>
+        <!-- 03 -->
+        <article class="case" data-type="spear" data-ar="v3">
+          <div class="case-stage" style="--w:16%;--h:66%" data-rot="-1.2">
+            <span class="case-num">03</span>
+            <span class="case-tier t-sr">SR</span>
+            <img src="../assets/weapon-cutouts/weapon-03.png" alt="三叉戟 积木武器" loading="lazy">
+          </div>
+          <div class="case-info">
+            <div class="case-name">三叉戟</div>
+            <div class="case-kind">海神三叉戟</div>
+            <span class="case-skill">🌊 怒海狂澜</span>
+          </div>
+        </article>
+        <!-- 04 -->
+        <article class="case" data-type="sword" data-ar="v3">
+          <div class="case-stage" style="--w:17%;--h:66%" data-rot="1.8">
+            <span class="case-num">04</span>
+            <span class="case-tier t-sr">SR</span>
+            <img src="../assets/weapon-cutouts/weapon-04.png" alt="菱形光刃 积木武器" loading="lazy">
+          </div>
+          <div class="case-info">
+            <div class="case-name">菱形光刃</div>
+            <div class="case-kind">对称光刃</div>
+            <span class="case-skill">💎 棱镜折射阵</span>
+          </div>
+        </article>
+        <!-- 05 -->
+        <article class="case" data-type="gun" data-ar="h">
+          <div class="case-stage" style="--w:90%;--h:28%" data-rot="-1.8">
+            <span class="case-num">05</span>
+            <span class="case-tier t-ssr">SSR</span>
+            <img src="../assets/weapon-cutouts/weapon-05.png" alt="突击步枪 积木武器" loading="lazy">
+          </div>
+          <div class="case-info">
+            <div class="case-name">突击步枪</div>
+            <div class="case-kind">战术步枪</div>
+            <span class="case-skill">🎯 弹幕风暴</span>
+          </div>
+        </article>
+        <!-- 06 -->
+        <article class="case" data-type="gun" data-ar="h3">
+          <div class="case-stage" style="--w:92%;--h:19%" data-rot="1.3">
+            <span class="case-num">06</span>
+            <span class="case-tier t-ssr">SSR</span>
+            <img src="../assets/weapon-cutouts/weapon-06.png" alt="核子武器 积木武器" loading="lazy">
+          </div>
+          <div class="case-info">
+            <div class="case-name">核子武器</div>
+            <div class="case-kind">重型核子枪</div>
+            <span class="case-skill">☢️ 核子聚变炮</span>
+          </div>
+        </article>
+        <!-- 07 -->
+        <article class="case" data-type="spear" data-ar="h3">
+          <div class="case-stage" style="--w:92%;--h:15%" data-rot="-1.5">
+            <span class="case-num">07</span>
+            <span class="case-tier t-sr">SR</span>
+            <img src="../assets/weapon-cutouts/weapon-07.png" alt="闪电长矛 积木武器" loading="lazy">
+          </div>
+          <div class="case-info">
+            <div class="case-name">闪电长矛</div>
+            <div class="case-kind">雷神之矛</div>
+            <span class="case-skill">⚡ 雷霆万钧</span>
+          </div>
+        </article>
+        <!-- 08 -->
+        <article class="case" data-type="sword" data-ar="h">
+          <div class="case-stage" style="--w:90%;--h:28%" data-rot="1.6">
+            <span class="case-num">08</span>
+            <span class="case-tier t-r">R</span>
+            <img src="../assets/weapon-cutouts/weapon-08.png" alt="暗影之刃 积木武器" loading="lazy">
+          </div>
+          <div class="case-info">
+            <div class="case-name">暗影之刃</div>
+            <div class="case-kind">暗杀匕首</div>
+            <span class="case-skill">🌑 暗影突袭</span>
+          </div>
+        </article>
+        <!-- 09 -->
+        <article class="case" data-type="gun" data-ar="h3">
+          <div class="case-stage" style="--w:92%;--h:17%" data-rot="-1.1">
+            <span class="case-num">09</span>
+            <span class="case-tier t-ssr">SSR</span>
+            <img src="../assets/weapon-cutouts/weapon-09.png" alt="等离子炮 积木武器" loading="lazy">
+          </div>
+          <div class="case-info">
+            <div class="case-name">等离子炮</div>
+            <div class="case-kind">能量炮</div>
+            <span class="case-skill">💚 等离子爆破</span>
+          </div>
+        </article>
+        <!-- 10 -->
+        <article class="case" data-type="sword" data-ar="h">
+          <div class="case-stage" style="--w:90%;--h:30%" data-rot="1.2">
+            <span class="case-num">10</span>
+            <span class="case-tier t-sr">SR</span>
+            <img src="../assets/weapon-cutouts/weapon-10.png" alt="彩虹光剑 积木武器" loading="lazy">
+          </div>
+          <div class="case-info">
+            <div class="case-name">彩虹光剑</div>
+            <div class="case-kind">七色光剑</div>
+            <span class="case-skill">🌈 七彩绚烂斩</span>
+          </div>
+        </article>
+        <!-- 11 -->
+        <article class="case" data-type="gun" data-ar="h">
+          <div class="case-stage" style="--w:88%;--h:32%" data-rot="-1.7">
+            <span class="case-num">11</span>
+            <span class="case-tier t-r">R</span>
+            <img src="../assets/weapon-cutouts/weapon-11.png" alt="机关弩 积木武器" loading="lazy">
+          </div>
+          <div class="case-info">
+            <div class="case-name">机关弩</div>
+            <div class="case-kind">连射弩</div>
+            <span class="case-skill">🏹 万箭齐发</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="shelf-foot">
+        <span>每件武器都由积木拼成，右上角是收藏卡评级。</span>
+        <a class="quiet-link" href="../index.html">想看战斗数据和投票？回现站 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 上传 -->
+  <section class="section upload-sec" id="upload">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="head-txt">
+          <h2>把你的武器放进橱窗</h2>
+          <p>选一张照片先看看效果，正式上架会经过人工审核和抠图</p>
+        </div>
+        <span class="limit-pill">每位访客限传 1 件</span>
+      </div>
+
+      <div class="upload-card">
+        <div class="upload-left">
+          <label class="drop" id="drop" for="fileInput">
+            <input type="file" id="fileInput" accept="image/*">
+            <div class="drop-empty" id="dropEmpty">
+              <div class="drop-icon" aria-hidden="true">📷</div>
+              <div class="drop-strong">点这里选图，或把图片拖进来</div>
+              <div class="drop-weak">支持 PNG / JPG / WebP</div>
+              <div class="drop-tips">
+                <span>平放拍摄</span><span>背景干净</span><span>光线均匀</span><span>武器占满画面</span>
+              </div>
+            </div>
+            <div class="preview-box" id="previewBox">
+              <div class="preview-stage">
+                <img id="previewImg" alt="已选武器图片预览">
+                <span class="preview-change">换一张</span>
+              </div>
+              <div class="preview-file">
+                <b id="previewName">—</b>
+                <span id="previewSize">—</span>
+              </div>
+            </div>
+          </label>
+
+          <div class="recognize" id="recognize" aria-live="polite">
+            <div class="recognize-head">
+              <span class="spinner" aria-hidden="true"></span>
+              <span id="recognizeText">正在识别武器类型…</span>
+            </div>
+            <div class="bar"><i id="recognizeBar"></i></div>
+            <div class="recognize-result" id="recognizeResult">
+              <span>类型：剑</span><span>轮廓：细长剑身</span><span>主色：黄 / 蓝</span><span>建议评级：SR</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="upload-right">
+          <h3 class="upload-title">给作品起个名字</h3>
+          <p class="upload-note">填完可以看看它放进橱窗的样子。</p>
+
+          <div class="field">
+            <label for="weaponName">武器名</label>
+            <input id="weaponName" maxlength="20" placeholder="例如：彩虹积木剑" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="creatorName">创建者</label>
+            <input id="creatorName" maxlength="16" placeholder="你的名字" autocomplete="off">
+          </div>
+          <div class="field">
+            <span class="field-label">武器类型</span>
+            <div class="type-row" role="group" aria-label="武器类型">
+              <button class="chip type-chip" type="button" data-type-btn="剑" aria-pressed="true">🗡️ 剑</button>
+              <button class="chip type-chip" type="button" data-type-btn="枪" aria-pressed="false">🔫 枪</button>
+              <button class="chip type-chip" type="button" data-type-btn="长矛" aria-pressed="false">🔱 长矛</button>
+              <button class="chip type-chip" type="button" data-type-btn="组合" aria-pressed="false">🧩 组合</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="skillName">技能名</label>
+            <input id="skillName" maxlength="22" placeholder="自动生成，也可以改" autocomplete="off">
+          </div>
+
+          <div class="submit-row">
+            <button class="btn btn-yellow" type="button" id="submitBtn">预览放进橱窗</button>
+            <span class="fineprint">小样不会真的提交，也不会连后台；正式流程先进入站长审核，再统一抠图和上架。</span>
+          </div>
+          <div class="submit-toast" id="submitToast" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 其他入口 -->
+  <section class="section" id="more">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="head-txt">
+          <h2>逛逛别的地方</h2>
+          <p>橱窗之外，还有角色、漫画和战场</p>
+        </div>
+        <a class="quiet-link" href="../index.html">回到完整站点 →</a>
+      </div>
+
+      <div class="entries">
+        <a class="entry" href="v2-upload.html" style="--tint:#ffd96a">
+          <span class="entry-ic" aria-hidden="true">📷</span>
+          <b>上传橱窗</b>
+          <span>选图填资料，先审核再统一抠图上架</span>
+        </a>
+        <a class="entry" href="v2-forum.html" style="--tint:#ffb7c8">
+          <span class="entry-ic" aria-hidden="true">💬</span>
+          <b>玩家论坛</b>
+          <span>建议、讨论、晒武器，公开留言墙</span>
+        </a>
+        <a class="entry" href="v2-battle.html" style="--tint:#9fd7ff">
+          <span class="entry-ic" aria-hidden="true">⚔️</span>
+          <b>角色战场</b>
+          <span>先挑两位战士，再到线上完整站开战</span>
+        </a>
+        <a class="entry" href="v2-characters.html" style="--tint:#9fd7ff">
+          <span class="entry-ic" aria-hidden="true">👥</span>
+          <b>角色图鉴</b>
+          <span>16 位积木战士，各有性格和专属武器</span>
+        </a>
+        <a class="entry" href="../index.html" style="--tint:#ffb7c8">
+          <span class="entry-ic" aria-hidden="true">🌳</span>
+          <b>人格世界树</b>
+          <span>按 MBTI 阵营看战士之间的位置关系</span>
+        </a>
+        <a class="entry" href="../index.html" style="--tint:#8ee6c6">
+          <span class="entry-ic" aria-hidden="true">📖</span>
+          <b>漫画馆</b>
+          <span>四格小剧场，讲每位战士的故事</span>
+        </a>
+        <a class="entry" href="../index.html" style="--tint:#ffd96a">
+          <span class="entry-ic" aria-hidden="true">🧭</span>
+          <b>配武器测试</b>
+          <span>答几道题，看看哪件武器最配你</span>
+        </a>
+        <a class="entry" href="../index.html" style="--tint:#cfe0ff">
+          <span class="entry-ic" aria-hidden="true">📐</span>
+          <b>拼装说明书</b>
+          <span>把武器拆成积木步骤，照着拼一把</span>
+        </a>
+        <a class="entry" href="../index.html" style="--tint:#ffc9a8">
+          <span class="entry-ic" aria-hidden="true">🏛️</span>
+          <b>我的馆</b>
+          <span>收藏、票选和你上传过的武器</span>
+        </a>
+        <a class="entry wide" href="../game.html">
+          <span class="entry-ic" aria-hidden="true">🎮</span>
+          <span class="entry-txt">
+            <b>沙盒战场</b>
+            <span>带上你的武器，进积木战场打一场</span>
+          </span>
+          <span class="entry-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>沐沐积木武器库 · 积木武器收藏与展示</span>
+    <span>第二代首页视觉小样 · <a href="../index.html">当前线上站</a></span>
+  </div>
+</footer>
+
+<!-- 移动端底部导航 -->
+<nav class="tabbar" aria-label="移动端导航">
+  <a href="#shelf" class="is-current"><span class="ic" aria-hidden="true">🗄️</span>橱窗</a>
+  <a href="v2-upload.html"><span class="ic" aria-hidden="true">＋</span>上传</a>
+  <a href="v2-characters.html"><span class="ic" aria-hidden="true">👥</span>角色</a>
+  <a href="../game.html"><span class="ic" aria-hidden="true">🎮</span>战场</a>
+  <a href="../index.html"><span class="ic" aria-hidden="true">🏛️</span>我的馆</a>
+</nav>
+
+<script>
+(function () {
+  // 卡片轻微倾斜：和 CSS 里默认的旋转错开，像随手摆上去的
+  document.querySelectorAll('.case-stage[data-rot]').forEach(function (el) {
+    el.style.setProperty('--rot', el.dataset.rot + 'deg');
+  });
+
+  // ---- 橱窗类型筛选 + 同步横幅 ----
+  var cases = Array.prototype.slice.call(document.querySelectorAll('.case'));
+  var filterChips = Array.prototype.slice.call(document.querySelectorAll('.shelf-filter .chip'));
+  var banners = Array.prototype.slice.call(document.querySelectorAll('.banner'));
+
+  function applyFilter(f) {
+    cases.forEach(function (card) {
+      var show = f === 'all' || card.dataset.type === f;
+      card.hidden = !show;
+    });
+    banners.forEach(function (b) {
+      // 全部：同时展示“全部”和“剑刃”两张，其余按类型展示
+      var show = f === 'all' ? (b.dataset.banner === 'all' || b.dataset.banner === 'sword') : b.dataset.banner === f;
+      b.classList.toggle('is-on', show);
+    });
+    var row = document.querySelector('.banner-row');
+    row.dataset.mode = f;
+    // 筛选后卡片少于 4 张时不要空出一格
+    document.getElementById('cases').classList.toggle('is-narrow', f !== 'all');
+    // 副标题跟随筛选
+    var count = cases.filter(function (c) { return !c.hidden; }).length;
+    var label = { all: '件积木武器', sword: '把剑刃', gun: '把枪械', spear: '把长柄武器' }[f] || '件';
+    document.getElementById('shelfSub').textContent = count + ' ' + label + '，按类型摆在货架上';
+  }
+
+  filterChips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      filterChips.forEach(function (c) { c.setAttribute('aria-pressed', String(c === chip)); });
+      applyFilter(chip.dataset.filter);
+    });
+  });
+
+  // ---- 上传：本地文件预览 ----
+  var input = document.getElementById('fileInput');
+  var drop = document.getElementById('drop');
+  var dropEmpty = document.getElementById('dropEmpty');
+  var previewBox = document.getElementById('previewBox');
+  var previewImg = document.getElementById('previewImg');
+  var previewName = document.getElementById('previewName');
+  var previewSize = document.getElementById('previewSize');
+  var recognize = document.getElementById('recognize');
+  var recognizeText = document.getElementById('recognizeText');
+  var recognizeBar = document.getElementById('recognizeBar');
+  var objectUrl = null;
+  var timerA = null, timerB = null;
+
+  function humanSize(bytes) {
+    if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + ' MB';
+    return Math.max(1, Math.round(bytes / 1024)) + ' KB';
+  }
+
+  function resetRecognize() {
+    clearTimeout(timerA); clearTimeout(timerB);
+    recognize.classList.remove('is-on', 'is-done');
+    recognizeText.textContent = '正在识别武器类型…';
+    recognizeBar.style.transition = 'none';
+    recognizeBar.style.width = '0%';
+  }
+
+  function runRecognize() {
+    resetRecognize();
+    recognize.classList.add('is-on');
+    requestAnimationFrame(function () {
+      recognizeBar.style.transition = 'width 1.4s ease';
+      recognizeBar.style.width = '72%';
+    });
+    timerA = setTimeout(function () {
+      recognize.classList.add('is-done');
+      recognizeText.textContent = '识别完成 · 示意结果（仅本地演示）';
+      recognizeBar.style.width = '100%';
+    }, 1500);
+  }
+
+  function handleFile(file) {
+    if (!file || !/^image\//.test(file.type)) return;
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    objectUrl = URL.createObjectURL(file);
+    previewImg.src = objectUrl;
+    previewName.textContent = file.name;
+    previewSize.textContent = humanSize(file.size);
+    dropEmpty.style.display = 'none';
+    previewBox.classList.add('is-on');
+    runRecognize();
+  }
+
+  input.addEventListener('change', function () {
+    if (input.files && input.files[0]) handleFile(input.files[0]);
+  });
+
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) {
+      e.preventDefault();
+      drop.classList.add('is-over');
+    });
+  });
+  ['dragleave', 'drop'].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) {
+      e.preventDefault();
+      drop.classList.remove('is-over');
+    });
+  });
+  drop.addEventListener('drop', function (e) {
+    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) handleFile(f);
+  });
+
+  // 拖到页面其他位置不要被浏览器直接打开图片
+  ['dragover', 'drop'].forEach(function (ev) {
+    window.addEventListener(ev, function (e) {
+      if (!drop.contains(e.target)) e.preventDefault();
+    });
+  });
+
+  // ---- 上传：类型单选 ----
+  var typeBtns = Array.prototype.slice.call(document.querySelectorAll('[data-type-btn]'));
+  typeBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      typeBtns.forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+    });
+  });
+
+  // ---- 上传：预览（演示，不提交） ----
+  var submitBtn = document.getElementById('submitBtn');
+  var toast = document.getElementById('submitToast');
+  var nameInput = document.getElementById('weaponName');
+  submitBtn.addEventListener('click', function () {
+    if (!previewBox.classList.contains('is-on')) {
+      toast.textContent = '先选一张武器图片吧。';
+      toast.classList.add('is-on');
+      return;
+    }
+    if (!nameInput.value.trim()) {
+      toast.textContent = '给武器起个名字，卡片上才有字。';
+      toast.classList.add('is-on');
+      nameInput.focus();
+      return;
+    }
+    toast.textContent = '「' + nameInput.value.trim() + '」的橱窗卡已经生成（本地演示，实际未提交）。';
+    toast.classList.add('is-on');
+  });
+
+  // ---- 移动端底部导航高亮 ----
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tabbar a[href^="#"]'));
+  tabs.forEach(function (a) {
+    a.addEventListener('click', function () {
+      tabs.forEach(function (x) { x.classList.toggle('is-current', x === a); });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
