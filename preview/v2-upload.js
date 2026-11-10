@@ -59,8 +59,8 @@
     const allow = getAllowance();
     $('#qUsed').textContent = used + ' / ' + allow;
     $('#qHint').textContent = cloudEnabled()
-      ? (limitReached() ? '名额已用完，可提交推广证明换名额' : '云端审核模式')
-      : '未连接云端时本机仅限 1 件';
+      ? (limitReached() ? '名额已用完，可提交推广证明换名额' : '按站点规则自动计算')
+      : '当前按本机规则计算，先限 1 件';
     const submit = $('#submitBtn');
     if (submit) submit.disabled = limitReached() || !state.pending;
   }
@@ -174,7 +174,7 @@
       $('#previewPane').classList.add('is-on');
       $('#imgOriginal').src = packed.dataUrl;
       $('#imgSubmit').src = packed.dataUrl;
-      status('图片已就绪。填好资料后可提交审核。抠图由后仓统一处理。', 'good');
+      status('照片已选好。填好名字和介绍就可以提交，抠图由站长统一处理。', 'good');
       refreshQuotaUI();
     } catch (err) {
       status((err && err.message) || '图片处理失败', 'bad');
@@ -186,7 +186,7 @@
     $('#fileInput').value = '';
     $('#dropEmpty').style.display = '';
     $('#previewPane').classList.remove('is-on');
-    status('请选择一张图片开始。上传后会先进入待审核。');
+    status('请选一张平放拍摄的照片。提交后会先进入审核。');
     refreshQuotaUI();
   }
 
@@ -273,15 +273,15 @@
     };
     try {
       if (cloudEnabled()) {
-        status('正在提交到云端审核队列…');
+        status('正在提交，请稍等…');
         await saveToCloud(item);
         markUsed();
         clearFile();
-        status('已提交审核：' + name + '。通过后会出现在公开武器库。', 'good');
+        status('已提交审核：' + name + '。通过后会出现在橱窗里。', 'good');
       } else {
         markUsed();
         clearFile();
-        status('当前未连接云端，已记入本机名额。配置云端后可提交审核。', 'warn');
+        status('暂时无法提交审核，已先记入本机次数。请稍后再试。', 'warn');
       }
       refreshQuotaUI();
     } catch (err) {
@@ -291,7 +291,7 @@
 
   async function submitPromo() {
     if (!cloudEnabled()) {
-      status('当前没有连接云端，暂时不能提交推广证明。', 'warn');
+      status('暂时无法提交推广证明，请稍后再试。', 'warn');
       return;
     }
     const creator = ($('#creatorName').value.trim() || '匿名创造者').slice(0, 16);
@@ -343,5 +343,5 @@
 
   bind();
   loadQuotaRules();
-  if (!cloudEnabled()) status('未检测到云端配置，当前为展示/本机模式。', 'warn');
+  if (!cloudEnabled()) status('当前为展示小样，提交和名额先记在本机。', 'warn');
 })();

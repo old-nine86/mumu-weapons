@@ -1,39 +1,85 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><meta name="theme-color" content="#fff8ed">
-<title>沐沐积木武器库 · 人格世界树小样</title><link rel="stylesheet" href="v2-home.css"><link rel="stylesheet" href="v2-pages.css"><style>.nav-links{flex-wrap:wrap}.nav-links a{padding:8px 11px}
-.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.tcard{padding:18px;border-radius:26px;background:linear-gradient(145deg,rgba(255,183,200,.16),rgba(159,215,255,.16) 60%,rgba(255,255,255,.92));border:1px solid rgba(255,255,255,.95);box-shadow:var(--shadow-soft)}
-.tcard b{display:block;font-size:16px;margin-bottom:6px}.tcard p{margin:0;font-size:13px;color:var(--ink-2);line-height:1.6}
-.sec-h{margin:30px 0 12px;font-size:22px;font-weight:900}
-.cta-band{margin-top:22px;padding:20px;border-radius:28px;background:linear-gradient(135deg,rgba(255,217,106,.35),rgba(255,183,200,.28));display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;box-shadow:var(--shadow-card)}
-.cta-band p{margin:0;max-width:60ch;font-size:13.5px;color:var(--ink-2)}
-.pill-btn{display:inline-flex;align-items:center;min-height:48px;padding:12px 22px;border-radius:999px;font-weight:900;background:linear-gradient(135deg,var(--butter),#ffc04d);color:var(--ink)}
-.pill-btn.alt{background:rgba(255,255,255,.85);border:1px solid var(--line)}
-.wcard{border-radius:24px;overflow:hidden;background:#fff;box-shadow:var(--shadow-soft);border:1px solid rgba(255,255,255,.95)}
-.wcard .st{aspect-ratio:1;background:linear-gradient(160deg,#ffe3ec,#e3f2ff)}.wcard img{width:100%;height:100%;object-fit:cover}
-.wcard .in{padding:10px 14px}.wcard b{font-size:14px}.wcard span{display:block;font-size:12px;color:var(--ink-3)}
-@media(max-width:900px){.g3,.g4{grid-template-columns:1fr 1fr}}.tree-modes{display:flex;gap:8px;margin-bottom:12px}.tm{border:1px solid var(--line);background:rgba(255,255,255,.85);border-radius:999px;padding:9px 16px;font:inherit;font-weight:800;cursor:pointer}.tm[aria-pressed=true]{background:linear-gradient(180deg,#fff,#fff1d6);box-shadow:var(--shadow-soft)}
-.tree-wrap{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;align-items:start}
-/* 坐标按整图 1774×887=2:1 标定。全局 border-box 下勿给 canvas 加 border，否则内容区不再是 2:1，object-fit 会拉伸导致节点错位。描边用 box-shadow。 */
-.tree-canvas{position:relative;width:100%;aspect-ratio:2 / 1;border-radius:30px;overflow:hidden;border:0;box-shadow:0 0 0 8px rgba(255,255,255,.8),var(--shadow-card);background:#1a2a1a}
-.tree-canvas img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block}
-.tree-canvas svg,#nodes{position:absolute;inset:0;width:100%;height:100%}
-.nd{position:absolute;transform:translate(-50%,-50%);border:3px solid var(--c);border-radius:50%;width:clamp(36px,3.6vw,52px);height:clamp(36px,3.6vw,52px);padding:0;background:#fff;cursor:pointer;overflow:hidden;box-shadow:0 8px 18px -8px rgba(0,0,0,.4);z-index:2}
-.nd img{width:100%;height:100%;object-fit:cover;position:static}
-.nd.on{width:clamp(42px,4.2vw,60px);height:clamp(42px,4.2vw,60px);box-shadow:0 0 0 4px rgba(255,255,255,.85);z-index:3}
-.nd i{position:absolute;bottom:0;left:0;right:0;font-style:normal;font-size:7px;font-weight:900;background:rgba(255,255,255,.92);line-height:1.15;padding:1px 0}
-#detail img{width:110px;margin:0 auto 8px}.rel{margin-top:8px;padding:8px 10px;border-radius:14px;background:rgba(255,255,255,.8);font-size:12.5px;cursor:pointer}
-@media(max-width:900px){.tree-wrap{grid-template-columns:1fr}}</style></head><body>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#fff8ed">
+<title>沐沐积木武器库 · 人格世界树小样</title>
+<link rel="stylesheet" href="v2-home.css">
+<link rel="stylesheet" href="v2-pages.css">
+<link rel="stylesheet" href="v2-world-tree.css">
+</head>
+<body>
 <div class="preview-flag"><div class="wrap"><span class="dot" aria-hidden="true"></span><span>第二代前台小样 · 不会替换当前线上站</span><a href="v2-home.html">武器橱窗</a><a href="v2-upload.html">上传</a><a href="v2-characters.html">角色</a><a href="v2-world-tree.html">世界树</a><a href="v2-battle.html">战场</a><a href="v2-manual.html">说明书</a><a href="v2-sandbox.html">沙盒</a><a href="v2-forum.html">论坛</a><a href="../index.html">返回当前线上站</a><a href="v2-admin.html">后仓审核小样</a></div></div>
-<header class="topbar"><div class="topbar-inner"><div class="topbar-row"><a class="brand" href="v2-home.html"><span class="brand-mark" aria-hidden="true">🧱</span><span class="brand-txt"><b>积木武器库 · 角色战场</b><i>沐沐的积木玩具橱窗</i></span></a><nav class="nav-links" aria-label="主导航"><a href="v2-home.html">武器橱窗</a><a href="v2-upload.html">上传</a><a href="v2-characters.html">角色</a><a href="v2-world-tree.html" class="is-current" aria-current="page">世界树</a><a href="v2-battle.html">战场</a><a href="v2-manual.html">说明书</a><a href="v2-sandbox.html">沙盒</a><a href="v2-forum.html">论坛</a></nav><a class="nav-cta" href="../index.html#tree">完整世界树</a></div></div></header>
-<section class="page-hero"><div class="page-frame"><img src="../assets/banner-characters-bricks.png" alt="积木战士合影" fetchpriority="high"><span class="page-tag">MBTI BRICK WORLD MAP</span><span class="page-badge"><b>16 位</b><span>4 条树杈 · 30 条光线</span></span></div>
-<div class="wrap page-head"><div><h1>16 位战士，<em>住在同一棵大树上</em>。</h1><p class="page-lede">16 位积木战士住在同一棵大树的不同树杈上。点击角色节点看资料，点击光线看羁绊关系。</p></div></div></section>
-<main class="wrap" style="margin-top:22px"><div class="tree-modes" role="group"><button class="tm" data-m="group" aria-pressed="true">阵营树杈</button><button class="tm" data-m="weapon" aria-pressed="false">武器流派</button><button class="tm" data-m="bond" aria-pressed="false">战斗羁绊</button></div>
-<div class="tree-wrap"><div class="tree-canvas"><img src="../assets/world-tree/world-tree-bg.png" alt="人格世界树背景"><svg id="lines" viewBox="0 0 100 100" preserveAspectRatio="none"></svg><div id="nodes"></div></div>
-<aside class="tcard" id="detail"><b>点一个角色节点</b><p>看看他住在哪条树杈上，点击光线看羁绊关系。</p></aside></div>
-<h2 class="sec-h">四条树杈</h2><div class="g4" id="branches"></div>
-<div class="cta-band"><p>完整版支持拖动、缩放和角色档案跳转。</p><a class="pill-btn" href="../index.html#tree">打开线上世界树</a></div></main>
-<footer class="footer-mini"><span>V2 人格世界树小样 · noindex</span><span><a href="v2-home.html">首页小样</a> · <a href="../index.html">线上站</a></span></footer>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-row">
+      <a class="brand" href="v2-home.html">
+        <span class="brand-mark" aria-hidden="true">🧱</span>
+        <span class="brand-txt">
+          <b>积木武器库 · 角色战场</b>
+          <i>沐沐的积木玩具橱窗</i>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="主导航"><a href="v2-home.html">武器橱窗</a><a href="v2-upload.html">上传</a><a href="v2-characters.html">角色</a><a href="v2-world-tree.html" class="is-current" aria-current="page">世界树</a><a href="v2-battle.html">战场</a><a href="v2-manual.html">说明书</a><a href="v2-sandbox.html">沙盒</a><a href="v2-forum.html">论坛</a></nav>
+      <a class="nav-cta" href="../index.html#tree">完整世界树</a>
+    </div>
+    <div class="stats-bar">
+      <span class="stat-pill"><i aria-hidden="true">🌳</i>同一棵大树</span>
+      <span class="stat-pill"><i aria-hidden="true">🧸</i><b>16</b> 位战士</span>
+      <span class="stat-pill"><i aria-hidden="true">✨</i>4 条树杈</span>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="page-frame">
+    <img src="../assets/banner-characters-bricks.png" alt="积木战士合影" fetchpriority="high">
+    <span class="page-tag">人格世界树 · 16 位战士</span>
+    <span class="page-badge"><b>16 位</b><span>4 条树杈 · 30 条光线</span></span>
+  </div>
+  <div class="wrap page-head">
+    <div>
+      <h1>16 位战士，<em>住在同一棵大树上</em>。</h1>
+      <p class="page-lede">16 位积木战士住在同一棵大树的不同树杈上。点击角色节点看资料，点击光线看羁绊关系。</p>
+    </div>
+    <div class="page-actions">
+      <a class="btn btn-yellow" href="../index.html#tree">打开线上世界树</a>
+      <a class="btn btn-ghost" href="v2-characters.html">去角色图鉴</a>
+    </div>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="tree-modes" role="group">
+    <button class="tm" data-m="group" aria-pressed="true">阵营树杈</button>
+    <button class="tm" data-m="weapon" aria-pressed="false">武器流派</button>
+    <button class="tm" data-m="bond" aria-pressed="false">战斗羁绊</button>
+  </div>
+  <div class="tree-wrap">
+    <div class="tree-canvas">
+      <img src="../assets/world-tree/world-tree-bg.png" alt="人格世界树背景">
+      <svg id="lines" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+      <div id="nodes"></div>
+    </div>
+    <aside class="tcard" id="detail">
+      <b>点一个角色节点</b>
+      <p>看看他住在哪条树杈上，点击光线看羁绊关系。</p>
+    </aside>
+  </div>
+  <h2 class="sec-h">四条树杈</h2>
+  <div class="g4" id="branches"></div>
+  <div class="cta-band">
+    <p>想放大、拖动，或跳到角色档案，可以打开完整世界树。</p>
+    <a class="btn btn-yellow" href="../index.html#tree">打开线上世界树</a>
+  </div>
+</main>
+
+<footer class="footer-mini">
+  <span>V2 人格世界树小样 · noindex</span>
+  <span><a href="v2-home.html">首页小样</a> · <a href="../index.html">线上站</a></span>
+</footer>
 <script>
 const WORLD_TREE_POS={
   ENTJ:{x:15.11,y:27.17},

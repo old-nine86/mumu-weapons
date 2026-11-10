@@ -109,9 +109,28 @@
 .nav-links{flex-wrap:wrap}
 .nav-links a{padding:8px 11px;font-size:13px}
 
+/* Match approved home/characters hero proportions on tablet */
+@media (max-width: 900px) {
+  .page-frame { aspect-ratio: 16 / 10; }
+}
+
 /* ---- Mobile ~390: keep desktop look, fix real overflow/tap issues ---- */
 @media (max-width: 720px) {
-  .page-frame { width: min(100% - 24px, 100%); border-width: 6px; border-radius: 26px; }
+  .page-frame {
+    width: min(100% - 24px, 100%);
+    border-width: 6px;
+    border-radius: 26px;
+    aspect-ratio: 4 / 3;
+    min-height: 220px;
+  }
+  .page-frame img {
+    object-fit: cover;
+    object-position: 50% 48%;
+  }
+  .page-tag { left: 12px; top: 12px; font-size: 11px; padding: 6px 12px; }
+  .page-badge { right: 12px; bottom: 12px; padding: 9px 14px; border-radius: 18px; }
+  .page-badge b { font-size: 19px; }
+  .page-badge span { font-size: 10.5px; }
   .footer-mini { width: min(100% - 24px, 100%); }
 
   /* Preview flag: one scrollable chip row instead of 3-line wrap */
@@ -156,18 +175,33 @@
     margin-left: 0;
     flex-wrap: nowrap !important;
     overflow-x: auto;
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
     gap: 6px;
-    padding: 6px 0 2px;
+    padding: 6px 10px 4px;
+    scroll-padding-inline: 10px;
+    border-radius: 18px;
     scrollbar-width: none;
   }
   body:not(:has(.tabbar)) .nav-links::-webkit-scrollbar { display: none; }
+  body:not(:has(.tabbar)) .nav-links::after {
+    content: "";
+    flex: 0 0 12px;
+    width: 12px;
+    height: 1px;
+    pointer-events: none;
+  }
   body:not(:has(.tabbar)) .nav-links a {
     flex: 0 0 auto;
     white-space: nowrap;
+    overflow: visible;
     padding: 8px 12px;
     font-size: 12.5px;
     min-height: 36px;
+  }
+  body:not(:has(.tabbar)) .nav-links a:last-child {
+    margin-inline-end: 8px;
   }
 
   .page-head { margin-top: 8px; }
@@ -237,4 +271,26 @@
   body:not(:has(.tabbar)) .hero {
     padding-top: 8px;
   }
+}
+
+/* Shared button refinements for V2 preview pages */
+.btn {
+  white-space: nowrap;
+  min-width: max-content;
+}
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+.btn-ghost:hover {
+  transform: translateY(-2px);
+  background: #fff;
+  filter: none;
+}
+.btn-compact {
+  min-height: 40px;
+  padding: 8px 14px;
+  font-size: 13px;
 }

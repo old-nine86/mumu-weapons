@@ -1,0 +1,181 @@
+/* V2 人格世界树：橱窗地图入口。节点坐标按 2:1 标定，勿改 canvas 几何。 */
+
+.page-main { width: min(1180px, 100% - 48px); margin: 22px auto 0; }
+.g3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.g4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.tcard {
+  padding: 18px;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: var(--shadow-soft);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 183, 200, 0.30), transparent 8rem),
+    radial-gradient(circle at 92% 100%, rgba(159, 215, 255, 0.26), transparent 9rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 250, 241, 0.86));
+}
+.tcard b { display: block; font-size: 16px; margin-bottom: 6px; }
+.tcard p { margin: 0; font-size: 13px; color: var(--ink-2); line-height: 1.6; }
+.sec-h { margin: 30px 0 12px; font-size: 22px; font-weight: 900; }
+.cta-band {
+  margin-top: 22px;
+  padding: 18px 20px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, rgba(255, 217, 106, .35), rgba(255, 183, 200, .28));
+  border: 1px solid rgba(255, 255, 255, .95);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-card);
+}
+.cta-band p { margin: 0; max-width: 60ch; font-size: 13.5px; color: var(--ink-2); }
+.cta-band .btn {
+  white-space: nowrap;
+  min-width: max-content;
+  text-decoration: none;
+}
+
+.tree-modes {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.66);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), var(--shadow-soft);
+}
+.tm {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, .88);
+  border-radius: 999px;
+  padding: 8px 16px;
+  min-height: 42px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink-2);
+  cursor: pointer;
+  white-space: nowrap;
+  min-width: max-content;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9);
+  transition: transform .16s ease, background .16s ease, box-shadow .16s ease;
+}
+.tm:hover { transform: translateY(-1px); color: var(--ink); }
+.tm[aria-pressed="true"] {
+  color: var(--ink);
+  background: linear-gradient(135deg, rgba(255, 183, 200, 0.62), rgba(255, 217, 106, 0.55));
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 22px -14px rgba(240, 130, 160, 0.9), inset 0 0 0 2px rgba(255, 255, 255, 0.85);
+}
+
+.tree-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 14px;
+  align-items: start;
+}
+
+/* 坐标按整图 1774×887=2:1 标定。全局 border-box 下勿给 canvas 加 border，否则内容区不再是 2:1，object-fit 会拉伸导致节点错位。描边用 box-shadow。 */
+.tree-canvas {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  border-radius: 30px;
+  overflow: hidden;
+  border: 0;
+  box-shadow: 0 0 0 8px rgba(255, 255, 255, .8), var(--shadow-card);
+  background: #1a2a1a;
+}
+.tree-canvas img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+.tree-canvas svg,
+#nodes {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.nd {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  border: 3px solid var(--c);
+  border-radius: 50%;
+  width: clamp(36px, 3.6vw, 52px);
+  height: clamp(36px, 3.6vw, 52px);
+  padding: 0;
+  background: #fff;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 8px 18px -8px rgba(0, 0, 0, .4);
+  z-index: 2;
+}
+.nd img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: static;
+}
+.nd.on {
+  width: clamp(42px, 4.2vw, 60px);
+  height: clamp(42px, 4.2vw, 60px);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, .85);
+  z-index: 3;
+}
+.nd i {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-style: normal;
+  font-size: 7px;
+  font-weight: 900;
+  background: rgba(255, 255, 255, .92);
+  line-height: 1.15;
+  padding: 1px 0;
+}
+#detail img { width: 110px; margin: 0 auto 8px; display: block; }
+.rel {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .8);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .g3, .g4 { grid-template-columns: 1fr 1fr; }
+  .tree-wrap { grid-template-columns: 1fr; }
+}
+@media (max-width: 980px) {
+  .page-main { width: min(100% - 24px, 100%); }
+}
+@media (max-width: 720px) {
+  .tree-modes {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 8px;
+  }
+  .tree-modes::-webkit-scrollbar { display: none; }
+  .tm {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    min-width: max-content;
+  }
+  .cta-band .btn {
+    justify-content: center;
+    text-align: center;
+  }
+}

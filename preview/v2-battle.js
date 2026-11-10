@@ -1,4 +1,4 @@
-/* V2 战场落地页：选人预览，开战跳转到线上完整站点 */
+/* V2 战场页：选人预览，开战跳转到线上完整站点 */
 (function () {
   'use strict';
   const FIGHTERS = [
@@ -38,14 +38,14 @@
     const hint = $('#battleHint');
     const link = $('#startLink');
     if (state.p1 && state.p2) {
-      hint.textContent = state.p1.name + ' vs ' + state.p2.name + '。点击右侧按钮前往线上完整站点开战（本页不运行战斗引擎）。';
+      hint.textContent = state.p1.name + ' vs ' + state.p2.name + '。点右侧按钮，带到战场里开打。';
       link.href = '../index.html#weapons';
       link.textContent = '去线上开战';
     } else if (state.p1) {
       hint.textContent = '已选 ' + state.p1.name + '。再选一位对手。';
       link.textContent = '带着选择去开战';
     } else {
-      hint.textContent = '先点两位战士组成对阵。开战会跳到线上完整站点（不在此页重写战斗引擎）。';
+      hint.textContent = '先点两位战士组成对阵，再一起去开战。';
       link.textContent = '带着选择去开战';
     }
     document.querySelectorAll('.fighter-pick').forEach(btn => {

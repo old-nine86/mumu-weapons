@@ -42,10 +42,10 @@
       state.posts = [];
       state.cloudReady = false;
       render();
-      status('未连接云端，暂不能读取公开论坛。', 'warn');
+      status('暂时读不到留言墙，请稍后再试。', 'warn');
       return;
     }
-    status('正在读取云端论坛…');
+    status('正在读取留言墙…');
     try {
       const topicRes = await fetch(cloudBase() + '/rest/v1/forum_topics?select=id,name,category,title,body,created_at&status=eq.approved&order=created_at.desc&limit=80', { headers: headers() });
       if (!topicRes.ok) throw new Error('论坛读取失败：' + topicRes.status);
@@ -77,7 +77,7 @@
         replies: byTopic[String(t.id)] || []
       }));
       state.cloudReady = true;
-      status(topics.length ? '已同步云端公开帖。' : '云端论坛还是空的，来发第一条吧。', topics.length ? 'good' : '');
+      status(topics.length ? '留言已更新。' : '留言墙还是空的，来发第一条吧。', topics.length ? 'good' : '');
       render();
     } catch (err) {
       state.cloudReady = false;
@@ -92,12 +92,12 @@
     const count = $('#forumCount');
     const posts = state.posts.filter(p => state.filter === 'all' || p.category === state.filter);
     const totalReplies = posts.reduce((n, p) => n + (p.replies ? p.replies.length : 0), 0);
-    count.textContent = posts.length + ' 个帖子 · ' + totalReplies + ' 条回复' + (state.cloudReady ? ' · 云端' : '');
+    count.textContent = posts.length + ' 条留言 · ' + totalReplies + ' 条回复';
     if (!posts.length) {
       list.innerHTML = '<div class="empty-soft"><div class="emoji">🧸</div><h3>还没有讨论</h3><p>' +
         (state.filter === 'all'
           ? '留言墙空空的。左侧发一条建议、讨论或晒图吧。'
-          : '这个分类暂时没有帖子，换个分类看看，或发第一条。') +
+          : '这个分类暂时还没有留言，换个分类看看，或发第一条。') +
         '</p></div>';
       return;
     }
@@ -106,7 +106,7 @@
         '<div class="reply"><b>' + escapeHTML(r.name) + '</b> · ' + escapeHTML(fmtTime(r.ts)) + '<br>' + escapeHTML(r.text) + '</div>'
       ).join('');
       return (
-        '<article class="topic-card" data-id="' + escapeHTML(p.id) + '">' +
+        '<article class="topic-card" data-id="' + escapeHTML(p.id) + '" data-cat="' + escapeHTML(p.category) + '">' +
           '<div class="topic-top"><span class="tag">' + tagEmoji(p.category) + ' ' + escapeHTML(p.category) + '</span></div>' +
           '<h3>' + escapeHTML(p.title) + '</h3>' +
           '<div class="topic-meta">由 ' + escapeHTML(p.name) + ' 发布 · ' + escapeHTML(fmtTime(p.ts)) + '</div>' +
@@ -114,7 +114,7 @@
           (replies ? '<div class="replies">' + replies + '</div>' : '') +
           '<div class="reply-row">' +
             '<input maxlength="120" placeholder="回复这个话题..." data-reply-input>' +
-            '<button class="btn btn-yellow" type="button" data-reply-btn style="min-height:42px;padding:8px 16px;border-radius:999px;border:0;font-weight:900;cursor:pointer">回复</button>' +
+            '<button class="btn btn-yellow btn-compact" type="button" data-reply-btn>回复</button>' +
           '</div>' +
         '</article>'
       );
@@ -131,10 +131,10 @@
       return;
     }
     if (!cloudEnabled()) {
-      status('未连接云端，无法发布。', 'bad');
+      status('暂时无法发布，请稍后再试。', 'bad');
       return;
     }
-    status('正在发布到云端论坛…');
+    status('正在放到留言墙上…');
     try {
       const res = await fetch(cloudBase() + '/rest/v1/forum_topics', {
         method: 'POST',
@@ -148,7 +148,7 @@
       }
       $('#forumTitle').value = '';
       $('#forumBody').value = '';
-      status('已发布到云端论坛。', 'good');
+      status('已放到留言墙上。', 'good');
       await loadForum();
     } catch (err) {
       status((err && err.message) || '发布失败', 'bad');
@@ -160,7 +160,7 @@
     if (!text) return;
     const author = ($('#forumName').value.trim() || '匿名玩家').slice(0, 16);
     if (!cloudEnabled()) {
-      status('未连接云端，无法回复。', 'bad');
+      status('暂时无法回复，请稍后再试。', 'bad');
       return;
     }
     try {
@@ -175,7 +175,7 @@
         throw new Error(msg);
       }
       input.value = '';
-      status('回复已同步到云端。', 'good');
+      status('回复已发出。', 'good');
       await loadForum();
     } catch (err) {
       status((err && err.message) || '回复失败', 'bad');

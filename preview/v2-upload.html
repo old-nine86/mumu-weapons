@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="v2-home.css">
 <link rel="stylesheet" href="v2-pages.css">
 <link rel="stylesheet" href="v2-upload.css">
-<style>.nav-links{flex-wrap:wrap}.nav-links a{padding:8px 11px}</style></head>
+</head>
 <body>
 <div class="preview-flag"><div class="wrap"><span class="dot" aria-hidden="true"></span><span>第二代前台小样 · 不会替换当前线上站</span><a href="v2-home.html">武器橱窗</a><a href="v2-upload.html">上传</a><a href="v2-characters.html">角色</a><a href="v2-world-tree.html">世界树</a><a href="v2-battle.html">战场</a><a href="v2-manual.html">说明书</a><a href="v2-sandbox.html">沙盒</a><a href="v2-forum.html">论坛</a><a href="../index.html">返回当前线上站</a><a href="v2-admin.html">后仓审核小样</a></div></div>
 <header class="topbar">
@@ -26,13 +26,14 @@
       <a class="nav-cta" href="v2-upload.html">上传一件</a>
     </div>
     <div class="stats-bar">
-      <span class="stat-pill"><i aria-hidden="true">📷</i>玩具店橱窗</span>
-      <span class="stat-pill"><i aria-hidden="true">🧸</i><b>16</b> 位战士</span>
-      <span class="stat-pill"><i aria-hidden="true">✨</i>马卡龙小样</span>
+      <span class="stat-pill"><i aria-hidden="true">📷</i>平放入橱</span>
+      <span class="stat-pill"><i aria-hidden="true">🧸</i>先审核再亮相</span>
+      <span class="stat-pill"><i aria-hidden="true">✨</i>站长统一抠图</span>
     </div>
   </div>
 </header>
 
+<main>
 <section class="page-hero">
   <div class="page-frame">
     <img src="../assets/hero-brick-playground.png" alt="积木武器在马卡龙色玩具桌上陈列" width="1600" height="900" fetchpriority="high">
@@ -42,81 +43,84 @@
   <div class="wrap page-head">
     <div>
       <h1>把你的武器，<em>放进明亮橱窗</em>。</h1>
-      <p class="page-lede">选一张平放拍摄的积木武器照片，填好名字和介绍。提交后会进入站长审核；抠图、卡面和展示图都由后仓统一处理，避免前台误抠缺块。</p>
+      <p class="page-lede">选一张平放拍摄的积木武器照片，填好名字和介绍。提交后会进入站长审核；抠图、卡面和展示图都由站长统一处理，避免前台误抠缺块。</p>
     </div>
     <div class="page-actions">
-      <a class="btn btn-ghost" href="v2-home.html#shelf" style="display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:13px 22px;border-radius:999px;background:rgba(255,255,255,.78);border:1px solid var(--line);font-weight:900;text-decoration:none;white-space:nowrap">先去逛橱窗</a>
-      <a class="btn btn-pink" href="v2-forum.html" style="display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:13px 22px;border-radius:999px;text-decoration:none;white-space:nowrap">去论坛聊聊</a>
+      <a class="btn btn-ghost" href="v2-home.html#shelf">先去逛橱窗</a>
+      <a class="btn btn-pink" href="v2-forum.html">去论坛聊聊</a>
     </div>
   </div>
 </section>
 
 <div class="quota-row" id="quotaRow">
-  <div class="quota-card"><div class="k">每 IP 免费名额</div><div class="v" id="qFree">—</div><div class="d">按站点规则自动计算</div></div>
+  <div class="quota-card"><div class="k">每位访客的免费名额</div><div class="v" id="qFree">—</div><div class="d">按站点规则自动计算</div></div>
   <div class="quota-card"><div class="k">推广通过奖励</div><div class="v" id="qBonusRule">—</div><div class="d">每次审核通过可加名额</div></div>
-  <div class="quota-card"><div class="k">本浏览器已用 / 可用</div><div class="v" id="qUsed">—</div><div class="d" id="qHint">登录云端后显示真实额度</div></div>
+  <div class="quota-card"><div class="k">本机已用 / 可用</div><div class="v" id="qUsed">—</div><div class="d" id="qHint">按站点规则自动计算</div></div>
 </div>
 
 <div class="steps">
   <div class="step-card"><b>① 选图</b><p>平放、浅色背景、光线均匀，武器尽量占满画面。</p></div>
-  <div class="step-card"><b>② 填写资料</b><p>武器名、创作者、类型、技能和介绍。英文可由后仓补全。</p></div>
+  <div class="step-card"><b>② 填写资料</b><p>写下武器名、创作者、类型、技能和介绍。英文可由站长补全。</p></div>
   <div class="step-card"><b>③ 等待审核</b><p>通过后才会出现在公开橱窗；推广证明可换额外名额。</p></div>
 </div>
 
 <section class="upload-layout">
-  <div class="glass-panel">
-    <label class="drop-stage" id="dropStage" for="fileInput">
-      <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp">
-      <div class="drop-empty" id="dropEmpty">
-        <div class="ico" aria-hidden="true">📷</div>
-        <div style="font-weight:900;font-size:16px">点这里选图，或把图片拖进来</div>
-        <div style="font-size:12.5px;color:var(--ink-3)">支持 PNG / JPG / WebP</div>
-        <div class="drop-tips" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px">
-          <span style="font-size:11px;font-weight:700;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.9);border:1px solid rgba(255,217,106,.7)">平放拍摄</span>
-          <span style="font-size:11px;font-weight:700;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.9);border:1px solid rgba(255,217,106,.7)">背景干净</span>
-          <span style="font-size:11px;font-weight:700;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.9);border:1px solid rgba(255,217,106,.7)">光线均匀</span>
-          <span style="font-size:11px;font-weight:700;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.9);border:1px solid rgba(255,217,106,.7)">武器占满画面</span>
+  <div class="upload-card">
+    <div class="upload-left">
+      <label class="drop-stage" id="dropStage" for="fileInput">
+        <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp">
+        <div class="drop-empty" id="dropEmpty">
+          <div class="ico" aria-hidden="true">📷</div>
+          <div class="drop-strong">点这里选图，或把图片拖进来</div>
+          <div class="drop-weak">支持 PNG / JPG / WebP</div>
+          <div class="drop-tips">
+            <span>平放拍摄</span>
+            <span>背景干净</span>
+            <span>光线均匀</span>
+            <span>武器占满画面</span>
+          </div>
         </div>
-      </div>
-      <div class="preview-pane" id="previewPane">
-        <div class="preview-pair">
-          <div class="preview-tile"><span class="lab">原图</span><img id="imgOriginal" alt="原图预览"></div>
-          <div class="preview-tile"><span class="lab">提交图</span><img id="imgSubmit" alt="提交预览"></div>
+        <div class="preview-pane" id="previewPane">
+          <div class="preview-pair">
+            <div class="preview-tile"><span class="lab">原图</span><img id="imgOriginal" alt="原图预览"></div>
+            <div class="preview-tile"><span class="lab">提交图</span><img id="imgSubmit" alt="提交预览"></div>
+          </div>
+          <div class="review-note">提交后会进入站长审核。抠图、卡面和展示图都由站长统一处理，避免前台误抠缺块。</div>
+          <button type="button" class="btn btn-ghost btn-compact" id="clearBtn">换一张</button>
         </div>
-        <div class="review-note">提交后进入后台审核。站长会统一完成抠图、卡面背景、推荐角色和展示图，避免用户端误抠导致武器缺块。</div>
-        <button type="button" class="btn btn-ghost" id="clearBtn" style="min-height:40px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:800;cursor:pointer;white-space:nowrap">换一张</button>
-      </div>
-    </label>
-  </div>
+      </label>
+    </div>
 
-  <div class="glass-panel">
-    <h2 style="margin:0 0 6px;font-size:20px">给作品起个名字</h2>
-    <p style="margin:0 0 16px;font-size:13px;color:var(--ink-3)">字段和线上站一致。小样会连同一套公开云端配置提交待审队列。</p>
-    <div class="form-grid">
-      <div class="field"><label for="weaponName">武器名</label><input id="weaponName" maxlength="20" placeholder="例如：彩虹积木剑" autocomplete="off"></div>
-      <div class="field"><label for="creatorName">创作者</label><input id="creatorName" maxlength="16" placeholder="你的名字" autocomplete="off"></div>
-      <div class="field full">
-        <div class="lbl">武器类型</div>
-        <div class="type-row" role="group" aria-label="武器类型">
-          <button class="type-chip" type="button" data-type="sword" aria-pressed="true">🗡️ 剑刃</button>
-          <button class="type-chip" type="button" data-type="gun" aria-pressed="false">🔫 枪械</button>
-          <button class="type-chip" type="button" data-type="spear" aria-pressed="false">🔱 长柄</button>
+    <div class="upload-right">
+      <h2 class="upload-title">给这件武器起个名字</h2>
+      <p class="upload-note">写下名字和介绍，把它送进橱窗。提交后会进入站长审核，通过后才会出现在橱窗里。</p>
+      <div class="form-grid">
+        <div class="field"><label for="weaponName">武器名</label><input id="weaponName" maxlength="20" placeholder="例如：彩虹积木剑" autocomplete="off"></div>
+        <div class="field"><label for="creatorName">创作者</label><input id="creatorName" maxlength="16" placeholder="你的名字" autocomplete="off"></div>
+        <div class="field full">
+          <div class="lbl">武器类型</div>
+          <div class="type-row" role="group" aria-label="武器类型">
+            <button class="type-chip" type="button" data-type="sword" aria-pressed="true">🗡️ 剑刃</button>
+            <button class="type-chip" type="button" data-type="gun" aria-pressed="false">🔫 枪械</button>
+            <button class="type-chip" type="button" data-type="spear" aria-pressed="false">🔱 长柄</button>
+          </div>
         </div>
+        <div class="field full"><label for="skillName">技能名</label><input id="skillName" maxlength="22" placeholder="自动生成，也可以改" autocomplete="off"></div>
+        <div class="field full"><label for="desc">介绍</label><textarea id="desc" maxlength="90" placeholder="给这把武器写一句可爱的说明"></textarea></div>
+        <div class="field full"><label for="shareProof">推广证明（可选）</label><textarea id="shareProof" maxlength="180" placeholder="多传时填写抖音/快手分享链接或截图说明，审核通过后增加名额"></textarea></div>
       </div>
-      <div class="field full"><label for="skillName">技能名</label><input id="skillName" maxlength="22" placeholder="自动生成，也可以改" autocomplete="off"></div>
-      <div class="field full"><label for="desc">介绍</label><textarea id="desc" maxlength="90" placeholder="给这把武器写一句可爱的说明"></textarea></div>
-      <div class="field full"><label for="shareProof">推广证明（可选）</label><textarea id="shareProof" maxlength="180" placeholder="多传时填写抖音/快手分享链接或截图说明，审核通过后增加名额"></textarea></div>
+      <div class="action-row">
+        <button class="btn btn-yellow" type="button" id="submitBtn" disabled>提交审核</button>
+        <button class="btn btn-pink" type="button" id="promoBtn">提交推广证明</button>
+      </div>
+      <div class="status-toast" id="status">请选一张平放拍摄的照片。提交后会先进入审核。</div>
     </div>
-    <div class="action-row">
-      <button class="btn btn-yellow" type="button" id="submitBtn" disabled>提交审核</button>
-      <button class="btn btn-pink" type="button" id="promoBtn" style="min-height:52px;padding:13px 22px;border-radius:999px;border:0;font:inherit;font-weight:900;cursor:pointer;white-space:nowrap">提交推广证明换名额</button>
-    </div>
-    <div class="status-toast" id="status">请选择一张图片开始。上传后会先进入待审核。</div>
   </div>
 </section>
+</main>
 
 <footer class="footer-mini">
-  <span>V2 上传小样 · noindex · 正式抠图仍在后仓完成</span>
+  <span>V2 上传小样 · noindex · 抠图由站长统一完成</span>
   <span><a href="v2-home.html">首页</a> · <a href="v2-forum.html">论坛</a> · <a href="../index.html">线上站</a></span>
 </footer>
 

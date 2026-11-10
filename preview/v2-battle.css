@@ -1,4 +1,5 @@
-/* V2 角色战场落地页（不重写战斗引擎） */
+/* V2 角色战场：选人对阵橱窗，视觉对齐角色图鉴 / 上传页 */
+
 .battle-shell {
   width: min(1180px, 100% - 48px);
   margin: 18px auto 0;
@@ -14,50 +15,80 @@
   min-height: 220px;
   padding: 18px;
   border-radius: 28px;
-  background: rgba(255,255,255,.88);
-  border: 1px solid rgba(255,255,255,.95);
+  border: 1px solid rgba(255, 255, 255, 0.95);
   box-shadow: var(--shadow-card);
-  display: grid; place-items: center; text-align: center; gap: 8px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: 8px;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255, 183, 200, 0.32), transparent 10rem),
+    radial-gradient(circle at 92% 100%, rgba(159, 215, 255, 0.30), transparent 11rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 250, 241, 0.86));
 }
 .pick-slot img {
-  width: 120px; height: 120px; object-fit: contain;
-  filter: drop-shadow(0 12px 20px rgba(78,64,44,.22));
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 20px rgba(78, 64, 44, .22));
 }
 .pick-slot .ph {
-  width: 120px; height: 120px; border-radius: 28px;
-  display: grid; place-items: center; font-size: 42px;
+  width: 120px;
+  height: 120px;
+  border-radius: 28px;
+  display: grid;
+  place-items: center;
+  font-size: 42px;
   background: linear-gradient(145deg, #fff2b7, #ffb7c8 55%, #9fd7ff);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .95), 0 14px 30px -16px rgba(255, 138, 114, .7);
 }
 .pick-slot b { font-size: 18px; }
 .pick-slot span { font-size: 12.5px; color: var(--ink-3); font-weight: 700; }
 .vs-bubble {
   align-self: center;
-  width: 64px; height: 64px; border-radius: 50%;
-  display: grid; place-items: center;
-  font-weight: 900; color: #fff;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  color: #fff;
   background: linear-gradient(135deg, #ff8a72, #ffb7c8);
-  box-shadow: 0 14px 28px -14px rgba(255,138,114,.9);
+  box-shadow: 0 14px 28px -14px rgba(255, 138, 114, .9);
 }
 .fighter-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0,1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
 }
 .fighter-pick {
-  appearance: none; border: 0; cursor: pointer; text-align: left;
-  padding: 10px; border-radius: 24px;
-  background: rgba(255,255,255,.88);
-  border: 1px solid rgba(255,255,255,.95);
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  padding: 10px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.95);
   box-shadow: var(--shadow-soft);
+  background:
+    radial-gradient(circle at 22% 14%, rgba(255, 183, 200, 0.36), transparent 8rem),
+    radial-gradient(circle at 82% 18%, rgba(159, 215, 255, 0.38), transparent 9rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 250, 241, 0.88));
   transition: transform .16s ease, box-shadow .16s ease;
 }
 .fighter-pick:hover { transform: translateY(-2px); }
-.fighter-pick.is-p1 { outline: 3px solid rgba(47,143,232,.55); outline-offset: -3px; }
-.fighter-pick.is-p2 { outline: 3px solid rgba(255,138,114,.55); outline-offset: -3px; }
+.fighter-pick.is-p1 { outline: 3px solid rgba(47, 143, 232, .55); outline-offset: -3px; }
+.fighter-pick.is-p2 { outline: 3px solid rgba(255, 138, 114, .55); outline-offset: -3px; }
 .fighter-pick .stage {
-  border-radius: 18px; aspect-ratio: 1;
-  background: linear-gradient(180deg, #fff7fb, #eef7ff);
-  display: grid; place-items: center; margin-bottom: 8px;
+  border-radius: 18px;
+  aspect-ratio: 1;
+  background:
+    radial-gradient(circle at 22% 14%, rgba(255, 183, 200, 0.48), transparent 8rem),
+    radial-gradient(circle at 82% 18%, rgba(159, 215, 255, 0.5), transparent 9rem),
+    linear-gradient(180deg, #fff9ef, #f7fbff);
+  display: grid;
+  place-items: center;
+  margin-bottom: 8px;
 }
 .fighter-pick img { width: 78%; height: 78%; object-fit: contain; }
 .fighter-pick .nm { font-size: 14px; font-weight: 900; }
@@ -66,16 +97,33 @@
   margin-top: 18px;
   padding: 18px 20px;
   border-radius: 28px;
-  background: linear-gradient(135deg, rgba(255,217,106,.35), rgba(255,183,200,.28));
-  border: 1px solid rgba(255,255,255,.95);
+  background: linear-gradient(135deg, rgba(255, 217, 106, .35), rgba(255, 183, 200, .28));
+  border: 1px solid rgba(255, 255, 255, .95);
   box-shadow: var(--shadow-card);
-  display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
 }
 .battle-cta p { margin: 0; font-size: 13.5px; color: var(--ink-2); max-width: 56ch; }
+.battle-cta .btn {
+  white-space: nowrap;
+  min-width: max-content;
+}
 
 @media (max-width: 980px) {
   .battle-shell { width: min(100% - 24px, 100%); }
-  .fighter-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .fighter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pick-board { grid-template-columns: 1fr; }
   .vs-bubble { margin: 0 auto; }
+}
+
+@media (max-width: 720px) {
+  .pick-slot { min-height: 200px; padding: 16px; }
+  .battle-cta { align-items: stretch; }
+  .battle-cta .btn {
+    justify-content: center;
+    text-align: center;
+  }
 }
